@@ -1,33 +1,25 @@
 # AGENTS.md — Seatbelt Knowledge Substrate
 
-This file is a **conceptual router and use guide** for the local Seatbelt/XNUSandbox knowledge pack:
+This file is a **conceptual router and use guide** for this directory, written for three broad classes of agents, machine or not:
 
-- `Orientation.md`
-- `Concepts.md`
-- `Appendix.md`
-- `Canon.md`
-- `ERRATA.md`
+- Code Agents: Primarily interested in writing code to test and expand understanding of the sandbox and validate foundations.
+- Chapter Authors: Primarily interested in presenting generated understanding to readers of all documentation but especially the work product in `book/`
+- Readers: Interested in retreival, understanding, and interrogation. 
 
-It is written for three broad classes of agents:
-
-- Human investigators
-- Code agents (e.g., Codex in repo mode, analysis tools)
-- Chat agents (5.1 Thinking-style interpreters)
-
-All of you should treat these documents as the **foundational universe** of information for Seatbelt in this context. External sources exist, but they are mediated via `Canon.md` and consulted explicitly, not implicitly.
+All but the last should treat these documents as the **foundational universe** of information for Seatbelt in this context. External sources exist, but they are mediated via `Canon.md` and consulted explicitly, not implicitly.
 
 ---
 
 ## 1. Purpose and Scope
 
-This substrate is not a full sandbox textbook. It is a **curated interface** to Seatbelt as used in the XNUSandbox project:
+This substrate is not a full sandbox textbook. It is a **curated interface** to Seatbelt as used in the mac OS sandbox project:
 
 - It defines a **shared vocabulary** (operations, filters, profiles, stacks).
 - It fixes a **model** of how SBPL and compiled profiles work.
 - It encodes **assumptions and caveats** that agents must not silently override.
 - It names the **external canon** that may be used later, and how.
 
-If you are an agent acting in or around the XNUSandbox ecosystem, your first responsibility is to **align your mental model** to these documents before you propose changes, generate probes, or interpret profiles.
+If you are a Code Agent or a Chapter Author, your first responsibility is to **align your mental model** to these documents before you propose changes, generate probes, or interpret profiles.
 
 ---
 
@@ -42,7 +34,7 @@ If you are an agent acting in or around the XNUSandbox ecosystem, your first res
   - TrustedBSD MAC policy module in XNU.
   - SBPL in userland, compiled to binary profiles.
   - Kernel-level decision graph evaluation per operation.
-- Explains what XNUSandbox is supposed to do and what it is not:
+- Explains what mac OS sandbox is supposed to do and what it is not:
   - Decode, analyse, and pretty-print policies.
   - Not enforce them, not emulate full macOS.
 
@@ -54,8 +46,8 @@ If you are an agent acting in or around the XNUSandbox ecosystem, your first res
 
 **Good tasks anchored on Orientation**
 
-- Derive the **high-level architecture** of Seatbelt+XNUSandbox.
-- Outline the **data-flow** from SBPL text → compiled graph → kernel decision → XNUSandbox decoder.
+- Derive the **high-level architecture** of Seatbelt+mac OS sandbox.
+- Outline the **data-flow** from SBPL text → compiled graph → kernel decision → mac OS sandbox decoder.
 - Decide whether a new feature belongs in parsing, graph interpretation, or pretty-printing.
 
 **Key invariant**
@@ -200,119 +192,21 @@ Agents should preserve this three-layer structure.
 
 ---
 
-## 3. Agent Roles and Contracts
+## 3. Agent Roles
 
-This section defines **typical roles** and how they should traverse the documents.
+This section suggests **typical roles** for working with the knowledge substrate. Real workflows may blend roles, but you should adopt one primary stance per task.
 
-### 3.1 Human Investigator
+### 3.1 Chapter Author
 
-**Role**
+- Uses this substrate as the primary source of truth when drafting or revising explanatory text (especially in `book/`).
+- Focuses on coherence, traceability, and explicit scope: what is established, what is tentative, and what is out of scope.
+- Flags gaps, tensions, or contradictions as issues or marginalia instead of silently “fixing” the underlying model.
 
-- Understand Seatbelt and XNUSandbox deeply.
-- Design experiments, read code, and make decisions about architecture.
+### 3.2 Code Agent
 
-**Traversal pattern (suggested)**
-
-1. Read `Orientation.md` straight through.
-2. Skim `Concepts.md` once; then keep it open as a glossary.
-3. Use `Appendix.md` as a reference when:
-   - Reading or writing binary decoding code.
-   - Reading SBPL text or designing example profiles.
-4. When subtle questions arise:
-   - Check `ERRATA.md` for known divergences.
-   - Consult `Canon.md` to pick external sources for deeper study (if allowed).
-
-**Contract**
-
-- Do not silently overwrite the conceptual model with “Random blog post X”.
-- When you discover new behaviour, record it as **proposed errata** and/or annotate the canon usage, not as a quiet change in what words mean.
-
----
-
-### 3.2 Code Agent — Decoder / Parser
-
-**Role**
-
-- Implement and maintain code that:
-  - Parses binary profiles into structured graphs.
-  - Maps node-level structures to operations/filters/decisions.
-  - Pretty-prints or exports them.
-
-**Primary documents**
-
-- `Appendix.md` (formats, graphs, vocab).
-- `Concepts.md` (schema and naming).
-- `Orientation.md` (overall architecture and scope).
-
-**Key behaviours**
-
-- Keep **parsing**, **graph interpretation**, and **pretty-printing** clearly separated in the codebase, mirroring the conceptual layers in Appendix/Concepts.
-- Use canonical names from `Concepts.md` for types and functions where possible.
-- Use the operations/filters mapping defined in the Appendix to name things; do not invent new semantics for existing IDs.
-
-**When stuck**
-
-- If a layout detail is unclear → re-read the relevant “Binary Profile Formats and Policy Graphs” section in `Appendix.md`.
-- If semantics of an operation/filter are unclear:
-  - First, check the operations/filters reference in `Appendix.md`.
-  - Only then, if explicitly allowed, look up the relevant canon source (e.g., Apple Sandbox Guide) via `Canon.md`.
-
----
-
-### 3.3 Code Agent — Capability Catalog / Probe Generator
-
-**Role**
-
-- Maintain a structured capability catalog.
-- Generate probes that test specific operations/filters/stacking behaviour.
-
-**Primary documents**
-
-- `Concepts.md` (for capability categories and schema alignment).
-- `Appendix.md` (for SBPL/DSL shapes and operation/filter semantics).
-- `Canon.md` (for identifying interesting operations and drift areas).
-- `ERRATA.md` (for known discrepancies on modern OS versions).
-
-**Key behaviours**
-
-- Align catalog entries and probe names to the **operations and filters** in Appendix/Concepts.
-- Use DSL patterns from `Appendix.md` (e.g., `require-any`, `subpath`, `container-subpath`, `with report`) as templates for probes.
-- Use `Canon.md` to pick high-value areas for probing (e.g., from `WORMSLOOK2024`, `HACKTRICKSSANDBOX`), but only when external consultation is permitted.
-
-**When subtle behaviour appears**
-
-- Record interpretations as:
-  - Updates to the capability catalog, referencing the relevant concept/operation/filter.
-  - Candidate entries for `ERRATA.md` if they reflect OS-specific divergences.
-
----
-
-### 3.4 Chat Agent — Local Exegesis (5.1 Thinking-style)
-
-**Role**
-
-- Read and interpret the local documents.
-- Answer questions about Seatbelt and XNUSandbox **using only this substrate**, unless explicitly granted access to external canon.
-
-**Primary documents**
-
-- `Orientation.md` for overall story.
-- `Concepts.md` for terminology.
-- `Appendix.md` for concrete details and examples.
-- `ERRATA.md` and `Canon.md` only when the user explicitly asks about drift or external sources.
-
-**Epistemic stance (default)**
-
-- Treat these documents as the **only ground truth**.
-- If something is not in them, say so explicitly.
-- When asked to speculate or “use intuition”, clearly mark any inference and keep it local.
-
-**When external knowledge is allowed**
-
-- Use `Canon.md` as the **only entry point**:
-  - Choose appropriate external sources.
-  - Make it clear which canon source supports which statement.
-- Do not blend external knowledge back into these documents silently; treat external facts as layered on top of the local model.
+- Treats this substrate as the specification for experiments, probes, and tooling that touch the sandbox.
+- Uses the shared vocabulary and model here when naming operations, filters, behaviours, and test cases.
+- Proposes changes only after reconciling discrepancies between observed behaviour and the documented model, feeding back minimal notes when new edge cases are discovered.
 
 ---
 
