@@ -23,7 +23,8 @@
       "system_read_only": true
     },
     "ipc": {
-      "mach_lookups_count": 14
+      "mach_lookups_count": 14,
+      "mach_services_approx": 156
     },
     "network": {
       "has_generic_network_rules": true

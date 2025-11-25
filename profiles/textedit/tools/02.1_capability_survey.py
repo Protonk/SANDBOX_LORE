@@ -68,6 +68,10 @@ def summarize_specialized_sbpl(sb_text: str) -> dict:
     simple pattern matching.
     """
     mach_lookups = re.findall(r"\bmach-lookup\b", sb_text)
+    mach_service_names = re.findall(r"\bglobal-name\b", sb_text)
+    mach_service_regexes = re.findall(r"\bglobal-name-regex\b", sb_text)
+    mach_local_names = re.findall(r"\blocal-name\b", sb_text)
+    mach_local_prefixes = re.findall(r"\blocal-name-prefix\b", sb_text)
     return {
         "filesystem": {
             "container_read_write": "appsandbox-container" in sb_text
@@ -81,6 +85,10 @@ def summarize_specialized_sbpl(sb_text: str) -> dict:
         },
         "ipc": {
             "mach_lookups_count": len(mach_lookups),
+            "mach_services_approx": len(mach_service_names)
+            + len(mach_service_regexes)
+            + len(mach_local_names)
+            + len(mach_local_prefixes),
         },
     }
 
