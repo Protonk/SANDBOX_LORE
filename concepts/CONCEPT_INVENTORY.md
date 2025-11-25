@@ -32,7 +32,6 @@ Think of this as the bridge between the *abstract model* (Orientation/Appendix) 
 
 - `Orientation.md` – narrative overview of the Seatbelt model (what the sandbox “is” and “does”).
 - `Appendix.md` – reference material (DSL cheatsheet, binary formats, operations/filters, policy stacking).
-- `ModernizationReport.md` – what was done to the legacy XNUSandbox examples on macOS 14.x.
 - `CONCEPT_INVENTORY.md` (this file) – index of the **conceptual pieces** that all of the above rely on and that future code should explicitly implement or reference.
 
 ---

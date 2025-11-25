@@ -94,6 +94,27 @@ def build_join(entitlements: dict, profile_summary: dict, container_info: dict) 
     }
 
 
+def format_human_shape(joined: dict) -> str:
+    """Format a concise sandbox shape for CLI output."""
+    container = joined.get("container_root")
+    profile_flags = joined.get("profile", {})
+    flags = [
+        f"container_macros={profile_flags.get('has_appsandbox_container_macros')}",
+        f"dyld_rules={profile_flags.get('has_dyld_path_rules')}",
+        f"bundle_params={profile_flags.get('has_bundle_param_rules')}",
+    ]
+    ent = joined.get("entitlements", {})
+    caps = [
+        f"printing={ent.get('printing')}",
+        f"user_selected_rw={ent.get('user_selected_files', {}).get('read_write')}",
+        f"ubiquity={bool(ent.get('ubiquity_containers'))}",
+    ]
+    return (
+        f"{joined.get('bundle_id')} -> container={container} | "
+        f"flags[{', '.join(flags)}] | caps[{', '.join(caps)}]"
+    )
+
+
 def main() -> None:
     entitlements_path = BASE_DIR / "textedit-entitlements.plist"
     sbpl_path = BASE_DIR / "textedit-specialized.sb"
@@ -119,6 +140,7 @@ def main() -> None:
         "profile_flags": joined["profile"],
     }
     print(json.dumps(human_summary, indent=2))
+    print("\nShape:", format_human_shape(joined))
     print(f"\nWrote profile/container join to {output_path}")
 
 

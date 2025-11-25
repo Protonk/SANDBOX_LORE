@@ -1,0 +1,7 @@
+# Synthetic fs_usage-style trace for opening a document from ~/Documents
+14:32:10.123  TextEdit  open    /Users/demo/Documents/example.txt
+14:32:10.125  TextEdit  getattr /Users/demo/Documents/example.txt
+14:32:10.200  TextEdit  read    /Users/demo/Documents/example.txt
+14:32:10.450  TextEdit  stat64  /Users/demo/Documents/.Trash
+14:32:10.600  TextEdit  open    /Users/demo/Library/Containers/com.apple.TextEdit/Data/Library/Autosave Information/Unsaved Document 1.rtf
+14:32:10.900  TextEdit  write   /Users/demo/Library/Containers/com.apple.TextEdit/Data/Library/Autosave Information/Unsaved Document 1.rtf
