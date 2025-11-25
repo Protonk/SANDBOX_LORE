@@ -1,8 +1,6 @@
 # ERRATA 
 
-Places where hands-on work on macOS 14.x diverged from, or added nuance to, the Orientation.md / Appendix.md framing.
-
-## Errata noted during modernization.
+Places where hands-on work on macOS 14.x diverged from, or added nuance to, the Orientation.md / Appendix.md framing. 
 
 ### Sandbox apply vs compile
 - Observation: `sandbox_apply` exists in `libsandbox.dylib` but returns `EPERM` on stock macOS 14.4 without special entitlements (libsandcall HISTORY 2025-11-23: modern-call-demo).
@@ -26,3 +24,7 @@ Places where hands-on work on macOS 14.x diverged from, or added nuance to, the 
 
 ### Storage locations
 - Orientation covers kernelcache/bundle storage evolution; on macOS 14.x profiles live under `/System/Library/Sandbox/Profiles` and can be compiled directly. The kernelcache offset scraping path is obsolete (extract_sbs modern replacement).
+
+### Sandbox-exec
+
+The `sandbox-exec` tool is no longer functional on macOS 14 and later; attempts to use it return an “Operation not permitted” error.

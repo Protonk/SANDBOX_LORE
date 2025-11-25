@@ -1,7 +1,5 @@
 # Concepts
 
-We use “sandbox profile” and “sandbox policy” interchangeably: a profile refers to the static rules, and it becomes a policy when applied to a process.
-
 - **SBPL Profile**  
   An SBPL profile is the high-level sandbox policy written in Apple’s Scheme-like Sandbox DSL: it declares a version, a default decision (usually `(deny default)`), and a list of `(allow …)`/`(deny …)` rules that name operations and constrain them with filters. This is the “source code” for a Seatbelt policy that `libsandbox` parses and compiles into a binary form; it’s where concepts like `file-read*`, `mach-lookup`, `subpath`, and `require-any` appear explicitly and in a way humans can read and edit.
 

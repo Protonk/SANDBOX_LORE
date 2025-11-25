@@ -11,8 +11,6 @@ You can assume the following reference sections exist and are available:
 
 Use this orientation as your conceptual scaffold and the appendix for precise vocabulary and layouts.
 
-The `sandbox-exec` tool is no longer functional on macOS 14 and later; attempts to use it return an “Operation not permitted” error.
-
 ---
 
 ## 1. Purpose and Scope
@@ -76,7 +74,7 @@ At enforcement time there is no Scheme interpreter. The kernel walks a **pre-com
 
 ## 3. Policy Lifecycle: From SBPL to Kernel Decisions
 
-Seatbelt policy goes through four conceptual stages. XNUSandbox mostly touches Stage 3 but is easier to understand if you keep all four in mind.
+Seatbelt policy goes through four conceptual stages. XNUSandbox mostly touches Stage 3 but is easier to understand if you keep all four in mind. We use “sandbox profile” and “sandbox policy” interchangeably: a profile refers to the static rules, and it becomes a policy when applied to a process.
 
 ### 3.1 Stage 1: SBPL (Sandbox Profile Language)
 
