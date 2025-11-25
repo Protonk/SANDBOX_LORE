@@ -1,0 +1,23 @@
+{
+  "bundle_id": "com.apple.TextEdit",
+  "container_root": "~/Library/Containers/com.apple.TextEdit/Data",
+  "container_subdirs": [],
+  "entitlements": {
+    "app_sandbox": true,
+    "printing": true,
+    "ubiquity_containers": [
+      "com.apple.TextEdit"
+    ],
+    "user_selected_files": {
+      "executable": true,
+      "read_write": true
+    }
+  },
+  "has_app_sandbox": true,
+  "profile": {
+    "has_application_container_rules": true,
+    "has_appsandbox_container_macros": true,
+    "has_bundle_param_rules": true,
+    "has_dyld_path_rules": true
+  }
+}

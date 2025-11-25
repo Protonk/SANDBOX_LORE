@@ -1,0 +1,49 @@
+{
+  "common_patterns": {
+    "filesystem_patterns": {
+      "has_container_macros": true,
+      "has_home_library_allows": true,
+      "has_system_read_only": true
+    },
+    "ipc_patterns": {
+      "mach_lookups_total": 14,
+      "mach_services_examples": [
+        "PurplePPTServer",
+        "PurpleSystemEventPort",
+        "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
+        "com.apple.BluetoothServices",
+        "com.apple.CARenderServer",
+        "com.apple.CFPasteboardClient",
+        "com.apple.CoreDisplay.master",
+        "com.apple.CoreServices.coreservicesd",
+        "com.apple.DataDetectorsSourceAccess",
+        "com.apple.DiscRecording:registrar"
+      ]
+    },
+    "network_patterns": {
+      "has_network_star": true,
+      "has_specific_denies": true
+    },
+    "tcc_policy_hints": {
+      "mentions_ocspd": true,
+      "mentions_tccd": true
+    }
+  },
+  "surprises": {
+    "appstore_rules": [
+      "  (subpath \"/Library/Application Support/AppStoreContent\")",
+      "  (subpath \"/Library/Application Support/AppStore\")",
+      "        \"/Library/Application Support/AppStore/Content/\"",
+      "      \"/Library/Application Support/AppStoreContent/\""
+    ],
+    "carve_out_denies": [],
+    "keychain_rules": [
+      "  (home-prefix \"/Library/Keychains/\"))",
+      "  (home-subpath \"/Library/Keychains/${ANY_UUID}\"))"
+    ],
+    "mds_rules": [
+      "  (subpath \"/private/var/db/mds\"))",
+      "    (subpath \"/private/var/db/mds\")))"
+    ]
+  }
+}

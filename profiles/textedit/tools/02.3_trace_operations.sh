@@ -1,71 +1,68 @@
 #!/bin/zsh
 # Scaffold for Section 2.3 ("Tracing real operations through the sandbox").
-# Safe to run: defaults to a dry-run that only prints intended tracing steps.
+# Safe to run: defaults to dry-run and only echoes intended tracing commands.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 BASE_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 TRACES_DIR="${BASE_DIR}/traces"
-
 mkdir -p "${TRACES_DIR}"
 
 usage() {
   cat <<'USAGE'
-Usage: 02.3_trace_operations.sh [--run]
+Usage: 02.3_trace_operations.sh [--dry-run|--run|--help]
 
-- Default mode: dry-run; prints the intended tracing commands and scenarios.
-- --run: execute the tracing commands (may require elevated privileges and a GUI).
+Default (no args or --dry-run):
+  Print intended tracing commands without executing them.
 
-Planned mapping (user action -> expected trace hints):
-- Open a file in ~/Documents: watch for file opens in user space and mach-lookup to tccd.
-- Auto-save a document: look for writes under the container Data/Documents plus temp files.
-- Print a document: expect I/O with printing services and potential sandbox extensions.
+--run:
+  Execute a safe placeholder capture (echo to a trace file) so humans can
+  swap in real fs_usage/opensnoop commands on macOS.
 
-Traces would be stored under profiles/textedit/traces/.
+Actions -> interesting traces:
+- Open file in ~/Documents: file opens in user paths; mach-lookup to tccd expected.
+- Auto-save to container: writes under container Data/Documents; temp files.
+- Print document: printing service interactions; possible sandbox extensions.
+
+Outputs live under profiles/textedit/traces/.
 USAGE
 }
 
-if [[ "${1:-}" == "--help" ]]; then
-  usage
-  exit 0
-fi
+mode="dry-run"
+case "${1:-}" in
+  ""|--dry-run) mode="dry-run" ;;
+  --run) mode="run" ;;
+  --help) usage; exit 0 ;;
+  *) echo "Unknown option: ${1}"; usage; exit 1 ;;
+esac
 
-run_mode="dry-run"
-if [[ "${1:-}" == "--run" ]]; then
-  run_mode="run"
-fi
-
-echo "Mode: ${run_mode}"
+echo "Mode: ${mode}"
 echo "Traces directory: ${TRACES_DIR}"
 
-# Planned commands (commented out until tracing is desired):
-# fs_usage example:
-#   sudo fs_usage -w -f filesys -t 5 | tee "${TRACES_DIR}/fs_usage_open.txt"
-# opensnoop example:
-#   sudo opensnoop -p <TextEditPID> | tee "${TRACES_DIR}/opensnoop_open.txt"
-# Future sandbox-specific tracer TODO:
-#   sudo /path/to/sandbox_tracer --pid <TextEditPID> --output "${TRACES_DIR}/sandbox_trace.json"
-#
-# Start TextEdit (or placeholder process) for correlation:
-#   open -a /System/Applications/TextEdit.app
+planned_commands() {
+  cat <<'CMDS'
+# Example fs_usage capture (macOS only; requires sudo):
+#   sudo fs_usage -w -f filesys -t 5 | tee "profiles/textedit/traces/fs_usage_sample.txt"
+# Example opensnoop capture for TextEdit PID:
+#   sudo opensnoop -p <TextEditPID> | tee "profiles/textedit/traces/opensnoop_sample.txt"
+# Future sandbox-aware tracer placeholder:
+#   sudo /path/to/sandbox_tracer --pid <TextEditPID> --output profiles/textedit/traces/sandbox_trace.json
 
-if [[ "${run_mode}" == "dry-run" ]]; then
-  echo "Dry-run only. Uncomment commands above or pass --run to attempt tracing."
+# Start TextEdit for correlation (manual on macOS):
+#   open -a /System/Applications/TextEdit.app
+CMDS
+}
+
+planned_commands
+
+if [[ "${mode}" == "dry-run" ]]; then
+  echo "Dry-run complete. Replace placeholders above when running on macOS."
   exit 0
 fi
 
-echo "Running simple placeholder checks..."
-if command -v fs_usage >/dev/null 2>&1; then
-  echo "fs_usage found; would run short capture into ${TRACES_DIR} (not implemented here)."
-else
-  echo "fs_usage not found in PATH."
-fi
-
-if command -v opensnoop >/dev/null 2>&1; then
-  echo "opensnoop found; would attach to TextEdit PID (not implemented here)."
-else
-  echo "opensnoop not found in PATH."
-fi
-
-echo "TODO: implement actual tracing commands and mapping to SBPL rules."
+echo "Running placeholder capture (no real tracing)..."
+placeholder_path="${TRACES_DIR}/run_placeholder.txt"
+echo "Placeholder run at $(date)" > "${placeholder_path}"
+echo "Replace this with fs_usage/opensnoop captures on macOS." >> "${placeholder_path}"
+echo "Wrote placeholder trace file to ${placeholder_path}"

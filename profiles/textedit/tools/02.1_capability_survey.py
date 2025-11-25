@@ -1,76 +1,116 @@
 """
 Support tool for Section 2.1 ("What TextEdit is allowed to do").
 
-This is a scaffold, not a full analyzer. It wires up entitlement/profile loading
-so later work can classify TextEdit's visible capabilities.
+Minimal analyzer that loads entitlements and specialized SBPL, then emits a
+machine-readable capability summary.
 """
 from __future__ import annotations
 
 import json
 import plistlib
+import re
 from pathlib import Path
 from typing import Any, Dict
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = BASE_DIR / "output"
 
-def load_inputs() -> tuple[Dict[str, Any], str]:
-    """
-    Load the entitlements plist and specialized SBPL text for TextEdit.
 
-    Returns:
-        entitlements: Parsed plist as a dictionary.
-        sbpl_text: Raw SBPL string from textedit-specialized.sb.
-    """
-    base_dir = Path(__file__).resolve().parent.parent
-    entitlements_path = base_dir / "textedit-entitlements.plist"
-    sbpl_path = base_dir / "textedit-specialized.sb"
-
-    with entitlements_path.open("rb") as fh:
-        entitlements = plistlib.load(fh)
-
-    sbpl_text = sbpl_path.read_text(encoding="utf-8")
-    return entitlements, sbpl_text
+def load_entitlements(path: Path) -> Dict[str, Any]:
+    """Load TextEdit's entitlements plist into a plain dict."""
+    with path.open("rb") as fh:
+        return plistlib.load(fh)
 
 
 def summarize_entitlements(entitlements: dict) -> dict:
     """
-    Given the entitlements dict for TextEdit, return a coarse summary of
-    visible capabilities (e.g., printing, user-selected file access,
-    ubiquity/iCloud presence) to support Section 2.1 ("What TextEdit is
-    allowed to do").
-    TODO: Implement actual grouping and human-readable labels.
+    Group key entitlements into human- and machine-readable capability buckets
+    for Section 2.1.
     """
+    ubiquity_containers = entitlements.get(
+        "com.apple.developer.ubiquity-container-identifiers", []
+    )
+    recognized_keys = {
+        "com.apple.security.app-sandbox",
+        "com.apple.security.print",
+        "com.apple.security.files.user-selected.read-write",
+        "com.apple.security.files.user-selected.executable",
+        "com.apple.developer.ubiquity-container-identifiers",
+        "com.apple.application-identifier",
+    }
+
+    private_entitlements = [
+        key for key in entitlements.keys() if key not in recognized_keys
+    ]
+
     return {
-        "status": "TODO",
-        "notes": "Group entitlements into capability buckets (printing, files, iCloud).",
-        "entitlement_keys_seen": sorted(entitlements.keys()),
+        "sandbox_enabled": bool(entitlements.get("com.apple.security.app-sandbox")),
+        "printing": bool(entitlements.get("com.apple.security.print")),
+        "user_selected_files": {
+            "read_write": bool(
+                entitlements.get("com.apple.security.files.user-selected.read-write")
+            ),
+            "executable": bool(
+                entitlements.get("com.apple.security.files.user-selected.executable")
+            ),
+        },
+        "ubiquity": {
+            "enabled": bool(ubiquity_containers),
+            "containers": ubiquity_containers,
+        },
+        "private_entitlements": sorted(private_entitlements),
     }
 
 
 def summarize_specialized_sbpl(sb_text: str) -> dict:
     """
-    Inspect textedit-specialized.sb and derive a coarse summary of
-    allowed/denied areas (filesystem, network, IPC) to cross-check
-    expectations from entitlements for Section 2.1.
-    TODO: Implement simple pattern matching over SBPL.
+    Inspect textedit-specialized.sb to infer coarse-grained capabilities using
+    simple pattern matching.
     """
+    mach_lookups = re.findall(r"\bmach-lookup\b", sb_text)
     return {
-        "status": "TODO",
-        "notes": "Scan SBPL for allow/deny patterns (filesystem, network, mach-lookup).",
-        "character_count": len(sb_text),
-        "lines": sb_text.count("\n") + 1,
+        "filesystem": {
+            "container_read_write": "appsandbox-container" in sb_text
+            or "application_container" in sb_text,
+            "system_read_only": "/System" in sb_text or "/usr/bin" in sb_text,
+            "downloads_rules_present": "Downloads" in sb_text,
+        },
+        "network": {
+            "has_generic_network_rules": "network" in sb_text
+            or "network-outbound" in sb_text,
+        },
+        "ipc": {
+            "mach_lookups_count": len(mach_lookups),
+        },
     }
+
+
+def build_capability_summary(ent_summary: dict, sb_summary: dict) -> dict:
+    """
+    Merge entitlement- and SBPL-derived summaries into a single structure.
+    """
+    return {"entitlements": ent_summary, "sbpl": sb_summary}
 
 
 def main() -> None:
-    entitlements, sbpl_text = load_inputs()
-    entitlement_summary = summarize_entitlements(entitlements)
-    sbpl_summary = summarize_specialized_sbpl(sbpl_text)
+    entitlements_path = BASE_DIR / "textedit-entitlements.plist"
+    sbpl_path = BASE_DIR / "textedit-specialized.sb"
 
-    placeholder_output = {
-        "entitlements": entitlement_summary,
-        "sbpl": sbpl_summary,
-    }
-    print(json.dumps(placeholder_output, indent=2))
+    entitlements = load_entitlements(entitlements_path)
+    sbpl_text = sbpl_path.read_text(encoding="utf-8")
+
+    ent_summary = summarize_entitlements(entitlements)
+    sb_summary = summarize_specialized_sbpl(sbpl_text)
+
+    capability_summary = build_capability_summary(ent_summary, sb_summary)
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = OUTPUT_DIR / "02.1_capability_summary.json"
+    with output_path.open("w", encoding="utf-8") as fh:
+        json.dump(capability_summary, fh, indent=2, sort_keys=True)
+
+    print(json.dumps(capability_summary, indent=2))
+    print(f"\nWrote capability summary to {output_path}")
 
 
 if __name__ == "__main__":

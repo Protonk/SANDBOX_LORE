@@ -29,8 +29,8 @@ Hypotheses are labeled H1, H2, … and framed for modern macOS; iOS-specific one
    OS-version constraints: Described as “how it’s done on macOS”; no explicit version.
 
 6. H6 – com.apple.private.security.no-sandbox gate on iOS (iOS-only)
-   Hypothesis: If an iOS process’s binary carries com.apple.private.security.no-sandbox = false (or lacks an internal permission to bypass it), then libsystem_secinit will treat it as requiring sandboxing and will not allow the process to run without a sandbox; only certain Apple-signed binaries with special entitlements can effectively run unsandboxed.
-   OS-version constraints: Marked as iOS behaviour; macOS instead uses SBPL profiles.
+   Hypothesis: If an iOS process’s binary carries com.apple.private.security.no-sandbox = false (or lacks an internal permission to bypass it), then libsystem_secinit will treat it as requiring sandboxing and will not allow the process to run without a sandbox; com.apple.private.security.no-sandbox is honored only for Apple-signed system binaries, so third-party iOS apps cannot use it to escape the sandbox—the practical pattern is that third-party iOS apps are always sandboxed and this entitlement is an Apple-only escape hatch for select system processes.
+   OS-version constraints: Marked as iOS behaviour; macOS instead uses SBPL profiles. Treat the Apple-only applicability as part of the model unless probes show drift.
 
 7. H7 – seatbelt-profiles entitlement selects profile (iOS-only)
    Hypothesis: If an iOS app’s entitlements include a seatbelt-profiles entitlements key, then at exec time Sandbox will use that value (together with container metadata such as SandboxProfileData and SandboxProfileDataValidationInfo) to select and compile the sandbox profile applied to that process.
@@ -77,8 +77,8 @@ Hypotheses are labeled H1, H2, … and framed for modern macOS; iOS-specific one
     OS-version constraints: The paper gives approximate counts for “current” systems; exact numbers may vary by version.
 
 18. H18 – sandbox extensions grant specific additional capabilities
-    Hypothesis: If a process that already has access to a resource (e.g., a file) issues a sandbox extension of the appropriate type and class for that resource, passes the resulting token string to a sandboxed process that lacks direct access, and that process then consumes the token, then subsequent attempts by the consumer to access that specific resource will be allowed where they were previously denied.
-    OS-version constraints: Described as current extension mechanism; no explicit version. The paper does not state detailed lifetime or revocation rules.
+    Hypothesis: If a process that already has access to a resource (e.g., a file) issues a sandbox extension of the appropriate type and class for that resource, passes the resulting token string to a sandboxed process that lacks direct access, and that consumer explicitly consumes the token via the extension API, then subsequent attempts by that same consumer to access that specific resource will be allowed where they were previously denied; extensions do not create transferable capabilities beyond what the issuer could already reach.
+    OS-version constraints: Described as current extension mechanism; no explicit version. The paper notes tokens embed a boot-time secret and are not reusable across reboot, though finer-grained lifetime or revocation details remain under-specified.
 
 19. H19 – Userland Sandbox APIs reflect kernel allow/deny
     Hypothesis: If a sandboxed macOS process calls userland APIs such as sandbox_check to test an operation that would be denied by its active sandbox profile, then sandbox_check will report denial consistent with what the kernel would enforce for the corresponding operation.
@@ -108,6 +108,8 @@ Key observables:
 Family F2 – secinit / launch-time sandboxing behaviour (macOS vs iOS conceptual)
 
 Description: Probes that test whether entitlement configuration at process start governs whether a process is sandboxed at all and how.
+
+Reminder: entitlements are inputs to sandbox policy rather than permissions by themselves; these probes observe how platform and app profiles respond to different entitlement sets rather than treating entitlements as direct allow/deny switches.
 
 Member hypotheses: H4, H5, H6 (iOS-only), H7 (iOS-only), H15.
 
@@ -198,6 +200,8 @@ Key observables:
 Family F7 – Sandbox extensions and delegated access
 
 Description: Probes that exercise sandbox extension issuance and consumption to observe delegated capabilities.
+
+Key behaviours to validate include that the issuer must already have access and the consumer must explicitly consume the token, and whether tokens remain valid across reboot or process changes consistent with the boot-secret/non-reuse model.
 
 Member hypotheses: H18 (and related constraints implied by H11/H12/H13/H14 where extended).
 
@@ -351,7 +355,7 @@ Below are mechanism areas/themes and how to treat WORMSLOOK2024’s claims when 
 
    * Paper’s claim: Sandbox is a MACF policy module; its hooks call cred_sb_evaluate, which calls an internal evaluator; only some MACF operations are covered. Userland APIs query the same decisions.
    * Stability: Core design is likely stable; exact hook coverage drifts with OS versions.
-   * Catalog treatment: Assume Sandbox decisions are mediated through MACF for a defined set of operation types; mark the coverage list as “empirically mapped per version”. For capability catalog entries, link each capability to both its conceptual operation and the MACF hook(s) observed in probes, not to the paper’s static counts.
+   * Catalog treatment: Assume Sandbox decisions are mediated through MACF for a defined set of operation types; mark the coverage list as “empirically mapped per version”. For capability catalog entries, link each capability to both its conceptual operation and the MACF hook(s) observed in probes, not to the paper’s static counts. Treat observed decisions as the product of both platform-wide profiles and app-specific profiles, where any deny from those layers or other MAC policies blocks the operation.
 
 7. Sandbox extensions and delegated access (H18)
 

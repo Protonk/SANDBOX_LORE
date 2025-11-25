@@ -1,0 +1,32 @@
+{
+  "entitlements": {
+    "printing": true,
+    "private_entitlements": [
+      "com.apple.private.hid.client.event-dispatch.internal"
+    ],
+    "sandbox_enabled": true,
+    "ubiquity": {
+      "containers": [
+        "com.apple.TextEdit"
+      ],
+      "enabled": true
+    },
+    "user_selected_files": {
+      "executable": true,
+      "read_write": true
+    }
+  },
+  "sbpl": {
+    "filesystem": {
+      "container_read_write": true,
+      "downloads_rules_present": false,
+      "system_read_only": true
+    },
+    "ipc": {
+      "mach_lookups_count": 14
+    },
+    "network": {
+      "has_generic_network_rules": true
+    }
+  }
+}
