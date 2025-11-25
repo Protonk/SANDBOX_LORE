@@ -30,6 +30,17 @@ Key observations:
   * Optional action modifiers (e.g., `(with report)`).
   * Zero or more filters (predicates) that must match for the rule to apply.
 
+### Parameterization and templating
+
+System profiles often template paths or names using parameters that must be supplied at compile time:
+
+```scheme
+(allow file-read*
+  (subpath (string-append "/System/Library/" (param "bundle"))))
+```
+
+`(param "bundle")` is a placeholder; the compiler substitutes concrete values only when the caller provides them (e.g., via `sandbox_compile`). Apple’s shipped profiles lean on this pattern—often with `string-append`—to avoid hardcoding paths while still producing concrete literals in the compiled blob.
+
 ---
 
 ## 2. Top-Level Structure
@@ -358,6 +369,8 @@ On iOS (and conceptually similarly on macOS), profiles are stored as binary blob
     * Shared operation-node, regex, and literal tables.
     * Per-profile indices into these shared structures.
 
+On macOS 14 and later, sandbox profiles are stored as `.sb` files in `/System/Library/Sandbox/Profiles/`, removing the need to extract them from the kernelcache.
+
 For reversing, this matters mainly for extraction. Once you have the raw blob for a given profile (or the bundle), the internal layout is a graph plus a handful of tables.
 
 ---
@@ -371,6 +384,8 @@ Blazakis documented an early compiled profile format used by SandBox.kext. The c
   * `re_table_offset`: offset to regex-table (in 8-byte words).
   * `re_table_count`: number of compiled regexes.
   * `op_table`: an array of 16-bit offsets pointing to operation handlers.
+
+  On macOS 14, compiled profiles may have `re_table_offset = 0`, indicating a new format variant. Decoders should not assume this offset is always nonzero.
 
 * A sequence of handler records (nodes) forming per-operation decision trees:
 
@@ -413,7 +428,7 @@ For iOS 7–8 (separated profiles), the layout is roughly:
 
   * Magic / version identifier.
   * Counts and offsets for sections.
-* **Operation Node Pointers**
+* **Operation Node Pointers (also known as Operation Pointer Table)**
 
   * Array indexed by operation ID.
   * Each entry is an offset into Operation Node Actions.

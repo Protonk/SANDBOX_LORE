@@ -11,6 +11,8 @@ You can assume the following reference sections exist and are available:
 
 Use this orientation as your conceptual scaffold and the appendix for precise vocabulary and layouts.
 
+The `sandbox-exec` tool is no longer functional on macOS 14 and later; attempts to use it return an “Operation not permitted” error.
+
 ---
 
 ## 1. Purpose and Scope
@@ -111,7 +113,7 @@ This is described in detail in “Binary Profile Formats and Policy Graphs”. X
 
 When a process is sandboxed:
 
-* User space passes the compiled profile to the kernel via sandbox-specific MAC syscalls.
+* User space passes the compiled profile to the kernel via sandbox-specific MAC syscalls (e.g., `sandbox_apply` when layering profiles). On macOS 14 and later, unprivileged use of `sandbox_apply` is blocked by System Integrity Protection (SIP) and will return EPERM unless the process has special entitlements.
 * `Sandbox.kext` stores the policy blob and associated metadata in a sandbox label on the process’s credentials.
 * For per-process policies, child processes inherit or derive a policy; for the platform policy, the label is effectively global.
 
