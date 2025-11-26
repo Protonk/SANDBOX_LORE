@@ -1,36 +1,19 @@
 # AGENTS
 
-This file tells you how to use `substrate/`. It exists to route you to the right substrate text for a given question, not to tell you how to write the textbook or how to build tools.
-
-`substrate/` is the stable textual base for a synthetic textbook on the macOS “Seatbelt” sandbox, circa 2025. Treat it as:
-
+`substrate/` is the stable textual base for a synthetic textbook on the macOS “Seatbelt” sandbox, circa 2025. It is
 * The place where we say what we believe is true about Seatbelt and its surrounding ecosystem.
 * The reference layer that other tools, deep-research reports, and probes are allowed to disagree with, but never silently override.
 
-Treat the contents of `substrate/` as frozen. You consult it; you do not update it or extend it.
+## 1. What this directory is not
 
----
-
-## 1. What this directory is (and is not)
-
-* It is a snapshot of the project’s understanding of the macOS sandbox around 2025:
-
-  * Concepts and how they hang together.
-  * The structural environment assumed by most examples and probes.
-  * A specific view of the ecosystem (“who is sandboxed, how, and why”).
-  * A small amount of detailed supporting material and a curated canon.
-
-* It is not:
-
-  * A public appendix for the eventual textbook reader.
-  * A place you cite from or link into in user-facing text by default.
-  * A living glossary or wiki.
-
-You work elsewhere in the repo. This directory is the internal reference you read first when you need to know “what did we previously decide about X?”
+The substrate is meant to support, not decorate the work of the output. Write your chapter, design your experiment, or sketch your example such that if `substrate/` were not packaged with the textbook there would be no information loss. It is not:
+* A public appendix for the eventual textbook reader. All important detail you glean from the substrate must eventually pass to the textbook. Do not cite from or link to the substrate in any place in `book/`.
+* A living document. Content marked "`>SUBSTRATE_2025-frozen`" is frozen. You should not update it unless explicitly directed to work in the `substrate/` directory.
 
 ---
 
 ## 2. Router: which file to consult for which question
+>N.B. The `substrate/spine/` directory contains pre-digested “spine” views derived from these frozen texts. Those files exist primarily to feed chat-model prompts with compact context; treat them as convenience bundles rather than separate sources of claims.
 
 Use this section as your primary decision tree.
 
@@ -42,7 +25,7 @@ Go here when your question is:
 * “How do profiles, entitlements, containers, and the surrounding mechanisms fit together conceptually?”
 * “What kinds of misconceptions are we trying to manage or avoid at the story level?”
 
-Use it to set your own mental model before you draft chapters, examples, or research prompts.
+Use it to set your own mental model of the sandbox.
 
 ---
 
@@ -114,24 +97,17 @@ Use it to choose what to read next or to understand why the substrate leans the 
 
 ---
 
-## 3. How to “use” the substrate without extending it
+### Per-source exegesis and evidence → `sources/`
 
-Given the freeze and the fact that this layer is not meant to be surfaced directly to readers:
+Go here when your question is:
 
-* Use the substrate to calibrate yourself, not to decorate your output.
+* “How does the substrate interpret this particular canonical source (BLAZAKIS2011, APPLESANDBOXGUIDE, STATEOFSANDBOX2019, etc.)?”
+* “What concrete landmarks, symbols, or behaviours does a given paper or guide provide?”
+* “Which parts of a source are treated as architectural ground truth vs speculative or time-limited observations?”
 
-  * Read what it says about a concept or mechanism.
-  * Internalize the stance and evidence.
-  * Then write your chapter, design your experiment, or sketch your example in a way that is self-contained.
+Use it to:
 
-* When your work diverges from the substrate:
-
-  * Acknowledge the earlier stance in your own artifact in whatever way your prompt or harness expects.
-  * Treat the substrate as the baseline you are updating from, not something you rewrite or reconcile.
-
-* When you need new structure (new concepts, new environment distinctions, new “state” snapshots):
-
-  * Define them and justify them where you are working.
-  * Do not attempt to retrofit them into `substrate/`. The substrate remains the “first edition”; you are now working on later commentary and extensions.
+* Follow how external texts are read into the substrate’s worldview and which passages support specific claims.
+* Anchor new probes or examples in the same landmarks when you want to stay aligned with the canon without rereading full papers every time.
 
 ---
