@@ -1,200 +1,137 @@
-# AGENTS.md — Seatbelt Knowledge Substrate
+# AGENTS
 
-This file is a **conceptual router and use guide** for this directory, written for three broad classes of agents, machine or not:
+This file tells you how to use `substrate/`. It exists to route you to the right substrate text for a given question, not to tell you how to write the textbook or how to build tools.
 
-- Code Agents: Primarily interested in writing code to test and expand understanding of the sandbox and validate foundations.
-- Chapter Authors: Primarily interested in presenting generated understanding to readers of all documentation but especially the work product in `book/`
-- Readers: Interested in retreival, understanding, and interrogation. 
+`substrate/` is the stable textual base for a synthetic textbook on the macOS “Seatbelt” sandbox, circa 2025. Treat it as:
 
-All but the last should treat these documents as the **foundational universe** of information for Seatbelt in this context. External sources exist, but they are mediated via `Canon.md` and consulted explicitly, not implicitly.
+* The place where we say what we believe is true about Seatbelt and its surrounding ecosystem.
+* The reference layer that other tools, deep-research reports, and probes are allowed to disagree with, but never silently override.
 
----
-
-## 1. Purpose and Scope
-
-This substrate is not a full sandbox textbook. It is a **curated interface** to Seatbelt as used in the mac OS sandbox project:
-
-- It defines a **shared vocabulary** (operations, filters, profiles, stacks).
-- It fixes a **model** of how SBPL and compiled profiles work.
-- It encodes **assumptions and caveats** that agents must not silently override.
-- It names the **external canon** that may be used later, and how.
-
-If you are a Code Agent or a Chapter Author, your first responsibility is to **align your mental model** to these documents before you propose changes, generate probes, or interpret profiles.
+Treat the contents of `substrate/` as frozen. You consult it; you do not update it or extend it.
 
 ---
 
-## 2. Document Map: What Each File Is For
+## 1. What this directory is (and is not)
 
-### 2.1 `Orientation.md` — Quick Start and Mental Model
+* It is a snapshot of the project’s understanding of the macOS sandbox around 2025:
 
-**Role**
+  * Concepts and how they hang together.
+  * The structural environment assumed by most examples and probes.
+  * A specific view of the ecosystem (“who is sandboxed, how, and why”).
+  * A small amount of detailed supporting material and a curated canon.
 
-- The “landing pad” for new agents.
-- Describes what Seatbelt is, in this repo’s model:
-  - TrustedBSD MAC policy module in XNU.
-  - SBPL in userland, compiled to binary profiles.
-  - Kernel-level decision graph evaluation per operation.
-- Explains what mac OS sandbox is supposed to do and what it is not:
-  - Decode, analyse, and pretty-print policies.
-  - Not enforce them, not emulate full macOS.
+* It is not:
 
-**Use this file when**
+  * A public appendix for the eventual textbook reader.
+  * A place you cite from or link into in user-facing text by default.
+  * A living glossary or wiki.
 
-- You need to answer: “What problem is this project solving?”
-- You are unsure how operations, filters, and decisions fit together.
-- You are about to add new code that interprets or serializes profiles.
-
-**Good tasks anchored on Orientation**
-
-- Derive the **high-level architecture** of Seatbelt+mac OS sandbox.
-- Outline the **data-flow** from SBPL text → compiled graph → kernel decision → mac OS sandbox decoder.
-- Decide whether a new feature belongs in parsing, graph interpretation, or pretty-printing.
-
-**Key invariant**
-
-> Orientation defines the **top-level model**. Detail and caveats are found in other files.
+You work elsewhere in the repo. This directory is the internal reference you read first when you need to know “what did we previously decide about X?”
 
 ---
 
-### 2.2 `Concepts.md` — Glossary and Abstract Schema
+## 2. Router: which file to consult for which question
 
-**Role**
+Use this section as your primary decision tree.
 
-- The **vocabulary and schema** for the Seatbelt world-view.
-- Defines the main concepts used across code and documents:
-  - SBPL profile, operation, filter, metafilter, decision.
-  - Policy stack, platform vs process profiles.
-  - Profile format variants (tree vs graph), literal/regex tables.
-  - Operation/filter vocabulary maps.
+### High-level framing and mental model → `Orientation.md`
 
-**Use this file when**
+Go here when your question is:
 
-- You are naming a new type, function, or module.
-- You see a term in code or output and are unsure what it means.
-- You are designing data structures for profiles, operations, or filters.
+* “What is the overall story we’re telling about Seatbelt?”
+* “How do profiles, entitlements, containers, and the surrounding mechanisms fit together conceptually?”
+* “What kinds of misconceptions are we trying to manage or avoid at the story level?”
 
-**Good tasks anchored on Concepts**
-
-- Map C/Rust structs to conceptual entities:
-  - “This struct is a profile header; this one is a node; this one is a vocabulary entry.”
-- Align JSON/YAML schemas (e.g., capability catalog) with the concepts:
-  - “This field is a decision; this one is a filter key; this one is a literal index.”
-- Ensure new diagnostics or logs use **canonical terminology**.
-
-**Key invariant**
-
-> Concepts is the **source of naming truth**. Code and output should prefer these terms and definitions.
+Use it to set your own mental model before you draft chapters, examples, or research prompts.
 
 ---
 
-### 2.3 `Appendix.md` — DSL Cheatsheet and Binary Reference
+### Definitions, distinctions, and vocabulary → `Concepts.md`
 
-**Role**
+Go here when your question is:
 
-- The **reference deck**:
-  - SBPL/DSL syntax and patterns (“Sandbox DSL Cheatsheet”).
-  - Binary profile formats and decision graphs.
-  - Operations and filters reference (vocabulary mapping).
-  - Policy stacking, platform sandbox, and extensions.
+* “What does this project mean by ‘operation’, ‘filter’, ‘entitlement’, ‘policy graph’, etc.?”
+* “How are similar terms distinguished (e.g., profile vs policy vs capability)?”
+* “What evidence, sources, or behaviors constrain this concept?”
 
-Think of this as the “standards doc” for how to parse and render things.
+In practice:
 
-**Use this file when**
-
-- You need to:
-  - Parse or print SBPL rules.
-  - Decode or encode binary profile headers, node arrays, and tables.
-  - Understand what a given operation or filter key *means*.
-  - Reason about how multiple policies stack (platform + per-process + extensions).
-
-**Good tasks anchored on Appendix**
-
-- Implement or modify the **binary parser** or **graph builder**.
-- Implement or refine **SBPL pretty-printing** for decoded graphs.
-- Cross-check operation and filter semantics for the capabilities catalog.
-- Design probe programs that exercise specific SBPL patterns (e.g., `require-any`, `with report`, specific path filters).
-
-**Key invariants**
-
-- Parsing and binary layout details come from the Appendix; do not guess.
-- Separation of concerns:
-  - Appendix supports clear separation between:
-    - Byte-level formats
-    - Graph-level semantics
-    - Textual SBPL surface.
-
-Agents should preserve this three-layer structure.
+* Terms from `Concepts.md` should mean exactly what is written there. 
+* Treat concepts as hypotheses about behavior that someone has already argued for, not as labels you are free to redefine on the fly.
 
 ---
 
-### 2.4 `Canon.md` — External Sources and How to Use Them
+### Structural environment and invariants → `Environment.md`
 
-**Role**
+Go here when your question is:
 
-- A **registry of external, time-stamped sources**:
-  - `BLAZAKIS2011`, `ROWESANDBOXING`, `APPLESANDBOXGUIDE`, `SANDBLASTER2016`, `STATEOFSANDBOX2019`, `HACKTRICKSSANDBOX`, `WORMSLOOK2024`, etc.
-- For each, it encodes:
-  - Scope (structure vs behaviour vs ecosystem vs exploitation).
-  - Why it matters in this project.
-  - Typical queries you should send to it.
+* “What OS versions, hardware, and surrounding security mechanisms is the substrate assuming?”
+* “How are containers laid out, roughly?”
+* “How does Seatbelt sit next to things like TCC, hardened runtime, SIP, and code signing at the mechanism level?”
 
-**Use this file when**
+Use it to:
 
-- You are mediating a conflict between claims in sources and you need to:
-  - Check structural claims (formats, hooks, SBPL semantics).
-  - Investigate drift and modern behaviour.
-  - Understand where knowledge may be limited
-
-**Good tasks anchored on Canon**
-
-- Choose **which source to re-read** in detail for a specific question.
-  - “I want binary format details” → `BLAZAKIS2011` or `SANDBLASTER2016`.
-  - “I want real-world entitlement usage” → `STATEOFSANDBOX2019`.
-  - “I want modern drift probes” → `WORMSLOOK2024`.
+* Keep your own work anchored in the same assumed world & notice when you are deliberately stepping outside that world (older macOS, iOS, hypothetical designs) and need to say so in your own artifacts.
 
 ---
 
-### 2.5 `State.md` — Contemporary macOS Seatbelt Snapshot
+### Real-world usage and ecosystem snapshot → `State.md`
 
-**Role**
+Go here when your question is:
 
-- Summarizes what the macOS sandbox ecosystem actually looks like circa 2024–2025 (who is sandboxed, how containers/extensions are wired up, how secinit/containermanagerd/TCC fit together).
-- Separates **stable invariants** from **high-churn surfaces** to guide probe design and threat modeling.
-- Bridges older canon to modern behavior so authors can cite “current state” without re-deriving it each time.
+* “Around 2025, who is actually sandboxed on macOS and how?”
+* “How does Seatbelt fit into the broader security posture in practice, not just on paper?”
+* “What adoption patterns, threat models, and failure modes were we assuming when we froze this edition?”
 
-**Use this file when**
+Use it to:
 
-- You need to answer “What does Seatbelt do on current macOS releases?” for code, probes, or narrative text.
-- You are choosing which parts of the stack to measure (containers, entitlement usage, extension issuance, TCC interactions).
-- You are summarizing drift or continuity between historical documentation and present-day macOS.
-
-**Good tasks anchored on State**
-
-- Plan probes or experiments that validate modern behavior (secinit decisions, containermanagerd container setup, sandbox extensions).
-- Align code/tests with today’s defaults and deployment patterns (App Store vs third-party, sandboxed vs unsandboxed).
-- Write short “state of the world” paragraphs for chapters or reports without re-reading every source.
-
-**Key invariant**
-
-> Treat `State.md` as the best-effort **snapshot** of current behavior.
+* Ground case studies, risk discussions, and “why this matters” sections in how the system was actually used at the time.
+* Detect when your later evidence is describing a different world (new OS versions, changed ecosystem, new classes of apps).
 
 ---
 
-### 2.6 `sources/`: Directory of information on canon sources
+### Detailed tables, cheatsheets, and mini-essays → `Appendix.md`
 
-A directory of close-reading summaries of sources by SHORTNAME, e.g. `APPLESANDBOXGUIDE.md`. Original sources ***are not checked in to the repo***--these interpretations form our universe of information, not the pdfs.
+Go here when your question is:
+
+* “Is there a quick list or cheatsheet for operations, filters, or common profile constructs?”
+* “Is there a short technical note on this specific mechanism or edge case?”
+* “Is there a small, focused explanation that was too heavy to live in the main scaffold?”
+
+Use it when you need concrete detail to sharpen your understanding. You typically translate what you learn here into fresh, reader-appropriate material elsewhere rather than copying directly.
 
 ---
 
-## 3. Invariants and Boundaries for All Agents
+### Where the substrate’s claims come from → `Canon.md`
 
-- **Shared vocabulary**  
-  Use terms from `Concepts.md`. Avoid inventing synonyms for core entities (operation, filter, profile, policy stack, decision).
+Go here when your question is:
 
-- **Layered knowledge**  
-  - Orientation → Concepts → Appendix form the core conceptual/binary layer.
+* “Which external sources underwrite these claims about Seatbelt?”
+* “Which documents are considered primary for architecture, SBPL, binary profiles, containers, or empirical usage?”
+* “If I had to read only a few external things to understand the substrate, what are they?”
 
-- **Separation of concerns in code and text**
-  - Binary parsing ≠ graph semantics ≠ SBPL pretty-printing.
+Use it to choose what to read next or to understand why the substrate leans the way it does on disputed points. You add new sources to your own artifacts; you do not extend the canon list here.
 
-If all agents respect this routing and these boundaries, the documents in this pack remain a **stable, shared substrate** that humans, code, and chat systems can all rely on when reasoning about the macOS Seatbelt sandbox.
+---
+
+## 3. How to “use” the substrate without extending it
+
+Given the freeze and the fact that this layer is not meant to be surfaced directly to readers:
+
+* Use the substrate to calibrate yourself, not to decorate your output.
+
+  * Read what it says about a concept or mechanism.
+  * Internalize the stance and evidence.
+  * Then write your chapter, design your experiment, or sketch your example in a way that is self-contained.
+
+* When your work diverges from the substrate:
+
+  * Acknowledge the earlier stance in your own artifact in whatever way your prompt or harness expects.
+  * Treat the substrate as the baseline you are updating from, not something you rewrite or reconcile.
+
+* When you need new structure (new concepts, new environment distinctions, new “state” snapshots):
+
+  * Define them and justify them where you are working.
+  * Do not attempt to retrofit them into `substrate/`. The substrate remains the “first edition”; you are now working on later commentary and extensions.
+
+---
