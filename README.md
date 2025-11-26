@@ -11,18 +11,16 @@ Nothing here enforces policy.
 
 ---
 
-## Scope and stance
-
-The time slice is “modern macOS” (Ventura/Sonoma and neighbors), not just historical Snow Leopard. Older materials (Apple Sandbox Guide, Blazakis, SandBlaster, etc.) appear as explicitly mediated sources, not as invisible authorities.
+## What this does
 
 The repo treats as primary:
 
-- Apple’s own documentation, as filtered through the guidance layer.
+- Select sources, summarized and cross referenced into a "substrate" of material for human and machine agents.
 - Empirical behavior from examples, profile ingestion, and real profiles.
 
-External texts are pulled into `substrate/exegesis/` with exegesis files and are meant to act as time-stamped anchors. The intent is to keep claims traceable and to make drifts in macOS behavior visible over time rather than silently overwriting them.
+Concepts we form from the substrate are tested against empirical behavior. This validated concept inventory standing on the substrate is a stable, inspectable base layer for reasoning about the sandbox. 
 
-This exists to give you a stable, inspectable base layer for sandbox reasoning you can come back to after gaps.
+Using this layer we build an example-driven synthetic textbook for human and machine agents covering the sandbox on macOS. 
 
 ---
 
@@ -30,11 +28,20 @@ This exists to give you a stable, inspectable base layer for sandbox reasoning y
 
 High-level map of the root:
 
-- `substrate/`  
-  Orientation, concepts, appendix, canon, and per-source exegesis.
-
-- `concepts/`  
-  Concept inventory and cross-cutting code (e.g., profile ingestion) that multiple artifacts rely on.
-
 - `book/`  
   A cathedral of shit
+
+- `concepts/`  
+Concept inventory and cross-cutting code (e.g., profile ingestion) that multiple artifacts can rely on.
+
+- `spine/`  
+Preamble prompts for machine agents building the textbook or concept inventory
+
+- `substrate/`  
+  Orientation, concepts, appendix, canon, and per-source exegesis. Frozen at `SUBSTRATE_2025-frozen`. 
+
+## Scope
+
+The main object of concern is modern macOS (Ventura/Sonoma and neighbors), not just historical Snow Leopard, though this is where accurate, comprehensive sourcing is richest. Older materials (Apple Sandbox Guide, Blazakis, SandBlaster, etc.) appear as explicitly mediated sources, not as invisible authorities.
+
+The most recent source consulted is from 2024 and the textbook is not intended at this time to be a living document. 
