@@ -10,7 +10,7 @@ Use `substrate/` to understand the model; use `examples/` to see focused demos; 
 
 ### `CONCEPT_INVENTORY.md`
 
-A structured index of Seatbelt/XNUSandbox concepts:
+A structured index of Seatbelt sandbox concepts:
 
 - Defines each concept (SBPL Profile, Operation, Filter, PolicyGraph, etc.).
 - Records initial status/epistemic tags (e.g. `[S:doc-only→code-partial][E:2011-heavy+14.x-sampled]`).

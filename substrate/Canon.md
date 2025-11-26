@@ -1,7 +1,7 @@
 >SUBSTRATE_2025-frozen
 # Canon
 
-This document lists the seven canonical macOS sandbox (“Seatbelt”) references used in this project. Together they cover architecture and implementation details, profile language and tooling, offensive/operational guidance, and empirical studies of sandbox usage and weaknesses. Later readers and agents should treat these as primary references when interpreting XNUSandbox artifacts.
+This document lists the seven canonical macOS sandbox (“Seatbelt”) references used in this project. Together they cover architecture and implementation details, profile language and tooling, offensive/operational guidance, and empirical studies of sandbox usage and weaknesses. Later readers and agents should treat these as primary references when interpreting artifacts produced by this project.
 
 ---
 

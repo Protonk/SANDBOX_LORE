@@ -3,7 +3,7 @@
 
 The paper provides a concrete, implementation-level walk from user processes calling `sandbox_init` down through `libSystem`, `libsandbox.dylib`, the Scheme/TinyScheme layer, the compiled binary profile format, the TrustedBSD policy plumbing, `Sandbox.kext`, and finally the `AppleMatch.kext` regex engine. It is explicitly aimed at reverse engineers and names many functions, data structures, and byte-level layouts.
 
-As an implementation skeleton and repo-alignment guide, you can treat the paper as the canonical map of: (a) where policy text is turned into *rules* and then into a binary decision tree, (b) how that binary profile is passed to the kernel and stored as per-process state, and (c) how the kernel’s `Sandbox.kext` evaluates operations by walking that decision tree and invoking AppleMatch’s NFA regex engine. The list of symbols and layouts below is meant to drive concrete greps and code-reading passes in XNUSandbox and the corresponding XNU sources.
+As an implementation skeleton and repo-alignment guide, you can treat the paper as the canonical map of: (a) where policy text is turned into *rules* and then into a binary decision tree, (b) how that binary profile is passed to the kernel and stored as per-process state, and (c) how the kernel’s `Sandbox.kext` evaluates operations by walking that decision tree and invoking AppleMatch’s NFA regex engine. The list of symbols and layouts below is meant to drive concrete greps and code-reading passes in this project and the corresponding XNU sources.
 
 ---
 
@@ -542,7 +542,7 @@ This pattern makes `sb_evaluate` the implementation focal point: it ties togethe
 
 Below are concrete grep/inspection strategies. Where they go beyond explicit paper statements, I mark them as inferences.
 
-#### 5.1.1 Userspace (`libSystem`, `libsandbox`, XNUSandbox scripts)
+#### 5.1.1 Userspace (`libSystem`, `libsandbox`, local scripts)
 
 * `sandbox_init`
 
@@ -552,16 +552,16 @@ Below are concrete grep/inspection strategies. Where they go beyond explicit pap
 * `sandbox_compile_string`, `sandbox_compile_file`, `sandbox_compile_named`
 
   * Search `libsandbox` sources for `sandbox_compile_string` and confirm each ends in `compile`.
-  * In XNUSandbox repo, search for these names in any disassembly scripts or documentation; they likely appear in helpers that trace the compile pipeline.
+  * In this repo, search for these names in any disassembly scripts or documentation; they likely appear in helpers that trace the compile pipeline.
 
 * `compile`
 
   * In absence of symbols, look at IDA/ghidra function with a large, branching flow graph referenced by all `sandbox_compile_*` wrappers.
-  * In XNUSandbox, search for scripts that refer to `*rules*` or `%version-1`; these will be adjacent to logic mirroring `compile`’s behaviour.
+  * In this repo, search for scripts that refer to `*rules*` or `%version-1`; these will be adjacent to logic mirroring `compile`’s behaviour.
 
 * TinyScheme and SBPL scripts (`sbpl_stub.scm`, `sbpl_1_prelude.scm`, `sbpl_1.scm`)
 
-  * In XNUSandbox, search for these file names; the paper states that all scripts used in the analysis are provided there.
+  * In this repo, search for these file names; the paper states that all scripts used in the analysis are provided there.
   * Inspect them to see how `%version-1` builds `*rules*` and how `take`, `drop`, and `#"..."` are used.
 
 * `*rules*` and Scheme-level rules
@@ -593,7 +593,7 @@ Below are concrete grep/inspection strategies. Where they go beyond explicit pap
 
 * `sb_evaluate`
 
-  * Search the kernel tree or XNUSandbox disassembly scripts for `_sb_evaluate`. It should be referenced by many hook functions.
+  * Search the kernel tree or any local disassembly scripts for `_sb_evaluate`. It should be referenced by many hook functions.
   * Inspect its body to confirm it:
 
     * Uses `op_table` and node encodings described in the paper.
@@ -618,7 +618,7 @@ Below are concrete grep/inspection strategies. Where they go beyond explicit pap
 
 * NFA layout and `matchExec`
 
-  * Search for the `matchExec` prototype in XNUSandbox scripts or documentation that refers to AppleMatch.
+  * Search for the `matchExec` prototype in local scripts or documentation that refers to AppleMatch.
   * Inspect the code that reads fields like `version`, `node_count`, `start_node`, `end_node`, etc., and confirm the NFA encoding matches the paper’s layout.
 
 * Regex table parsing
@@ -627,10 +627,10 @@ Below are concrete grep/inspection strategies. Where they go beyond explicit pap
 
 #### 5.1.4 Inference-based repo hints
 
-* Inference: search hint based on naming/structure patterns — XNUSandbox repo
+* Inference: search hint based on naming/structure patterns — local repo
 
-  * Grep for `apple-scheme`, `*rules*`, `operation_names`, `sb_evaluate`, and `re_cache_init` in the XNUSandbox repository. The paper explicitly says all scripts used are hosted there, so you can expect Scheme files, IDA scripts, and possibly C helpers mirroring the described structures.
-  * Look for any tool that dumps “intermediary format” of sandbox profiles; the paper’s discussion of displaying `*rules*` hints that such a tool exists and lives in XNUSandbox.
+  * Grep for `apple-scheme`, `*rules*`, `operation_names`, `sb_evaluate`, and `re_cache_init` in this repository. The paper explicitly says all scripts used are hosted there, so you can expect Scheme files, IDA scripts, and possibly C helpers mirroring the described structures.
+  * Look for any tool that dumps “intermediary format” of sandbox profiles; the paper’s discussion of displaying `*rules*` hints that such a tool exists and lives in this codebase.
 
 * Inference: search hint based on naming/structure patterns — XNU sources
 
@@ -644,7 +644,7 @@ Below are concrete grep/inspection strategies. Where they go beyond explicit pap
 
 ### 5.2 Anchor vs supporting vs peripheral
 
-I’ll categorize symbols and phases by how critical they are for first-pass comprehension and XNUSandbox alignment.
+I’ll categorize symbols and phases by how critical they are for first-pass comprehension and alignment with this project’s tooling.
 
 #### Anchor
 
@@ -713,7 +713,7 @@ The paper is detailed but leaves some aspects unspecified or only implied:
 * Full operation list and codes
 
   * Gap: The paper mentions that the first 59 entries of `*rules*` correspond to operations and gives a few examples (`file-read-data`, `sysctl-write`, `system-fsctl`) but does not list all operation codes or their numeric values.
-  * Inference: Extract full operation lists from `operation_names` table or `libsandbox.dylib` strings in XNUSandbox tooling.
+  * Inference: Extract full operation lists from `operation_names` table or `libsandbox.dylib` strings in the local tooling.
 
 * Context struct passed to `sb_evaluate`
 
@@ -723,6 +723,6 @@ The paper is detailed but leaves some aspects unspecified or only implied:
 * Tracing/logging details
 
   * Gap: Tracing is acknowledged but not deeply analyzed; the exact Mach message formats and logging structures are not documented.
-  * Inference: In `Sandbox.kext` and `sandboxd`, inspect code surrounding Mach ports used when trace directives are present; XNUSandbox may include scripts to decode these messages.
+  * Inference: In `Sandbox.kext` and `sandboxd`, inspect code surrounding Mach ports used when trace directives are present; the local tooling may include scripts to decode these messages.
 
-By treating these gaps explicitly and using the paper’s concrete landmarks as anchors, you can align XNUSandbox tools and XNU sources to reconstruct the full Seatbelt implementation while keeping clear what is grounded in the paper and what is inferred from source patterns.
+By treating these gaps explicitly and using the paper’s concrete landmarks as anchors, you can align local tools and XNU sources to reconstruct the full Seatbelt implementation while keeping clear what is grounded in the paper and what is inferred from source patterns.

@@ -1,6 +1,6 @@
 # AGENTS — Start Here
 >This file’s sole purpose is to get an agent from zero context to the right map in one hop.
-You just landed in a **synthetic textbook workspace** about the macOS Seatbelt/XNUSandbox. There is no app to build; everything here exists to read, decode, and explain sandbox policies.
+You just landed in a **synthetic textbook workspace** about the macOS Seatbelt sandbox. There is no app to build; everything here exists to read, decode, and explain sandbox policies.
 
 ## What this place is
 - A knowledge substrate for a future textbook on the macOS sandbox.

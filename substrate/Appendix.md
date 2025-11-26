@@ -1,7 +1,7 @@
 >SUBSTRATE_2025-frozen
 # Appendix
 
-This appendix is the technical reference for Seatbelt as XNUSandbox understands it: it spells out the concrete structures and mechanics that sit behind the concepts in Concepts.md and the scaffold in Orientation. The first sections treat SBPL as source—operations, filters, metafilters, and action modifiers—then follow that policy through its compiled form (headers, operation pointer tables, node graphs, literal/regex tables) and into the stacked profiles the kernel actually evaluates. Later sections describe the lifecycle pipeline from signed binary to attached policy, the role of entitlements in selecting and parameterizing profiles, and how compiled profile sources map onto platform/app/auxiliary layers. Where Orientation tells you how to think about the sandbox, this document is where you come to see exactly what the code and blobs look like.
+This appendix is the technical reference for Seatbelt as this project understands it: it spells out the concrete structures and mechanics that sit behind the concepts in Concepts.md and the scaffold in Orientation. The first sections treat SBPL as source—operations, filters, metafilters, and action modifiers—then follow that policy through its compiled form (headers, operation pointer tables, node graphs, literal/regex tables) and into the stacked profiles the kernel actually evaluates. Later sections describe the lifecycle pipeline from signed binary to attached policy, the role of entitlements in selecting and parameterizing profiles, and how compiled profile sources map onto platform/app/auxiliary layers. Where Orientation tells you how to think about the sandbox, this document is where you come to see exactly what the code and blobs look like.
 
 ## Sandbox DSL Cheatsheet
 
@@ -232,7 +232,7 @@ In the compiled graph:
 * Non-terminal nodes represent individual filter tests with “match” and “unmatch” edges.
 * `require-any/all/not` emerge from specific patterns of nodes and edges, not from dedicated opcodes. The graph structure encodes Boolean combinations; the compiled format does not carry the names of these combinators explicitly.
 
-XNUSandbox’s job includes recognizing those patterns and reconstructing the right metafilter structure.
+The analysis tooling’s job includes recognizing those patterns and reconstructing the right metafilter structure.
 
 ---
 
@@ -258,7 +258,7 @@ In the compiled profile, these usually become bits or attributes attached to the
 
 ## Binary Profile Formats and Policy Graphs
 
-This section explains how SBPL policies become the binary “policy graph” structures that Seatbelt evaluates in the kernel, and how those structures are laid out in memory. It connects the textual DSL above with the low-level XNUSandbox code that parses serialized blobs.
+This section explains how SBPL policies become the binary “policy graph” structures that Seatbelt evaluates in the kernel, and how those structures are laid out in memory. It connects the textual DSL above with the low-level parsing code used here to process serialized blobs.
 
 ---
 
@@ -392,7 +392,7 @@ The graph patterns corresponding to `require-any/all/not` emerge from how nodes 
 * `require-all` ≈ sequential tests where any failure jumps to a deny.
 * `require-not` ≈ a branch inversion around some condition.
 
-XNUSandbox’s parsers reconstruct a higher-level tree or graph representation from these low-level nodes and edges.
+The parsers in this project reconstruct a higher-level tree or graph representation from these low-level nodes and edges.
 
 ---
 
@@ -410,7 +410,7 @@ compile to AppleMatch-specific NFAs stored in regex tables. The binary profile t
 * A table of regex pointers (offsets into a regex payload section).
 * One or more blobs containing AppleMatch NFA encodings.
 
-Early reversing work used AppleMatch itself to interpret these NFAs. On modern macOS versions, userland tools instead parse the NFA encoding directly or via independent decoders; XNUSandbox treats the regex table as opaque NFA data that can be disassembled into a more convenient internal representation.
+Early reversing work used AppleMatch itself to interpret these NFAs. On modern macOS versions, userland tools instead parse the NFA encoding directly or via independent decoders; the local tooling treats the regex table as opaque NFA data that can be disassembled into a more convenient internal representation.
 
 ---
 
@@ -427,7 +427,7 @@ From a tooling perspective, this evolution means:
 * Kernelcache scraping (as described in older blog posts and tools) is largely unnecessary on macOS 14: profiles are available as `.sb` files on disk.
 * Tools like `extract_sbs` work at the SBPL/binary profile level, not by patching or scraping kernel images.
 
-XNUSandbox assumes profiles are obtained from these modern `.sb` bundles (or from test fixtures compiled with `sandbox-exec`-style tooling on older systems) rather than from kernelcache offsets.
+The analysis tooling here assumes profiles are obtained from these modern `.sb` bundles (or from test fixtures compiled with `sandbox-exec`-style tooling on older systems) rather than from kernelcache offsets.
 
 ---
 
@@ -457,8 +457,8 @@ Key points:
 
   * ~59 operations on 10.6.8.
   * ~80–120 operations on later iOS versions, depending on OS version.
-* XNUSandbox needs (and maintains) a mapping table between operation IDs and symbolic names, usually derived from `libsandbox.dylib` and `.sb` profiles.
-  Because `libsandbox.dylib` is a private component without stable public headers or packaging, these symbol- and string-based mappings are inherently fragile and may change across OS versions; XNUSandbox treats them as best-effort hints rather than a stable API.
+* The tooling in this project needs (and maintains) a mapping table between operation IDs and symbolic names, usually derived from `libsandbox.dylib` and `.sb` profiles.
+  Because `libsandbox.dylib` is a private component without stable public headers or packaging, these symbol- and string-based mappings are inherently fragile and may change across OS versions; the tooling treats them as best-effort hints rather than a stable API.
 
 Treat operation ID as the primary key for everything else in the profile.
 
@@ -594,7 +594,7 @@ In the compiled graph:
 
 * These do not appear as dedicated opcodes.
 * Instead, they emerge from patterns in how filter and decision nodes connect.
-* XNUSandbox recognizes these patterns and reconstructs metafilters for human-readable output or capability catalogs.
+* The tooling recognizes these patterns and reconstructs metafilters for human-readable output or capability catalogs.
 
 ---
 
@@ -617,7 +617,7 @@ In SBPL, modifiers wrap the operation; in the compiled graph, they live as bits 
 
 ### 6. Operation and Filter Vocabulary Maps
 
-XNUSandbox maintains its own “vocabulary maps”:
+The tooling maintains its own “vocabulary maps”:
 
 * Operation map:
 
@@ -721,7 +721,7 @@ Examples of uses:
 In practice:
 
 * Extensions are neither pure “platform” nor pure “app” policy; they are a dynamic overlay.
-* XNUSandbox and similar tools model them as a separate capability channel.
+* Tooling in this project (and similar tools) model them as a separate capability channel.
 * When building capability catalogs, you must account for extensions as potential “escape hatches” that legitimately widen an app’s access in specific contexts.
 
 The policy stack, in summary, is:
@@ -1071,7 +1071,7 @@ In practice, Seatbelt consumes compiled policies from four main sources:
 
 4. **Test and harness profiles**
 
-   * Profiles used by tools, harnesses, or research systems (including XNUSandbox) to probe behavior.
+   * Profiles used by tools, harnesses, or research systems to probe behavior.
    * Typically SBPL text compiled via `libsandbox` or equivalent private APIs, then loaded for short-lived test processes.
 
 From the point of view of the kernel, they all end up in the same form: compiled **PolicyGraph** blobs stored in `Sandbox.kext` data structures and referenced from process labels.

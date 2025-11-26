@@ -1,4 +1,4 @@
-# Synthetic textbook for Apple’s macOS Seatbelt/XNUSandbox.
+# Synthetic textbook for Apple’s macOS Seatbelt sandbox.
 
 This repo is not a traditional software project. It is a curated, local-only universe for understanding the macOS sandbox circa 2025, with an emphasis on:
 

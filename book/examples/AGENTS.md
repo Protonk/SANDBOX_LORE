@@ -9,7 +9,7 @@ Use this map to route yourself to the right example. Each entry gives:
 
 - What the example is for.
 - How to run it.
-- How it fits into the overall Seatbelt / XNUSandbox story.
+- How it fits into the overall Seatbelt / analysis tooling story.
 
 ---
 
@@ -32,7 +32,7 @@ You will see two broad kinds of examples here.
 
 ### 1. Sandbox behavior probes
 
-These are the descendants of the original XNUSandbox examples. They focus on how Seatbelt evaluates specific operations, filters, and metadata:
+These are the descendants of the original sandbox examples. They focus on how Seatbelt evaluates specific operations, filters, and metadata:
 
 - **SBPL and policy structure**
   - Minimal SBPL profiles showing `deny default`, `allow process*`, path filters (`literal`, `subpath`, `regex`), metafilters (`require-any/all/not`), and `(param "...")` usage.

@@ -415,7 +415,7 @@ Usage pattern:
 
 ## 8. How to use this in the sandbox context
 
-In the broader Seatbelt / XNUSandbox workflow:
+In the broader Seatbelt / analysis tooling workflow:
 
 1. **Extract regex blobs**
 

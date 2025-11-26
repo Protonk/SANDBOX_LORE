@@ -1,6 +1,6 @@
 # Concept Inventory Validation Design
 
-This document describes how we want to validate the macOS Seatbelt/XNUSandbox concept inventory with code and artifacts. It focuses on the concepts themselves: how they are grouped, what kinds of evidence each group needs, and which cross-cutting validation modes we will rely on.
+This document describes how we want to validate the macOS Seatbelt sandbox concept inventory with code and artifacts. It focuses on the concepts themselves: how they are grouped, what kinds of evidence each group needs, and which cross-cutting validation modes we will rely on.
 
 The intended home for this document is the `concepts/` directory, alongside the main concept inventory.
 
@@ -8,7 +8,7 @@ The intended home for this document is the `concepts/` directory, alongside the 
 
 ## 1. Goals for Concept Inventory Validation
 
-The concept inventory is the canonical list of Seatbelt/XNUSandbox ideas (profile, operation, filter, policy graph, etc.), with definitions and status tags. Validation gives those definitions teeth: each important concept should be tethered to empirical or structural evidence that can withstand scrutiny.
+The concept inventory is the canonical list of Seatbelt sandbox ideas (profile, operation, filter, policy graph, etc.), with definitions and status tags. Validation gives those definitions teeth: each important concept should be tethered to empirical or structural evidence that can withstand scrutiny.
 
 Concretely, “success” for this phase means:
 

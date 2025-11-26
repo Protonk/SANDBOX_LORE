@@ -2,7 +2,7 @@
 
 ## 0. Preface
 
-This document is a **concept inventory** for the Seatbelt/XNUSandbox work in this repo. It enumerates the key ideas from `Orientation.md` and `Appendix.md` and gives each concept:
+This document is a **concept inventory** for the Seatbelt sandbox work in this repo. It enumerates the key ideas from `Orientation.md` and `Appendix.md` and gives each concept:
 
 - A stable name.
 - A short definition snapshot.

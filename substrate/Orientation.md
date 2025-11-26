@@ -22,7 +22,7 @@ This orientation explains:
 
 * What Seatbelt is, at the level of “moving parts” (operations, filters, policy graphs, label state).
 * How policy moves from SBPL text to kernel decisions.
-* How to interpret what XNUSandbox prints or parses.
+* How to interpret what the tooling in this repo prints or parses.
 
 It is deliberately light on:
 
@@ -74,7 +74,7 @@ A comprehensive concept list is available at `substrate/Concept.md`.
    * A node array (filter and decision nodes).
    * Shared literal and regex tables.
 
-   XNUSandbox’s internal IR is a slightly higher-level reconstruction of this.
+   The local tooling’s internal IR is a slightly higher-level reconstruction of this.
 
 6. **Profile Layer and Stack**
 
@@ -96,7 +96,7 @@ A comprehensive concept list is available at `substrate/Concept.md`.
    * Custom SBPL and named profiles via sandbox(7).
    * Harness/test profiles created by tools.
 
-   XNUSandbox does not care about the exact provenance once it has a compiled blob, but the rest of the documentation does.
+   The analysis tooling does not care about the exact provenance once it has a compiled blob, but the rest of the documentation does.
 
 At enforcement time there is no Scheme interpreter. The kernel walks a compiled graph for each relevant operation; our code must decode that graph and relate it back to the vocabulary above.
 
@@ -123,7 +123,7 @@ You should think of Seatbelt policy as moving through four broad stages:
 
    * `libsandbox` (via TinyScheme) compiles SBPL into a binary policy:
      * Header, operation pointer table, node array, literal and regex tables.
-   * XNUSandbox works with compiled blobs (from `.sb` files, and historically from kernelcaches), not directly with SBPL.
+   * The tooling here works with compiled blobs (from `.sb` files, and historically from kernelcaches), not directly with SBPL.
    * Action modifiers (e.g., `(with report)`) become flags on decision nodes and influence logging/reporting behavior.
 
 4. **Installed policy and runtime evaluation**
@@ -198,7 +198,7 @@ For a given operation (say, `file-read*` on `/Users/alice/Documents/foo.txt`), t
    * Extensions add scoped allows without rewriting platform/app profiles.
    * TCC and SIP may apply additional “no” decisions outside Seatbelt.
 
-XNUSandbox’s representations (and the Appendix/Environment docs) are set up so that tools and tests can do this reasoning mechanically.
+The internal representations used here (and the Appendix/Environment docs) are set up so that tools and tests can do this reasoning mechanically.
 
 ---
 
