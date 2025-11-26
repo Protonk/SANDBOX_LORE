@@ -1,6 +1,6 @@
 # Canon
 
-This document lists the seven canonical macOS sandbox (“Seatbelt”) references used in this project. Together they cover architecture and implementation details, profile language and tooling, offensive/operational guidance, and empirical studies of sandbox usage and weaknesses. Later readers and agents should treat these as primary references when interpreting XNUSandbox artifacts, Codex sandbox behavior, and the project’s capability catalogs.
+This document lists the seven canonical macOS sandbox (“Seatbelt”) references used in this project. Together they cover architecture and implementation details, profile language and tooling, offensive/operational guidance, and empirical studies of sandbox usage and weaknesses. Later readers and agents should treat these as primary references when interpreting XNUSandbox artifacts.
 
 ---
 
@@ -28,7 +28,7 @@ Finally, the stopping rule turns omissions into deliberate objects of study rath
 
 ## Scope and blind spots
 
-Taken together, these sources give a strong but partial view of the Apple sandbox: they emphasize architectural overviews, reverse-engineering of profiles and internals, and high-level empirical measurements of macOS App Sandbox adoption. They are heavily weighted toward “Seatbelt as a security mechanism” in the classic desktop/app sense, and toward the SBPL/profile machinery as it appears in 10.x–early 11.x era systems. They say almost nothing about Codex- or LLM-specific runtimes, but that is by design for this project and not a gap we expect the canon itself to fill.
+Taken together, these sources give a strong but partial view of the Apple sandbox: they emphasize architectural overviews, reverse-engineering of profiles and internals, and high-level empirical measurements of macOS App Sandbox adoption. They are heavily weighted toward “Seatbelt as a security mechanism” in the classic desktop/app sense, and toward the SBPL/profile machinery as it appears in 10.x–early 11.x era systems.
 
 In terms of time and platform coverage, the corpus is anchored in 2010–2019 macOS and iOS with one more recent synthetic overview. That means later evolutions—Apple Silicon-specific behavior, tighter ties with TCC, hardened runtime, notarization, SIP interactions, and per-release quirks of macOS 12–15—are mostly inferred rather than documented. iOS is present but always as a twin of macOS Seatbelt; mobile-only phenomena (e.g., complex app groups, background modes, modern extension points) are not explored deeply.
 
