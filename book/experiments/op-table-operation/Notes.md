@@ -26,3 +26,30 @@
 ## 2025-11-29 3
 
 - New goal: reintroduce filters/literals in this op-table experiment to see if the `[6,…,5]` pattern resurfaces and to try to pin the lone `5` to a specific op.
+- Added filtered variants:
+  - `v11_read_subpath`: read with `(subpath "/tmp/foo")`.
+  - `v12_read_subpath_mach`: read with subpath + mach-lookup.
+  - `v13_read_subpath_write`: read with subpath + write.
+  - `v14_read_subpath_network`: read with subpath + network.
+- Reran `analyze.py` to refresh summaries and `op_table_map.json`.
+- Results:
+  - `v11` (single-op read+subpath): `op_count=6`, op entries `[5,…]`, tags {0:1,1:1,4:6,5:22}, remainder `0500050004`, literal `G/tmp/foo`. This flips read from the earlier `[4,…]` bucket to `[5,…]` when a subpath is present.
+  - `v12` (read+subpath + mach): `op_count=7`, op entries `[6,6,6,6,6,6,5]` → the `[6,…,5]` pattern reappears. Tags include 6 (count 25) and 5 (count 5); literals include both path and mach global-name.
+  - `v13` (read+subpath + write): `op_count=6`, op entries `[5,…]`, tags {0:1,1:1,4:7,5:21}, literal `G/tmp/foo`.
+  - `v14` (read+subpath + network): `op_count=6`, op entries `[5,…]`, tags {0:1,1:1,4:6,5:22}, literal `G/tmp/foo`.
+- Takeaways:
+  - Adding a subpath filter changes the op-table bucket for `file-read*` from 4 (no filters) to 5 (with subpath), even in single-op form.
+  - The mixed profile with subpath+mach brings back the `[6,…,5]` non-uniform entries; the presence of both subpath and mach seems to be the trigger, suggesting the lone `5` may be tied to one of these ops or to a specific parameterized variant.
+  - Other mixes with subpath (write, network) remain uniform `[5,…]`; no additional entry indices beyond 5/6 observed so far.
+- Next: design targeted deltas to isolate whether the `[6,…,5]` split is driven by mach, by subpath+mach interaction, or by op_count shape; consider adding a pure subpath+write+network triple or toggling subpath off/on within mach profiles to watch op entries move.
+
+## 2025-11-29 4
+
+- Added literal-driven mixes to see whether literals alone provoke the `[6,…,5]` split:
+  - `v15_mach_literal`: mach-lookup + `file-read*` with `(literal "/etc/hosts")`.
+  - `v16_subpath_mach_literal`: mach-lookup + two read filters (subpath `/tmp/foo` and literal `/etc/hosts`).
+- Reran `analyze.py`; results:
+  - `v15`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tags {0:1,5:5,6:25}, remainder `010005000600000e010005`, literals include `I/etc/hosts` and `Wcom.apple.cfprefsd.agent`. Shows the same `[6,…,5]` pattern without subpath, implying mach+literal is enough.
+  - `v16`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tags {0:1,1:1,5:5,6:25}, literals include `Ftmp/foo`, `Hetc/hosts`, `Wcom.apple.cfprefsd.agent`. Also `[6,…,5]`; tag1 appears (maybe a different node type for the extra filter).
+- Updated `op_table_map.json`: multiple profiles now exhibit `[6,…,5]` (subpath+mach, mach+literal). The lone `5` entry persists, but we still can’t assign it to a specific op.
+- Next steps: pause analyzer changes; consider crafting single-op literal profiles (read+literal only) and mach-only with literal to see op_count/entry buckets, and design deltas that toggle mach off while keeping literals to watch op_entries shift (or not). The analyzer may need a correlation pass, but holding off for now per instruction.

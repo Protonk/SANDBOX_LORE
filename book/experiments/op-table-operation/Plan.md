@@ -58,3 +58,4 @@ Deliverables:
 - [ ] Does the position of a non-uniform entry move when adding/removing specific ops?
 - [ ] Can node/tag deltas (with uniform op-tables) provide secondary evidence for op→entry mapping?
 - [ ] Does introducing filters/literals (e.g., subpath, literal) reintroduce the `[6,…,5]` divergence, and can we pin the lone entry to an op vocabulary slot?
+- [ ] For filtered ops (e.g., `file-read*` with subpath), why does the op-table bucket shift (4→5), and does the `[6,…,5]` split come from mach, subpath, literal filters, or their interaction? Design deltas to isolate this (e.g., read+literal only, mach+literal only, mach with/without filters).

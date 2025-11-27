@@ -212,6 +212,92 @@
   },
   {
     "format_variant": "modern-heuristic",
+    "length": 511,
+    "literal_strings": [
+      {
+        "offset": 45,
+        "string": "I/etc/hosts"
+      },
+      {
+        "offset": 69,
+        "string": "Wcom.apple.cfprefsd.agent"
+      }
+    ],
+    "name": "v15_mach_literal",
+    "op_count": 7,
+    "op_entries": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      5
+    ],
+    "ops": [
+      "mach-lookup",
+      "file-read*"
+    ],
+    "remainder_stride12_hex": "010005000600000e010005",
+    "section_lengths": {
+      "literals": 98,
+      "nodes": 383,
+      "op_table": 14
+    },
+    "tag_counts_stride12": {
+      "0": 1,
+      "5": 5,
+      "6": 25
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 527,
+    "literal_strings": [
+      {
+        "offset": 43,
+        "string": "Ftmp/foo"
+      },
+      {
+        "offset": 59,
+        "string": "Hetc/hosts"
+      },
+      {
+        "offset": 80,
+        "string": "Wcom.apple.cfprefsd.agent"
+      }
+    ],
+    "name": "v16_subpath_mach_literal",
+    "op_count": 7,
+    "op_entries": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      5
+    ],
+    "ops": [
+      "file-read*",
+      "mach-lookup",
+      "file-read*"
+    ],
+    "remainder_stride12_hex": "0600000e",
+    "section_lengths": {
+      "literals": 109,
+      "nodes": 388,
+      "op_table": 14
+    },
+    "tag_counts_stride12": {
+      "0": 1,
+      "1": 1,
+      "5": 5,
+      "6": 25
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
     "name": "v1_read",

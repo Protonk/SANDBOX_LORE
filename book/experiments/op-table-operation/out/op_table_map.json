@@ -99,6 +99,45 @@
         5
       ]
     },
+    "v15_mach_literal": {
+      "op_entries": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        5
+      ],
+      "ops": [
+        "mach-lookup",
+        "file-read*"
+      ],
+      "unique_entries": [
+        5,
+        6
+      ]
+    },
+    "v16_subpath_mach_literal": {
+      "op_entries": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        5
+      ],
+      "ops": [
+        "file-read*",
+        "mach-lookup",
+        "file-read*"
+      ],
+      "unique_entries": [
+        5,
+        6
+      ]
+    },
     "v1_read": {
       "op_entries": [
         4,
