@@ -31,9 +31,6 @@ High-level map of the root:
 - `book/`  
   A cathedral of shit
 
-- `concepts/`  
-Concept inventory and cross-cutting code (e.g., profile ingestion) that multiple artifacts can rely on.
-
 - `spine/`  
 Preamble prompts for machine agents building the textbook or concept inventory
 

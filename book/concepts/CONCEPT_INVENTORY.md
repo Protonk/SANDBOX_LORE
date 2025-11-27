@@ -345,4 +345,35 @@ If you believe “the SBPL I’m looking at is the whole story,” you will desi
 
 ## Process
 
-TODO
+The validation plan ties the examples in `book/examples/` to the four clusters. All harness code and task metadata live under `book/concepts/validation/` (see `validation/README.md` and `validation/tasks.py`). Each run should record OS/build and profile format variant so evidence stays versioned.
+
+**Stage 0 — Setup and metadata**
+- Record host OS/build, hardware, SIP/TCC state, and profile format variant cues before collecting evidence.
+- Use the shared ingestion spine (`concepts/cross/profile-ingestion/ingestion.py`) for all blob parsing to keep IR consistent across clusters.
+
+**Stage 1 — Static-Format validation**
+- Run `sb/run-demo.sh`, `extract_sbs/run-demo.sh`, and `sbsnarf`/`apple-scheme` as needed to produce modern compiled blobs; ingest them to JSON under `validation/out/static/` with headers/op-table/node/regex/literal sections plus variant tags.
+- For legacy blobs, use `sbdis` + `resnarf` to slice headers, op tables, and regex blobs; note the early decision-tree variant explicitly.
+- Assert structural invariants (offsets/lengths, table indices) via ingestion; failures get logged alongside the artifact.
+
+**Stage 2 — Semantic Graph and Evaluation**
+- Run microprofiles/probes: `metafilter-tests`, `sbpl-params`, `network-filters`, `mach-services` (server+client). For each, capture inputs (profile text/params), attempted operations, resolved paths/addresses, and allow/deny outcomes in JSONL under `validation/out/semantic/`.
+- After each run, map outcomes back to ingested PolicyGraph node IDs/paths where possible (using the ingestion output) to show which filters/decisions fired.
+- Annotate any TCC/SIP/platform interference explicitly so Seatbelt graph evidence is not polluted by adjacent controls.
+
+**Stage 3 — Vocabulary and Mapping**
+- From Stage 1 blobs, extract operation/filter vocab (name↔ID↔arg schema) into versioned tables under `validation/out/vocab/ops.json` and `.../filters.json`.
+- From Stage 2 logs, collect observed operation/filter names and map them to IDs using the tables; flag unknown/mismatched entries. Store results in `validation/out/vocab/runtime_usage.json`.
+- Each vocab entry should carry provenance (which blob/log) and OS/build/variant.
+
+**Stage 4 — Runtime Lifecycle and Extension**
+- Run scenario probes: `entitlements-evolution` (signed variants), `platform-policy-checks`, `containers-and-redirects`, `extensions-dynamic`, and `libsandcall` apply attempts.
+- Capture entitlements/signing IDs, container roots and symlinks, extension issuance/consumption results, and apply failures with error codes. Log under `validation/out/lifecycle/` with OS/build and profile sources (platform/app/custom).
+- Where possible, correlate observed behavior with attached profiles/extensions (e.g., via ingestion of compiled profiles used in the scenario) and note adjacent control involvement (TCC prompts, SIP denial).
+
+**Stage 5 — Evidence index**
+- Summarize produced artifacts per cluster in a machine-readable index (e.g., JSON manifest under `validation/out/index.json`) pointing to the static/semantic/vocab/lifecycle outputs and their provenance.
+- Link concept entries to their witnesses by referencing this manifest, closing the loop from concepts → examples → evidence.
+
+**Stage 6 — Prepare for handoff**
+- Build a stateless summary of the content in `validation/` for an agent who will audit your work. They do not need explanation, context, or reasoning--they need a rich router to the code and linkages. Place this summary and routing in `concepts/INV_SUMMARY.md`.

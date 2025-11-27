@@ -1,17 +1,3 @@
-# AGENTS — Start Here
->This file’s sole purpose is to get an agent from zero context to the right map in one hop.
-You just landed in a **synthetic textbook workspace** about the macOS Seatbelt sandbox. There is no app to build; everything here exists to read, decode, and explain sandbox policies.
+# Agents start here
 
-## What this place is
-- A knowledge substrate for a future textbook on the macOS sandbox.
-- Runnable labs and tooling to compile, ingest, and dissect sandbox profiles.
-- Guidance docs that define the model, vocabulary, and known drifts on modern macOS.
-
-## Where things live
-- `concepts/` — concept inventory and shared code (e.g., profile ingestion for modern and legacy blobs under `cross/profile-ingestion`).
-- `substrate/` — the conceptual spine listed above; `substrate/exegesis/` holds per-source exegesis.
-- `book/` — the book, including code examples and profiles
-
-## If your prompt is vague (“what is this project?”)
-- Answer: it is a teaching/research substrate for the macOS sandbox, not a product. Your job is to read/ingest/describe, not to ship features.
-- Navigate in this order: root `AGENTS.md` (this file) → `substrate/AGENTS.md`
+When you work in this repo, treat the substrate, especially Orientation, Concepts, Appendix, Environment, and State as a fixed, opinionated model of the macOS Seatbelt sandbox and use them as your “world”. Answer questions and draft text in the project’s own vocabulary (operations, filters, PolicyGraph, profile layers, containers, entitlements, extensions, TCC/SIP/hardened runtime) rather than generic OS-security jargon, and mentally route to the right document family when you reason. For example: Orientation for lifecycle/story, Concepts for exact definitions, Appendix for SBPL/binary details, Environment for containers and neighboring systems, State for time-bound behavior on macOS 13–14.
