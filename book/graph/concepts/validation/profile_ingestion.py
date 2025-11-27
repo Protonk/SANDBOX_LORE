@@ -63,10 +63,20 @@ def parse_header(blob: ProfileBlob) -> Header:
             regex_count=re_count,
             raw_length=len(data),
         )
-    # Fallback for unknown/modern formats: report length and unknown counts.
+    # Heuristic for modern graph-based blobs compiled by libsandbox:
+    # - first 16 bytes often contain small u16 fields; the second word usually
+    #   matches the number of operations (count of op-table entries).
+    # - op table appears immediately after this 16-byte preamble as u16
+    #   indices into the node array.
+    op_count: Optional[int] = None
+    if len(data) >= 18:
+        words = [int.from_bytes(data[i : i + 2], "little") for i in range(0, 16, 2)]
+        maybe_op = words[1]
+        if 0 < maybe_op < 2048:
+            op_count = maybe_op
     return Header(
-        format_variant="unknown-modern",
-        operation_count=None,
+        format_variant="modern-heuristic",
+        operation_count=op_count,
         node_count=None,
         regex_count=None,
         raw_length=len(data),
@@ -81,5 +91,34 @@ def slice_sections(blob: ProfileBlob, header: Header) -> Sections:
         nodes = b""  # legacy handlers are embedded; keep them in regex_literals below
         regex_literals = data[re_offset_bytes:]
         return Sections(op_table=op_table, nodes=nodes, regex_literals=regex_literals)
-    # Unknown/modern: expose the whole blob as regex_literals for inspection.
-    return Sections(op_table=b"", nodes=b"", regex_literals=data)
+    # Modern heuristic: treat bytes 0x10..(0x10 + op_count*2) as op-table.
+    op_table_len = 0
+    if header.operation_count:
+        op_table_len = header.operation_count * 2
+    op_table_start = 16
+    op_table_end = min(len(data), op_table_start + op_table_len)
+    op_table = data[op_table_start:op_table_end]
+
+    # Attempt to split node area vs literal/regex pool by looking for the onset
+    # of mostly-printable data near the tail. This is intentionally conservative;
+    # if no printable run is found, treat the whole remainder as nodes.
+    def find_literal_start(buf: bytes) -> int:
+        window = 64
+        threshold = 0.7
+        for i in range(op_table_end, len(buf)):
+            chunk = buf[i : min(len(buf), i + window)]
+            if not chunk:
+                continue
+            printable = sum(
+                1
+                for b in chunk
+                if b == 0x00 or 32 <= b <= 126
+            )
+            if printable / len(chunk) >= threshold:
+                return i
+        return len(buf)
+
+    literal_start = find_literal_start(data)
+    nodes = data[op_table_end:literal_start]
+    regex_literals = data[literal_start:]
+    return Sections(op_table=op_table, nodes=nodes, regex_literals=regex_literals)
