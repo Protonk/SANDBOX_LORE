@@ -1,0 +1,36 @@
+import json
+import pytest
+
+from pathlib import Path
+
+from book.graph.concepts.validation import decoder
+
+# Repo root: tests/ -> book/ (parents[2])
+ROOT = Path(__file__).resolve().parents[2]
+FIXTURES_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "fixtures" / "fixtures.json"
+
+
+def load_fixtures():
+    if not FIXTURES_PATH.exists():
+        return []
+    return json.loads(FIXTURES_PATH.read_text()).get("blobs", [])
+
+
+@pytest.mark.system
+def test_fixture_structures():
+    blobs = load_fixtures()
+    assert blobs, "No fixtures found"
+    repo_root = Path(__file__).resolve().parents[2]
+    for entry in blobs:
+        path = repo_root / entry["path"]
+        assert path.exists(), f"missing fixture {path}"
+        data = path.read_bytes()
+        decoded = decoder.decode_profile_dict(data)
+        # Structural sanity: op_table length should match op_count*2 when op_count is present.
+        op_count = decoded.get("op_count")
+        op_table = decoded.get("op_table", [])
+        if op_count:
+            assert len(op_table) == op_count, f"op_table entries mismatch for {path.name}"
+        sections = decoded.get("sections", {})
+        assert sections.get("nodes", 0) >= 0
+        assert sections.get("literal_pool", 0) >= 0

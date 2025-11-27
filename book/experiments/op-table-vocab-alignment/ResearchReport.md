@@ -25,7 +25,7 @@ The experiment deliberately avoids implementing the entire vocabulary-extraction
 
 This experiment targets the same Sonoma host and substrate snapshot as the existing experiments:
 
-- **Host / OS:** macOS 13–14 on Apple Silicon (Sonoma-era baseline), as assumed by the `SUBSTRATE_2025-frozen` State document.
+- **Host / OS:** macOS 14.4.1 (23E224), kernel 23.4.0, Apple Silicon; SIP enabled (from `validation/out/metadata.json`). Sonoma-era baseline consistent with `SUBSTRATE_2025-frozen`.
 - **Profiles and tools reused:**
   - Synthetic SBPL variants and compiled blobs under `book/experiments/op-table-operation/sb/` and `sb/build/`.
   - Ingestion helpers and analyzers used to produce:
@@ -73,6 +73,23 @@ The planned method is structured in phases, corresponding to `Plan.md`:
      - facts (directly asserted by the vocabulary file and observed op-table indices),
      - and hypotheses (patterns that might not generalize beyond these synthetic profiles).
 
+## 4. Vocabulary contract (expected shape)
+
+To keep alignment logic stable, this experiment assumes the vocabulary artifacts will eventually follow a simple, versioned JSON shape:
+
+- `validation/out/vocab/ops.json`
+  - `metadata`: OS/build, profile format variant, and source blobs used to derive the table (e.g., system profiles).
+  - `versioning`: include product/version/build and a content hash of the vocab file so experiments can record exactly which vocabulary they consumed.
+  - `entries`: list of objects with at least:
+    - `name`: SBPL operation name (string).
+    - `id`: numeric Operation ID (int).
+    - `arg_schema` or `notes` (optional): human-readable argument description if available.
+    - `provenance`: which blob(s) or tool produced the mapping.
+- `validation/out/vocab/filters.json`
+  - Similar structure: `name`, `id`, optional argument schema/notes, and provenance.
+
+The current placeholder artifacts set `status: unavailable` and leave `entries` empty; once real vocab extraction runs, they should be replaced by populated tables matching the above contract, with explicit OS/build provenance.
+
 ## 4. Relationship to existing experiments
 
 This experiment does not replace `node-layout` or `op-table-operation`; it layers on top of them:
@@ -90,27 +107,33 @@ The alignment work here is meant to:
 - clarify which parts of the analysis must defer to shared vocabulary tooling under `book/graph/concepts/validation/`,
 - and ensure that any future mapping from bucket indices to Operation IDs is explicitly versioned and grounded in canonical artifacts, in line with the substrate’s constraints.
 
-## 5. Current status and next steps
+## 5. Alignment artifact (current form)
+
+- `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json` was generated from `op-table-operation/out/summary.json` and currently records, per synthetic profile:
+  - SBPL operation names,
+  - observed op-table indices (`op_entries`),
+  - `operation_count`,
+  - placeholders for `operation_ids` and `vocab_version`.
+- After creating placeholder vocabulary artifacts (`validation/out/vocab/ops.json`, `filters.json`) with status `unavailable`, the alignment file now records `vocab_present=true`, `vocab_status=unavailable`, and `vocab_version=<placeholder timestamp>`; `operation_ids` remain null until a real vocabulary map is produced.
+
+## 6. Current status and next steps
 
 Current status:
 
 - The experiment has been initialized:
   - `Plan.md` describes the phases: setup, vocabulary hookup, alignment, interpretation, and turnover.
   - `Notes.md` records the creation of this experiment and its intended bridging role.
-  - No new code or alignment artifacts have been created yet; this report is a design and scope document.
+  - Existing artifacts from sibling experiments have been inventoried (`node-layout/out/summary.json`, `op-table-operation/out/summary.json`, `op_table_map.json`).
+  - Placeholder vocabulary artifacts now exist under `book/graph/concepts/validation/out/vocab/` (status `unavailable`, IDs unknown) to unblock alignment consumers.
+  - Ran static-format demos (`examples/extract_sbs/run-demo.sh`, `examples/sb/run-demo.sh` after fixing import path); ingestion marks system blobs as `unknown-modern` with empty op-table lengths, leaving no vocab data.
+  - The alignment artifact `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json` has been generated and updated to record vocab status and placeholder version; `operation_ids` remain empty pending a real vocabulary map.
 
 Immediate next steps (for a future agent):
 
-1. Verify the presence and contents of:
-   - `book/experiments/node-layout/out/summary.json`
-   - `book/experiments/op-table-operation/out/summary.json`
-   - `book/experiments/op-table-operation/out/op_table_map.json`
-2. Scan `book/graph/concepts/validation/` for any existing vocabulary outputs:
-   - if `vocab/ops.json` (or similar) exists, document its shape and version here;
-   - if it does not, add a short “vocab dependency” note to this report and to `EXPERIMENT_FEEDBACK.md`.
-3. Sketch or implement a small alignment script (or extend an existing analyzer) to produce:
-   - per-profile records of SBPL operations, op-table buckets, and placeholders for Operation IDs.
-4. Update `Notes.md` continuously with the concrete steps taken, any troubleshooting, and decisions about how much logic lives here vs in shared validation tooling.
+1. Define how to associate vocabulary artifacts with OS/build (versioning/hash) in line with the expected JSON contract, and record that mapping in `Plan.md`/`ResearchReport.md`.
+2. Outline the pipeline for generating real `out/vocab/ops.json` / `filters.json` from canonical blobs (e.g., `extract_sbs` outputs), even if not implemented here.
+3. Trigger or coordinate the vocabulary-mapping tasks (e.g., `op-filter-tables-from-blobs`) to populate `book/graph/concepts/validation/out/vocab/ops.json`; replace the placeholder and rerun alignment to fill `operation_ids` and record vocab version/hash.
+4. Keep `Notes.md` updated with further alignment or contract-definition work; propagate any vocab dependency notes to `EXPERIMENT_FEEDBACK.md` if needed.
+5. Implement or integrate a decoder that can extract operation/filter vocab from modern compiled blobs; current ingestion heuristics (op-table len=0 for system profiles) are insufficient.
 
 As with the other experiments, `Plan.md` and `ResearchReport.md` should be kept in sync so that another agent can pick up the work with minimal re-orientation.
-

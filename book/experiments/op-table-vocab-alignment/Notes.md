@@ -6,3 +6,22 @@
    - Created `ResearchReport.md` skeleton with motivation, scope, and planned structure; no code or analysis has been run yet.
    - Intent is to treat this experiment as a bridge between existing bucket-focused work and the vocabulary-mapping validation cluster, without assuming responsibility for full vocab extraction.
 
+2. **Artifact inventory and placeholder alignment (Chat agent, 2025-11-29)**
+   - Confirmed presence of upstream artifacts: `node-layout/out/summary.json`, `op-table-operation/out/summary.json`, and `op_table_map.json`.
+   - Checked vocabulary outputs under `book/graph/concepts/validation/out/vocab/` and found the directory empty; noted dependency on the vocabulary-mapping tasks in `validation/tasks.py`.
+   - Generated a placeholder alignment artifact `out/op_table_vocab_alignment.json` from `op-table-operation/out/summary.json`, capturing per-profile SBPL ops, op-table indices, and operation_count with `operation_ids` left null until a vocab file exists.
+
+3. **Placeholder vocab artifacts and alignment update (Chat agent, 2025-11-29)**
+   - Created placeholder `book/graph/concepts/validation/out/vocab/ops.json` and `filters.json` (status `unavailable`, IDs unknown) using host metadata from `validation/out/metadata.json` to unblock downstream consumers; real vocab extraction remains outstanding.
+   - Updated `out/op_table_vocab_alignment.json` to record `vocab_present=true`, `vocab_status=unavailable`, and `vocab_version` set to the placeholder timestamp; `operation_ids` remain null pending a real vocabulary map.
+
+4. **Contract and versioning notes (Chat agent, 2025-11-29)**
+   - Recorded expected JSON contract for future `ops.json` / `filters.json` in `ResearchReport.md`, including OS/build provenance and a vocab content hash for versioning.
+   - Captured host baseline (macOS 14.4.1 / 23E224, kernel 23.4.0, SIP enabled) in `ResearchReport.md`.
+
+5. **Attempted vocab generation (Chat agent, 2025-11-29)**
+   - Ran `book/examples/extract_sbs/run-demo.sh` to regenerate system profile blobs (airlock.sb.bin, bsd.sb.bin) under `examples/extract_sbs/build/profiles/`.
+   - Ran `book/examples/sb/run-demo.sh` after fixing an import path in `compile_sample.py` (changed to `book.graph.concepts.validation`); generated `examples/sb/build/sample.sb.bin`.
+   - Investigated `validation/out/static/system_profiles.json` outputs; ingestion marks format as `unknown-modern` with empty op_table lengths, leaving no visible vocabulary data to extract.
+   - Searched repo for existing vocab extraction tooling; none present beyond placeholders. Attempted to locate `libsandbox.dylib` for symbol introspection; paths not found via `find` within time limits.
+   - Conclusion: without a decoder for the modern compiled format or a known vocab table source, real `ops.json` / `filters.json` cannot be generated on this host. Placeholder vocab remains; alignment still lacks operation IDs.

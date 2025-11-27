@@ -11,6 +11,9 @@ You are inside the Seatbelt textbook workspace. Use this file as a fast nav map 
 - **examples/**
   - One folder per example (extensions-dynamic, mach-services, sbpl-params, etc.). Generated index: `examples/examples.json`.
 
+- **experiments/**
+  - Cross-cutting experiments designed to validate our concept inventory
+
 - **chapters/**
   - Chapter content and plans (e.g., `chapter01-Introduction/`, `chapter03-TextEdit/`, `chapter06-Example.app/`).
 

@@ -13,7 +13,8 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.append(str(REPO_ROOT))
 
 # Shared ingestion helpers live under book/concepts/validation/
-from book.concepts.validation import profile_ingestion as ingestion  # noqa: E402
+# Shared ingestion helpers live under book/graph/concepts/validation/
+from book.graph.concepts.validation import profile_ingestion as ingestion  # noqa: E402
 
 
 class SandboxProfile(ctypes.Structure):

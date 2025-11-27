@@ -1,0 +1,13 @@
+{
+  "status": "unavailable",
+  "generated_at": "2025-11-27T20:57:03.939966Z",
+  "host": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "machine": "arm64"
+  },
+  "notes": "Vocabulary extraction not implemented on this host; placeholder artifact created to unblock alignment. Operation IDs remain unknown.",
+  "operations": []
+}

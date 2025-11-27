@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "profile_format_variant": "modern-heuristic",
+    "source_blobs": [
+      "validation/out/static/system_profiles.json"
+    ],
+    "hash": "<fill-with-sha256-of-entries-array>"
+  },
+  "entries": [
+    {
+      "name": "file-read*",
+      "id": 123,
+      "arg_schema": "path/dirent variant",
+      "provenance": "derived from <blob/path> by <tool>",
+      "notes": "example placeholder; replace with real data"
+    }
+  ]
+}
