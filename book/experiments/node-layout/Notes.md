@@ -80,3 +80,37 @@
   - Use op-table entrypoints (first 9 u16s) to derive entry node indices and map which node ranges are actually used by each operation; compare v1 vs v4 in the non-shared tail.
   - Add a variant with two different filter types on the same op but keeping op_count constant, then diff with op-table-aware segmentation.
   - Write a small analyzer to list op-table entries and dump per-op node slices for comparison across variants.
+
+## 2025-11-27 5
+
+- Wrote a quick diff/analyzer to compare node records at stride 12 and to dump op-table entries.
+- Diff results:
+  - v1 (`/tmp/foo`) vs v4 (foo+bar) still shows zero differing records in the shared prefix; node lengths differ (365 vs 403 bytes), suggesting extra nodes beyond the shared range. Node lengths are not multiples of 12, reinforcing that stride might be an approximation or that trailing data is partial.
+  - v1 vs v5 (literal+subpath) shows many differing records in the prefix (first 20 diffs all in early records), indicating that introducing a literal filter changes node records even when op_count stays at 5.
+  - v0 vs v5 shows only 2 differing records despite identical node lengths; adding literal+subpath tweaks a couple of nodes when starting from the baseline.
+- Op-table entries for all variants are uniform:
+  - v0/v5: op_count=5, op entries [4,4,4,4,4].
+  - v1/v4: op_count=6, op entries [5,5,5,5,5,5].
+  This suggests entrypoints are consistent across ops in a profile and may simply index the first node; does not help segment nodes per op yet.
+- Observations:
+  - Literal pool contents differ as expected (v4 pool has both foo/bar; v5 pool minimal), but node fields in the shared prefix don’t reflect literal changes.
+  - Non-multiple-of-stride node lengths hint that either stride≠12 or the node region includes variable-length/trailer data; need to reconsider stride or allow for trailing metadata.
+- Next steps:
+  - Examine the extra tail nodes in v4 beyond the v1 length to see if literal references live there.
+  - Revisit stride assumption: test 8/16 on new variants and check how many full records fit; consider that records might not be fixed-size.
+  - Use op-table entry 4/5 as a starting index to walk nodes (if tags can be interpreted as branch/terminal) to see which nodes are reachable per op.
+- Tail inspection (v1 vs v4):
+  - v1 has 30 full 12-byte records + 5-byte tail; v4 has 33 full records + 7-byte tail. Extra v4 records include a tag0 record with edges (1,4) and a record with an out-of-bounds edge value (3584), plus partial trailing bytes. This casts doubt on fixed 12-byte stride and suggests variable-length or packed structures; stride may still be a useful approximation for the front of the node array but not the tail.
+## Narrative
+
+Started by slicing the existing `sample.sb.bin` to establish a baseline: the heuristic split yields a small op-table, a ~395-byte node region, and a literal tail with obvious strings; stride=12 looked most promising for node records. Generated minimal SBPL variants to force controlled changes: a baseline allow-only profile, single subpath (`/tmp/foo`), same subpath with `/tmp/bar`, and a two-filter require-all. Compiling these showed op_count bumps and node/literal size changes; stride-based diffs revealed that changing foo→bar didn’t alter node bytes, while adding filters did. Added more targeted variants (require-any with two subpaths; literal+subpath) to tease out literal and filter key fields. The two-subpath variant lengthened the node region but kept the shared prefix identical; literal pools differed. Adding a literal filter introduced more node differences. Literal strings reliably appear in the pools, but the node fields referencing them remain opaque in shared regions. Plan is to use op-table entrypoints to map nodes to operations and compare non-shared tails, and to probe mixed filter types further. Throughout, kept notes of stride/tag patterns and the need for a small analyzer to automate per-op slicing and scoring.
+
+## Narrative (Chat)
+
+We began by taking a careful “first cut” through `sample.sb.bin`, using the existing heuristic to separate the op-table, node region, and literal tail. That initial pass already showed the essential structure the substrate promises: a compact operation pointer table, a dense block of policy nodes, and a trailing pool of human-readable strings like `/etc/hosts` and `/tmp/sb-demo`. A quick stride analysis over the node region suggested that treating each node as a 12-byte record produced a small, stable set of tag values and in-bounds successor indices, which made stride=12 a reasonable working hypothesis for the node layout.
+
+To probe the layout, we then constructed a series of tiny SBPL profiles that differed in exactly one respect: a baseline profile that simply allows `file-read*`, a version that adds a single `(subpath "/tmp/foo")` filter, a clone that flips the literal to `/tmp/bar`, and another that uses `(require-all (subpath "/tmp/foo") (subpath "/dev"))`. Compiling these with `sandbox_compile_string` and comparing node regions showed that adding filters changes the node bytes and op-count, while changing `/tmp/foo` to `/tmp/bar` leaves the node bytes identical but alters the literal pool. This pattern told us that literals clearly live in the pool, but the node fields that refer to them are not obviously tied to the literal’s raw position.
+
+From there, we introduced more focused variants to stress “multiple literals” and “mixed filter types”: a profile that uses `require-any` over two subpaths (`/tmp/foo` and `/tmp/bar`), and one that combines a `literal "/etc/hosts"` with a `subpath "/tmp/foo"` in a `require-all`. The require-any profile increased the node region length but kept the shared prefix identical with the single-subpath case, while the literal+subpath profile changed a slice of records without altering op-count. Across all of these, the literal pools evolved exactly as expected—new strings appeared where they should—but the node bytes in the shared regions remained opaque, reinforcing the idea that node fields likely hold compact IDs rather than raw literal offsets.
+
+Taken together, these steps give us a progressively tighter picture of the graph layout: we have a plausible stride, a sense of how adding filters and literals perturbs the node region, and confirmation that literal tables behave as a separate pool. The remaining work is to anchor nodes to specific operations via the op-table, examine the non-shared tails where new filters live, and build a small analyzer that can systematically test candidate field layouts for tags, edges, filter keys, and literal indices across all these controlled variants.
