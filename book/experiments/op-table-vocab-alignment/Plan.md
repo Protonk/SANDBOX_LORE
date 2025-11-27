@@ -30,6 +30,7 @@ Deliverables for this phase:
   - [x] How to associate a compiled profile blob with a specific vocabulary version (OS / build).
 - [x] Record these expectations in `ResearchReport.md` as assumptions and requirements for future agents.
   - Status: real vocab extraction still missing; placeholder artifacts exist under `validation/out/vocab/`.
+  - Once a decoder exists, vocabulary extraction should consume decoder outputs (op_table entries, node/tag structure) plus SBPL/profile metadata from static-format tasks, not raw blobs.
 
 Deliverables for this phase:
 - A stable description in `ResearchReport.md` of how vocabulary artifacts will be consumed, without overloading this experiment with full vocab extraction responsibilities.
@@ -82,5 +83,5 @@ Deliverables for this phase:
 Open questions to track:
 
 - [ ] How should we represent “buckets” in a way that stays stable across OS builds while still tying to concrete Operation IDs?
-- [ ] How much of the alignment logic belongs here versus in shared validation tooling under `book/graph/concepts/validation/`?
-- [ ] Once vocab is available, do we see any contradictions between the bucket behavior observed in `op-table-operation` and the canonical Operation Vocabulary Map?
+- [ ] How much of the alignment logic belongs here versus in shared validation tooling under `book/graph/concepts/validation/` (for example, a dedicated `vocabulary-mapping` script that reads decoder output from canonical blobs)?
+- [ ] Once vocab is available, do we see any contradictions between the bucket behavior observed in `op-table-operation` (decoder-backed signatures) and the canonical Operation Vocabulary Map?

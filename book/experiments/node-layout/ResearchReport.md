@@ -223,10 +223,11 @@ In terms of the textbook’s goals, this is still useful:
 
 Future work can build on this by:
 
-- Designing additional, deliberately asymmetric profiles where only one operation is added or removed across profiles that all exhibit the `[6,…,5]` pattern (see §10), to observe whether the position of the lone `5` moves and thereby pin it to a specific operation vocabulary entry.
-- Extending `analyze.py` with a small correlation pass that tracks op-table indices across all synthetic profiles and, once an operation vocabulary map is available for this host, assigns each index to a concrete operation ID for per-operation PolicyGraph entrypoints.
-- Experimenting with variable-length node parsing across all variants by treating tags as node types with candidate sizes and searching for tag→size mappings that both match total node lengths and minimize out-of-bounds “edges,” especially in the tails.
-- Adding finer-grained literal/filter probes (e.g., toggling a single literal or filter on/off, or swapping filter types while holding literals constant) and scoring which node fields change in lockstep with literal pool contents vs filter structure.
+- Integrating the shared decoder (`book/graph/concepts/validation/decoder.py`) into `analyze.py` so that `out/summary.json` records `node_count`, `tag_counts`, `op_table_offset`, and `literal_strings` in a way that is consistent with other validation tooling.
+- Using decoder-backed summaries to revisit foo→bar and multi-literal variants and identify which node fields track literal-table indices vs literal content, tightening our literal/regex index hypotheses.
+- Comparing decoder fields across profiles that add/remove specific filters (subpath, literal, require-any/all) to isolate candidate fields for filter key codes and to refine our understanding of tag classes (for example, how tag6 behaves across variants).
+- Treating “front” vs “tail” regions explicitly—based on where new nodes appear relative to a baseline—and experimenting with per-tag or per-region size models to explain tail structure while minimizing out-of-bounds edge interpretations.
+- Designing additional, deliberately asymmetric mixed-op profiles, then using decoder-driven graph walks from each op-table entrypoint to characterize per-bucket `tag_counts` and literal usage; these structural signatures can later be correlated with operation IDs once a vocabulary map exists.
 
 ## 10. Mixed-op probes and first op-table divergence
 

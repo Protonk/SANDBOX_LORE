@@ -34,3 +34,7 @@ def test_fixture_structures():
         sections = decoded.get("sections", {})
         assert sections.get("nodes", 0) >= 0
         assert sections.get("literal_pool", 0) >= 0
+        # Tag counts should align with node_count.
+        node_count = decoded.get("node_count", 0)
+        tag_counts = sum(decoded.get("tag_counts", {}).values())
+        assert tag_counts == node_count, f"tag count mismatch for {path.name}"

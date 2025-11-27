@@ -220,11 +220,12 @@ Concrete next steps (within this experiment and the validation harness):
      - once an operation vocabulary map is available, re-interpret the op-table indices in this experiment as concrete operation IDs.
    - This would upgrade the current “bucket” view into a genuine Operation Vocabulary Map for the synthetic profiles.
 
-3. **Add a small correlation pass (future work)**
+3. **Add a decoder-backed correlation pass (future work)**
    - Extend `analyze.py` (or a sibling script) to:
-     - line up op-table indices across all profiles,
-     - annotate which indices are ever associated with mach-only or read-only profiles,
-     - propose candidate mappings (e.g., “index 4 is used whenever only non-mach ops are present”).
+     - use the shared decoder (`book/graph/concepts/validation/decoder.py`) to produce per-profile `node_count`, `tag_counts`, and literal strings alongside op-table data,
+     - line up op-table indices across all profiles and attach structural signatures (tag/literal patterns) to each entry.
+     - annotate which indices and signatures are ever associated with mach-only vs read-only vs filtered profiles,
+     - propose candidate mappings (e.g., “the entry whose signature S appears whenever mach is present”) as structural hypotheses.
    - This extension should be clearly marked as **hypothesis-generating**, not as a replacement for canonical vocab extraction.
 
 4. **Tie into semantic probes (optional stretch)**

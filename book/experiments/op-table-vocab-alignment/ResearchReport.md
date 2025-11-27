@@ -55,7 +55,7 @@ The planned method is structured in phases, corresponding to `Plan.md`:
    - Capture these expectations here so future agents implementing vocabulary extraction can target a stable interface.
 
 3. **Alignment artifact construction**
-   - Reuse existing ingestion code (or light wrappers) to:
+   - Reuse existing ingestion/decoder code (or light wrappers) to:
      - enumerate synthetic profiles and their SBPL operations,
      - read `operation_count` and op-table entries for each compiled blob,
      - build a per-profile record of:

@@ -20,8 +20,11 @@ class DecodedProfile:
     format_variant: str
     preamble_words: List[int]
     op_count: Optional[int]
+    op_table_offset: int
     op_table: List[int]
     nodes: List[Dict[str, Any]]
+    node_count: int
+    tag_counts: Dict[str, int]
     literal_pool: bytes
     literal_strings: List[str]
     sections: Dict[str, int]
@@ -63,13 +66,16 @@ def _parse_op_table(data: bytes) -> List[int]:
 
 def _parse_nodes_stride12(data: bytes) -> List[Dict[str, Any]]:
     nodes: List[Dict[str, Any]] = []
+    tag_counts: Dict[int, int] = {}
     for off in range(0, len(data), 12):
         chunk = data[off : off + 12]
         if len(chunk) < 12:
             break
         fields = [int.from_bytes(chunk[i : i + 2], "little") for i in range(0, 12, 2)]
-        nodes.append({"offset": off, "tag": fields[0], "fields": fields[1:], "hex": chunk.hex()})
-    return nodes
+        tag = fields[0]
+        tag_counts[tag] = tag_counts.get(tag, 0) + 1
+        nodes.append({"offset": off, "tag": tag, "fields": fields[1:], "hex": chunk.hex()})
+    return nodes, tag_counts
 
 
 def _extract_strings(buf: bytes, min_len: int = 4) -> List[str]:
@@ -101,12 +107,17 @@ def decode_profile(data: bytes) -> DecodedProfile:
     nodes_bytes = data[nodes_start:literal_start]
     literal_pool = data[literal_start:]
 
+    nodes, tag_counts = _parse_nodes_stride12(nodes_bytes)
+
     decoded = DecodedProfile(
         format_variant="modern-heuristic",
         preamble_words=preamble,
         op_count=op_count,
+        op_table_offset=op_table_start,
         op_table=_parse_op_table(op_table_bytes),
-        nodes=_parse_nodes_stride12(nodes_bytes),
+        nodes=nodes,
+        node_count=len(nodes),
+        tag_counts={str(k): v for k, v in tag_counts.items()},
         literal_pool=literal_pool,
         literal_strings=_extract_strings(literal_pool),
         sections={
@@ -126,8 +137,11 @@ def decode_profile_dict(data: bytes) -> Dict[str, Any]:
         "format_variant": d.format_variant,
         "preamble_words": d.preamble_words,
         "op_count": d.op_count,
+        "op_table_offset": d.op_table_offset,
         "op_table": d.op_table,
         "nodes": d.nodes,
+        "node_count": d.node_count,
+        "tag_counts": d.tag_counts,
         "literal_strings": d.literal_strings,
         "sections": d.sections,
     }

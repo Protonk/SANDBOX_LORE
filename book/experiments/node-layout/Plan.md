@@ -140,9 +140,10 @@ Usage:
 
 These items are explicitly *not* solved yet; they are the next frontier for future work:
 
-- [ ] **Literal index mapping:** We still do not know exactly how nodes refer to the literal/regex pool in modern blobs. Controlled foo→bar and multi-literal variants show pool changes but not obvious node-field changes in shared prefixes.
-- [ ] **Filter key location:** We have not yet identified which node field carries filter key codes as opposed to literal indices; tag and edge patterns alone are insufficient.
-- [ ] **Tail layout:** Extra nodes and remainders at the tail do not fit a simple fixed stride; a better model (variable-size records, per-tag sizes, or a distinct tail encoding) is still to be derived.
-- [ ] **Per-op segmentation:** Mixed-op profiles now show at least two distinct op-table entry indices, but we still lack a mapping from operation vocabulary IDs to those indices and a way to use them to cleanly segment the node array per operation. Combining “flat” ops (e.g., mach+network, write+network) leaves the op-table uniform; only v8–v10 produced `[6,…,5]`, and the lone `5` remains unmapped.
+- [ ] **Decoder integration:** Update `analyze.py` to reuse `book.graph.concepts.validation.decoder.decode_profile_dict` so that `out/summary.json` includes shared fields (`node_count`, `tag_counts`, `op_table_offset`, `literal_strings`) in addition to existing stride stats.
+- [ ] **Literal index mapping:** Use decoder-backed summaries to re-run foo→bar and multi-literal comparisons and test which node fields correlate with literal-table indices versus content changes.
+- [ ] **Filter key location:** With decoder output in hand, search for stable vs changing node fields across profiles that add/remove specific filters (subpath, literal, require-any/all), and propose candidate fields for filter key codes.
+- [ ] **Tail layout:** Use decoder’s node and tag accounting to distinguish “front” vs “tail” regions (where new nodes appear compared to a baseline), and attempt a per-tag or per-region size model for the tail; document any per-tag size patterns that emerge.
+- [ ] **Per-op segmentation:** Once op-table entrypoints can be traversed via decoder output, run small graph walks from each entry to characterize reachable `tag_counts` and literals per operation bucket; this should give a structural (ID-agnostic) segmentation that can later be tied to vocab IDs by the op-table experiments.
 
 Even with these open boxes, the experiment has already produced reusable artifacts (SBPL variants, blobs, structured summaries) and a clearer picture of what can and cannot be inferred from modern graph blobs without deeper reverse engineering.
