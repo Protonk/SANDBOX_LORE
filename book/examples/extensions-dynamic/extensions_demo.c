@@ -50,25 +50,29 @@ int main(void) {
 
     char *token = NULL;
     int rc = issue("com.apple.app-sandbox.read", target, 0, &token);
-    if (rc != 0) {
+    if (rc != 0 || token == NULL) {
         printf("sandbox_extension_issue_file failed rc=%d errno=%d (%s)\n",
                rc, errno, strerror(errno));
-        printf("On systems without the right entitlements, issuance is denied by design.\n");
-    } else {
-        printf("Issued extension token: %s\n", token);
-        // Consume installs the token into this process’s label so SBPL filters
-        // like (extension \"com.apple.app-sandbox.read\") can match during checks.
-        if (consume(token) == 0) {
-            printf("Consumed extension token, retrying open...\n");
-            try_open(target);
-        } else {
-            printf("Consuming extension failed errno=%d (%s)\n", errno, strerror(errno));
-        }
-
-        // Release returns the token to libsandbox; real clients do this once the
-        // temporary capability is no longer needed.
-        release(token);
+        printf("On systems without the right entitlements, issuance is denied by design. Skipping consume/release.\n");
+        dlclose(handle);
+        printf("\nExtensions act as a third dimension: platform policy ∧ process policy ∧ active extensions.\n");
+        printf("Tokens map directly to `(extension ...)` filters compiled into the policy graph.\n");
+        return 0;
     }
+
+    printf("Issued extension token: %s\n", token);
+    // Consume installs the token into this process’s label so SBPL filters
+    // like (extension \"com.apple.app-sandbox.read\") can match during checks.
+    if (consume(token) == 0) {
+        printf("Consumed extension token, retrying open...\n");
+        try_open(target);
+    } else {
+        printf("Consuming extension failed errno=%d (%s)\n", errno, strerror(errno));
+    }
+
+    // Release returns the token to libsandbox; real clients do this once the
+    // temporary capability is no longer needed.
+    release(token);
 
     dlclose(handle);
     printf("\nExtensions act as a third dimension: platform policy ∧ process policy ∧ active extensions.\n");

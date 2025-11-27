@@ -1,0 +1,4 @@
+{"service": "com.example.xnusandbox.demo", "server_register": "failed", "kr_register": "0x0000044c", "kr_meaning": "BOOTSTRAP_NOT_PRIVILEGED", "note": "bootstrap_register failed; client lookup also failed"}
+{"service": "com.example.xnusandbox.demo", "client_lookup": "failed", "kr": "0x0000044c", "kr_meaning": "BOOTSTRAP_NOT_PRIVILEGED", "note": "Server not registered; platform/bootstrap may block arbitrary names for unprivileged callers"}
+{"service": "com.apple.cfprefsd.daemon", "client_lookup": "failed", "kr": "0x0000044c", "kr_meaning": "BOOTSTRAP_NOT_PRIVILEGED", "note": "Lookup denied/failed without sandbox profile"}
+{"service": "com.apple.securityd", "client_lookup": "failed", "kr": "0x0000044c", "kr_meaning": "BOOTSTRAP_NOT_PRIVILEGED", "note": "Lookup denied/failed without sandbox profile"}

@@ -1,6 +1,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <Security/Security.h>
 #include <libproc.h>
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -20,9 +21,11 @@ static void print_cfstring(const char *label, CFStringRef str) {
 }
 
 int main(void) {
-    char exec_path[PROC_PIDPATHINFO_MAX] = {0};
-    if (proc_pidpath(getpid(), exec_path, sizeof(exec_path)) <= 0) {
-        strncpy(exec_path, "<unknown>", sizeof(exec_path) - 1);
+    long path_max = proc_pidpath(getpid(), NULL, 0);
+    size_t buf_len = (path_max > 0 && path_max < 4096) ? (size_t)path_max : 4096;
+    char exec_path[4096];
+    if (proc_pidpath(getpid(), exec_path, buf_len) <= 0) {
+        strncpy(exec_path, "<unknown>", buf_len - 1);
     }
 
     printf("Seatbelt entitlement probe\n");

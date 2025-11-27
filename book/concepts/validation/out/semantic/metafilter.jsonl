@@ -1,0 +1,6 @@
+{"scenario": "require-any", "path": "/tmp/metafilter_any_ok", "exit_code": 71, "expected": "allow", "notes": "sandbox-exec harness; exit 71 indicates denied; matches demo script output"}
+{"scenario": "require-any", "path": "/tmp/metafilter_any_block_me", "exit_code": 71, "expected": "deny", "notes": "sandbox-exec harness; denied"}
+{"scenario": "require-all", "path": "/tmp/metafilter_all/real.txt", "exit_code": 71, "expected": "allow", "notes": "denied in practice; follow-up needed"}
+{"scenario": "require-all", "path": "/tmp/metafilter_all/link.txt", "exit_code": 71, "expected": "deny", "notes": "denied as expected"}
+{"scenario": "require-not", "path": "/tmp/metafilter_not/plain.txt", "exit_code": 71, "expected": "allow", "notes": "denied in practice; follow-up needed"}
+{"scenario": "require-not", "path": "/tmp/metafilter_not/symlink.txt", "exit_code": 71, "expected": "deny", "notes": "denied as expected"}

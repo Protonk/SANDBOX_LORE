@@ -29,10 +29,14 @@ int main(void) {
         return 1;
     }
 
-    // bootstrap_register2 is the modern way to register a service port.
+    // Register the service. bootstrap_register2 is newer but may be unavailable on some SDKs; fall back to bootstrap_register.
+#ifdef bootstrap_register2
     kr = bootstrap_register2(bootstrap, kServiceName, recv_port, 0);
+#else
+    kr = bootstrap_register(bootstrap, (char *)kServiceName, recv_port);
+#endif
     if (kr != KERN_SUCCESS) {
-        fprintf(stderr, "bootstrap_register2(\"%s\") failed: %s\n", kServiceName, mach_error_string(kr));
+        fprintf(stderr, "bootstrap_register(\"%s\") failed: %s\n", kServiceName, mach_error_string(kr));
         return 1;
     }
 

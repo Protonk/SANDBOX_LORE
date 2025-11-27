@@ -1,0 +1,2 @@
+{"param": "1", "target": "/tmp/params-allowed/from_param.txt", "exit_code": 65, "notes": "-D parameters likely unsupported on this system; file not created"}
+{"param": "0", "target": "/tmp/params-allowed/from_param.txt", "exit_code": 65, "notes": "same failure without param"}
