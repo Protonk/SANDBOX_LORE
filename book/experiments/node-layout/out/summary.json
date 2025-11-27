@@ -1,0 +1,538 @@
+[
+  {
+    "format_variant": "modern-heuristic",
+    "length": 440,
+    "name": "v0_baseline",
+    "op_count": 5,
+    "op_entries": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "section_lengths": {
+      "literals": 27,
+      "nodes": 387,
+      "op_table": 10
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 96,
+        "edges_total": 96,
+        "records": 48,
+        "remainder": 3,
+        "stride": 8,
+        "tags": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 63,
+        "edges_total": 64,
+        "records": 32,
+        "remainder": 3,
+        "stride": 12,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 48,
+        "edges_total": 48,
+        "records": 24,
+        "remainder": 3,
+        "stride": 16,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "04000400",
+          "index": 29,
+          "lit": 4,
+          "tag": 4
+        },
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "00000000",
+          "index": 30,
+          "lit": 3,
+          "tag": 4
+        },
+        {
+          "edge1": 3584,
+          "edge2": 1,
+          "extra": "0400000e",
+          "index": 31,
+          "lit": 3,
+          "tag": 0
+        }
+      ],
+      "remainder_hex": "010003"
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 467,
+    "name": "v1_subpath_foo",
+    "op_count": 6,
+    "op_entries": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "section_lengths": {
+      "literals": 74,
+      "nodes": 365,
+      "op_table": 12
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 90,
+        "edges_total": 90,
+        "records": 45,
+        "remainder": 5,
+        "stride": 8,
+        "tags": [
+          1,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 60,
+        "edges_total": 60,
+        "records": 30,
+        "remainder": 5,
+        "stride": 12,
+        "tags": [
+          0,
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 44,
+        "edges_total": 44,
+        "records": 22,
+        "remainder": 13,
+        "stride": 16,
+        "tags": [
+          1,
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 5,
+          "edge2": 5,
+          "extra": "04000400",
+          "index": 27,
+          "lit": 4,
+          "tag": 5
+        },
+        {
+          "edge1": 5,
+          "edge2": 4,
+          "extra": "05000500",
+          "index": 28,
+          "lit": 5,
+          "tag": 5
+        },
+        {
+          "edge1": 5,
+          "edge2": 5,
+          "extra": "05000500",
+          "index": 29,
+          "lit": 5,
+          "tag": 5
+        }
+      ],
+      "remainder_hex": "0500050004"
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 467,
+    "name": "v2_subpath_bar",
+    "op_count": 6,
+    "op_entries": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "section_lengths": {
+      "literals": 74,
+      "nodes": 365,
+      "op_table": 12
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 90,
+        "edges_total": 90,
+        "records": 45,
+        "remainder": 5,
+        "stride": 8,
+        "tags": [
+          1,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 60,
+        "edges_total": 60,
+        "records": 30,
+        "remainder": 5,
+        "stride": 12,
+        "tags": [
+          0,
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 44,
+        "edges_total": 44,
+        "records": 22,
+        "remainder": 13,
+        "stride": 16,
+        "tags": [
+          1,
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 5,
+          "edge2": 5,
+          "extra": "04000400",
+          "index": 27,
+          "lit": 4,
+          "tag": 5
+        },
+        {
+          "edge1": 5,
+          "edge2": 4,
+          "extra": "05000500",
+          "index": 28,
+          "lit": 5,
+          "tag": 5
+        },
+        {
+          "edge1": 5,
+          "edge2": 5,
+          "extra": "05000500",
+          "index": 29,
+          "lit": 5,
+          "tag": 5
+        }
+      ],
+      "remainder_hex": "0500050004"
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 440,
+    "name": "v3_two_filters",
+    "op_count": 5,
+    "op_entries": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "section_lengths": {
+      "literals": 27,
+      "nodes": 387,
+      "op_table": 10
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 96,
+        "edges_total": 96,
+        "records": 48,
+        "remainder": 3,
+        "stride": 8,
+        "tags": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 63,
+        "edges_total": 64,
+        "records": 32,
+        "remainder": 3,
+        "stride": 12,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 48,
+        "edges_total": 48,
+        "records": 24,
+        "remainder": 3,
+        "stride": 16,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "04000400",
+          "index": 29,
+          "lit": 4,
+          "tag": 4
+        },
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "00000000",
+          "index": 30,
+          "lit": 3,
+          "tag": 4
+        },
+        {
+          "edge1": 3584,
+          "edge2": 1,
+          "extra": "0400000e",
+          "index": 31,
+          "lit": 3,
+          "tag": 0
+        }
+      ],
+      "remainder_hex": "010003"
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 481,
+    "name": "v4_any_two_literals",
+    "op_count": 6,
+    "op_entries": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "section_lengths": {
+      "literals": 50,
+      "nodes": 403,
+      "op_table": 12
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 96,
+        "edges_total": 100,
+        "records": 50,
+        "remainder": 3,
+        "stride": 8,
+        "tags": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 65,
+        "edges_total": 66,
+        "records": 33,
+        "remainder": 7,
+        "stride": 12,
+        "tags": [
+          0,
+          1,
+          4,
+          5
+        ]
+      },
+      {
+        "edges_in_bounds": 48,
+        "edges_total": 50,
+        "records": 25,
+        "remainder": 3,
+        "stride": 16,
+        "tags": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 5,
+          "edge2": 4,
+          "extra": "00000000",
+          "index": 30,
+          "lit": 0,
+          "tag": 5
+        },
+        {
+          "edge1": 1,
+          "edge2": 4,
+          "extra": "000e0100",
+          "index": 31,
+          "lit": 5,
+          "tag": 0
+        },
+        {
+          "edge1": 5,
+          "edge2": 3584,
+          "extra": "04000500",
+          "index": 32,
+          "lit": 1,
+          "tag": 4
+        }
+      ],
+      "remainder_hex": "00010000040005"
+    }
+  },
+  {
+    "format_variant": "modern-heuristic",
+    "length": 440,
+    "name": "v5_literal_and_subpath",
+    "op_count": 5,
+    "op_entries": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "section_lengths": {
+      "literals": 27,
+      "nodes": 387,
+      "op_table": 10
+    },
+    "stride_stats": [
+      {
+        "edges_in_bounds": 96,
+        "edges_total": 96,
+        "records": 48,
+        "remainder": 3,
+        "stride": 8,
+        "tags": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 63,
+        "edges_total": 64,
+        "records": 32,
+        "remainder": 3,
+        "stride": 12,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "edges_in_bounds": 48,
+        "edges_total": 48,
+        "records": 24,
+        "remainder": 3,
+        "stride": 16,
+        "tags": [
+          0,
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "tail": {
+      "records": [
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "04000400",
+          "index": 29,
+          "lit": 4,
+          "tag": 4
+        },
+        {
+          "edge1": 4,
+          "edge2": 4,
+          "extra": "00000000",
+          "index": 30,
+          "lit": 3,
+          "tag": 4
+        },
+        {
+          "edge1": 3584,
+          "edge2": 1,
+          "extra": "0400000e",
+          "index": 31,
+          "lit": 3,
+          "tag": 0
+        }
+      ],
+      "remainder_hex": "010003"
+    }
+  }
+]

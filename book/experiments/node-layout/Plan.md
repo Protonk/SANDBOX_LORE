@@ -1,116 +1,149 @@
-# Node Layout Experiment Plan
+# Node Layout Experiment Plan (Sonoma host)
 
-Goal: recover enough of the modern compiled profile node layout to extract node tags, edges, and filter key IDs, so we can generate vocab tables (op/filter IDs) per OS/build/format. This plan assumes only the spine context; no prior debugging state needed.
+Goal: recover enough of the modern compiled profile node layout to say something concrete about node tags, edges, and (eventually) filter keys, using only local artifacts. This plan is written so a new agent with only `spine/` can replay the work.
 
-## Scope
+---
 
-- Target modern graph-based profile blobs produced by `libsandbox` on the current host.
-- Do not aim for full decompilation; focus on:
-  - Node stride/format (size, tag field).
-  - Edge fields (successor indices).
-  - Filter key codes and literal/regex indices.
-- Use tiny synthetic SBPL profiles to create controlled diffs.
+## 1. Baseline ingestion and heuristics
 
-## Inputs
+- [x] Use the shared ingestion helpers (`book/graph/concepts/validation/profile_ingestion.py`) to:
+  - [x] Classify `book/examples/sb/build/sample.sb.bin` as a modern graph-based blob.
+  - [x] Slice it into:
+    - a small preamble/op-table area,
+    - a “nodes” region,
+    - a literal/regex tail with human-readable strings.
+- [x] For the baseline blob, record:
+  - [x] `operation_count` from the heuristic header.
+  - [x] Approximate op-table length (`op_count * 2` bytes).
+  - [x] Node region length and literal region length.
+  - [x] A quick stride scan (8/12/16 bytes) that reports tag sets and whether interpreted edges stay in-bounds.
+- [x] Persist these observations in:
+  - [x] `book/experiments/node-layout/Notes.md` (running notes).
+  - [x] `book/experiments/node-layout/analyze.py` + `out/summary.json` (machine-readable summary).
 
-- `book/examples/sb/` to produce small compiled blobs (`sample.sb.bin` and variants).
-- System blobs (e.g., `airlock.sb.bin`, `bsd.sb.bin`) for cross-checking patterns.
-- Spine concepts: operations, filters, policy nodes, policy graphs, vocab maps.
+Result so far:
+- `sample.sb.bin` consistently slices into:
+  - 0x10-byte preamble,
+  - op-table (`operation_count` u16 entries),
+  - node bytes,
+  - literal tail (containing `/etc/hosts`, `usr`, `dev`, `system`, `/tmp/sb-demo`).
+- Stride=12 gives a small, stable tag set in the front of the node region; tails have non-zero remainders.
 
-## Outputs
+---
 
-- Notes and scripts under `book/experiments/node-layout/`.
-- A hypothesized node layout per OS/format (stride, tag mask, edge offsets, filter key offset, literal index offset).
-- Optional: JSON snippets with extracted node counts and filter key IDs per blob.
+## 2. Synthetic SBPL variants
 
-## Approach
+Create small SBPL profiles that differ by one idea at a time, compile them, and compare their blobs.
 
-1. **Generate minimal profiles**
-   - Compile a baseline SBPL that denies/permits a single operation without filters.
-   - Compile variants that add one filter (`subpath "/tmp/foo"`), another with a different literal, and one with a different operation.
-   - Keep blobs small to make diffs readable.
+- [x] Add variants under `book/experiments/node-layout/sb/`:
+  - [x] `v0_baseline.sb`: allow `file-read*` only.
+  - [x] `v1_subpath_foo.sb`: allow `file-read*` with `(subpath "/tmp/foo")`.
+  - [x] `v2_subpath_bar.sb`: same but with `(subpath "/tmp/bar")`.
+  - [x] `v3_two_filters.sb`: `(require-all (subpath "/tmp/foo") (subpath "/dev"))` on `file-read*`.
+  - [x] `v4_any_two_literals.sb`: `(require-any (subpath "/tmp/foo") (subpath "/tmp/bar"))`.
+  - [x] `v5_literal_and_subpath.sb`: `(require-all (literal "/etc/hosts") (subpath "/tmp/foo"))`.
+- [x] Compile all variants using `sandbox_compile_string` and the helper in `analyze.py`.
+- [x] For each variant, record:
+  - [x] Blob length, op_count.
+  - [x] Section lengths (op_table, nodes, literals).
+  - [x] Stride stats and tail records in `out/summary.json`.
 
-2. **Locate op-table and node region**
-   - Reuse the existing heuristic: preamble (0x10 bytes), then op-table (`op_count * 2` bytes).
-   - Treat the remainder as candidate nodes + literals; isolate the literal tail by scanning for printable runs.
+Key observations (captured in `Notes.md` and `out/summary.json`):
+- Adding a single `subpath` filter (v1 vs v0) increases op_count and changes node/literal sizes.
+- Changing `/tmp/foo` → `/tmp/bar` (v1 vs v2) leaves node bytes identical but alters the literal pool.
+- Adding a second subpath in `require-any` (v4 vs v1) lengthens the node region; shared prefix is identical, extras live in the tail.
+- Adding a `literal` filter (v5) changes a small slice of nodes (vs baseline) and grows the literal pool without changing op_count.
 
-3. **Hypothesize node stride and tag field**
-   - Try common strides (8, 12, 16 bytes) over the node region.
-   - For each stride, interpret the first byte/word as a tag; check whether a small set of values repeats.
-   - Validate that op-table entrypoints land on nodes with plausible tags.
+---
 
-4. **Find edge fields**
-   - For each stride candidate, treat subsequent words as edge indices; check if they fall within node count bounds.
-   - Prefer layouts where most edge fields are small integers < node_count and where branching patterns are consistent across variants.
+## 3. Stride and tail behavior
 
-5. **Identify filter keys and literal indices**
-   - Look for a field with many distinct values across variants; likely the filter key.
-   - Use controlled SBPL changes (different literals, same filter) to see which field changes with the literal index.
-   - Use the literal pool offset to verify indices land near string boundaries.
+- [x] For each variant, treat the node region as a sequence of fixed-size records and compute stride stats for 8/12/16.
+  - [x] Count full records and remainders.
+  - [x] Track distinct tags per stride.
+  - [x] Count how many interpreted edges stay in-bounds (crude sanity check).
+- [x] Inspect the last few stride-aligned records and remainder bytes:
+  - [x] For v1 vs v4, list records that exist only in v4’s tail.
 
-6. **Automate scoring**
-   - Write a small script to brute-force stride/field layouts and score candidates:
-     - Tags occupy a small set.
-     - Edge fields mostly in bounds.
-     - Literal index fields point into the literal pool region.
-   - Compare scores across baseline and modified profiles to stabilize the hypothesis.
+What we now know:
+- For all variants, no tested stride yields “no remainder”; node lengths always leave trailing bytes.
+- Stride=12 gives a clean tag set in the front, but tails show:
+  - additional records with odd edges (e.g., 3584) and non-zero remainders,
+  - suggesting that the actual node layout is not a simple fixed-stride array across the entire region.
+- v1 vs v4 tails: extra v4 records carry literal-ish indices (0,5,1) and odd edges; they are clearly additional structure, but their exact semantics remain unclear.
 
-7. **Cross-check with system blobs**
-   - Apply the best-fit layout to `airlock.sb.bin` / `bsd.sb.bin` to ensure it scales to larger graphs.
-   - Extract node counts and filter key codes; store as provisional vocab evidence.
+Open check:
+- [ ] Derive a consistent variable-size or mixed-stride model for the tail. (Current brute-force attempt at tag→{8,12,16} mapping failed.)
 
-8. **Document and export**
-   - Record the chosen layout per OS/build in a small markdown/JSON note.
-   - If stable, add an extractor script to dump op-table, node count, and filter key IDs per blob for downstream vocab generation.
+---
 
-## Success criteria
+## 4. Literal pools and node fields
 
-- A reproducible layout hypothesis that:
-  - Yields a consistent node count and sane edge indices on multiple blobs.
-  - Recovers filter key IDs and literal indices for simple synthetic profiles.
-  - Can be applied to system blobs without obvious corruption (edges in bounds, strings untouched).
+Hypothesis: node records reference the literal/regex pool via small indices or IDs, but our current fields may not be literal offsets.
 
-## Notes
+- [x] Inspect literal/regex pools:
+  - [x] Confirm that v1/v2/v4 pools contain the expected path strings.
+  - [x] Confirm that v0/v3/v5 pools do not have `/tmp/foo`/`/tmp/bar` (or only have `/etc/hosts` where expected).
+- [x] Compare node regions across:
+  - [x] v1 vs v2 (same filter, different literal content).
+  - [x] v1 vs v4 (one vs two subpaths).
+  - [x] v0 vs v5 (baseline vs literal+subpath).
 
-- Keep experiments self-contained under this directory; do not modify substrate files.
-- Prefer small, deterministic SBPL inputs for diffs.
-- If the layout remains ambiguous, document the competing hypotheses and their scores; partial progress still informs vocab work.
+Findings:
+- v1 vs v2: node regions are bit-identical; only literal pools differ → changing literal content alone does not touch the front of the node region.
+- v1 vs v4: node prefixes identical; extra nodes appear only at the end of v4’s node region, and the literal pool grows to include both `/tmp/foo` and `/tmp/bar`.
+- v0 vs v5: only two node records differ, while literal pool grows to include `/etc/hosts` as expected.
 
-## Areas to be informed
+Open checks:
+- [ ] Identify which node field (if any) carries a literal index:
+  - Current candidate (bytes 6–7 under stride=12) behaves like a small ID but does not change with foo→bar.
+- [ ] Determine whether literal references in modern blobs are indirect (e.g., node→secondary table→literal pool).
 
-Nailing down a modern node layout directly improves the **static-format** and **vocabulary/mapping** parts of the book. With trustworthy node and filter-key decoding, we can show concrete PolicyGraph shapes for current macOS, not just schematic diagrams, and back the operation/filter vocab tables with real IDs extracted from live profiles. That makes chapters that talk about compiled profiles, operation pointer tables, and vocab maps (and the associated capability catalogs) much more grounded: every “operation X” and “filter Y” can be tied to bytes in a blob and to observed behavior in a probe.
+---
 
-It also sharpens the **runtime lifecycle and extension** story. Once we can read node counts and filter keys from system profiles, we can correlate scenario probes (containers, extensions, mach, network) with the actual graph fragments they exercise, rather than treating the profiles as opaque. That supports clearer worked examples in the TextEdit and Example.app chapters, where we want to move seamlessly between SBPL snippets, profile graphs, process labels, and extension-driven capability changes.
+## 5. Op-table anchoring
 
-## Open questions / current unknowns
+The op-table is the bridge from operations to node entrypoints. Even if we do not fully decode nodes, we want to know how many entrypoints there are and how they move with op_count.
 
-- Literal index mapping: changing a `subpath` literal (`/tmp/foo` → `/tmp/bar`) did not change node bytes in initial variants, even though the literal pool changed. Need to determine where/how literal indices are encoded and whether they are shared across equal-length literals or normalized differently.
-- Multiple literals: unclear how nodes reference multiple literals of the same filter type; need a variant with two distinct literals to see if node records diverge.
-- Filter key location: tags and edge fields are plausible at stride 12, but the field carrying filter key codes (vs literal indices) remains unidentified without a known node tag schema.
-- Op-table anchoring: mapping node indices back to specific operations may help interpret edge fields; op-table entrypoints are known but not yet used to partition the node array.
+- [x] Extract op-table entries for each variant:
+  - [x] Use the heuristic that the table starts at byte 0x10 and contains `op_count` u16 indices.
+  - [x] Persist them in `out/summary.json` as `op_entries`.
 
-## Targeted resolution plan
+Observations:
+- v0/v5 (op_count=5) both have op entries `[4,4,4,4,4]`.
+- v1/v2/v4 (op_count=6) have op entries `[5,5,5,5,5,5]`.
+- This suggests that on these tiny profiles, all operations share the same entry index; op-table entries do not help segment nodes per operation yet.
 
-To resolve the unknowns, run a short battery of controlled variants and automated diffs:
+Open check:
+- [ ] Find a profile where operations differ meaningfully (e.g., `file-read*` vs `file-write*`) and verify whether op-table entries diverge. (Not yet attempted in this experiment.)
 
-1. **Literal index mapping**
-   - Build profiles with multiple literals in the same filter form, e.g., `(allow file-read* (require-any (subpath "/tmp/foo") (subpath "/tmp/bar")))` and a third literal of different length.
-   - Diff node records across single-literal vs multi-literal variants; watch the suspected literal-index field (bytes 6–7 at stride 12). If it stays constant, the literal reference may be elsewhere (e.g., a shared ID).
-   - Inspect literal pool order to see whether indices are small IDs unrelated to offsets.
+---
 
-2. **Multiple literals mapping**
-   - Add variants mixing filter types (e.g., `subpath`, `literal`, `vnode-type`) in otherwise identical profiles. Look for tag or field changes when the filter type changes but literals remain constant.
+## 6. Tooling and artifacts
 
-3. **Filter key location**
-   - Use the mixed filter-type variants above to identify a field that varies with filter type. If tags change, map tag values to filter types; if a mid-record word changes, treat it as a key code candidate.
+- [x] Persist a reusable analyzer:
+  - [x] `book/experiments/node-layout/analyze.py` compiles all `sb/*.sb`, writes `sb/build/*.sb.bin`, and emits `out/summary.json` with:
+    - blob length, format_variant, op_count, op_entries,
+    - section lengths (op_table, nodes, literals),
+    - stride stats for 8/12/16,
+    - tail records and remainder bytes for stride 12.
+- [x] Ensure `Notes.md` captures the narrative and references the analyzer and summary.
 
-4. **Op-table anchoring**
-   - Parse op-table entrypoints (u16 indices) and use them to segment the node array per operation. This can clarify which records belong to which op and how op-count changes affect entry nodes.
+Usage:
+- From the repo root:
+  - `PYTHONPATH=. python3 book/experiments/node-layout/analyze.py`
+  - Inspect `book/experiments/node-layout/out/summary.json` for structured data.
 
-5. **Automate diffing/scoring**
-   - Write a small analyzer to load variants, test strides (8/12/16), and report fields that change across specific pairs (foo→bar, add filter type, add literal). Score candidates where edges stay in-bounds and literal fields plausibly align with the literal pool.
+---
 
-6. **Cross-check with system blobs**
-   - Apply the candidate layout to `airlock`/`bsd` to ensure edges are in bounds and literal indices point into the literal tail. If it holds, extract node counts and filter key IDs as provisional vocab evidence.
+## 7. What remains open
 
-This plan targets each open question with a specific variant/diff. It uses controlled changes (literal content, number of literals, filter type) to isolate which node fields encode literals vs keys, and uses op-table entrypoints to anchor node indices. Automated scoring helps choose between stride/layout hypotheses before applying them to system blobs.
+These items are explicitly *not* solved yet; they are the next frontier for future work:
+
+- [ ] **Literal index mapping:** We still do not know exactly how nodes refer to the literal/regex pool in modern blobs. Controlled foo→bar and multi-literal variants show pool changes but not obvious node-field changes in shared prefixes.
+- [ ] **Filter key location:** We have not yet identified which node field carries filter key codes as opposed to literal indices; tag and edge patterns alone are insufficient.
+- [ ] **Tail layout:** Extra nodes and remainders at the tail do not fit a simple fixed stride; a better model (variable-size records, per-tag sizes, or a distinct tail encoding) is still to be derived.
+- [ ] **Per-op segmentation:** Op-table entries are constant across ops in these tiny profiles; we have not yet produced a profile where different operations have different entrypoints and used that to segment the node array.
+
+Even with these open boxes, the experiment has already produced reusable artifacts (SBPL variants, blobs, structured summaries) and a clearer picture of what can and cannot be inferred from modern graph blobs without deeper reverse engineering.
+

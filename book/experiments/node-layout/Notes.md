@@ -101,6 +101,43 @@
   - Use op-table entry 4/5 as a starting index to walk nodes (if tags can be interpreted as branch/terminal) to see which nodes are reachable per op.
 - Tail inspection (v1 vs v4):
   - v1 has 30 full 12-byte records + 5-byte tail; v4 has 33 full records + 7-byte tail. Extra v4 records include a tag0 record with edges (1,4) and a record with an out-of-bounds edge value (3584), plus partial trailing bytes. This casts doubt on fixed 12-byte stride and suggests variable-length or packed structures; stride may still be a useful approximation for the front of the node array but not the tail.
+
+## 2025-11-27 6
+
+- Re-ran stride checks on v1 and v4 across strides 8/12/16:
+  - All strides produce full records plus remainders; edge counts mostly in-bounds but v4 at stride 8 shows 96/100 in-bounds (some edges point past node array), supporting the idea that fixed stride is only an approximation.
+  - Tag sets stay small (e.g., stride 12 tags {0,1,4,5}).
+- Op-table entrypoints are uniform (all 5s) in v4; listing records starting at entry 5 shows a run of tag 5/4 nodes with small edges/lits, offering no per-op differentiation.
+- Examined v4 nodes beyond v1’s length (records 30–32 at stride 12):
+  - rec30: tag5, edges (5,4), lit=0
+  - rec31: tag0, edges (1,4), lit=5
+  - rec32: tag4, edges (5,3584 out-of-bounds), lit=1
+  - Remaining partial tail bytes: 7 bytes. These reinforce that the tail layout may not follow the assumed stride or that some fields encode non-edge data.
+- Current status:
+  - Stride=12 still the best low-noise view for the front of the node array, but tails are messy (remainders, odd edge values).
+  - Literal references are still not observable in shared prefixes; added nodes in v4 carry lit values 0,5,1 but without a mapping to literal pool offsets.
+- Next steps:
+  - Consider a variable-length parse: treat tags as node types with differing sizes (speculate on tag→size mapping by measuring remainders).
+  - Alternatively, step back and extract op-table entry values and literal pool indices as separate artifacts for vocab, acknowledging that precise node decoding may require external references.
+  - If time, draft a tiny analyzer to brute-force tag→size hypotheses to explain remainders and out-of-bounds edges; otherwise, capture the current limits.
+
+- Persisted tooling/output:
+  - Added `book/experiments/node-layout/analyze.py` to compile SBPL variants, emit blobs, and write `out/summary.json` (lengths, op entries, section lengths, stride stats, tail records).
+  - Running with `PYTHONPATH=. python3 book/experiments/node-layout/analyze.py` regenerates build blobs and structured summaries for future analysis.
+
+## 2025-11-28 1
+
+- Tried to infer variable-size nodes by mapping tags→{8,12,16} to match total node length on v1; no exact mapping found (brute force failed).
+- Stride scan recap across v1/v4/v5: tags stay small; node lengths produce remainders for all tested strides; edges mostly in-bounds, suggesting stride=12 is a workable approximation only for the front.
+- Literal pool previews:
+  - v1 literals len 74, binary header-like data then paths; v4 literals len 50 with `/tmp/foo` and `/tmp/bar`; v5 literals len 27, no paths.
+- Remaining blockers:
+  - Node layout still unclear (tails, tag→size mapping unresolved).
+  - Literal references in node fields not identified; op-table entries are uniform and unhelpful for segmentation.
+- Next actionable step (not yet done): store `out/summary.json` (done) and consider exporting literal pools/op-entries separately for vocab seeding even without full node decode.
+- Persisted tooling/output:
+  - Added `book/experiments/node-layout/analyze.py` to compile SBPL variants, emit blobs, and write `out/summary.json` (lengths, op entries, section lengths, stride stats, tail records).
+  - Running with `PYTHONPATH=. python3 book/experiments/node-layout/analyze.py` regenerates build blobs and structured summaries for future analysis.
 ## Narrative
 
 Started by slicing the existing `sample.sb.bin` to establish a baseline: the heuristic split yields a small op-table, a ~395-byte node region, and a literal tail with obvious strings; stride=12 looked most promising for node records. Generated minimal SBPL variants to force controlled changes: a baseline allow-only profile, single subpath (`/tmp/foo`), same subpath with `/tmp/bar`, and a two-filter require-all. Compiling these showed op_count bumps and node/literal size changes; stride-based diffs revealed that changing foo→bar didn’t alter node bytes, while adding filters did. Added more targeted variants (require-any with two subpaths; literal+subpath) to tease out literal and filter key fields. The two-subpath variant lengthened the node region but kept the shared prefix identical; literal pools differed. Adding a literal filter introduced more node differences. Literal strings reliably appear in the pools, but the node fields referencing them remain opaque in shared regions. Plan is to use op-table entrypoints to map nodes to operations and compare non-shared tails, and to probe mixed filter types further. Throughout, kept notes of stride/tag patterns and the need for a small analyzer to automate per-op slicing and scoring.
