@@ -230,3 +230,37 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - `v18_read_mach_network`: read + mach + network → `op_count=6`, op entries `[5,5,5,5,5,5]`, nodes 365, literal `Wcom.apple.cfprefsd.agent`, tags {0:1,1:1,4:6,5:22}. Matches prior read+mach shape.
   - `v19_mach_write_network`: mach + write + network → `op_count=6`, op entries `[5,5,5,5,5,5]`, nodes 365, same literal, tags {0:1,1:1,4:7,5:21}. Uniform.
 - Outcome: adding network alongside read/write/mach did not surface new op-table entries; all these combos stayed flat. The only observed non-uniform op-table remains `[6,6,6,6,6,6,5]` in `v8`–`v10`. Next lever is either smarter analyzer correlation of op-table slots to operation vocab or more deliberately asymmetric mixes that reproduce the `[6,…,5]` pattern while varying the operation set to force the `5` into a different slot.
+
+## 2025-11-30 1
+
+- Integrated the shared decoder (`decoder.decode_profile_dict`) into `analyze.py` so each summary now includes a decoder block (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literals) alongside the existing stride stats.
+- Regenerated `out/summary.json` with the decoder fields. The decoder snapshot lines up with prior heuristics:
+  - `op_table_offset` is consistently 16 bytes, and decoder `op_count` matches the ingestion header across variants.
+  - Node counts land in the low 30s (e.g., v0_baseline: 32 nodes; v11_mach_only: 30).
+  - Decoder tag counts mirror the stride-12 view (baseline {0:1,2:1,3:13,4:17}; mach-only {0:1,1:1,4:6,5:22}; mixed op profiles with tag6 still present).
+  - Decoder literal strings surface the prefixed forms (`G/tmp/foo`, `I/etc/hosts`, `Wcom.apple.cfprefsd.agent`), reinforcing the literal pool structure without yet exposing index wiring.
+- No errors from the decoder or analyzer. The added fields should help the pending tasks (literal index mapping, filter key location, tail layout) by giving a consistent, shared parse rather than relying solely on stride heuristics.
+
+## 2025-11-30 2
+
+- Began chasing literal-index/filter-key hints using the decoder output directly on compiled blobs (not just the summary):
+  - Compared node lists across variants with `decoder.decode_profile_dict`. `v1_subpath_foo` vs `v2_subpath_bar` are bit-identical in nodes (node_count=30 each), confirming that changing literal content leaves node bytes untouched.
+  - `v1_subpath_foo` vs `v4_any_two_literals` share the first 30 nodes; `v4` appends a single extra node at offset 360 (`tag5`, fields `[5,4,0,0,0]`), suggesting additional `require-any` structure lives in the tail without perturbing the shared prefix.
+  - `v1_subpath_foo` vs `v5_literal_and_subpath` differ across all nodes (node_count 30→32), indicating that adding a `literal` filter reshapes the graph more broadly than adding a second `subpath`.
+- Focused on the word at byte offsets 6–7 of each node (the decoder’s third field, `fields[2]`), treating it as a candidate “literal/filter index”:
+  - Baseline (`v0_baseline`): field2 values {3:12, 4:20} across 32 nodes.
+  - Single subpath (`v1_subpath_foo` and `v2_subpath_bar`): field2 values shift to {3:1, 4:9, 5:20}; foo→bar still identical → field2 reacts to filter presence, not literal content.
+  - Two-subpath require-any (`v4_any_two_literals`): field2 values {0:1, 3:1, 4:9, 5:20}; the new node carries field2=0, a new value not present in the single-subpath case.
+  - Mixed filtered profiles with tag6 (e.g., `v8_read_write_dual_subpath`, `v9_read_subpath_mach_name`, `v10_read_literal_write_subpath`) introduce field2 values 0 and 6 in addition to the prior set, with counts like {0:1, 3:2, 4:1, 5:12, 6:15}.
+  - Mach-only and mach+network variants show field2 in {4,5}; write/network-only profiles stay at {3,4}.
+- Decoder literal_strings remain imperfect (some prefixed strings show as `D/tmp/`, `Bbar`, etc.), but the field2 patterns are stable per profile. This supports the hypothesis that the word at offset 6–7 carries filter/literal identity (or an indirect key) that depends on which filters are present, not on literal text.
+- No direct mapping from field2 → literal pool offset yet; pending: map field2 deltas against literal pool ordering, and correlate new values (0,5,6) with specific filter combinations. Tests remain green after the decoder integration and analysis scripts.
+
+## 2025-11-30 3
+
+- Tried aligning field2 values with literal pool ordering using raw decoder objects:
+  - Literal string offsets (searching the literal pool bytes) vary by profile: e.g., `v1_subpath_foo` has `G/tmp/foo` at offset 57; `v4_any_two_literals` has `D/tmp/` at 43, `Bbar` at 50, `\nBfoo` at 61; dual subpath `v8` puts `G/tmp/foo` at 45 and `G/tmp/bar` at 69; `v10` places `I/etc/hosts` at 47 and `G/tmp/foo` at 71. Field2 values do not directly match these offsets.
+  - Field2 histograms stay stable per filter mix even as literal offsets move: `v1` vs `v2` have identical field2 counts despite different literal bytes; `v4` adds a single field2=0 node; `v8`/`v9`/`v10` share field2 sets {0,3,4,5,6} even though their literal pools differ (paths vs mach vs literal).
+  - Extra tail node in `v4` (`tag5`, fields `[5,4,0,0,0]`) is the only node with field2=0 in that profile; suggests field2=0 marks “second branch” of require-any rather than a literal offset.
+  - In tag6-heavy profiles (v8/v9), the nodes containing field2=0/6 are concentrated in tag6 records at the front and tail; field2=6 proliferates (15–17 occurrences) and coexists with many tag6 nodes, hinting that tag6 + field2=6 is the filtered branch machinery.
+- Literal pool offsets therefore do not correlate directly with field2 values; field2 appears to be a small key space (0/3/4/5/6) tied to filter presence/structure, not byte positions. Next lever: map specific field2 values to SBPL constructs by designing deltas that introduce/remove one filter at a time and watching which value disappears.

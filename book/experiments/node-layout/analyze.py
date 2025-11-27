@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Any
 
+from book.graph.concepts.validation import decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 
 
@@ -202,6 +203,7 @@ def summarize_variant(src: Path, blob: bytes) -> Dict[str, Any]:
     header = pi.parse_header(pi.ProfileBlob(bytes=blob, source=src.stem))
     sections = pi.slice_sections(pi.ProfileBlob(bytes=blob, source=src.stem), header)
     op_count = header.operation_count or 0
+    decoded = decoder.decode_profile_dict(blob)
     records12 = record_dump(sections.nodes, stride=12)
     summary = {
         "name": src.stem,
@@ -220,6 +222,15 @@ def summarize_variant(src: Path, blob: bytes) -> Dict[str, Any]:
         "remainder_stride12_hex": records12["remainder_hex"],
         "literal_strings": ascii_strings(sections.regex_literals),
         "tail": tail_records(sections.nodes, stride=12),
+        "decoder": {
+            "format_variant": decoded["format_variant"],
+            "op_count": decoded["op_count"],
+            "op_table_offset": decoded["op_table_offset"],
+            "node_count": decoded["node_count"],
+            "tag_counts": decoded["tag_counts"],
+            "literal_strings": decoded["literal_strings"],
+            "sections": decoded["sections"],
+        },
     }
     for stride in (8, 12, 16):
         summary["stride_stats"].append(stride_stats(sections.nodes, stride))

@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Any
 
+from book.graph.concepts.validation import decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 
 
@@ -103,12 +104,58 @@ def ascii_strings(buf: bytes, min_len: int = 4) -> List[Dict[str, Any]]:
     return runs
 
 
+def entry_signature(decoded: Dict[str, Any], entry: int, max_visits: int = 256) -> Dict[str, Any]:
+    """
+    Walk the graph from a given op-table entry index and collect a small
+    structural signature (tags, literal-ish field values, visited count).
+    Edges are interpreted as the first two fields in each 12-byte node record.
+    """
+    nodes = decoded.get("nodes") or []
+    if entry >= len(nodes):
+        return {"entry": entry, "error": "out_of_range", "reachable": 0}
+
+    visited = set()
+    stack = [entry]
+    tags = set()
+    literals = set()
+    truncated = False
+
+    while stack:
+        idx = stack.pop()
+        if idx in visited or idx >= len(nodes):
+            continue
+        visited.add(idx)
+        node = nodes[idx]
+        fields = node.get("fields", [])
+        tags.add(node.get("tag"))
+        if len(fields) > 2:
+            literals.add(fields[2])
+        for edge in fields[:2]:
+            if 0 <= edge < len(nodes) and edge not in visited:
+                stack.append(edge)
+        if len(visited) >= max_visits:
+            truncated = True
+            break
+
+    return {
+        "entry": entry,
+        "reachable": len(visited),
+        "tags": sorted(t for t in tags if t is not None),
+        "literals": sorted(literals),
+        "truncated": truncated,
+    }
+
+
 def summarize_variant(src: Path, blob: bytes) -> Dict[str, Any]:
     ops = parse_ops(src)
     header = pi.parse_header(pi.ProfileBlob(bytes=blob, source=src.stem))
     sections = pi.slice_sections(pi.ProfileBlob(bytes=blob, source=src.stem), header)
     op_count = header.operation_count or 0
     entries = op_entries(blob, op_count)
+    decoded = decoder.decode_profile_dict(blob)
+    entry_sigs = {
+        str(e): entry_signature(decoded, e) for e in sorted(set(entries))
+    }
     summary = {
         "name": src.stem,
         "ops": ops,
@@ -124,6 +171,16 @@ def summarize_variant(src: Path, blob: bytes) -> Dict[str, Any]:
         "tag_counts_stride12": {str(k): v for k, v in tag_counts(sections.nodes).items()},
         "remainder_stride12_hex": sections.nodes[(len(sections.nodes) // 12) * 12 :].hex(),
         "literal_strings": ascii_strings(sections.regex_literals),
+        "decoder": {
+            "format_variant": decoded["format_variant"],
+            "op_count": decoded["op_count"],
+            "op_table_offset": decoded["op_table_offset"],
+            "node_count": decoded["node_count"],
+            "tag_counts": decoded["tag_counts"],
+            "literal_strings": decoded["literal_strings"],
+            "sections": decoded["sections"],
+        },
+        "entry_signatures": entry_sigs,
     }
     return summary
 
@@ -160,8 +217,20 @@ def main() -> None:
     summary_path.write_text(json.dumps(summaries, indent=2, sort_keys=True))
     op_map_path = out_dir / "op_table_map.json"
     op_map_path.write_text(json.dumps(build_op_table_map(summaries), indent=2, sort_keys=True))
+    sig_path = out_dir / "op_table_signatures.json"
+    sig_path.write_text(
+        json.dumps(
+            [
+                {"name": s["name"], "entry_signatures": s["entry_signatures"]}
+                for s in summaries
+            ],
+            indent=2,
+            sort_keys=True,
+        )
+    )
     print(f"[+] wrote {summary_path}")
     print(f"[+] wrote {op_map_path}")
+    print(f"[+] wrote {sig_path}")
 
 
 if __name__ == "__main__":

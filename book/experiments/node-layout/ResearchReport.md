@@ -223,8 +223,8 @@ In terms of the textbook’s goals, this is still useful:
 
 Future work can build on this by:
 
-- Integrating the shared decoder (`book/graph/concepts/validation/decoder.py`) into `analyze.py` so that `out/summary.json` records `node_count`, `tag_counts`, `op_table_offset`, and `literal_strings` in a way that is consistent with other validation tooling.
-- Using decoder-backed summaries to revisit foo→bar and multi-literal variants and identify which node fields track literal-table indices vs literal content, tightening our literal/regex index hypotheses.
+- **Decoder integration (completed 2025-11-30):** `analyze.py` now calls the shared decoder and records decoder-derived `node_count`, `tag_counts`, `op_table_offset`, literal strings, and section lengths in `out/summary.json`, aligning this experiment with the validation tooling.
+- Using decoder-backed summaries to revisit foo→bar and multi-literal variants and identify which node fields track literal-table indices vs literal content, tightening literal/regex index hypotheses.
 - Comparing decoder fields across profiles that add/remove specific filters (subpath, literal, require-any/all) to isolate candidate fields for filter key codes and to refine our understanding of tag classes (for example, how tag6 behaves across variants).
 - Treating “front” vs “tail” regions explicitly—based on where new nodes appear relative to a baseline—and experimenting with per-tag or per-region size models to explain tail structure while minimizing out-of-bounds edge interpretations.
 - Designing additional, deliberately asymmetric mixed-op profiles, then using decoder-driven graph walks from each op-table entrypoint to characterize per-bucket `tag_counts` and literal usage; these structural signatures can later be correlated with operation IDs once a vocabulary map exists.
@@ -257,3 +257,39 @@ Still open:
 - Which operation maps to the lone `5` op-table entry.
 - Whether tag6 corresponds to a specific filter class or branching construct, and how its size interacts with the tail remainders.
 - How to parse the tail beyond fixed stride so these per-op differences can be tied to concrete filter keys and literal references.
+
+## 11. Decoder-backed refresh (2025-11-30)
+
+To align with the shared validation tooling and give later analyses a consistent footing, `analyze.py` now calls `book/graph/concepts/validation/decoder.decode_profile_dict` for every compiled blob and records a decoder snapshot in `out/summary.json`:
+
+- Decoder `op_table_offset` is consistently 16 bytes, matching the preamble heuristic.
+- Decoder `op_count` matches the ingestion header; node counts land in the low 30s across all variants (for example, v0_baseline: 32 nodes; v11_mach_only: 30).
+- Decoder `tag_counts` mirror the stride-12 view (baseline {0:1,2:1,3:13,4:17}; mach-only {0:1,1:1,4:6,5:22}; mixed-op profiles include tag6 as before).
+- Decoder literal strings surface prefixed payloads (`G/tmp/foo`, `I/etc/hosts`, `Wcom.apple.cfprefsd.agent`), reinforcing the structure of the literal pool without yet exposing how node fields reference those literals.
+
+This integration does not, by itself, resolve the open questions (literal index mapping, filter key location, tail layout, per-op segmentation), but it replaces bespoke stride parsing with a shared, version-tolerant decoder view. Future passes should leverage these decoder fields when comparing variants, rather than re-implementing slicing logic per experiment.
+
+## 12. Decoder-based field observations (2025-11-30)
+
+Using `decoder.decode_profile_dict` directly on the compiled blobs (outside the JSON summary) provides the first structured clues about which node fields respond to filters and literals:
+
+- The third u16 field in each 12-byte node (decoder `fields[2]`, bytes 6–7) changes with filter presence but not with literal content:
+  - `v1_subpath_foo` and `v2_subpath_bar` have identical nodes despite different literal strings, confirming that content changes do not perturb node bytes.
+  - Adding a single subpath moves field2 counts from {3:12, 4:20} (baseline) to {3:1, 4:9, 5:20}, introducing value 5.
+  - A `require-any` over two subpaths (`v4_any_two_literals`) keeps the shared prefix intact and appends one extra node (tag5, fields `[5,4,0,0,0]`) with a new field2 value 0.
+  - Mixed filtered profiles that include tag6 (e.g., `v8_read_write_dual_subpath`, `v9_read_subpath_mach_name`, `v10_read_literal_write_subpath`) add field2 values 0 and 6 on top of the prior set (counts like {0:1, 3:2, 4:1, 5:12, 6:15}).
+  - Mach-only and mach+network profiles cluster field2 in {4,5}; write/network-only stay at {3,4}.
+- Literal string extraction via the decoder remains noisy (some prefixed strings render as `D/tmp/`, `Bbar`, etc.), but the field2 value sets are stable per profile and clearly track which filters/ops are present.
+- Interpretation: the word at offsets 6–7 likely encodes a filter/literal identifier (or an indirection to one). It reacts to which filters are present (subpath, literal, mach/global-name) but not to the literal text. Mapping these values to literal pool entries or named filter keys remains open.
+
+Outstanding work:
+
+- Align field2 value changes with literal pool ordering to see if 0/5/6 correspond to specific literals or filter instances.
+- Use the decoder node lists to mark “front” vs “tail” regions explicitly (for example, the extra tail node in `v4`) and see whether specific tags or field patterns only appear in tails.
+- Combine these field observations with op-table entrypoint walks (once vocab IDs are available) to tie buckets and filter/literal identifiers together.
+
+Further decoder-based observations:
+
+- Literal pool byte offsets vary across profiles (for example, `/tmp/foo` appears at offset 57 in `v1`, 45 or 71 in other variants; `I/etc/hosts` at 47), but the field2 sets remain stable. There is no direct field2→literal offset correlation.
+- The extra tail node in `v4_any_two_literals` (tag5, fields `[5,4,0,0,0]`) is the lone field2=0 occurrence there, suggesting field2=0 marks an additional branch rather than a literal offset. Tag6-heavy profiles carry many field2=6 occurrences, mostly on tag6 nodes, hinting that tag6 + field2=6 encode filtered branches or parameterized operations.
+- Literal string decoding remains noisy (prefixed strings like `D/tmp/`, `Bbar`), reinforcing the need for a more precise literal table parse before asserting any field-to-literal mapping.

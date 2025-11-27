@@ -25,3 +25,8 @@
    - Investigated `validation/out/static/system_profiles.json` outputs; ingestion marks format as `unknown-modern` with empty op_table lengths, leaving no visible vocabulary data to extract.
    - Searched repo for existing vocab extraction tooling; none present beyond placeholders. Attempted to locate `libsandbox.dylib` for symbol introspection; paths not found via `find` within time limits.
    - Conclusion: without a decoder for the modern compiled format or a known vocab table source, real `ops.json` / `filters.json` cannot be generated on this host. Placeholder vocab remains; alignment still lacks operation IDs.
+
+6. **Decoder-aware alignment prep (Chat agent, 2025-11-30)**
+   - Reviewed the new decoder-backed outputs from sibling experiments and updated `Plan.md`/`ResearchReport.md` to spell out how future vocab extraction should consume decoder slices plus static metadata.
+   - Kept alignment artifacts unchanged (still placeholders) but clarified that a future vocabulary pipeline should read canonical blobs via `decoder.decode_profile_dict` and attach OS/build hashes to `ops.json`/`filters.json`.
+   - No new vocab data yet; alignment remains bucket-only with `operation_ids=null`, but the contract for filling them is now more explicit.

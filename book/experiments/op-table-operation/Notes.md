@@ -53,3 +53,15 @@
   - `v16`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tags {0:1,1:1,5:5,6:25}, literals include `Ftmp/foo`, `Hetc/hosts`, `Wcom.apple.cfprefsd.agent`. Also `[6,…,5]`; tag1 appears (maybe a different node type for the extra filter).
 - Updated `op_table_map.json`: multiple profiles now exhibit `[6,…,5]` (subpath+mach, mach+literal). The lone `5` entry persists, but we still can’t assign it to a specific op.
 - Next steps: pause analyzer changes; consider crafting single-op literal profiles (read+literal only) and mach-only with literal to see op_count/entry buckets, and design deltas that toggle mach off while keeping literals to watch op_entries shift (or not). The analyzer may need a correlation pass, but holding off for now per instruction.
+
+## 2025-11-30 1
+
+- Refreshed `analyze.py` to use the shared decoder for each blob and to emit per-entry structural signatures:
+  - Each summary now includes a `decoder` block (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literal strings, section lengths) plus an `entry_signatures` map.
+  - Added a new artifact `out/op_table_signatures.json` capturing the per-profile `entry_signatures`.
+- Signature method: treat the first two fields of each 12-byte node as edges, walk from each unique op-table entry, and record reachable tags/literal field values (capped at 256 visits).
+- Reran the analyzer; op-table entries remain unchanged, but signatures now show:
+  - The “4” bucket (empty/read/write/network families) reaches a single tag4 node with literal field 4.
+  - The “5” bucket reaches tag5 (and sometimes tag6) with literal field 5; `[6,…,5]` profiles give both entries signatures with tags {5,6}.
+  - Walks are shallow (1–2 nodes) because the heuristic edges likely stop quickly, so signatures are best treated as coarse fingerprints, not decoded graphs.
+- No decoder errors; outputs regenerated cleanly. Next steps stay focused on using these decoder-backed signatures to correlate buckets across profiles once vocab IDs exist or to design deltas that move the lone `5` entry in the `[6,…,5]` pattern.

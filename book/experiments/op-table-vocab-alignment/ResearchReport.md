@@ -126,14 +126,17 @@ Current status:
   - Existing artifacts from sibling experiments have been inventoried (`node-layout/out/summary.json`, `op-table-operation/out/summary.json`, `op_table_map.json`).
   - Placeholder vocabulary artifacts now exist under `book/graph/concepts/validation/out/vocab/` (status `unavailable`, IDs unknown) to unblock alignment consumers.
   - Ran static-format demos (`examples/extract_sbs/run-demo.sh`, `examples/sb/run-demo.sh` after fixing import path); ingestion marks system blobs as `unknown-modern` with empty op-table lengths, leaving no vocab data.
-  - The alignment artifact `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json` has been generated and updated to record vocab status and placeholder version; `operation_ids` remain empty pending a real vocabulary map.
+- The alignment artifact `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json` has been generated and updated to record vocab status and placeholder version; `operation_ids` remain empty pending a real vocabulary map.
 
 Immediate next steps (for a future agent):
 
-1. Define how to associate vocabulary artifacts with OS/build (versioning/hash) in line with the expected JSON contract, and record that mapping in `Plan.md`/`ResearchReport.md`.
-2. Outline the pipeline for generating real `out/vocab/ops.json` / `filters.json` from canonical blobs (e.g., `extract_sbs` outputs), even if not implemented here.
-3. Trigger or coordinate the vocabulary-mapping tasks (e.g., `op-filter-tables-from-blobs`) to populate `book/graph/concepts/validation/out/vocab/ops.json`; replace the placeholder and rerun alignment to fill `operation_ids` and record vocab version/hash.
-4. Keep `Notes.md` updated with further alignment or contract-definition work; propagate any vocab dependency notes to `EXPERIMENT_FEEDBACK.md` if needed.
-5. Implement or integrate a decoder that can extract operation/filter vocab from modern compiled blobs; current ingestion heuristics (op-table len=0 for system profiles) are insufficient.
+1. Run the vocabulary-mapping pipeline (once available) over canonical blobs to populate `validation/out/vocab/ops.json` and `filters.json` with OS/build + hash metadata; replace the placeholders.
+2. Rerun `out/op_table_vocab_alignment.json` with the real vocab files to fill `operation_ids` and carry the vocab version/hash into the alignment records.
+3. Keep `Notes.md` updated with further alignment or contract-definition work; propagate any vocab dependency notes to `EXPERIMENT_FEEDBACK.md` if needed.
+
+Update (2025-11-30):
+
+- Clarified that real vocabulary extraction should run canonical blobs (e.g., `validation/out/static/*` and any curated system profiles) through `decoder.decode_profile_dict`, combine the op-table/node/tag slices with SBPL/profile metadata, and emit versioned `ops.json`/`filters.json` tagged with OS/build plus a content hash.
+- Alignment artifacts stay bucket-only until those vocab files exist; once produced, rerun alignment to populate `operation_ids` and carry the vocab version/hash forward.
 
 As with the other experiments, `Plan.md` and `ResearchReport.md` should be kept in sync so that another agent can pick up the work with minimal re-orientation.

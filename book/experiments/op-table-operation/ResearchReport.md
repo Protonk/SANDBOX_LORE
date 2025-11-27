@@ -192,6 +192,21 @@ This lines up with the conceptual picture:
 - different buckets (4, 5, 6) correspond not only to different op-table entries but also to different families of node/tag patterns and literal usage,
 - but without a decoded node layout, we treat tag shifts only as **corroborating evidence**, not as a basis for new concept claims.
 
+##  Decoder-backed signatures and new artifacts (2025-11-30)
+
+To align with the shared decoder and attach coarse graph structure to each op-table bucket, the analyzer now:
+
+- Calls `book/graph/concepts/validation/decoder.decode_profile_dict` for every blob and records a decoder snapshot (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literal strings, section lengths) in each summary entry.
+- Emits per-entry structural signatures by treating the first two fields of each 12-byte node as edges and walking from every unique op-table entry index; signatures capture reachable tags, literal field values, visited count, and truncation status. These are written both into each summary entry and into a dedicated `out/op_table_signatures.json`.
+
+Early observations from the signatures (all heuristic):
+
+- Bucket “4” entries (baseline/read/write/network families) reach a single tag4 node with literal field value 4.
+- Bucket “5” entries reach tag5 (and sometimes tag6) with literal field value 5; profiles with `[6,…,5]` give both entries signatures with tags {5,6}.
+- Walks are shallow (1–2 nodes) because the heuristic edges likely stop quickly; treat these as coarse fingerprints rather than decoded graphs.
+
+These signatures do not yet map buckets to concrete Operation IDs, but they provide a consistent, decoder-backed structural hook that can be correlated with future vocabulary maps or runtime traces.
+
 ##  Open questions and next steps
 
 From the concepts’ perspective, this experiment clarifies that:

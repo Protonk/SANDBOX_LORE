@@ -1,5 +1,36 @@
 [
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 12,
+        "4": 18
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          4
+        ],
+        "reachable": 1,
+        "tags": [
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -27,6 +58,39 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 86,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 6,
+        "5": 22
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 1,
+        "tags": [
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 479,
     "literal_strings": [
@@ -63,6 +127,39 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "G/tmp/foo"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 74,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 6,
+        "5": 22
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 1,
+        "tags": [
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 467,
     "literal_strings": [
@@ -98,6 +195,52 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "G/tmp/foo",
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 31,
+      "op_count": 7,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 98,
+        "nodes": 383,
+        "op_table": 14
+      },
+      "tag_counts": {
+        "0": 1,
+        "5": 5,
+        "6": 25
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      },
+      "6": {
+        "entry": 6,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 511,
     "literal_strings": [
@@ -139,6 +282,40 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "G/tmp/foo"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 74,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 7,
+        "5": 21
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          4
+        ],
+        "reachable": 2,
+        "tags": [
+          4,
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 467,
     "literal_strings": [
@@ -175,6 +352,39 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "G/tmp/foo"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 74,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 6,
+        "5": 22
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 1,
+        "tags": [
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 467,
     "literal_strings": [
@@ -211,6 +421,52 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "I/etc/hosts",
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 31,
+      "op_count": 7,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 100,
+        "nodes": 381,
+        "op_table": 14
+      },
+      "tag_counts": {
+        "0": 1,
+        "5": 5,
+        "6": 25
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      },
+      "6": {
+        "entry": 6,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 511,
     "literal_strings": [
@@ -251,6 +507,53 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "Ftmp/foo",
+        "\nHetc/hosts",
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 31,
+      "op_count": 7,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 116,
+        "nodes": 381,
+        "op_table": 14
+      },
+      "tag_counts": {
+        "0": 1,
+        "5": 5,
+        "6": 25
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      },
+      "6": {
+        "entry": 6,
+        "literals": [
+          5
+        ],
+        "reachable": 2,
+        "tags": [
+          5,
+          6
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 527,
     "literal_strings": [
@@ -297,6 +600,37 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 13,
+        "4": 17
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          4
+        ],
+        "reachable": 1,
+        "tags": [
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -326,6 +660,38 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 14,
+        "4": 16
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          3
+        ],
+        "reachable": 2,
+        "tags": [
+          3,
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -355,6 +721,39 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 86,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 6,
+        "5": 22
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 1,
+        "tags": [
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 479,
     "literal_strings": [
@@ -390,6 +789,37 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 12,
+        "4": 18
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          4
+        ],
+        "reachable": 1,
+        "tags": [
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -419,6 +849,37 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 15,
+        "4": 15
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          3
+        ],
+        "reachable": 2,
+        "tags": [
+          3
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -449,6 +910,39 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 86,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 6,
+        "5": 22
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          5
+        ],
+        "reachable": 1,
+        "tags": [
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 479,
     "literal_strings": [
@@ -485,6 +979,37 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 13,
+        "4": 17
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          4
+        ],
+        "reachable": 1,
+        "tags": [
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],
@@ -515,6 +1040,40 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      "node_count": 30,
+      "op_count": 6,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 86,
+        "nodes": 365,
+        "op_table": 12
+      },
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "4": 7,
+        "5": 21
+      }
+    },
+    "entry_signatures": {
+      "5": {
+        "entry": 5,
+        "literals": [
+          4
+        ],
+        "reachable": 2,
+        "tags": [
+          4,
+          5
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 479,
     "literal_strings": [
@@ -551,6 +1110,38 @@
     }
   },
   {
+    "decoder": {
+      "format_variant": "modern-heuristic",
+      "literal_strings": [],
+      "node_count": 32,
+      "op_count": 5,
+      "op_table_offset": 16,
+      "sections": {
+        "literal_pool": 27,
+        "nodes": 387,
+        "op_table": 10
+      },
+      "tag_counts": {
+        "0": 1,
+        "2": 1,
+        "3": 14,
+        "4": 16
+      }
+    },
+    "entry_signatures": {
+      "4": {
+        "entry": 4,
+        "literals": [
+          3
+        ],
+        "reachable": 2,
+        "tags": [
+          3,
+          4
+        ],
+        "truncated": false
+      }
+    },
     "format_variant": "modern-heuristic",
     "length": 440,
     "literal_strings": [],

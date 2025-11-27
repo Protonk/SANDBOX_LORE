@@ -24,8 +24,8 @@ Deliverables for this phase:
 
 ## 2. Vocabulary extraction hookup
 
-- [ ] If `out/vocab/ops.json` does not exist, describe (but do not yet implement here) the expected pipeline to generate it from canonical blobs (e.g., system profiles produced by existing extraction tools).
-- [ ] Define the contract this experiment will rely on:
+- [x] If `out/vocab/ops.json` does not exist, describe (but do not yet implement here) the expected pipeline to generate it from canonical blobs (e.g., system profiles produced by existing extraction tools).
+- [x] Define the contract this experiment will rely on:
   - [x] Expected JSON shape for `ops.json` (name ↔ id ↔ notes).
   - [x] How to associate a compiled profile blob with a specific vocabulary version (OS / build).
 - [x] Record these expectations in `ResearchReport.md` as assumptions and requirements for future agents.

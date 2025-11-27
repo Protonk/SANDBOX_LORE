@@ -39,8 +39,8 @@ Deliverables:
 
 ## 3. Cross-check with semantic probes (optional stretch)
 
-- [ ] Reuse the shared decoder (`book.graph.concepts.validation.decoder`) to:
-  - [ ] Walk from each op-table entrypoint into the node array and collect per-entry `tag_counts` and reachable literals as structural “signatures”.
+- [x] Reuse the shared decoder (`book.graph.concepts.validation.decoder`) to:
+  - [x] Walk from each op-table entrypoint into the node array and collect per-entry `tag_counts` and reachable literals as structural “signatures”.
 - [ ] Run existing semantic probes (e.g., `network-filters`, `mach-services`) with logging of SBPL op names and annotate traces with the op-table slot and structural signature inferred from compiled profiles.
 - [ ] Write `out/runtime_usage.json` with op names, any inferred op-table index, associated signature, and observed behavior.
 
