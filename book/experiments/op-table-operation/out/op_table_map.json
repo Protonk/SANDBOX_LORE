@@ -1,0 +1,277 @@
+{
+  "profiles": {
+    "v0_empty": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v10_mach_network": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "mach-lookup",
+        "network-outbound"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v11_read_subpath": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "file-read*"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v12_read_subpath_mach": {
+      "op_entries": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        5
+      ],
+      "ops": [
+        "file-read*",
+        "mach-lookup"
+      ],
+      "unique_entries": [
+        5,
+        6
+      ]
+    },
+    "v13_read_subpath_write": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "file-read*",
+        "file-write*"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v14_read_subpath_network": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "file-read*",
+        "network-outbound"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v1_read": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "file-read*"
+      ],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v2_write": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "file-write*"
+      ],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v3_mach": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "mach-lookup"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v4_network": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "network-outbound"
+      ],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v5_read_write": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "file-read*",
+        "file-write*"
+      ],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v6_read_mach": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "file-read*",
+        "mach-lookup"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v7_read_network": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "file-read*",
+        "network-outbound"
+      ],
+      "unique_entries": [
+        4
+      ]
+    },
+    "v8_write_mach": {
+      "op_entries": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "ops": [
+        "file-write*",
+        "mach-lookup"
+      ],
+      "unique_entries": [
+        5
+      ]
+    },
+    "v9_write_network": {
+      "op_entries": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "ops": [
+        "file-write*",
+        "network-outbound"
+      ],
+      "unique_entries": [
+        4
+      ]
+    }
+  },
+  "single_op_entries": {
+    "file-read*": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "file-write*": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "mach-lookup": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "network-outbound": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  }
+}
