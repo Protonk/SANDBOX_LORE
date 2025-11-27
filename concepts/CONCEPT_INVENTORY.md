@@ -30,15 +30,14 @@ To keep validation manageable, we group concepts by the kind of evidence that mo
 
 **Purpose**
 
-These concepts are about how profiles look when compiled and stored: the concrete bytes and structures that the kernel and libraries consume.
+These concepts are about how profiles look when compiled and stored: the concrete bytes and structures that the kernel and libraries consume, and the canonical binary IR that ingestion produces.
 
 **Representative concepts**
 
 - Binary Profile Header  
 - Operation Pointer Table  
 - Regex/Literal Table  
-- Profile Format Variant  
-- Compiled Profile Source (in the “blob” sense)
+- Profile Format Variant
 
 **Primary evidence**
 
@@ -53,11 +52,12 @@ These concepts are about how profiles look when compiled and stored: the concret
 
 - A single “profile ingestion” spine can serve the entire static-format cluster:
   - Input: raw profile blobs.
-  - Output: typed structures plus a set of invariant checks.
+  - Output: typed structures (a canonical PolicyGraph / node IR) plus a set of invariant checks.
 - For each static-format concept, the concept inventory should point to:
   - The relevant parser or ingest module.
   - The invariants that are asserted.
   - The example profiles that are used as witnesses (e.g., specific system profiles, minimal synthetic profiles).
+- All static-format evidence should record the profile format variant and OS/build it was taken from, so that later clusters can key vocab and behavior against the same versioned formats.
 
 ---
 
@@ -75,9 +75,7 @@ These concepts describe how the sandbox decides what to allow or deny: operation
 - Decision  
 - Action Modifier  
 - Policy Node  
-- PolicyGraph  
-- Policy Stack Evaluation Order  
-- Profile Layer (semantics of stacking/composition)
+- PolicyGraph
 
 **Primary evidence**
 
@@ -85,7 +83,6 @@ These concepts describe how the sandbox decides what to allow or deny: operation
   - Allow-all / deny-all.
   - “Deny except X.”
   - “Allow only if regex/path filter matches.”
-  - Profiles with multiple layers and overrides.
 - Probes that:
   - Run under those profiles.
   - Attempt a small, explicit set of operations (file opens, network calls, IPC, etc.).
@@ -97,10 +94,11 @@ These concepts describe how the sandbox decides what to allow or deny: operation
   - For each semantic scenario, there is a tiny profile and a tiny test program/script.
   - The probe logs the attempted operations and outcomes in a structured way (e.g., JSON).
 - A single evaluation harness can run these microprofiles and collect evidence:
-  - For each run, we know which operations were attempted, which filters were relevant, and what the resulting decisions were.
+  - For each run, we know which operations were attempted, which filters were relevant, which decision node in the ingested PolicyGraph was reached, and how that path maps back to SBPL structure.
 - For each semantic concept, the concept inventory should point to:
   - Which scenarios (profiles + probes) witness the behavior.
   - What invariants are being tested (e.g., “filters of type X must cause Y under condition Z”).
+- When probe outcomes are used as semantic evidence, they should distinguish Seatbelt decisions from adjacent controls (TCC, SIP, hardened runtime) so we do not mis-attribute denials to the policy graph.
 
 A single well-designed microprofile can often witness multiple concepts at once (operation, filter, decision, action modifier, policy node shape).
 
@@ -114,10 +112,8 @@ These concepts are about naming and alignment: how symbolic names and argument s
 
 **Representative concepts**
 
-- SBPL Profile (as a named aggregate)  
 - Operation Vocabulary Map  
-- Filter Vocabulary Map  
-- Profile Format Variant (insofar as it changes vocab coverage)
+- Filter Vocabulary Map
 
 **Primary evidence**
 
@@ -135,8 +131,8 @@ These concepts are about naming and alignment: how symbolic names and argument s
 
 - A “vocabulary survey” pipeline can consolidate and check vocab knowledge:
   - Gather all op/filter names and IDs from available sources.
-  - Normalize them into canonical tables.
-  - Mark each entry with status (known, deprecated, unknown, 14.x-only, etc.).
+  - Normalize them into canonical tables keyed by OS/build and, where applicable, profile format variant.
+  - Mark each entry with status (known, deprecated, unknown, 14.x-only, etc.) and with provenance (which sources and artifacts support it).
 - Example folders do not need to implement vocab logic themselves:
   - They should record which operations/filters they believe they are exercising (using canonical names).
   - A shared vocab-mapper can reconcile those names with IDs and on-disk representations.
@@ -144,6 +140,7 @@ These concepts are about naming and alignment: how symbolic names and argument s
   - The canonical vocab tables.
   - Any discrepancies or unknowns.
   - Tests or reports that compare different sources.
+- Where possible, vocab entries should also point to microprofiles and probes that exercise a given operation or filter, tying names and IDs to concrete behavior.
 
 This cluster ensures that when we say “operation X” or “filter Y,” we can trace that name from source snippets, to IDs in compiled profiles, to behavior observed at runtime.
 
@@ -153,14 +150,19 @@ This cluster ensures that when we say “operation X” or “filter Y,” we ca
 
 **Purpose**
 
-These concepts concern when and how profiles apply over a process lifetime, and how extensions modify effective policy.
+These concepts concern when and how profiles apply over a process lifetime, how layers compose into an effective policy stack, and how extensions and adjacent controls modify effective policy.
 
 **Representative concepts**
 
 - Sandbox Extension  
 - Policy Lifecycle Stage  
 - Profile Layer (in the sense of system/global/app layering)  
-- Any app/container-specific concepts we decide to promote to the inventory
+- Policy Stack Evaluation Order  
+- Compiled Profile Source  
+- Container  
+- Entitlement  
+- Seatbelt label / credential state  
+- Adjacent controls (TCC service, Hardened runtime, SIP) insofar as they intersect with sandbox outcomes
 
 **Primary evidence**
 
@@ -168,6 +170,7 @@ These concepts concern when and how profiles apply over a process lifetime, and 
   - Launch processes through different paths (launchd services, GUI app launch, sandbox-exec, etc.).
   - Observe system behavior at distinct lifecycle points (e.g., pre-init, post-init, after extensions are granted).
   - Track how access changes over time in response to extensions and profile changes.
+  - Inspect which compiled profiles and extensions are attached to a process label at each stage, and which containers and adjacent controls are in play.
 
 **Validation implications**
 
@@ -179,6 +182,7 @@ These concepts concern when and how profiles apply over a process lifetime, and 
 - For each lifecycle concept, the concept inventory should point to:
   - Which scenarios illustrate the lifecycle transitions.
   - What kinds of extensions or profile layering are being exercised.
+  - Which compiled profile sources, containers, entitlements, and adjacent controls were active for that scenario, with OS/build recorded so that behavior can be tied back to specific platform states.
 
 This cluster is more “macro” than the others, but aligning it with shared ingestion and probe tooling keeps it from becoming a separate universe.
 
