@@ -1,5 +1,27 @@
 
 
+## Narrative: mach-lookup as a stacked gate
+
+This probe was intended to give us a clean, empirical witness of the `mach-lookup` operation as Seatbelt sees it: a client performing lookups on a small demo service (`com.example.xnusandbox.demo`) and a couple of system services, so we could map observed allow/deny outcomes back to SBPL `(global-name ...)` filters and the corresponding nodes in the `mach-lookup` PolicyGraph. What we actually observed on this host is that the sandbox never gets a say. Instead, the bootstrap subsystem—launchd’s side of the world—terminates the experiment early with `BOOTSTRAP_NOT_PRIVILEGED`.
+
+In terms of the project’s vocabulary, `mach-lookup` is an operation in the Seatbelt policy vocabulary with filters like `(global-name "com.apple.cfprefsd.daemon")`. When a process calls into the bootstrap API, there is a conceptual pipeline:
+
+- The client issues a Mach/Boostrap request (e.g., `bootstrap_register`, `bootstrap_look_up`) against the process’s current bootstrap port.
+- The bootstrap subsystem applies its own policy about which labels may publish or resolve which services in which bootstrap namespaces.
+- Only if that step succeeds do we get the steady-state picture we want: a process performing a `mach-lookup` operation that Seatbelt can mediate via its `mach-lookup` PolicyGraph for the current Seatbelt label.
+
+On this macOS 14.4.1 host, our probe never reaches that third step. Both the server and client see `kr=0x44c` for their bootstrap calls. Decoding that with `bootstrap_strerror` yields “Permission denied”; in bootstrap terminology this is the same `BOOTSTRAP_NOT_PRIVILEGED` mentioned in the earlier notes. From the point of view of the substrate, this is a textbook example of a higher-level, non-Seatbelt gate sitting in front of the sandbox: a decision taken by bootstrap/launchd that prevents the `mach-lookup` operation from ever being evaluated by the Seatbelt PolicyGraph.
+
+Structurally, this matters for the empirical project because it highlights the stacking model we have been using throughout the book:
+
+- **Operation level:** `mach-lookup` is part of the sandbox operation vocabulary, with filters like `(global-name ...)` that we can see in SBPL and in compiled profiles.
+- **Profile + label level:** if a process actually performs a `mach-lookup` that reaches Seatbelt, the kernel consults the `mach-lookup` entrypoint in the relevant PolicyGraphs (platform layer, app/custom layers) attached to the process’s Seatbelt label, walks the nodes, and produces an allow/deny decision (possibly modified by extensions or entitlements).
+- **Adjacent control level:** bootstrap/launchd, like TCC and SIP in other examples, can short-circuit the story before Seatbelt’s graphs are even consulted. In this case, bootstrap policy on this host treats arbitrary registration and lookup from our unsandboxed, unentitled test binaries as “not privileged,” so the experiment fails at the adjacent-control layer.
+
+For the reader of the synthetic textbook, this probe becomes less about a concrete `mach-lookup` allow/deny example and more about a cautionary story: when we design validation tasks around a specific operation (here, `mach-lookup`), we have to account for the fact that other layers—bootstrap namespaces, platform daemon policies, entitlements—may be the first and sometimes only visible gate. The logs here are still useful evidence: they show that `mach-lookup` is not a magical direct line into Seatbelt, but part of a larger stack where the effective behavior is “bootstrap policy ∧ sandbox policy ∧ adjacent controls,” just as file access is “filesystem layout ∧ containers ∧ extensions ∧ sandbox policy ∧ SIP/TCC.”
+
+In short, the current host gives us a clear, repeatable outcome—`BOOTSTRAP_NOT_PRIVILEGED` for both demo and well-known services—that we interpret as “bootstrap veto” rather than “sandbox decision.” That aligns with the substrate’s insistence that some surfaces (like TCC and SIP) are adjacent controls and that bootstrap/launchd policy is a similarly high-churn, non-sandbox layer we have to respect when drawing capability catalogs or building worked examples.
+
 ## traces
 
 ### mach-services probe notes
@@ -44,4 +66,3 @@
 When asked if this is expected:
 
 Yes. From the substrate lens, mach-lookup is mediated by two layers: Seatbelt’s mach-lookup operation/(global-name ...) filters, and the bootstrap/launchd policy in front of it. Platform/bootstrap rules are a high‑churn surface and often deny arbitrary registration and lookup by unprivileged callers. Seeing BOOTSTRAP_NOT_PRIVILEGED before Seatbelt ever evaluates the mach-lookup graph is therefore consistent with what we’d expect on a stock macOS 13–14 system with SIP enabled: the bootstrap gate refuses the request, so the sandbox never gets a say. A successful demo would require a whitelisted name and/or a launch context that is allowed to register/lookup (e.g., via a proper per‑user launchd job or an entitlement), which matches the “platform policy may still deny” caveat in the example text.
-
