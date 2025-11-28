@@ -1,295 +1,344 @@
-# Node Layout Experiment – Research Report (macOS 14.4.1)
+# Node Layout Experiment – Research Report (Sonoma / macOS 14.4.1)
 
-This report summarizes a first-pass investigation into the “modern” Seatbelt profile node layout on a Sonoma host, using only locally compiled blobs and the shared ingestion helpers. It is intended as a standalone artifact: a reader with only the substrate and this directory should be able to understand what we tried, what we learned, and what remains open.
+This document is a self-contained report for the **node-layout** experiment under `book/experiments/node-layout/`. It explains what we have done, what we know about modern Seatbelt PolicyGraph layout on this host, and what remains to be done. New agents should be able to read this file plus `Plan.md` and `Notes.md` to resume the work.
 
-## 1. Motivation and learning objectives
+---
 
-The synthetic textbook treats compiled sandbox profiles as PolicyGraphs: arrays of nodes and edges that encode operations, filters, and decisions. For the static-format and vocabulary/mapping stories to be more than schematic, we want a concrete, empirically grounded view of how those nodes are laid out in current macOS profile blobs.
+## 1. Purpose and context
 
-Specifically, this experiment aimed to:
+The synthetic textbook treats compiled sandbox profiles as **PolicyGraphs**: node arrays plus edges derived from SBPL **Operations**, **Filters**, and **Metafilters**, with an **Operation Pointer Table** and shared literal/regex tables.
 
-- Confirm that the shared ingestion helpers can reliably slice modern blobs into:
-  - a preamble and operation pointer table,
+This experiment asks:
+
+- How are nodes laid out in modern compiled profiles on a Sonoma host?
+- How do small SBPL changes (adding Filters, changing literals, mixing filter forms) perturb:
+  - the node region,
+  - the literal/regex pool,
+  - tag distributions,
+  - and any candidate “filter key” or “literal index” fields?
+- What structural facts can we treat as stable across experiments (format/layout) without over-claiming about vocabulary-level details (Operation IDs, Filter IDs)?
+
+We explicitly do **not** attempt a full reverse-engineering of modern node formats. Instead, we aim for a reproducible structural picture that supports later vocabulary work and capability catalog building.
+
+---
+
+## 2. Environment, tools, and artifacts
+
+**Host / baseline**
+
+- macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
+- Profiles compiled locally via `libsandbox.dylib` on this host; results are host-specific but conceptually aligned with `SUBSTRATE_2025-frozen`.
+
+**Directory contents**
+
+- `Plan.md` – current checklist and open questions.
+- `Notes.md` – dated running notes; useful for detailed provenance.
+- `sb/` – SBPL variants used as probes.
+- `sb/build/*.sb.bin` – compiled policy blobs (one per SBPL variant).
+- `analyze.py` – main tooling for this experiment:
+  - compiles `sb/*.sb` via `sandbox_compile_string`,
+  - slices blobs with `book.graph.concepts.validation.profile_ingestion`,
+  - calls `book.graph.concepts.validation.decoder.decode_profile_dict`,
+  - emits `out/summary.json`.
+- `out/summary.json` – machine-readable per-variant summary, including:
+  - blob length, heuristic `operation_count`,
+  - op-table section length and raw op-table entries,
+  - node region length,
+  - literal/regex pool length,
+  - stride-based stats for the node region (8/12/16),
+  - full stride=12 record dump (for historical reference),
+  - literal strings extracted heuristically,
+  - **decoder** snapshot:
+    - `format_variant`,
+    - `op_table_offset`,
+    - `op_count`,
+    - `node_count`,
+    - decoder `tag_counts`,
+    - decoder `literal_strings`,
+    - decoder `sections` lengths.
+
+**Shared tooling from `book/graph/concepts/validation`**
+
+- `profile_ingestion.py` – slices blobs into:
+  - 16‑byte preamble,
+  - **Operation Pointer Table** bytes,
+  - node region bytes,
+  - literal/regex pool bytes.
+- `decoder.py` – **heuristic modern-profile decoder** that:
+  - guesses `op_count` from the preamble,
+  - infers the op-table region,
+  - treats nodes as 12‑byte records,
+  - returns a JSON-friendly dict with:
+    - per-node `tag` and `fields`,
+    - `node_count`,
+    - stringified `tag_counts`,
+    - printable strings from the literal/regex pool.
+
+These tools give us a consistent “slice + decode” view of modern profiles that we use in this experiment and others.
+
+---
+
+## 3. SBPL probes and compiled profiles
+
+The SBPL variants in `sb/` are deliberately tiny and tightly controlled. They fall into several families:
+
+1. **Baselines and simple filters**
+   - `v0_baseline`: `file-read*` only.
+   - `v1_subpath_foo`: `file-read*` with `(subpath "/tmp/foo")`.
+   - `v2_subpath_bar`: same as `v1` but `"/tmp/bar"`.
+   - `v3_two_filters`: `require-all` over two subpaths (`"/tmp/foo"`, `"/dev"`).
+   - `v4_any_two_literals`: `require-any` over two subpaths (`"/tmp/foo"`, `"/tmp/bar"`).
+   - `v5_literal_and_subpath`: `require-all` over `literal "/etc/hosts"` and `subpath "/tmp/foo"`.
+
+2. **Operation-mix probes (read/write/mach/network)**
+   - `v6_read_write`, `v7_read_and_mach`,
+   - `v8_read_write_dual_subpath`,
+   - `v9_read_subpath_mach_name`,
+   - `v10_read_literal_write_subpath`,
+   - `v11_mach_only`, `v12_write_only`, `v13_network_outbound`,
+   - `v14_mach_and_network`, `v15_write_and_network`,
+   - `v16_read_and_network`, `v17_read_write_network`,
+   - `v18_read_mach_network`, `v19_mach_write_network`.
+
+3. **Literal-focused probes**
+   - `v20_read_literal`: `file-read*` with `(literal "/etc/hosts")` only.
+   - `v21_two_literals_require_any`: `file-read*` with `require-any` over two literals (`"/etc/hosts"`, `"/tmp/foo"`).
+   - `v22_mach_literal`: `file-read*` with `(literal "/etc/hosts")` plus `mach-lookup` for `com.apple.cfprefsd.agent`.
+   - `v23_mach_two_literals_require_any`: `file-read*` with `require-any` over two literals plus the same `mach-lookup`.
+   - `v24_three_literals_require_any`: `file-read*` with `require-any` over three literals (`"/etc/hosts"`, `"/tmp/foo"`, `"/usr/bin/yes"`), no mach.
+   - `v25_four_literals_require_any` and `v26_four_literals_require_any_reordered`: `file-read*` with `require-any` over four literals (same set, different order), no mach.
+   - `v27_two_literals_require_all` and `v28_four_literals_require_all`: `file-read*` with `require-all` over literals (two vs four).
+
+Together, these probes let us vary:
+
+- which **Operation** symbols appear,
+- which **Filters** (subpath, literal) and **Metafilters** (require-all / require-any) are used,
+- how many independent filter “branches” are present,
+- and whether extra operations (mach, write, network) are in the same profile.
+
+The compilation step (`analyze.py`) produces matching `*.sb.bin` blobs, guaranteeing that every summary entry is derived from a known SBPL variant.
+
+---
+
+## 4. Structural layout of modern profiles
+
+Across all variants on this host, we see the following structural invariants:
+
+- A 16‑byte preamble, followed by:
+  - an **Operation Pointer Table** (`op_count` 16‑bit entries),
   - a node region,
   - a literal/regex pool.
-- Explore whether the node region can be treated as fixed-size records (stride-based decoding), and, if so, what stride and tag patterns look plausible.
-- Understand how simple SBPL changes (adding filters, changing literals, mixing filter types) perturb the node region and literal pool.
-- Produce reusable artifacts (SBPL variants, blobs, JSON summaries) that later work can use to refine layout and vocab hypotheses.
+- `profile_ingestion` and the decoder agree on:
+  - `op_table_offset = 16` bytes,
+  - node and literal section lengths (with minor variations per profile).
+
+The node region behaves like:
+
+- a mostly-regular array of 12‑byte records (stride‑12) at the **front**,
+- a more irregular **tail** where stride‑12 still works as an approximation, but:
+  - there are remainders (non-multiple-of-12 lengths),
+  - some interpreted “edges” go out of bounds,
+  - additional structure appears (especially when metafilters or more complex combinations are present).
+
+The decoder formalizes this view:
+
+- Treats every 12‑byte chunk as a node:
+  - first 2 bytes → `tag` (node type),
+  - next 5 words → `fields` (opaque 16‑bit values),
+  - exposes per-node hex plus `tag_counts`.
+- Reports `node_count` in the low 30s for all variants:
+  - `v0_baseline`: 32 nodes,
+  - `v1_subpath_foo`: 30 nodes,
+  - `v4_any_two_literals`: 31 nodes,
+  - `v8_read_write_dual_subpath`, `v9_read_subpath_mach_name`, `v10_read_literal_write_subpath`: ~31–32 nodes.
+
+We retain stride-based views in `summary.json` for historical comparison, but the decoder is the primary structural lens going forward.
+
+---
+
+## 5. Literal pools and content vs structure
+
+The literal/regex pool behaves exactly as the substrate suggests:
+
+- Human-readable strings (paths, literal filenames, mach service names) appear in the pool, often with a one-byte prefix that encodes type/class:
+  - path-like strings: `G/tmp/foo`, `G/tmp/bar`,
+  - literal path: `I/etc/hosts`,
+  - mach global-name: `Wcom.apple.cfprefsd.agent`,
+  - sometimes slightly mangled forms in decoder output: `D/tmp/`, `Bbar`, `\nBfoo`, `\nHetc/hosts`.
+
+However:
+
+- Changing literal **content** in SBPL does not change node bytes, only the pool:
+  - `v1_subpath_foo` vs `v2_subpath_bar`:
+    - same **Filters** (`subpath`), different literal strings,
+    - node regions are bit-identical (same `nodes` list from the decoder),
+    - only the literal pools differ (one contains `/tmp/foo`, the other `/tmp/bar`).
+- Adding or removing **filters** does change the node region:
+  - Adding a single subpath (v1) vs baseline (v0) changes many nodes and reduces `node_count` (32→30).
+  - Adding a second subpath under `require-any` (v4) adds exactly one new node at the **tail** (offset 360) without changing the shared prefix.
+  - Adding a literal filter alongside a subpath (v5) reshapes many nodes, increasing `node_count` and changing the front of the array.
+
+Literal byte offsets in the pool (as measured by naive substring search) vary per profile and do **not** line up with any simple node field; this strongly suggests an indirection rather than “node field = literal offset”.
+
+---
+
+## 6. Candidate node fields for filters and branches
+
+The key structural observation from decoder output is that the **third 16‑bit field** in each node (bytes 6–7, `fields[2]`) changes in a way that tracks **filter presence and branching**, not literal content:
+
+- **Baseline (`v0_baseline`)**:
+  - `field2` values `{3, 4}`, with counts `{3:12, 4:20}`.
+  - No literals in the decoder’s `literal_strings`.
+
+- **Single subpath filter (`v1_subpath_foo` / `v2_subpath_bar`)**:
+  - `field2` moves to `{3:1, 4:9, 5:20}`.
+  - Decoder literals: `['G/tmp/foo']` or `['G/tmp/bar']`.
+  - Node bytes are identical across foo→bar; `field2` reacts to the presence of a `subpath` Filter, not to which path is chosen.
+
+- **Two subpaths under `require-any` (`v4_any_two_literals`)**:
+  - `field2` counts `{0:1, 3:1, 4:9, 5:20}`.
+  - A single new node at offset 360: `tag=5`, `fields=[5,4,0,0,0]` – the only node with `field2=0`.
+  - Interpretation: `field2=0` marks the *second branch* of a `require-any` Metafilter; the rest of the graph shares the `field2` pattern with the single-subpath case.
+
+- **Literal-only and literal-branch probes (`v20`, `v21`)**:
+  - `v20_read_literal` (single literal on `file-read*`):
+    - `field2` counts `{3:1, 4:9, 5:20}`,
+    - decoder literals: `['I/etc/hosts']`.
+    - No `field2=0` or `field2=6`; field2=5 behaves like “one filtered op” just as with subpath.
+  - `v21_two_literals_require_any` (two literals under `require-any`):
+    - `field2` counts `{0:1, 3:1, 4:9, 5:20}`,
+    - adds exactly one `field2=0` node and one extra `tag5` node,
+    - mirrors the dual-subpath `require-any` shape.
+  - This strongly reinforces the idea that `field2=0` encodes “additional branch under require-any” independent of filter type (subpath vs literal).
+
+- **Mach and operation-mix profiles**:
+  - Mach-only (`v11_mach_only`) and mach+network/write (`v14`, `v18`, `v19`) cluster `field2` in `{4, 5}`, with decoder literals like `['Wcom.apple.cfprefsd.agent']`.
+  - Write-only and network-only profiles stay at `{3, 4}` (no 5/0/6).
+  - Mixed, tag6-heavy profiles (`v8_read_write_dual_subpath`, `v9_read_subpath_mach_name`, `v10_read_literal_write_subpath`) introduce `field2` values `{0, 3, 4, 5, 6}` with counts resembling `{0:1, 3:2, 4:1, 5:12, 6:15}` and many nodes of `tag6`.
+  - Nodes with `field2=6` predominantly appear on `tag6` nodes, often at the front of the array and in the tail.
+  - Mach + literal-only probes (`v22_mach_literal`, `v23_mach_two_literals_require_any`) land on the same pattern as `v9`: op-table `[6,…,5]`, tag counts {0:1,5:5,6:25}, `field2` histogram {6:17,5:12,4:1,0:1}. Decoder `nodes` are identical across `v22`/`v23`/`v9`; differences are confined to node-region remainders and literal pools. Require-any over literals under mach does not introduce new `field2` values beyond the existing {0,4,5,6}.
+  - Three-literal require-any without mach (`v24_three_literals_require_any`) drops `field2=0` entirely (histogram {5:20,4:9,3:1}, node_count=30) and removes the extra `tag5` node seen in the two-literal require-any (`v21`). This suggests `require-any` may compile differently once there are more than two branches (balanced/folded) rather than emitting an explicit “second branch” marker.
+  - Four-literal require-any (v25/v26, reordered) keeps the same pattern as v24: field2 {5:20,4:9,3:1}, node_count=30, op-table `[5,…]`, decoder nodes identical across orderings. Literal order and count ≥3 do not reintroduce `field2=0`.
+  - Require-all over literals (v27/v28) reverts to the baseline-like field2 set {3,4} with op-table `[4,…]`, node_count=32, and decoder literal_strings empty despite a non-zero literal pool. Two vs four literals produce identical decoded nodes and tails.
+
+**Working hypothesis**
+
+- The third word (`fields[2]`) is a **compact key** that:
+  - distinguishes “plain” nodes (values 3/4),
+  - encodes the presence of a single filter on an operation (value 5),
+  - marks extra branches created by `require-any` (value 0),
+  - and, in more complex mixes, may mark a separate family of filter/operation branches (value 6) associated with tag6-heavy regions.
+- It does **not** directly encode literal pool offsets; literal byte positions vary across profiles while the `field2` sets stay stable for a given filter structure.
+
+We still lack a mapping from these numeric keys to the **Filter Vocabulary Map**, but we now have repeatable structural differences tied to precise SBPL edits.
 
-We deliberately did **not** try to fully reverse-engineer the modern node format; the goal was to get a solid, reproducible footing and to identify what remains stubbornly opaque.
+---
 
-## 2. Setup and tools
+## 7. Mixed operations and op-table behavior (high-level tie-in)
 
-The experiment lives under `book/experiments/node-layout/`:
-
-- `Plan.md` – current plan/checklist with completed steps and open items.
-- `Notes.md` – dated running notes, including a narrative section.
-- `sb/` – tiny SBPL variants used as probes.
-- `analyze.py` – a small Python tool to compile all SBPL variants via `libsandbox`, slice the resulting blobs using `profile_ingestion.py`, and emit structured summaries.
-- `out/summary.json` – machine-readable summaries for each variant.
-
-The analyzer (`analyze.py`) is intentionally shallow:
-
-- It uses `libsandbox`’s `sandbox_compile_string` to compile each `sb/*.sb` into `sb/build/*.sb.bin`.
-- It passes each blob through `profile_ingestion.py` to get:
-  - an approximate header (`format_variant`, `operation_count`, raw length),
-  - section slices: op-table, nodes, literal/regex pool.
-- It computes stride-based stats over the node region for strides 8/12/16:
-  - record count, remainder, tag values (byte0), and how many interpreted edges stay within bounds.
-- It records the last few stride-aligned node records and any trailing bytes (“tail”) at stride 12.
-- It extracts op-table entrypoints (u16 indices) from the preamble.
-
-All of this is written to `out/summary.json` so later tools or humans can pick up without rerunning the compilations.
-
-## 3. Baseline: `sample.sb.bin`
-
-We started from `book/examples/sb/sample.sb`:
-
-```scheme
-(version 1)
-(deny default)
-
-; allow basic runtime and library access
-(allow process*)
-(allow file-read* (subpath "/System"))
-(allow file-read* (subpath "/usr"))
-(allow file-read* (subpath "/dev"))
-
-; demo paths
-(allow file-read* (subpath "/tmp/sb-demo"))
-(allow file-write* (require-all
-                     (subpath "/tmp/sb-demo")
-                     (require-not (vnode-type SYMLINK))))
-
-; explicit deny to illustrate literal filters
-(deny file-read* (literal "/etc/hosts"))
-```
-
-Compiled via the existing `compile_sample.py`, `sample.sb.bin` was ingested with `profile_ingestion.py`. The heuristic split yielded:
-
-- a 16-byte preamble,
-- a small op-table region,
-- a node region of ~395 bytes,
-- a literal/regex tail (~154 bytes) containing the expected strings (`/etc/hosts`, `usr`, `dev`, `system`, `/tmp/sb-demo`).
-
-Quick stride scans (8/12/16) over the node region showed:
-
-- all strides produced reasonable tag sets and edges mostly in-bounds (interpreting two u16 “edges” per record),
-- stride=12 gave a particularly tidy tag distribution in the front of the array and fewer apparent anomalies, making it a reasonable working hypothesis for the *front* of the node region.
-
-At this point we had a consistent picture: op-table, node bytes, literal tail. The question became how much of that node region we could align with SBPL concepts.
-
-## 4. Synthetic SBPL variants
-
-To explore how SBPL structure influences the compiled graph, we created a small family of SBPL profiles under `sb/`:
-
-- `v0_baseline.sb` – allow `file-read*` only.
-- `v1_subpath_foo.sb` – allow `file-read*` with `(subpath "/tmp/foo")`.
-- `v2_subpath_bar.sb` – same as v1 but `(subpath "/tmp/bar")`.
-- `v3_two_filters.sb` – `(require-all (subpath "/tmp/foo") (subpath "/dev"))` on `file-read*`.
-- `v4_any_two_literals.sb` – `(require-any (subpath "/tmp/foo") (subpath "/tmp/bar"))`.
-- `v5_literal_and_subpath.sb` – `(require-all (literal "/etc/hosts") (subpath "/tmp/foo"))` on `file-read*`.
-
-Using `analyze.py` and `sandbox_compile_string`, we compiled each into a blob and recorded:
-
-- blob length and `operation_count`,
-- section lengths (op_table, nodes, literals),
-- stride stats and tail records,
-- op-table entrypoints.
-
-A few key numbers from `summary.json`:
-
-- v0: len 440, ops=5, nodes=387, literals=27.
-- v1/v2: len 467, ops=6, nodes=365, literals=74.
-- v3: len 440, ops=5, nodes=387, literals=27.
-- v4: len 481, ops=6, nodes=403, literals=50.
-- v5: len 440, ops=5, nodes=387, literals=27.
-
-The structural trends:
-
-- Adding a `subpath` filter (v1 vs v0) increases `operation_count`, shrinks the node region slightly, and expands the literal pool.
-- Changing the literal content (v1 vs v2) leaves node bytes identical but changes the literal pool.
-- Adding a second subpath via `require-any` (v4 vs v1) increases node and literal sizes; the shared prefix of the node region is identical, and new records appear in the tail.
-- Adding a `literal` filter (v5 vs v0) keeps `operation_count` at 5, changes only a couple of node records, and grows the literal pool to include `/etc/hosts`.
-
-## 5. What stride-based analysis tells us
-
-For each variant, we treated the node region as if it were composed of fixed-size records under strides 8, 12, and 16. For each stride we tracked:
-
-- number of full records and remainder bytes,
-- tag values (byte0 of each record),
-- how many interpreted edges (two u16s per record) stayed within the node region.
-
-The main takeaways:
-
-- **No stride fully explains node lengths.** For all variants, node lengths leave non-zero remainders under 8/12/16; the tails never align perfectly.
-- **Stride=12 is a good front approximation.** In the front of the node array, stride=12 yields a small set of tags and edges that mostly stay in-bounds. This suggests some internal regularity, even if the tail uses a different encoding or includes trailers.
-- **Tails are messy.** The last few stride-12 “records” in v4 (two-subpath variant) include:
-  - a node with tag 5 and edges (5,4), lit=0,
-  - a node with tag 0 and edges (1,4), lit=5,
-  - a node with tag 4 and edges (5,3584), lit=1,
-  plus a partial tail of 7 bytes. The edge value 3584 is clearly out-of-bounds, so some of these fields are not pure node indices, or the stride assumption breaks down in the tail.
-
-Our current conclusion is that stride=12 is useful for *summarizing* the front of the node region, but the actual node layout is not a simple fixed-stride array across the entire section.
-
-## 6. Literal pools vs node fields
-
-One core question was how modern blobs tie filter nodes back to literal/regex data. The variants were designed to stress that:
-
-- v1 vs v2: `(subpath "/tmp/foo")` vs `(subpath "/tmp/bar")`.
-  - Node regions are byte-for-byte identical.
-  - Literal pools differ and contain the expected strings.
-- v1 vs v4: one subpath vs `require-any` of two subpaths.
-  - Node prefixes are identical.
-  - Extra nodes appear only at the end of v4’s node region.
-  - Literal pool expands to hold both `/tmp/foo` and `/tmp/bar`.
-- v0 vs v5: baseline vs `(literal "/etc/hosts")` + subpath.
-  - Node regions have the same length; only two records differ.
-  - Literal pool grows to include `/etc/hosts`.
-
-Under the stride-12 view, we treated bytes 6–7 of each record as a candidate “literal index” field. That field changes in some variants (especially where the number of filters changes), but crucially:
-
-- Changing literal content alone (foo→bar) does not change the suspect field in the shared prefix.
-- Adding a second literal in `require-any` produces new nodes in the tail, but the shared prefix remains stable.
-
-This strongly suggests that:
-
-- Literal strings are clearly present in the tail, but
-- Node records likely refer to them via compact IDs or through a secondary indirection, rather than by raw offsets into the literal pool, and
-- For these tiny profiles, many of the interesting literal-related nodes live in the tail segments we do not yet decode cleanly.
-
-We have not yet found a simple, stride-friendly field that we can confidently label “literal index.”
-
-## 7. Op-table entrypoints
-
-The operation pointer table is the documented bridge from operations to graph entry nodes. Using the heuristic that it starts at byte 0x10 and contains `operation_count` u16 indices, we first extracted op-table entries for the single-op and single-filter variants:
-
-- v0 / v5 (ops=5): op_entries `[4,4,4,4,4]`.
-- v1 / v2 / v4 (ops=6): op_entries `[5,5,5,5,5,5]`.
-
-In other words, in these initial tiny synthetic profiles, every operation points to the same entry index. This tells us:
-
-- The op-table is present and structured, but
-- For these cases it does not help segment the node array per operation, because all ops share the same entrypoint.
-
-Later mixed-op probes (see §10) introduce profiles with `op_count=7` and non-uniform entries `[6,6,6,6,6,6,5]`, giving the first evidence of more than one entry index in use but still no clear mapping from individual operations to unique entrypoints.
-
-## 8. Artifacts produced
-
-The experiment left behind several reusable artifacts:
-
-- **SBPL variants** in `book/experiments/node-layout/sb/`:
-  - Minimal profiles that isolate specific SBPL features: subpaths, multiple subpaths, literal filters.
-- **Compiled blobs** in `book/experiments/node-layout/sb/build/`:
-  - Modern `.sb.bin` blobs that can be re-sliced with updated ingestion code.
-- **Analyzer**: `book/experiments/node-layout/analyze.py`:
-  - Single entrypoint to compile all variants and emit structured summaries.
-- **Structured summaries**: `book/experiments/node-layout/out/summary.json`:
-  - Per-variant JSON objects with:
-    - blob length, `format_variant`, `operation_count`,
-    - op-table entrypoints,
-    - section lengths (op_table, nodes, literals),
-    - stride stats for 8/12/16,
-    - tail records and remainder bytes at stride 12.
-- **Narrative and plan**:
-  - `Plan.md` – checklist of completed steps and explicitly open questions.
-  - `Notes.md` – dated notes plus a narrative section summarizing the experiment.
-
-These artifacts decouple the heavy work (compilation, slicing) from later analysis: a future agent can start from `summary.json` and the blobs without having to re-run everything from scratch.
-
-## 9. Where we stand (and what’s still open)
-
-At this stage we have:
-
-- A consistent heuristic for slicing modern profile blobs into op-table, nodes, and literal pool.
-- Evidence that:
-  - adding or removing filters changes the node region and literal pool in predictable ways,
-  - changing literal content (foo→bar) affects only the literal pool, not the node bytes in shared prefixes,
-  - tails of the node region contain additional structure that does not fit a simple fixed stride and may encode literal- or filter-specific details.
-- A reusable analyzer and structured summaries for all the synthetic variants.
-
-We **do not yet** have:
-
-- A trustworthy mapping from specific node fields to literal/regex pool entries.
-- Any identification of which fields encode filter keys (as opposed to literal indices), or how tag values (for example, tag6) relate to filter classes.
-- A robust node layout model that explains tails (and odd edge values) as well as the front of the node region.
-- More than very coarse per-operation segmentation of the graph from op-table entries: mixed-op profiles show at most two distinct entry indices shared across several operations, and we still lack a vocabulary-aware mapping from operations to entrypoints.
-
-In terms of the textbook’s goals, this is still useful:
-
-- It confirms that modern blobs retain the broad structure described in the substrate (headers, op-tables, nodes, literal pools).
-- It grounds the claim that literal pools and op-tables are present and can be sliced without full reverse engineering.
-- It highlights exactly where our knowledge runs out: the fine structure of modern node formats, and the precise mapping of filters and literals back to SBPL.
-
-Future work can build on this by:
-
-- **Decoder integration (completed 2025-11-30):** `analyze.py` now calls the shared decoder and records decoder-derived `node_count`, `tag_counts`, `op_table_offset`, literal strings, and section lengths in `out/summary.json`, aligning this experiment with the validation tooling.
-- Using decoder-backed summaries to revisit foo→bar and multi-literal variants and identify which node fields track literal-table indices vs literal content, tightening literal/regex index hypotheses.
-- Comparing decoder fields across profiles that add/remove specific filters (subpath, literal, require-any/all) to isolate candidate fields for filter key codes and to refine our understanding of tag classes (for example, how tag6 behaves across variants).
-- Treating “front” vs “tail” regions explicitly—based on where new nodes appear relative to a baseline—and experimenting with per-tag or per-region size models to explain tail structure while minimizing out-of-bounds edge interpretations.
-- Designing additional, deliberately asymmetric mixed-op profiles, then using decoder-driven graph walks from each op-table entrypoint to characterize per-bucket `tag_counts` and literal usage; these structural signatures can later be correlated with operation IDs once a vocabulary map exists.
-
-## 10. Mixed-op probes and first op-table divergence
-
-Follow-on probes added mixed operations with distinct filters to stress per-op entrypoints:
-
-- `v8_read_write_dual_subpath`: `file-read*` with `(subpath "/tmp/foo")`, `file-write*` with `(subpath "/tmp/bar")`.
-- `v9_read_subpath_mach_name`: `file-read*` with `(subpath "/tmp/foo")`, `mach-lookup` with `(global-name "com.apple.cfprefsd.agent")`.
-- `v10_read_literal_write_subpath`: `file-read*` with `(literal "/etc/hosts")`, `file-write*` with `(subpath "/tmp/foo")`.
-
-Analyzer enhancements now emit full stride=12 record dumps, per-tag counts, and ASCII literal runs; the refreshed `summary.json` captures these.
-
-Findings:
-
-- These profiles bump `op_count` to 7 and, for the first time, op-table entries are non-uniform: `[6, 6, 6, 6, 6, 6, 5]`. This suggests at least two distinct entry indices in play, though operation→index mapping is still unknown.
-- Node tag sets now include tag6; early stride=12 records carry the main differences across variants (indices ~3–5, 14), with tag6/tag3 swaps and lit fields toggling 3↔6 alongside edge/extra changes (`03000600` vs `06000600`).
-- Node lengths vary slightly (v8/v9: 32 records + 2-byte remainder; v10: 31 records + 11-byte remainder), hinting at structural shifts when a `literal` filter is involved.
-- Literal pools now show prefixed strings: `G/tmp/foo`, `G/tmp/bar`, `Wcom.apple.cfprefsd.agent`, `I/etc/hosts`, reinforcing that the pool stores a class/type marker alongside the payload.
-
-Additional probes extended this picture:
-
-- Single-operation profiles for `mach-lookup` with the same global-name, `file-write*`, and `network-outbound` (v11–v13) all produced uniform op-table entries (`[5,…,5]` or `[4,…,4]`) and node/tag shapes closely aligned with the original read-only baseline and its simple variants.
-- Mixed profiles that combine only “flat” operations—mach+network, write+network, read+network, read+write+network, read+mach+network, mach+write+network (v14–v19)—likewise retained fully uniform op-table entries and only small, local shifts in stride-12 record patterns.
-- As of these probes, the only profiles that exhibit genuinely non-uniform op-table entries are v8–v10 with `[6,6,6,6,6,6,5]`; the identity of the operation associated with the lone `5` entry remains unknown.
-
-Still open:
-
-- Which operation maps to the lone `5` op-table entry.
-- Whether tag6 corresponds to a specific filter class or branching construct, and how its size interacts with the tail remainders.
-- How to parse the tail beyond fixed stride so these per-op differences can be tied to concrete filter keys and literal references.
-
-## 11. Decoder-backed refresh (2025-11-30)
-
-To align with the shared validation tooling and give later analyses a consistent footing, `analyze.py` now calls `book/graph/concepts/validation/decoder.decode_profile_dict` for every compiled blob and records a decoder snapshot in `out/summary.json`:
-
-- Decoder `op_table_offset` is consistently 16 bytes, matching the preamble heuristic.
-- Decoder `op_count` matches the ingestion header; node counts land in the low 30s across all variants (for example, v0_baseline: 32 nodes; v11_mach_only: 30).
-- Decoder `tag_counts` mirror the stride-12 view (baseline {0:1,2:1,3:13,4:17}; mach-only {0:1,1:1,4:6,5:22}; mixed-op profiles include tag6 as before).
-- Decoder literal strings surface prefixed payloads (`G/tmp/foo`, `I/etc/hosts`, `Wcom.apple.cfprefsd.agent`), reinforcing the structure of the literal pool without yet exposing how node fields reference those literals.
-
-This integration does not, by itself, resolve the open questions (literal index mapping, filter key location, tail layout, per-op segmentation), but it replaces bespoke stride parsing with a shared, version-tolerant decoder view. Future passes should leverage these decoder fields when comparing variants, rather than re-implementing slicing logic per experiment.
-
-## 12. Decoder-based field observations (2025-11-30)
-
-Using `decoder.decode_profile_dict` directly on the compiled blobs (outside the JSON summary) provides the first structured clues about which node fields respond to filters and literals:
-
-- The third u16 field in each 12-byte node (decoder `fields[2]`, bytes 6–7) changes with filter presence but not with literal content:
-  - `v1_subpath_foo` and `v2_subpath_bar` have identical nodes despite different literal strings, confirming that content changes do not perturb node bytes.
-  - Adding a single subpath moves field2 counts from {3:12, 4:20} (baseline) to {3:1, 4:9, 5:20}, introducing value 5.
-  - A `require-any` over two subpaths (`v4_any_two_literals`) keeps the shared prefix intact and appends one extra node (tag5, fields `[5,4,0,0,0]`) with a new field2 value 0.
-  - Mixed filtered profiles that include tag6 (e.g., `v8_read_write_dual_subpath`, `v9_read_subpath_mach_name`, `v10_read_literal_write_subpath`) add field2 values 0 and 6 on top of the prior set (counts like {0:1, 3:2, 4:1, 5:12, 6:15}).
-  - Mach-only and mach+network profiles cluster field2 in {4,5}; write/network-only stay at {3,4}.
-- Literal string extraction via the decoder remains noisy (some prefixed strings render as `D/tmp/`, `Bbar`, etc.), but the field2 value sets are stable per profile and clearly track which filters/ops are present.
-- Interpretation: the word at offsets 6–7 likely encodes a filter/literal identifier (or an indirection to one). It reacts to which filters are present (subpath, literal, mach/global-name) but not to the literal text. Mapping these values to literal pool entries or named filter keys remains open.
-
-Outstanding work:
-
-- Align field2 value changes with literal pool ordering to see if 0/5/6 correspond to specific literals or filter instances.
-- Use the decoder node lists to mark “front” vs “tail” regions explicitly (for example, the extra tail node in `v4`) and see whether specific tags or field patterns only appear in tails.
-- Combine these field observations with op-table entrypoint walks (once vocab IDs are available) to tie buckets and filter/literal identifiers together.
-
-Further decoder-based observations:
-
-- Literal pool byte offsets vary across profiles (for example, `/tmp/foo` appears at offset 57 in `v1`, 45 or 71 in other variants; `I/etc/hosts` at 47), but the field2 sets remain stable. There is no direct field2→literal offset correlation.
-- The extra tail node in `v4_any_two_literals` (tag5, fields `[5,4,0,0,0]`) is the lone field2=0 occurrence there, suggesting field2=0 marks an additional branch rather than a literal offset. Tag6-heavy profiles carry many field2=6 occurrences, mostly on tag6 nodes, hinting that tag6 + field2=6 encode filtered branches or parameterized operations.
-- Literal string decoding remains noisy (prefixed strings like `D/tmp/`, `Bbar`), reinforcing the need for a more precise literal table parse before asserting any field-to-literal mapping.
+Although this experiment is node-centric, some observations intersect with the **Operation Pointer Table**:
+
+- For most small profiles, op-table entries are **uniform**:
+  - baseline / read / write / network-only → entries `[4,4,4,4,4]`,
+  - mach-only and “mach in the mix” without extra filters → `[5,5,5,5,5,5]`.
+- Profiles that combine mach with filtered reads and bump `operation_count` to 7 (e.g., `v8`, `v9`, `v10`) show **non-uniform** op-tables: `[6,6,6,6,6,6,5]`.
+  - These also introduce tag6-heavy node regions and the expanded `field2` set including value 6.
+- At this stage, we treat op-table entries (4/5/6) as **opaque buckets**:
+  - 4: “unfiltered” operations (read/write/network and baseline),
+  - 5: “filtered or mach-involved” graphs in simpler cases,
+  - 6: additional entrypoints that arise in more complex profiles (mach + filtered read).
+
+The **op-table vs operation** experiment builds on this; here, we simply record the structural correlation between tag6, `field2` patterns, and op-table buckets.
+
+---
+
+## 8. What we do **not** know yet
+
+Despite the progress above, several important pieces remain unknown or only loosely constrained:
+
+1. **Exact node type semantics**
+   - We treat `tag` values (0, 1, 2, 3, 4, 5, 6, …) as opaque node-type codes.
+   - We do not yet know which tags correspond to specific Filter tests, Metafilter combinators, or Decision nodes, only that certain tags (e.g., 6) emerge in complex, filtered profiles.
+
+2. **Precise filter key mapping**
+   - While `fields[2]` is a strong candidate for a “filter key” / branch key, we cannot yet tie specific numeric values (0/3/4/5/6) to particular Filter vocabulary entries (e.g., `subpath`, `literal`, `global-name`, etc.).
+   - We also do not know whether `fields[2]` points directly into a Filter table or into a more complex indirection.
+
+3. **Tail layout and mixed node sizes**
+   - The front of the node region behaves nicely under stride‑12, but the tail regularly exhibits:
+     - non-multiple-of-12 lengths,
+     - odd edge values,
+     - nodes whose semantics are unclear (especially with field2=0/6 and remainders).
+   - Earlier brute-force attempts to assign per-tag sizes (8/12/16) to explain the tails did not converge.
+   - Recent mach/literal swaps show identical decoded nodes while tail bytes change (e.g., `v9` vs `v22` remainders `0600000e01` vs `010005000600000e010005`; `v22` vs `v23` swap `010005000600000e010005` vs `06`; `v21` vs `v24` shift `000e0100040005` vs `0500050004`). Tail bytes likely carry filter-specific data the current decoder ignores.
+
+4. **Per-operation segmentation**
+   - We know that multiple Operations often share the same op-table entry in small profiles (especially when op-table entries are uniform).
+   - We do not yet have a clean way, within this experiment alone, to walk from a specific Operation ID to a distinct region of the node graph and say “these nodes belong to `file-read*` vs `mach-lookup`”.
+
+5. **Connection to vocabulary maps**
+   - There is still no Operation or Filter Vocabulary Map (`ops.json`, `filters.json`) available for this host.
+   - We intentionally avoid labeling any numeric tag or field value with a human-readable Filter or Operation name; that will require canonical vocabulary artifacts and possibly runtime traces.
+
+---
+
+## 9. Recommended next steps (for future agents)
+
+The `Plan.md` file lists detailed tasks; this section highlights the most impactful next steps for a new agent picking up the experiment.
+
+1. **Tighten field2 ↔ SBPL construct hypotheses**
+   - Design additional single-change SBPL variants that:
+     - add/remove **exactly one** filter of a given type (`subpath`, `literal`, `global-name`, etc.),
+     - swap `require-any` and `require-all`,
+     - move the same filter between different operations.
+   - For each new variant:
+     - re-run `analyze.py`,
+     - compare decoder `nodes` and `field2` histograms to the nearest baseline,
+     - document how `field2` changes.
+   - Goal: reach a table of the form “field2 value X consistently appears when construct Y is present” without claiming more than the data supports.
+
+2. **Front vs tail characterization**
+   - For a small subset of variants (baseline, single subpath, dual subpath, dual literal, one tag6-heavy mix):
+     - choose a cutoff index that separates “front” from “tail” (for example, last index shared with baseline vs new nodes),
+     - record tag distributions and field patterns separately for front and tail,
+     - look for patterns such as “require-any branch nodes only appear in the tail” or “tag6 nodes cluster at the front”.
+   - Encode these observations back into `Notes.md` and update this report if clear patterns emerge.
+
+3. **Minimal mach + literal probe**
+   - Add a `mach-lookup` + literal-only profile with no subpath (e.g., mach plus `literal "/etc/hosts"` but no extra read rules) to see whether:
+     - field2=6 appears without subpath,
+     - op-table entries move into the `[6,…,5]` family,
+     - tag6 emerges without additional operations.
+   - This will help disentangle “mach vs subpath vs multi-branching” in the tag6/field2=6 story.
+
+4. **Per-op graph signatures (optional within this experiment)**
+   - Reuse the decoder to implement small graph walks from op-table entrypoints (as in the op-table experiment), but keep the output local to this directory:
+     - for each op-table entry, record reachable tags and `field2` values,
+     - compare signatures between profiles that differ by a single Operation.
+   - This remains ID-agnostic but offers a structural view that can later be tied to an Operation Vocabulary Map.
+
+5. **Integration with vocabulary-mapping work**
+   - Once `book/graph/concepts/validation/out/vocab/ops.json` and `filters.json` exist:
+     - revisit this experiment to label some of the observed tag/field patterns with concrete Operation/Filter IDs,
+     - carefully annotate which labels are now grounded in vocab artifacts vs which remain structural hypotheses.
+
+6. **Turnover discipline**
+   - Keep `Plan.md` and `Notes.md` in sync:
+     - whenever you add a new SBPL variant, describe why in `Notes.md` and add a brief bullet in `Plan.md`,
+     - when a hypothesis is strengthened or disproved, adjust this report and leave the previous version accessible via git history rather than piling on new ad‑hoc sections.
+
+---
+
+## 10. How this experiment feeds the larger project
+
+Within the project’s conceptual model:
+
+- This experiment provides concrete evidence for:
+  - the existence and structure of the **Operation Pointer Table** and node region,
+  - the role of literal/regex pools in compiled profiles,
+  - how **Filters** and **Metafilters** manifest as stable patterns over node tags and small integer fields.
+- It supplies reusable artifacts and summaries that:
+  - the `op-table-operation` experiment uses to reason about buckets (4/5/6),
+  - the `op-table-vocab-alignment` and vocabulary-mapping tasks can leverage once Operation/Filter vocabulary maps exist.
+
+The main value here is not a complete decode of the modern format, but a well-documented, reproducible slice of how today’s Seatbelt PolicyGraphs look on Sonoma, and a clear set of open questions for future agents.***

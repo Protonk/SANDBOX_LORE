@@ -73,9 +73,9 @@ Deliverables for this phase:
 
 ## 5. Turnover and integration
 
-- [ ] Keep dated, detailed notes in `Notes.md` for every meaningful step or decision.
-- [ ] Maintain `ResearchReport.md` as the main narrative:
-  - [ ] Motivation, design, methods, findings, limits, and next steps.
+- [x] Keep dated, detailed notes in `Notes.md` for every meaningful step or decision.
+- [x] Maintain `ResearchReport.md` as the main narrative:
+  - [x] Motivation, design, methods, findings, limits, and next steps.
 - [ ] Make sure this experiment feeds back into:
   - [ ] `book/graph/concepts/EXPERIMENT_FEEDBACK.md` (as a short summary and pointer).
   - [ ] Any `validation/tasks.py` entries that use op-table and vocab data.

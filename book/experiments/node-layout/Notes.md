@@ -264,3 +264,56 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Extra tail node in `v4` (`tag5`, fields `[5,4,0,0,0]`) is the only node with field2=0 in that profile; suggests field2=0 marks “second branch” of require-any rather than a literal offset.
   - In tag6-heavy profiles (v8/v9), the nodes containing field2=0/6 are concentrated in tag6 records at the front and tail; field2=6 proliferates (15–17 occurrences) and coexists with many tag6 nodes, hinting that tag6 + field2=6 is the filtered branch machinery.
 - Literal pool offsets therefore do not correlate directly with field2 values; field2 appears to be a small key space (0/3/4/5/6) tied to filter presence/structure, not byte positions. Next lever: map specific field2 values to SBPL constructs by designing deltas that introduce/remove one filter at a time and watching which value disappears.
+
+## 2025-11-30 4
+
+- Added two new probes to isolate literal-only behavior:
+  - `v20_read_literal`: single `(literal "/etc/hosts")` on `file-read*`.
+  - `v21_two_literals_require_any`: `file-read*` with `require-any` over two literals (`/etc/hosts`, `/tmp/foo`).
+- Decoder results:
+  - `v20` (literal-only) → `op_count=6`, tag counts {0:1,1:1,4:6,5:22}, field2 counts {5:20, 4:9, 3:1}, literals `['I/etc/hosts']`. Field2 set matches the single-subpath case (no field2=0/6), suggesting a single literal alone behaves like “one filtered op” without introducing new keys.
+  - `v21` (two literals require-any) → `op_count=6`, tag counts {0:1,1:1,4:6,5:23}, field2 counts {5:20, 4:9, 3:1, 0:1}, literals `['Ftmp/foo', '\\nHetc/hosts']`. Adds exactly one field2=0 node, mirroring the dual-subpath require-any pattern.
+- Interpretation: field2=0 tracks “second branch in a require-any” regardless of whether the children are subpath or literal. Field2=5 continues to dominate single-filter cases; field2=6 still only appears in tag6-heavy mixed profiles (mach + filtered read). Literal byte offsets remain unrelated to field2 values. Next action: craft a minimal mach+literal-only profile to see if field2=6 appears without subpath/multi-branching.
+
+## 2025-12-01 1
+
+- Added `v22_mach_literal.sb` (file-read* with `(literal "/etc/hosts")` plus `mach-lookup` for `com.apple.cfprefsd.agent`) to see whether the tag6/field2=6 pattern depends on subpath vs literal when paired with mach.
+- Reran `PYTHONPATH=. python3 analyze.py`; regenerated blobs and `out/summary.json`.
+- Decoder stats for `v22`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tag counts {0:1,5:5,6:25}, field2 histogram {6:17,5:12,4:1,0:1}, literal pool `['I/etc/hosts', 'Wcom.apple.cfprefsd.agent']`.
+- The field2/tag pattern matches `v9_read_subpath_mach_name` exactly (same values, `[6,…,5]` op-table split) even though the filter is a literal instead of a subpath. Node bytes differ slightly (node region 383 vs 389 bytes), so filter type still alters structure, but field2 values track “mach + filtered read” rather than the specific filter flavor.
+
+## 2025-12-01 2
+
+- Compared `v9_read_subpath_mach_name` vs `v22_mach_literal` at the decoded node level: decoder `nodes` lists are identical (31 nodes; same tags and fields), but raw node regions differ in length (389 vs 383 bytes) and remainder bytes; literal pools differ as expected. Conclusion: structural graph stays fixed while tail/remainder bytes and literals shift with filter flavor.
+- Added `v23_mach_two_literals_require_any.sb` (mach-lookup plus `file-read*` with `require-any` over two literals `/etc/hosts` and `/tmp/foo`) to see if a literal-only branch under mach introduces new field2 values.
+- Reran `PYTHONPATH=. python3 analyze.py`; decoder stats for `v23`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tag counts {0:1,5:5,6:25}, field2 histogram {6:17,5:12,4:1,0:1}, literals `['Ftmp/foo', '\\nHetc/hosts', 'Wcom.apple.cfprefsd.agent']`, node_count=31.
+- Decoder `nodes` for `v22` and `v23` are identical; only literal pools and node-region tails differ (remainder hex `010005000600000e010005` vs `06`). Require-any over literals under mach did not introduce new field2 values (no extra field2=0 beyond the baseline mach+filtered pattern).
+
+## 2025-12-01 3
+
+- Added `v24_three_literals_require_any.sb` (`file-read*` with `require-any` over three literals: `/etc/hosts`, `/tmp/foo`, `/usr/bin/yes`) to stress literal count/order without mach.
+- Reran analyzer; decoder for `v24`: `op_count=6`, op entries `[5,5,5,5,5,5]`, tag counts {0:1,1:1,4:6,5:22}, field2 histogram {5:20,4:9,3:1}, literals `['Ftmp/foo', '\\nHetc/hosts', '\\nJusr/bin/yes']`, node_count=30. Notably, `field2=0` disappears (present in the two-literal require-any) and node_count drops by one; the extra branch node is gone.
+- Decoder node diff `v21` (two literals require-any) vs `v24` shows a single missing node at index 30 in `v24` (the `tag5` node with `field2=0`). Three-literal require-any seems to compile into a shape that no longer emits the explicit “second branch” marker seen with two children.
+- Tail snapshots (stride-12 remainder hex, node bytes vs literals):
+  - `v9` vs `v22`: same decoded nodes, node lens 389 vs 383; remainders `0600000e01` vs `010005000600000e010005`; literal lens 92 vs 98.
+  - `v22` vs `v23`: same decoded nodes, node lens 383 vs 385; remainders swap (`010005000600000e010005` vs `06`); literal lens 98 vs 104.
+  - `v21` vs `v24`: node lens 379 vs 365; remainders `000e0100040005` vs `0500050004`; literal lens 72 vs 102.
+- Takeaways:
+  - Field2 continues to track filter structure, not literal content; the disappearance of field2=0 in the three-literal case suggests require-any may compile differently once there are more than two branches (possibly balancing or folding the tree without an explicit “second branch” flag).
+  - Decoder `nodes` can stay identical across filter swaps while tail bytes and literal pools shift; tail differences are now logged for later modeling.
+
+## 2025-12-02 1
+
+- Added more literal probes:
+  - `v25_four_literals_require_any` and `v26_four_literals_require_any_reordered` (same four literals, different order).
+  - `v27_two_literals_require_all` and `v28_four_literals_require_all` (require-all over literals).
+- Reran analyzer; decoder results:
+  - `v25`/`v26`: `op_count=6`, op entries `[5,…]`, tag counts {0:1,1:1,4:6,5:22}, field2 {5:20,4:9,3:1}, literals include all four paths. Decoder `nodes` identical across v24→v25→v26; reordering literals has no effect on nodes. `field2=0` stays absent even with four children.
+  - `v27`/`v28` (require-all): `op_count=5`, op entries `[4,…]`, tag counts {0:1,2:1,3:12,4:18}, field2 {3:11,4:21}, decoder literal_strings empty despite literal pool length 27; nodes identical between two vs four literals. Field2 collapses back to {3,4} like the baseline.
+- Tail/remainder snapshots:
+  - Require-any series: v21 rem `000e0100040005` (len7, lit_len 72) → v24 rem `0500050004` (len5, lit_len 102) → v25/v26 same rem `0500050004` (len5, lit_len 125).
+  - Require-all series: v27/v28 rem `010003` (len3, lit_len 27).
+- Takeaways:
+  - Require-any drops the `field2=0` branch marker once there are ≥3 literals; adding a fourth or reordering literals leaves decoded nodes untouched.
+  - Require-all behaves like the baseline field2 set {3,4} regardless of literal count and does not surface literal strings via the decoder (pool still grows). Likely a different combinator path that doesn’t expose branch markers in `field2`.
+  - Tail bytes track filter/combinator changes even when decoded nodes stay identical; remainders now cataloged for require-any/all families.

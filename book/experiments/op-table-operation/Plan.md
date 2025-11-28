@@ -48,9 +48,9 @@ Deliverables:
 
 ## 4. Documentation and reporting
 
-- [ ] Keep running notes in `Notes.md` (dated entries).
-- [ ] Summarize findings and remaining open questions in `ResearchReport.md`.
-- [ ] Version all outputs by host/OS if needed (Sonoma baseline).
+- [x] Keep running notes in `Notes.md` (dated entries).
+- [x] Summarize findings and remaining open questions in `ResearchReport.md`.
+- [x] Version all outputs by host/OS if needed (Sonoma baseline).
 
 ---
 

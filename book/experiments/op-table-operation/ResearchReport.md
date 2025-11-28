@@ -1,363 +1,361 @@
-# Op-table vs Operation Mapping – Research Report (skeleton)
+# Op-table vs Operation Mapping – Research Report (Sonoma / macOS 14.4.1)
 
-This report will summarize an experiment to map SBPL operation names to op-table entry indices and observed graph entrypoints in compiled sandbox profiles on a Sonoma host. It will draw on synthetic SBPL profiles, compiled blobs, analyzer outputs, and any semantic probe cross-checks.
+This document is the current, unified report for the **op-table-operation** experiment under `book/experiments/op-table-operation/`. It explains what we have learned about the relationship between SBPL **Operations** and **Operation Pointer Table** entries on this host, and what remains to be done. A new agent should be able to read this file with `Plan.md` and `Notes.md` and continue the work without rereading the entire thread.
 
-##  Motivation and objectives
+---
 
-The substrate treats **Operation** and **Operation Pointer Table** as core concepts: each SBPL operation name corresponds to a numeric operation ID, and the op-table maps those IDs to entry nodes in the compiled PolicyGraph. Higher up, the **Operation vocabulary map** concept assumes we can relate symbolic names (`file-read*`, `mach-lookup`, `network-outbound`) to those numeric encodings in a stable, versioned way.
+## 1. Purpose and conceptual frame
 
-The node-layout experiment under `book/experiments/node-layout/` established that modern compiled profiles on this Sonoma host have:
+In the substrate:
 
-- a 16-byte preamble and an operation pointer table,
-- a node region with plausible 12-byte “record” structure at the front,
-- a literal/regex tail with pooled strings and pattern metadata.
+- An **Operation** is a class of kernel action (e.g., `file-read*`, `mach-lookup`, `network-outbound`).
+- The **Operation Pointer Table** maps numeric Operation IDs to entry nodes in the compiled **PolicyGraph**.
+- The **Operation Vocabulary Map** is a versioned mapping between SBPL operation names and those numeric IDs.
 
-However, that experiment did not resolve which operations occupied which op-table slots, nor how mixed-operation profiles used multiple entry indices (`[6,…,5]` in some cases). This follow-on experiment focuses on that missing piece:
+The **node-layout** experiment established that modern profiles have:
 
-- empirically relate SBPL operation names to op-table entry values (small indices like 4, 5, 6) across a controlled set of synthetic profiles,
-- observe how adding filters (subpath, literal) changes op-table entries and `operation_count`,
-- identify when and how non-uniform tables like `[6,6,6,6,6,6,5]` arise,
-- feed those observations back into the concept map (Operation, Operation Pointer Table, Operation Vocabulary Map) and the validation harness under `book/graph/concepts/validation`.
+- a 16‑byte preamble,
+- an Operation Pointer Table section,
+- a node region (12‑byte nodes at the front),
+- and a literal/regex pool.
 
-We intentionally stay within the constraints of the substrate:
+However, it did not answer:
 
-- we do not attempt to reverse-engineer the full PolicyGraph layout or node formats here,
-- we treat op-table entries as **opaque indices** whose semantics must be inferred cautiously from deltas,
-- we assume that a separate, versioned operation vocabulary map (from canonical artifacts or other validation tasks) is the correct long-term source of truth for name↔ID mapping.
+- which SBPL operations end up in which op-table “bucket” (indices like 4, 5, 6),
+- how filters and literals change those buckets,
+- and how non-uniform patterns such as `[6,6,6,6,6,6,5]` should be interpreted.
 
-##  Setup and tools (SBPL variants, analyzer/wrapper, correlation script)
+This experiment focuses on that gap:
 
-The experiment lives in `book/experiments/op-table-operation/` and reuses the shared ingestion helpers from `book/graph/concepts/validation/profile_ingestion.py`.
+- Use **synthetic SBPL profiles** to probe how op-table entries change as we add and remove operations and filters.
+- Treat raw op-table entries as **opaque bucket labels**, not Operation IDs.
+- Use decoder-backed per-entry “signatures” (tag/literal patterns) as structural fingerprints.
+- Prepare the ground for later vocabulary-mapping work that will supply real Operation IDs.
 
-Tools and environment:
+We intentionally avoid guessing a full Operation Vocabulary Map; that belongs to `book/graph/concepts/validation` once canonical artifacts exist.
 
-- Host: Sonoma (macOS 14.x) on Apple Silicon, matching the State snapshot used elsewhere.
-- Compiler: `libsandbox.dylib` via `sandbox_compile_string`, accessed with `ctypes`.
-- Ingestion: `parse_header` and `slice_sections` from `profile_ingestion.py`, which:
-  - classify blobs as `modern-heuristic`,
-  - recover a heuristic `operation_count` from the preamble,
-  - slice out the op-table, node region, and literal/regex pool.
-- Analyzer: `book/experiments/op-table-operation/analyze.py`:
-  - compiles all `sb/*.sb` into `sb/build/*.sb.bin`,
-  - parses each SBPL file to extract the list of allowed operation symbols (e.g., `file-read*`, `mach-lookup`),
-  - computes `op_count` and raw `op_entries` (u16 table values),
-  - records node-region tag counts under a stride-12 view and the stride remainder,
-  - extracts printable ASCII runs from the literal/regex pool,
-  - writes per-profile summaries to `out/summary.json`,
-  - emits `out/op_table_map.json` containing:
-    - `single_op_entries` (operation symbol → op_entries for single-op profiles),
-    - `profiles` (per-profile ops, op_entries, and unique entry sets).
+---
 
-All of this stays deliberately shallow: we do not attempt to interpret node indices or to assign op-table entries to specific node offsets, only to observe how those entries change as SBPL structure changes.
+## 2. Environment, tools, and artifacts
 
-##  Profiles and methods
+**Host / baseline**
 
-SBPL profiles under `sb/` fall into three broad families, each chosen to stress a different aspect of the Operation/Operation Pointer Table concepts.
+- macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
 
-1. **Baseline and single-op profiles (no filters)**
+**Directory contents**
 
-   - `v0_empty`: `(deny default)` only.
-   - `v1_read`: `(allow file-read*)`.
-   - `v2_write`: `(allow file-write*)`.
-   - `v3_mach`: `(allow mach-lookup (global-name "com.apple.cfprefsd.agent"))`.
-   - `v4_network`: `(allow network-outbound)`.
+- `Plan.md` – experiment plan and open questions.
+- `Notes.md` – dated notes on variants, analyzer changes, and findings.
+- `sb/` – SBPL variants for this experiment.
+- `sb/build/*.sb.bin` – compiled profile blobs (written by the analyzer).
+- `analyze.py` – the main tool here:
+  - compiles all `sb/*.sb` using `libsandbox.dylib` and `sandbox_compile_string`,
+  - parses SBPL to recover the list of allowed operation symbols per profile,
+  - uses `profile_ingestion.parse_header` and `slice_sections` to recover `operation_count` and section boundaries,
+  - calls `decoder.decode_profile_dict` to get node counts, tag counts, literal strings, and sections,
+  - extracts op-table entries from the blob,
+  - computes simple tag counts over the node region (stride‑12),
+  - derives per-entry structural **signatures** by walking from each unique op-table index over the decoder node list,
+  - writes:
+    - `out/summary.json` – per-profile details,
+    - `out/op_table_map.json` – per-profile op_entries + single-op hints,
+    - `out/op_table_signatures.json` – per-profile entry signatures.
 
-   These are meant to show the “pure” op-table behavior for each operation without filters or parameterization.
+**Shared dependencies**
 
-2. **Unfiltered mixed-op profiles**
+- `book.graph.concepts.validation.profile_ingestion` – header parsing, section slicing.
+- `book.graph.concepts.validation.decoder` – modern-profile decoder (preamble, op-table, nodes, literal pool).
 
-   - `v5_read_write`: read + write.
-   - `v6_read_mach`: read + mach.
-   - `v7_read_network`: read + network.
-   - `v8_write_mach`: write + mach.
-   - `v9_write_network`: write + network.
-   - `v10_mach_network`: mach + network.
+---
 
-   These test whether combining operations (without filters) causes the op-table to diversify entry indices or simply replicate a single “bucket” across all slots.
+## 3. SBPL profiles and method
 
-3. **Filtered and literal profiles**
+The SBPL variants are built around a small operation set:
 
-   - `v11_read_subpath`: `file-read*` with `(subpath "/tmp/foo")`.
-   - `v12_read_subpath_mach`: read+subpath + mach.
-   - `v13_read_subpath_write`: read+subpath + write.
-   - `v14_read_subpath_network`: read+subpath + network.
-   - `v15_mach_literal`: mach + `file-read*` with `(literal "/etc/hosts")`.
-   - `v16_subpath_mach_literal`: read+subpath + mach + read+literal.
+- **Filesystem operations**: `file-read*`, `file-write*`.
+- **IPC**: `mach-lookup` on a fixed global-name (`"com.apple.cfprefsd.agent"`).
+- **Network**: `network-outbound`.
 
-   These probe how filters and SBPL literals (subpath, literal) interact with the op-table: do they move operations into different op-table “buckets” (4, 5, 6)? Do specific combinations produce non-uniform patterns such as `[6,6,6,6,6,6,5]`?
+They fall into three main families:
 
-Methodologically, we:
+1. **Unfiltered, single-op and multi-op profiles**
 
-- compute `op_count` and `op_entries` for each profile,
-- group profiles by operation sets and filter structure,
-- compare:
-  - single-op vs mixed-op profiles that share an operation (e.g., read-only vs read+write),
-  - filtered vs unfiltered versions of the same operation,
-  - profiles with and without mach-lookup while holding other filters constant,
-- treat op-table entries as **equivalence-class labels** (“all 4s”, “all 5s”, or “6s + 5”) and look at how membership in those classes changes as we edit SBPL.
+   - Baseline/no-op:
+     - `v0_empty`: `(deny default)` only (no explicit allow).
+   - Single-op:
+     - `v1_read`: `file-read*`,
+     - `v2_write`: `file-write*`,
+     - `v3_mach`: `mach-lookup` (cfprefsd),
+     - `v4_network`: `network-outbound`.
+   - Unfiltered mixes:
+     - `v5_read_write`,
+     - `v6_read_mach`,
+     - `v7_read_network`,
+     - `v8_write_mach`,
+     - `v9_write_network`,
+     - `v10_mach_network`.
 
-We also record tag-count shifts in the node region and literal pool content as secondary evidence, without trying to decode node structure in detail.
+2. **Filtered read profiles (subpath, literal) and mixes**
 
-##  Findings (op_table mappings, node/tag deltas)
+   - Single filtered:
+     - `v11_read_subpath`: `file-read*` with `(subpath "/tmp/foo")`.
+   - Filtered + mach / write / network:
+     - `v12_read_subpath_mach`,
+     - `v13_read_subpath_write`,
+     - `v14_read_subpath_network`.
+   - Mach + literal variants:
+     - `v15_mach_literal`: mach plus `file-read*` with `(literal "/etc/hosts")`,
+     - `v16_subpath_mach_literal`: mach plus read+subpath and read+literal.
 
-### 4.1 Operation buckets without filters
+3. **Additional literal and mixed cases (via node-layout experiment)**
 
-From `v0`–`v10` (no filters, no literals):
+   - Some “node-layout” variants (e.g., dual subpath / dual literal `require-any`) inform how we reason about filter structure; the op-table behavior is mirrored here when similar mixes are used.
 
-- The heuristic `operation_count` is 5 for the baseline, read, write, network, and their combinations (except when mach is present alone), and 6 for pure mach profiles and mach combinations.
-- Op-table entries for these profiles are **uniform**:
-  - `v0_empty`, `v1_read`, `v2_write`, `v4_network`, and all mixed profiles that **do not** include mach (read+write, read+network, write+network) all show `[4,4,4,4,4]`.
-  - `v3_mach` and all mixed profiles that **do** include mach (read+mach, write+mach, mach+network) all show `[5,5,5,5,5,5]` with `op_count=6`.
+**Method**
+
+For each profile, `analyze.py`:
+
+1. Parses SBPL to list operation symbols (e.g., `["file-read*", "mach-lookup"]`).
+2. Compiles SBPL via `libsandbox`, producing a modern profile blob.
+3. Uses `profile_ingestion` to recover:
+   - `operation_count` (heuristic, from the header),
+   - op-table bytes,
+   - node bytes,
+   - literal/regex pool bytes.
+4. Calls the decoder to obtain:
+   - `node_count`, `tag_counts`, decoder `literal_strings`, and sections.
+5. Reads op-table as an array of 16‑bit indices (`op_entries`).
+6. Builds per-entry **signatures**:
+   - For each unique entry index `e` in `op_entries`:
+     - depth-first walk over decoder nodes, interpreting the first two fields as edges,
+     - record:
+       - reachable node indices count,
+       - tags encountered,
+       - the third field (`fields[2]`, “field2”) values seen,
+       - a truncation flag if the visit limit is exceeded.
+
+The analysis then compares:
+
+- single-op vs multi-op profiles,
+- filtered vs unfiltered reads,
+- mach vs non-mach combinations,
+- profiles with uniform vs non-uniform op-table entries.
+
+All interpretations treat op-table entries (4, 5, 6, …) as opaque bucket labels.
+
+---
+
+## 4. Structural findings: buckets and operations
+
+### 4.1 Uniform op-tables without filters
+
+From the baseline and unfiltered profiles:
+
+- `v0_empty`, `v1_read`, `v2_write`, `v4_network`, and multi-op mixes **without** mach (`v5_read_write`, `v7_read_network`, `v9_write_network`, `v16_read_and_network`, `v17_read_write_network`) all show:
+  - `operation_count = 5`,
+  - `op_entries = [4,4,4,4,4]`.
+
+- `v3_mach` (mach-only) and any unfiltered mixes **with** mach (`v6_read_mach`, `v8_write_mach`, `v10_mach_network`, `v14_mach_and_network`, `v18_read_mach_network`, `v19_mach_write_network`) show:
+  - `operation_count = 6`,
+  - `op_entries = [5,5,5,5,5,5]`.
 
 Interpretation:
 
-- In the absence of filters, the op-table behaves as a coarse bucket:
-  - “ordinary” operations (read/write/network) and even the empty baseline share entry value 4.
-  - Profiles that mention mach-lookup live in a different bucket (entry value 5) and have a higher apparent `operation_count`.
-- Within this experiment, we still cannot say which **operation ID** corresponds to which index; we only observe that **all** operations in these small profiles share the same entrypoint bucket.
-- This is consistent with the substrate’s claim that the op-table maps operation IDs to PolicyGraph entry nodes, but it also shows that on tiny profiles the table can degenerate into a single entry repeated across all slots.
+- On these tiny profiles, the op-table collapses operations into **coarse buckets**:
+  - bucket `4`: “ordinary” operations (read/write/network) and the empty baseline,
+  - bucket `5`: operations that involve `mach-lookup`.
+- No differentiation among individual operations within these buckets is visible yet; all op-table entries are identical per profile.
 
-### 4.2 Filtered read moves between buckets
+### 4.2 Filters move reads between buckets
 
-Introducing a subpath filter on `file-read*` (v11):
+Introducing Filters on `file-read*`:
 
-- `v11_read_subpath` (single-op read+subpath):
-  - `op_count=6`,
-  - `op_entries=[5,5,5,5,5,5]`,
-  - tags `{0,1,4,5}`,
-  - literal pool contains `G/tmp/foo`.
+- `v11_read_subpath` (read with `(subpath "/tmp/foo")`), `v20_read_literal` (read with a single literal, from node-layout), and similar filtered read-only profiles:
+  - `operation_count = 6`,
+  - `op_entries = [5,5,5,5,5,5]`,
+  - decoder tag counts align with other “bucket 5” profiles (tags {0,1,4,5}).
 
 Key contrast:
 
-- Unfiltered `file-read*` (v1) lived in the “4-bucket” with `op_count=5`.
-- Filtered `file-read*` (v11) moves into the “5-bucket” with the same tag pattern as mach-only profiles.
+- Unfiltered `file-read*` lives in bucket `4` (along with write/network/baseline).
+- Filtered `file-read*` moves into bucket `5`, alongside mach profiles, even when mach is absent.
 
 Interpretation:
 
-- The op-table bucket for a given operation is not purely a function of the symbolic op name; it also depends on the presence of certain filters/literals and on the profile’s overall structure (`operation_count`).
-- This supports the substrate’s view of the op-table as a low-level structure that is shaped jointly by the operation vocabulary and the compiled profile format variant, not a direct alphabet for SBPL operations.
+- The op-table bucket for a given Operation depends not only on the Operation symbol but also on the presence of certain Filters and the overall profile shape (`operation_count` and node layout).
+- Bucket membership (4 vs 5) is a structural property of the compiled profile, not a direct encoding of the SBPL operation name.
 
 ### 4.3 Non-uniform op-tables: `[6,6,6,6,6,6,5]`
 
-The most interesting behavior appears when we combine mach with filtered reads:
+The most informative cases are mixed profiles where both mach and filtered reads are present and `operation_count` rises to 7:
 
-- `v12_read_subpath_mach` (read+subpath + mach):
-  - `op_count=7`,
-  - `op_entries=[6,6,6,6,6,6,5]`,
-  - tags `{0,1,5,6}`,
-  - literals `G/tmp/foo` and `Wcom.apple.cfprefsd.agent`.
+- `v12_read_subpath_mach`: `file-read*` with `(subpath "/tmp/foo")` plus `mach-lookup`.
+- `v15_mach_literal`: `mach-lookup` plus `file-read*` with `(literal "/etc/hosts")`.
+- `v16_subpath_mach_literal`: mach plus read+subpath plus read+literal.
 
-- `v15_mach_literal` (mach + read+literal):
-  - `op_count=7`,
-  - `op_entries=[6,6,6,6,6,6,5]`,
-  - tags `{0,5,6}`,
-  - literals `I/etc/hosts` and `Wcom.apple.cfprefsd.agent`.
+These all produce:
 
-- `v16_subpath_mach_literal` (subpath + mach + literal):
-  - `op_count=7`,
-  - `op_entries=[6,6,6,6,6,6,5]`,
-  - tags `{0,1,5,6}`,
-  - literals `Ftmp/foo`, `Hetc/hosts`, `Wcom.apple.cfprefsd.agent`.
+- `operation_count = 7`,
+- `op_entries = [6,6,6,6,6,6,5]`,
+- decoder tag counts that include `tag6` in addition to `tag5` and others.
 
 In contrast:
 
-- `v13_read_subpath_write` and `v14_read_subpath_network` (subpath+write / subpath+network, no mach) remain uniform `[5,…]`.
+- Profiles that combine filtered read with write or network (e.g., `v13_read_subpath_write`, `v14_read_subpath_network`) remain uniform `[5,…]`.
+- Profiles that combine mach with write/network alone (no filtered read) also remain `[5,…]`.
 
 Interpretation:
 
-- The non-uniform `[6,…,5]` pattern appears whenever:
+- Non-uniform op-tables (`[6,…,5]`) appear when both:
   - mach-lookup is present, and
-  - there is at least one filtered `file-read*` (subpath or literal) and `op_count=7`.
-- Combinations of filtered read with write or network (no mach) do **not** produce new bucket values; they stay in the `[5,…]` family.
-- This strongly suggests that:
-  - entry value 6 represents a new family of PolicyGraph entrypoints used when certain combinations of operations and filters are present (mach + filtered read),
-  - entry value 5 continues to serve as a catch-all for mach and/or filtered operations in simpler profiles,
-  - a single op-table can mix buckets (6 and 5) even in tiny synthetic profiles.
+  - there is at least one filtered `file-read*` (subpath or literal).
+- Bucket `6` represents a new family of entrypoints that only appears in these more complex, filtered-mix profiles.
+- The lone `5` entry coexists with six `6` entries, but we cannot yet assign specific operations to “the `5` slot” vs “the `6` slots”.
 
-However, the experiment cannot yet assign **which** operation (mach, read+filter, or a synthesized helper op) occupies the “5” slot vs the “6” slots, because:
+---
 
-- we do not have the operation vocabulary map for this host (operation ID ordering),
-- the op-table entries are uniform within many profiles, and only `[6,…,5]` gives two distinct values without telling us which slot corresponds to which op name.
+## 5. Decoder-backed entry signatures
 
-### 4.4 Node/tag deltas as weak secondary evidence
+To attach some structure to each bucket, we compute **entry signatures** using the shared decoder:
 
-While node layout remains opaque (per the node-layout experiment), tag counts and literal pools give some weak hints:
+- For each unique op-table entry index `e` in a profile:
+  - we walk the decoder node list starting from `e`,
+  - treat the first two `fields` words as candidate edges,
+  - record:
+    - number of reachable nodes,
+    - the set of `tag` values seen,
+    - the set of `fields[2]` values (“field2” keys) seen,
+    - whether the walk truncated due to a visit limit.
 
-- Profiles in the “4-bucket” (unfiltered read/write/network) use tags `{0,2,3,4}` with no ASCII literals.
-- Profiles in the “5-bucket” (mach and filtered read-only mixes) use tags `{0,1,4,5}` and carry path-like literals (`G/tmp/foo`) or mach names (`Wcom.apple.cfprefsd.agent`).
-- Profiles with `[6,…,5]` introduce tag6 (and sometimes tag1) and adjust counts of existing tags.
+These signatures are stored:
 
-This lines up with the conceptual picture:
+- per-profile inside `out/summary.json` (as `entry_signatures`),
+- aggregated in `out/op_table_signatures.json`.
 
-- different buckets (4, 5, 6) correspond not only to different op-table entries but also to different families of node/tag patterns and literal usage,
-- but without a decoded node layout, we treat tag shifts only as **corroborating evidence**, not as a basis for new concept claims.
+Early observations:
 
-##  Decoder-backed signatures and new artifacts (2025-11-30)
+- Bucket `4` entries (baseline/read/write/network) tend to:
+  - reach a very small region (often a single node),
+  - see only `tag4`,
+  - see `field2` in the {3,4} range.
 
-To align with the shared decoder and attach coarse graph structure to each op-table bucket, the analyzer now:
+- Bucket `5` entries (mach-only and filtered read-only families) tend to:
+  - reach a small region,
+  - see `tag5` (sometimes `tag6` in mixed cases),
+  - see `field2` values `{4,5}`.
 
-- Calls `book/graph/concepts/validation/decoder.decode_profile_dict` for every blob and records a decoder snapshot (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literal strings, section lengths) in each summary entry.
-- Emits per-entry structural signatures by treating the first two fields of each 12-byte node as edges and walking from every unique op-table entry index; signatures capture reachable tags, literal field values, visited count, and truncation status. These are written both into each summary entry and into a dedicated `out/op_table_signatures.json`.
+- In `[6,…,5]` profiles:
+  - both entries `5` and `6` appear in signatures with tags `{5,6}`,
+  - both see `field2` values that include 5 and 6,
+  - walks are shallow (often just 1–2 nodes), reflecting both the limited depth of the heuristic and the small profiles.
 
-Early observations from the signatures (all heuristic):
+These signatures:
 
-- Bucket “4” entries (baseline/read/write/network families) reach a single tag4 node with literal field value 4.
-- Bucket “5” entries reach tag5 (and sometimes tag6) with literal field value 5; profiles with `[6,…,5]` give both entries signatures with tags {5,6}.
-- Walks are shallow (1–2 nodes) because the heuristic edges likely stop quickly; treat these as coarse fingerprints rather than decoded graphs.
+- reinforce the notion that buckets are associated with distinct node/tag/field families,
+- but they do not yet disambiguate which bucket corresponds to which SBPL Operation symbol,
+- and they remain heuristic (we are not decoding the full graph semantics).
 
-These signatures do not yet map buckets to concrete Operation IDs, but they provide a consistent, decoder-backed structural hook that can be correlated with future vocabulary maps or runtime traces.
+---
 
-##  Open questions and next steps
+## 6. Limits and open questions
 
-From the concepts’ perspective, this experiment clarifies that:
+Despite the structural progress, several key questions are still open:
 
-- small synthetic profiles can collapse many operations into a single op-table bucket,
-- filters and literals can move an operation between buckets,
-- some combinations (mach + filtered read) produce genuinely non-uniform op-tables, showing that the Operation Pointer Table does carry more than one entry index even in tiny graphs.
+1. **Which Operation maps to which bucket?**
+   - We know patterns like:
+     - “unfiltered read/write/network → bucket 4”,
+     - “mach-only and filtered read-only → bucket 5”,
+     - “mach + filtered read (with `op_count=7`) → buckets 6 and 5 mixed”.
+   - But we do **not** know:
+     - which numeric Operation IDs live in those buckets,
+     - or which specific SBPL operation symbol occupies the lone `5` entry in `[6,…,5]`.
 
-It also leaves several questions open:
+2. **Per-slot assignment in `[6,…,5]` profiles**
+   - In `[6,6,6,6,6,6,5]`, multiple op-table entries share each bucket.
+   - Without a known Operation vocabulary ordering, we cannot map op-table index positions (0..op_count‑1) to specific Operation IDs.
+   - Entry signatures show that both entries have similar tag/field2 patterns, so structure alone does not yet pin down which slot is “mach” vs “filtered read” vs “helper”.
 
-- **Operation→entry mapping:** which operation vocabulary IDs correspond to entry values 4, 5, and 6 on this Sonoma host? The current experiment only identifies buckets and patterns; it does not have a canonical ID map.
-- **Per-slot assignment in `[6,…,5]`:** in profiles with two entry values (6 and 5), which operation (mach, filtered read, or a helper) occupies the lone 5 slot, and which share the 6 slots?
-- **Filter and literal semantics:** why does adding a subpath or literal to `file-read*` move it from bucket 4 to 5, and under what conditions does the 6 bucket appear?
-- **Profile-structure dependence:** how much of this behavior is an artifact of very small test profiles vs a structural property of modern profile formats?
+3. **Interaction of Filters and bucket shifts**
+   - We have empirical evidence that:
+     - adding a subpath or literal filter moves `file-read*` from bucket 4 to 5,
+     - combining mach with filtered read introduces bucket 6.
+   - We do not yet have a principled explanation (per-profile or per-format-variant) of **why** these buckets shift, beyond “compiled profile structure changes”.
 
-Concrete next steps (within this experiment and the validation harness):
+4. **Connection to Operation Vocabulary Map**
+   - There is no `validation/out/vocab/ops.json` yet for this host.
+   - As a result, we cannot:
+     - label bucket 4/5/6 with concrete Operation IDs,
+     - or verify our bucket observations against canonical Operation Vocabulary Maps.
 
-1. **Introduce literal-only and mach-only-with-literal profiles**
-   - Add single-op `file-read*` with `(literal "/etc/hosts")` and compare its op-table bucket to subpath and unfiltered cases.
-   - Add mach-only profiles with and without attached literals (without extra read ops) to see whether literals alone move mach between buckets.
-   - This will help separate mach effects from filter effects.
+5. **Runtime cross-check**
+   - No semantic probes (`network-filters`, `mach-services`) have been run under these synthetic profiles to connect buckets to runtime behavior.
 
-2. **Integrate with vocabulary-mapping tasks**
-   - Connect this experiment to the `vocabulary-mapping` cluster in `book/graph/concepts/validation/tasks.py` (“op-filter-tables-from-blobs” and “runtime-cross-check”):
-     - reuse or produce `out/vocab/ops.json` / `out/vocab/filters.json` for this host,
-     - once an operation vocabulary map is available, re-interpret the op-table indices in this experiment as concrete operation IDs.
-   - This would upgrade the current “bucket” view into a genuine Operation Vocabulary Map for the synthetic profiles.
+---
 
-3. **Add a decoder-backed correlation pass (future work)**
-   - Extend `analyze.py` (or a sibling script) to:
-     - use the shared decoder (`book/graph/concepts/validation/decoder.py`) to produce per-profile `node_count`, `tag_counts`, and literal strings alongside op-table data,
-     - line up op-table indices across all profiles and attach structural signatures (tag/literal patterns) to each entry.
-     - annotate which indices and signatures are ever associated with mach-only vs read-only vs filtered profiles,
-     - propose candidate mappings (e.g., “the entry whose signature S appears whenever mach is present”) as structural hypotheses.
-   - This extension should be clearly marked as **hypothesis-generating**, not as a replacement for canonical vocab extraction.
+## 7. Recommended next steps (for future agents)
 
-4. **Tie into semantic probes (optional stretch)**
-   - Run `network-filters` and `mach-services` probes under profiles with known op-table buckets and log operation names and any available kernel/trace identifiers.
-   - Use these traces to cross-check that operations we think live in bucket 4 or 5 actually behave consistently across static and runtime views.
+The `Plan.md` file contains an up-to-date checklist; this section highlights the most important actions for continuing the experiment.
 
-5. **Document limits explicitly in the concept map**
-   - In `book/graph/concepts` / validation docs, treat this experiment as:
-     - evidence that op-table entries are sensitive to both operation and filter structure,
-     - a demonstration of how far we can get with pure SBPL and static blobs,
-     - and a pointer to where canonical vocab extraction and runtime traces must take over.
-   - Avoid over-claiming: the numeric values 4, 5, 6 should remain opaque indices in the concept map until tied to real operation IDs via external evidence.
+1. **Maintain bucket-level discipline**
+   - Treat `op_entries` values (4, 5, 6, …) as **opaque buckets** until a versioned Operation Vocabulary Map exists.
+   - Update this report, `Plan.md`, and `Notes.md` if new buckets appear (e.g., 7, 8, …), making clear how they arise and in which SBPL patterns.
 
-Overall, the line of experimentation is consistent with the substrate: it stays within the SBPL→compiled-profile→PolicyGraph pipeline, respects the op-table’s role as an indirection structure, and focuses on **concept validation** rather than full reverse engineering. The main corrective action is to recognize that op-table buckets alone cannot give us a complete Operation Vocabulary Map; they need to be combined with the separate vocabulary-mapping tasks and, eventually, runtime traces to fully validate the Operation and Operation Pointer Table concepts in the larger graph of `book/graph/concepts/`.
-## Current progress snapshot
+2. **Targeted deltas around mach and literals**
+   - Design new SBPL profiles to answer questions like:
+     - Does a single-op `file-read*` with both `subpath` and `literal` but **no** mach produce bucket 5 or 6?
+     - Does mach-only plus a literal (without any extra `file-read*` rules) bring in bucket 6, or stay uniform `[5,…]`?
+     - If we keep both subpath and literal but remove mach, does the `[6,…,5]` pattern disappear?
+   - For each new variant:
+     - regenerate `out/summary.json` and `out/op_table_signatures.json`,
+     - record observations in `Notes.md`,
+     - extend this report if a new pattern emerges.
 
-- SBPL variants exist for baseline, single-op (read/write/mach-lookup/network), and paired-op mixes; compiled blobs generated via libsandbox.
-- Analyzer (`analyze.py`) emits `out/summary.json` and `out/op_table_map.json`. Single-op entries suggest:
-  - `file-read*`, `file-write*`, `network-outbound` → uniform op-table value 4 (op_count=5).
-  - `mach-lookup` → uniform op-table value 5 (op_count=6).
-- Paired combinations remain uniform ({4} or {5}); no non-uniform op-table entries observed yet in this experiment.
-- Next actions: craft asymmetric profiles (e.g., add subpath/literal filters) to reproduce the `[6,…,5]` pattern seen in node-layout work and correlate op-table slots across profiles; consider extending the analyzer to perform automatic slot→op inference once a vocab map is available.
+3. **Integrate with vocabulary-mapping once available**
+   - Once `validation/out/vocab/ops.json` exists:
+     - write a small script (either here or in `validation`) that:
+       - reads `summary.json` and `op_table_signatures.json`,
+       - maps SBPL operation names to numeric Operation IDs via the vocabulary file,
+       - annotates each bucket (4/5/6) with the set of Operation IDs that ever use it in these synthetic profiles.
+     - explicitly distinguish:
+       - facts (IDs and table entries from canonical vocab + blobs),
+       - hypotheses (patterns that might not generalize beyond these profiles).
+   - Update this report with any firm Operation↔bucket relationships established by that mapping.
 
-### Filtered variants update (2025-11-29)
+4. **Optional runtime probes**
+   - If it fits within `book/graph/concepts/validation`:
+     - run a tiny app or harness under selected synthetic profiles (e.g., “bucket‑4 only”, “bucket‑5 only”, “[6,…,5]”),
+     - exercise operations like `mach-lookup` and `network-outbound`,
+     - log which SBPL operations and kernel operations appear in traces.
+   - Use these logs to validate that:
+     - “mach bucket” profiles really gate mach behavior as expected,
+     - read/write/network behavior is consistent between bucket 4 and 5 where allowed by SBPL.
 
-- Added filtered profiles: `v11_read_subpath` (subpath `/tmp/foo`), `v12_read_subpath_mach`, `v13_read_subpath_write`, `v14_read_subpath_network`, plus literal mixes `v15_mach_literal` and `v16_subpath_mach_literal`.
-- Observations:
-  - `file-read*` with subpath alone shifts to op-table value 5 (op_count=6) vs value 4 when unfiltered; tags mirror the mach bucket pattern (tags {0,1,4,5}, literal `G/tmp/foo`).
-  - `v12` (subpath+mach) shows op entries `[6,6,6,6,6,6,5]` (non-uniform), reintroducing the `[6,…,5]` pattern. Tags include 6 and 5; literals include path and mach global-name.
-  - `v13` (subpath+write) and `v14` (subpath+network) remain uniform `[5,…]`, with tag mixes similar to the subpath-only case.
-  - `v15` (mach+literal) shows `[6,6,6,6,6,6,5]` even without subpath; literals include `/etc/hosts` and the mach global-name.
-  - `v16` (subpath+mach+literal) also shows `[6,…,5]`, with a tag1 entry appearing alongside tags 5 and 6 and literals for path, hosts, and mach.
-- Open questions sharpened: the `[6,…,5]` split now appears with mach plus either subpath or literal filters (op_count=7 cases). We need deltas that toggle mach off while keeping literals, and single-op literal profiles, to see if the lone `5` tracks a specific op vocabulary slot or a parameterized variant. The analyzer may need an op vocab-aware correlation pass to resolve this.
+5. **Coordinate with node-layout and vocab-alignment experiments**
+   - Use node-layout’s findings on node tags and the “field2” key to interpret entry signatures:
+     - bucket 4 signatures should align with tag/field patterns found in unfiltered profiles,
+     - bucket 5 signatures with filtered/mach patterns,
+     - bucket 6 signatures with tag6-heavy, multi-filter branches.
+   - When a Filter Vocabulary Map (`filters.json`) exists, try to connect field-level keys in node-layout to filter-level interpretations in this experiment.
 
-## Review (Chat agent)
+6. **Keep artifacts and documentation aligned**
+   - Whenever you add or modify SBPL variants:
+     - describe the intent in `Notes.md`,
+     - ensure `analyze.py` still compiles everything and updates all three outputs,
+     - run `pytest book/tests` to keep the experiment’s tests green.
+   - If you add new buckets or signatures, consider extending `book/tests/test_experiments.py` with sanity checks (e.g., verifying that specific profiles still have expected bucket shapes).
 
-Prompt:
+---
 
-> Consider the current experiment we are conducting at `book/experiments/op-table-operation/`. Read the contents of that folder, especially Plan.md, Notes.md, and ResearchReport.md. Your task is to fill in the skeleton of the research report, drawing from the artifacts in the folder and the existing Notes and Plan. Carefully review this experiment and your report against the information in `substrate/`. Ask questions like "does our line of experimentation make sense, given the constraints that we have?" or "How is this experiment advancing our understanding of the concepts and our ongoing larger concept map in `book/graph/concepts/` and `book/graph/`?" Use what you've discovered by asking those questions to propose future directions or corrective action for this experiment.
+## 8. Role in the broader project
 
-Response:
+Within the project’s conceptual stack:
 
-**What the experiment now shows**
+- This experiment provides **evidence** that:
+  - the Operation Pointer Table is sensitive to both Operations and Filters,
+  - small, well-defined SBPL changes cause predictable shifts in bucket patterns,
+  - non-uniform op-tables arise even in tiny profiles when mach and filtered reads are combined.
+- It supplies artifacts that:
+  - `op-table-vocab-alignment` can use once Operation Vocabulary Maps exist,
+  - the concept docs can reference when explaining the relationship between Operation, Operation Pointer Table, and Operation Vocabulary Map.
 
-- The op-table/operation experiment is coherent with the substrate: it stays within the SBPL → compiled profile → PolicyGraph pipeline and focuses on the **Operation** and **Operation Pointer Table** concepts rather than pushing into full node-layout reverse engineering.
-- Using synthetic SBPL profiles, we’ve established:
-  - Unfiltered `file-read*`, `file-write*`, and `network-outbound` share a single “bucket” of op-table entries (value 4 with `op_count=5`), while `mach-lookup` lives in a different bucket (value 5 with `op_count=6`).
-  - Adding a `subpath` filter to `file-read*` moves it from bucket 4 to bucket 5 (matching mach-style profiles) even as a single operation.
-  - Specific combinations of `mach-lookup` and filtered `file-read*` (subpath or literal) produce genuinely non-uniform op-tables `[6,6,6,6,6,6,5]` with `op_count=7`, while other filtered mixes (read+subpath+write/network) remain uniform `[5,…]`.
-- These patterns give concrete, albeit coarse, evidence for:
-  - The op-table as a real indirection structure whose entries change with both operation vocabulary and filter structure.
-  - The existence of multiple “entry families” (buckets 4, 5, 6) visible even in tiny synthetic profiles.
-  - The fact that multiple operations often share a single bucket in small profiles, so op-table entries are not trivially one-to-one with SBPL operations.
-
-**How the report has been filled in**
-
-- `ResearchReport.md` now has real content under all headings:
-  - **Motivation and objectives** ties this work directly to the substrate’s Operation, Operation Pointer Table, and Operation Vocabulary Map concepts, and to the limitations of the earlier node-layout experiment.
-  - **Setup and tools** describes the Sonoma environment, libsandbox compilation, use of `profile_ingestion.py`, and the analyzer’s outputs (`summary.json`, `op_table_map.json`).
-  - **Profiles and methods** organizes the SBPL variants into baseline/single-op, unfiltered mixed-op, and filtered/literal families and explains the delta-based reasoning: comparing buckets (4/5/6) as equivalence classes rather than trying to guess raw IDs.
-  - **Findings** is broken into:
-    - 4.1 bucket behavior without filters,
-    - 4.2 bucket shifts for filtered read,
-    - 4.3 the non-uniform `[6,…,5]` pattern with mach+filters,
-    - 4.4 tag and literal changes as secondary evidence.
-  - **Open questions and next steps** explicitly lists what the experiment cannot yet answer (which op is the lone `5`, how buckets map to operation IDs, how filter types map to buckets) and proposes concrete next steps.
-- The “Current progress snapshot” and “Filtered variants update” sections are now folded into this structure, so the report reads as a coherent narrative rather than a skeleton plus ad-hoc notes.
-
-**Does the line of experimentation make sense?**
-
-Given the substrate and the broader concept map:
-
-- Yes, with caveats. This experiment is well-aligned with:
-  - The **Operation Pointer Table** concept: we are directly measuring how op-table entries change under controlled SBPL edits.
-  - The **Operation Vocabulary Map** concept: we’re gathering static evidence needed later to map names ↔ IDs, even though we’re not decoding IDs yet.
-  - The validation harness in `book/graph/concepts/validation`: our artifacts (`summary.json`, `op_table_map.json`) are exactly the kind of “static-format” outputs that the `static-format` and `vocabulary-mapping` clusters expect.
-- The main caveat is that op-table entries alone cannot yield a full vocabulary map. The substrate is clear that the vocabulary map is versioned and built from canonical artifacts (compiled profiles, known table layouts), not inferred purely by guessing from tiny synthetic examples. We’ve respected that by:
-  - Treating 4/5/6 as opaque “buckets,” not as known operation IDs.
-  - Avoiding any claim that “index N is file-read*” without an external, versioned op vocabulary table.
-- Relative to the larger concept map in `book/graph/concepts/`, this experiment:
-  - Strengthens the **Operation Pointer Table** entry with concrete per-profile behavior (buckets shift with operations and filters).
-  - Provides data that the future **Operation Vocabulary Map** and `validation/tasks.py`’s `op-filter-tables-from-blobs` task can build on.
-  - Demonstrates a method for using SBPL deltas to validate binary-level concepts—exactly the kind of evidence the substrate wants for concepts to be grounded in artifacts.
-
-**Recommended future directions / corrective actions**
-
-1. **Accept limits of op-table-only inference**
-   - Treat this experiment as a **bucket-mapping** demonstration, not as a full Operation Vocabulary Map.
-   - Make explicit (as the report now does) that we will not try to label 4/5/6 with operation names until we have a proper vocab extraction path.
-
-2. **Integrate with the vocabulary-mapping cluster**
-   - Hook `out/op_table_map.json` into the `vocabulary-mapping` tasks in `book/graph/concepts/validation/tasks.py`:
-     - Produce or reuse `out/vocab/ops.json` and `out/vocab/filters.json` for this Sonoma host from canonical blobs (e.g., system profiles in `extract_sbs`).
-     - Once those exist, revisit this experiment’s data and reinterpret 4/5/6 in terms of actual operation IDs.
-   - This will turn the current “bucket observations” into properly versioned vocabulary evidence.
-
-3. **Targeted deltas around mach and literals**
-   - Design the next SBPL variants specifically to answer:
-     - Does a single-op `file-read*` with only `(literal "/etc/hosts")` move into bucket 5 or 6?
-     - Does mach-only plus a literal, without any additional read rules, also produce `[6,…,5]` or only `[5,…]`?
-     - If we remove mach but keep both subpath and literal, does `[6,…,5]` disappear?
-   - These deltas will clarify whether the non-uniform pattern is fundamentally about mach, about “read+filter complexity,” or about the presence of both families in one profile.
-
-4. **Consider a correlation pass once vocab is available**
-   - After a proper op vocabulary table exists for this host:
-     - Extend `analyze.py` or a sibling tool to align op-table indices across all profiles.
-     - Use the vocab table to assign each slot (4, 5, 6…) to a concrete operation ID in context.
-   - Until then, keep the analyzer as-is and treat any “slot→op” suggestions as hypotheses, not facts.
-
-5. **Optional runtime cross-checks**
-   - If we run the semantic probes (`network-filters`, `mach-services`) under some of these profiles:
-     - Log which SBPL operations are exercised and under which profiles.
-     - Use this to sanity-check that, for example, profiles in the “mach bucket” really have the expected behavior for mach vs non-mach operations.
-   - This reinforces the **Operation** concept as something that must line up at SBPL, binary, and runtime levels.
-
-6. **Document scope and handoff in the concept docs**
-   - When we next update the concept/validation docs, point to this experiment as:
-     - evidence for op-table sensitivity to operations and filters,
-     - a reusable pattern for SBPL-driven static validation,
-     - and as a clear boundary: beyond this, op vocabulary mapping should rely on `vocabulary-mapping` tasks and canonical blobs, not on guessing.
+The key outcome is not a finished mapping from SBPL names to numeric IDs, but a disciplined, reproducible set of bucket-level observations and structured signatures that future vocabulary-mapping and runtime experiments can build on.***

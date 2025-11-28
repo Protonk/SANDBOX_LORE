@@ -32,3 +32,26 @@ def test_op_table_vocab_alignment_artifacts():
     align = _load_json(root / "book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json")
     assert "records" in align
     assert isinstance(align["records"], list)
+
+
+def test_node_layout_decoder_blocks():
+    root = Path(__file__).resolve().parents[2]
+    summary = _load_json(root / "book/experiments/node-layout/out/summary.json")
+    assert summary, "summary should not be empty"
+    for entry in summary:
+        dec = entry.get("decoder")
+        assert dec, f"missing decoder block in {entry.get('name')}"
+        for key in ("node_count", "tag_counts", "op_table_offset"):
+            assert key in dec, f"decoder.{key} missing in {entry.get('name')}"
+
+
+def test_node_layout_literal_probe_shapes():
+    root = Path(__file__).resolve().parents[2]
+    summary = {entry["name"]: entry for entry in _load_json(root / "book/experiments/node-layout/out/summary.json")}
+    assert "v20_read_literal" in summary and "v21_two_literals_require_any" in summary
+    v20 = summary["v20_read_literal"]
+    v21 = summary["v21_two_literals_require_any"]
+    # Decoder tag counts should show the require-any profile adding at least one tag5 node.
+    v20_tags = {int(k): v for k, v in v20["decoder"]["tag_counts"].items()}
+    v21_tags = {int(k): v for k, v in v21["decoder"]["tag_counts"].items()}
+    assert v21_tags.get(5, 0) >= v20_tags.get(5, 0) + 1

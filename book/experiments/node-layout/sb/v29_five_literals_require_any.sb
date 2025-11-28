@@ -1,0 +1,8 @@
+(version 1)
+(deny default)
+(allow file-read* (require-any
+  (literal "/etc/hosts")
+  (literal "/tmp/foo")
+  (literal "/usr/bin/yes")
+  (literal "/var/log/system.log")
+  (literal "/Applications/Calculator.app")))

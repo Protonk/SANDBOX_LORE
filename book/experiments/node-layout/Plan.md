@@ -140,7 +140,7 @@ Usage:
 
 These items are explicitly *not* solved yet; they are the next frontier for future work:
 
-- [ ] **Decoder integration:** Update `analyze.py` to reuse `book.graph.concepts.validation.decoder.decode_profile_dict` so that `out/summary.json` includes shared fields (`node_count`, `tag_counts`, `op_table_offset`, `literal_strings`) in addition to existing stride stats.
+- [x] **Decoder integration:** Update `analyze.py` to reuse `book.graph.concepts.validation.decoder.decode_profile_dict` so that `out/summary.json` includes shared fields (`node_count`, `tag_counts`, `op_table_offset`, `literal_strings`) in addition to existing stride stats.
 - [ ] **Literal index mapping:** Use decoder-backed summaries to re-run foo→bar and multi-literal comparisons and test which node fields correlate with literal-table indices versus content changes.
 - [ ] **Filter key location:** With decoder output in hand, search for stable vs changing node fields across profiles that add/remove specific filters (subpath, literal, require-any/all), and propose candidate fields for filter key codes.
 - [ ] **Tail layout:** Use decoder’s node and tag accounting to distinguish “front” vs “tail” regions (where new nodes appear compared to a baseline), and attempt a per-tag or per-region size model for the tail; document any per-tag size patterns that emerge.
@@ -153,5 +153,20 @@ Progress update (2025-11-30):
 - [ ] **Tail layout:** Distinguish “front” vs “tail” regions using decoder node counts and tag patterns; attempt a per-tag or per-region size model for the tail.
 - [ ] **Per-op segmentation:** Build small graph walks from op-table entrypoints using decoder node lists to characterize reachable tags/literals per bucket; align those with op-table-operation signatures once vocab IDs exist.
 - [ ] **Literal pool vs field2:** Literal byte offsets differ across profiles (`/tmp/foo` at 57 vs 45/71, etc.) while field2 sets stay stable; preliminary conclusion is that field2 values (0/3/4/5/6) are small keys for filter presence/branching, not literal offsets. Need targeted deltas to map each value to an SBPL construct.
+- [ ] **New literal probes:** Added `v20_read_literal` and `v21_two_literals_require_any` to isolate literal-only behavior; field2=0 now shows up as the “second branch” in require-any over literals, reinforcing the branch-key hypothesis. Still need a minimal mach+literal-only probe to see if field2=6 appears without subpath/multi-branching.
+
+Progress update (2025-12-01):
+- [x] **Mach + literal probes:** Added `v22_mach_literal` and `v23_mach_two_literals_require_any`; both yield op-table `[6,…,5]`, tag counts {0:1,5:5,6:25}, and field2 histogram {6:17,5:12,4:1,0:1}, matching the mach+subpath variant. Decoder `nodes` are identical across these profiles; differences are confined to node-region remainders and literal pools.
+- [ ] **Literal index mapping:** Still open; mach+literal vs mach+subpath shows field2 stability across filter flavor and even require-any over literals, suggesting field2 keys are filter/branch identifiers rather than literal indices.
+- [ ] **Tail layout:** New probes show tail/remainder bytes shift with filter flavor even when decoded nodes stay fixed; still need a model for what those trailing bytes represent.
+
+Progress update (2025-12-01, later):
+- [x] **Three-literal require-any probe:** Added `v24_three_literals_require_any`; field2 histogram drops the branch marker (no `field2=0`), node_count shrinks to 30, and the extra `tag5` node seen in two-literal require-any disappears. Suggests require-any compiles differently once >2 literals are present.
+- [ ] **Tail layout:** Captured remainder hex deltas across matched-node profiles (`v9` vs `v22`, `v22` vs `v23`, `v21` vs `v24`); still need to interpret these bytes or correlate them with filters.
+
+Progress update (2025-12-02):
+- [x] **Four-literal require-any probes:** Added `v25` and `v26` (reordered). Decoder nodes stay identical to the three-literal case; field2 remains {3,4,5} with no `field2=0`, confirming the branch marker stays absent when ≥3 literals are present and insensitive to order.
+- [x] **Require-all probes:** Added `v27`/`v28` (two vs four literals). Field2 collapses to {3,4}, op-table `[4,…]`, node_count=32, decoder literals empty; nodes identical across literal counts. Require-all does not expose branch markers or literal strings in the decoder output.
+- [ ] **Tail layout:** Remainder bytes logged for require-any (len5 `0500050004` once ≥3 literals) and require-all (len3 `010003`). Still need a model for these tails.
 
 Even with these open boxes, the experiment has already produced reusable artifacts (SBPL variants, blobs, structured summaries) and a clearer picture of what can and cannot be inferred from modern graph blobs without deeper reverse engineering.
