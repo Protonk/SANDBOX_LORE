@@ -143,9 +143,15 @@ With the Sonoma vocab harvested (`ops.json`/`filters.json` status: ok), we can n
   - `v0_empty` remains uniform bucket 4.
 - Mixed profiles:
   - Unfiltered mixes (`v5_read_write`, `v7_read_network`) keep bucket 3 for file/net ops.
-  - Mach-inclusive mixes (`v6_read_mach`, `v8_write_mach`, `v10_mach_network`) show buckets {3,5} depending on op: mach stays 5; file/net stay 3.
-  - Filtered read variants (subpath/literal) elevate file-read* to bucket 5 in these synthetic profiles, indicating filter-driven bucket changes.
+- Mach-inclusive mixes (`v6_read_mach`, `v8_write_mach`, `v10_mach_network`) show buckets {3,5} depending on op: mach stays 5; file/net stay 3.
+- Filtered read variants (subpath/literal) elevate file-read* to bucket 5 in these synthetic profiles, indicating filter-driven bucket changes.
 - Filter IDs are available and recorded per profile; correlating bucket shifts with specific filter IDs remains open analysis work.
+
+Bucket→ID summary (from alignment artifact on this host, vocab `generated_at=2025-11-28T01:25:13Z`):
+
+- `file-read*` (ID 21), `file-write*` (ID 29), and `network-outbound` (ID 112) appear in buckets {3,4} across the synthetic profiles (unfiltered vs filtered/mach mixes).
+- `mach-lookup` (ID 96) appears in buckets {5,6}, with bucket 6 showing up only in the complex mach+filtered-read mixes.
+- No other operations are exercised here; treat these as host/profile-scoped observations, not universal rules.
 
 ---
 

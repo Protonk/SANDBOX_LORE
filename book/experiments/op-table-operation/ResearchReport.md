@@ -250,6 +250,11 @@ Early observations:
   - both see `field2` values that include 5 and 6,
   - walks are shallow (often just 1–2 nodes), reflecting both the limited depth of the heuristic and the small profiles.
 
+Bucket→operation IDs (with vocab from `vocab-from-cache`):
+
+- `file-read*` (ID 21), `file-write*` (ID 29), and `network-outbound` (ID 112) land in buckets {3,4} across these profiles (unfiltered vs filtered/mach mixes).
+- `mach-lookup` (ID 96) lands in buckets {5,6}, with bucket 6 appearing only in the mach+filtered-read mixes that produce the `[6,…,5]` op-table.
+
 These signatures:
 
 - reinforce the notion that buckets are associated with distinct node/tag/field families,

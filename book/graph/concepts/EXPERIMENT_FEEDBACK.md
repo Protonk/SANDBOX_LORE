@@ -91,3 +91,50 @@ Agents picking up this area of work can start from:
 - and the `vocabulary-mapping` entries in `book/graph/concepts/validation/tasks.py`,
 
 and then decide whether to deepen the SBPL delta experiments, wire in vocab extraction, or add runtime probes, depending on what the overall validation effort needs next.
+
+---
+
+## Vocabulary extraction (Operation/Filter)
+
+**Related experiments**
+
+- `book/experiments/vocab-from-cache/`
+  - Focus: pull Operation/Filter vocab tables from the Sonoma dyld cache (Sandbox framework/libsandbox).
+  - Key outcome: harvested `ops.json` (196 entries) and `filters.json` (93 entries) with `status: ok`, host/build metadata, and provenance; added a guardrail (`check_vocab.py`) to assert counts/status.
+- `book/experiments/op-table-vocab-alignment/`
+  - Focus: align op-table buckets from synthetic profiles with vocab IDs.
+  - Key outcome: alignment artifact now populated with `operation_ids`, `filters`, and `filter_ids` per profile; `vocab_status: ok` recorded from the harvested vocab.
+
+**What we’ve learned so far**
+
+- The cache-derived vocab resolves the earlier “partial/unavailable” gap; operation_count is 196 (decoder heuristics that suggested 167 were incomplete).
+- Op-table summaries can now carry concrete operation IDs and filter IDs, enabling bucket interpretation on this host.
+
+**Recommended next steps**
+
+1. Interpret bucket patterns with IDs: summarize, per bucket (4/5/6), which operation IDs appear across the synthetic profiles; record host/build/vocab hash.
+2. Thread filter IDs into bucket shifts: use filtered profiles to note which filters (by ID) coincide with bucket changes, even if field2 mapping is pending.
+3. Keep vocab guardrails in CI: run `check_vocab.py` to catch drift; regenerate alignment when vocab changes.
+4. Feed concise findings back into the concept docs as evidence for versioned Operation/Filter Vocabulary Maps.
+
+---
+
+## Field2 / Node decoding / Anchor probes
+
+**Related experiments**
+
+- `book/experiments/field2-filters/`
+- `book/experiments/node-layout/`
+- `book/experiments/probe-op-structure/`
+
+**Current state**
+
+- Field2 mapping remains blocked by modern node decoding: stride-12 heuristics expose small filter-ID-like values but no literal/regex references.
+- Anchor scans now include an `offsets` field and successfully list anchors, but `node_indices` stay empty because node→literal bindings aren’t decoded.
+- Tag-aware decoder scaffold exists; literal references and per-tag layouts remain to be reverse-engineered.
+
+**Recommended next steps**
+
+1. Prioritize a tag-aware node decoder: per-tag variable-length layouts with operands wide enough to carry literal/regex indices.
+2. Once literals are exposed, rerun anchor scans to map anchors → nodes → field2 → filter IDs; add guardrails for key anchors.
+3. Use system profiles (strong anchors) as cross-checks; document evidence tiers in the respective ResearchReports.

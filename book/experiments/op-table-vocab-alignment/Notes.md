@@ -39,3 +39,9 @@
 7. **Alignment refreshed with real vocab + filters (2025-12-03)**
    - Updated `update_alignment.py` to ingest `filters.json` alongside `ops.json` and to copy per-profile filters from the op-table-operation summaries.
    - Regenerated `out/op_table_vocab_alignment.json`; records now include `filters` and `filter_ids`, and `operation_ids` are populated from the harvested vocab.
+
+8. **Bucket→ID snapshot (2025-12-04)**
+   - Quick scan of the refreshed alignment shows:
+     - `file-read*` (21), `file-write*` (29), `network-outbound` (112) use buckets {3,4} across profiles.
+     - `mach-lookup` (96) uses buckets {5,6}; bucket 6 appears only in mach+filtered-read mixes.
+   - Recorded this snapshot in `ResearchReport.md`; scoped to this host/vocab version.

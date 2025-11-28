@@ -70,3 +70,7 @@
 
 - Extended `analyze.py` to parse filter symbols from SBPL (via vocab intersection) and emit `filters` / `filter_ids` alongside `ops`. This keeps per-profile summaries aligned with both operation and filter vocab.
 - Reran analyzer with current vocab lengths; regenerated `summary.json`, `op_table_map.json`, and `op_table_signatures.json` with filter annotations intact.
+
+## 2025-12-04
+
+- Pulled a quick bucket→operation ID snapshot using the refreshed alignment: `file-read*` (21), `file-write*` (29), and `network-outbound` (112) show up in buckets {3,4}; `mach-lookup` (96) shows buckets {5,6}, with bucket 6 only in mach+filtered-read mixes. Recorded in the ResearchReport.
