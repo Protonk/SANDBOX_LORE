@@ -23,3 +23,6 @@ Extract Operation/Filter vocab tables (name ↔ ID) from the macOS dyld shared c
 ## Current status
 
 - Experiment initialized; plan and notes created. Extraction/harvesting not yet performed.
+- Dyld shared cache located at `/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e`; extracted using a Swift shim that calls `/usr/lib/dsc_extractor.bundle` into `book/experiments/vocab-from-cache/extracted/`.
+- Extracted artifacts include `usr/lib/libsandbox.1.dylib`, `usr/lib/system/libsystem_sandbox.dylib`, and `AppSandbox.framework` binary.
+- Initial `strings -t x` on `libsandbox.1.dylib` reveals a contiguous block of ~190 operation-like names from `appleevent-send` through `default-message-filter`; needs alignment to the 167 `op_count` seen in canonical blobs before emitting vocab tables.
