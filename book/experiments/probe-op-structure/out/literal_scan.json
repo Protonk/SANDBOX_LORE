@@ -1,0 +1,258 @@
+{
+  "v0_file_require_all": {
+    "op_count": 5,
+    "nodes_len": 387,
+    "literal_len": 27,
+    "literal_start": 413,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "4": 18,
+      "3": 12,
+      "2": 1,
+      "0": 1
+    }
+  },
+  "v1_file_require_any": {
+    "op_count": 7,
+    "nodes_len": 388,
+    "literal_len": 73,
+    "literal_start": 418,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "6": 25,
+      "5": 5,
+      "0": 1,
+      "1": 1
+    }
+  },
+  "v2_file_three_filters_any": {
+    "op_count": 6,
+    "nodes_len": 365,
+    "literal_len": 106,
+    "literal_start": 393,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/var/log",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "4": 6,
+      "5": 22,
+      "1": 1,
+      "0": 1
+    }
+  },
+  "v3_mach_global_local": {
+    "op_count": 7,
+    "nodes_len": 375,
+    "literal_len": 82,
+    "literal_start": 405,
+    "anchors": [
+      {
+        "anchor": "com.apple.cfprefsd.agent",
+        "offsets": [
+          54
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "6": 25,
+      "5": 5,
+      "0": 1
+    }
+  },
+  "v4_network_socket_require_all": {
+    "op_count": 9,
+    "nodes_len": 392,
+    "literal_len": 74,
+    "literal_start": 426,
+    "anchors": [
+      {
+        "anchor": "flow-divert",
+        "offsets": [
+          59
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "8": 20,
+      "7": 9,
+      "0": 2,
+      "1": 1
+    }
+  },
+  "v5_iokit_class_property": {
+    "op_count": 7,
+    "nodes_len": 377,
+    "literal_len": 96,
+    "literal_start": 407,
+    "anchors": [
+      {
+        "anchor": "IOUSBHostInterface",
+        "offsets": [
+          52
+        ],
+        "hits": []
+      },
+      {
+        "anchor": "idVendor",
+        "offsets": [
+          84
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "6": 24,
+      "5": 5,
+      "3": 1,
+      "0": 1
+    }
+  },
+  "v6_file_mach_combo": {
+    "op_count": 6,
+    "nodes_len": 365,
+    "literal_len": 86,
+    "literal_start": 393,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "com.apple.cfprefsd.agent",
+        "offsets": [
+          58
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "4": 6,
+      "5": 22,
+      "1": 1,
+      "0": 1
+    }
+  },
+  "v7_file_network_combo": {
+    "op_count": 9,
+    "nodes_len": 392,
+    "literal_len": 74,
+    "literal_start": 426,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "flow-divert",
+        "offsets": [
+          59
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "8": 20,
+      "7": 9,
+      "0": 2,
+      "1": 1
+    }
+  },
+  "v8_all_combo": {
+    "op_count": 13,
+    "nodes_len": 424,
+    "literal_len": 170,
+    "literal_start": 466,
+    "anchors": [
+      {
+        "anchor": "/tmp/foo",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "/etc/hosts",
+        "offsets": [],
+        "hits": []
+      },
+      {
+        "anchor": "IOUSBHostInterface",
+        "offsets": [
+          81
+        ],
+        "hits": []
+      },
+      {
+        "anchor": "com.apple.cfprefsd.agent",
+        "offsets": [
+          113
+        ],
+        "hits": []
+      },
+      {
+        "anchor": "flow-divert",
+        "offsets": [
+          155
+        ],
+        "hits": []
+      }
+    ],
+    "tag_counts": {
+      "12": 25,
+      "11": 5,
+      "8": 1,
+      "4": 1,
+      "13": 1,
+      "6": 1,
+      "1": 1
+    }
+  }
+}

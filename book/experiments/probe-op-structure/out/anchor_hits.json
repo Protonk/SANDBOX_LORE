@@ -6,6 +6,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -13,6 +14,7 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -27,6 +29,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -34,14 +37,21 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Ftmp/foo",
-      "\nHetc/hosts"
+      [
+        43,
+        "Ftmp/foo"
+      ],
+      [
+        59,
+        "Hetc/hosts"
+      ]
     ]
   },
   "probe:v2_file_three_filters_any": {
@@ -51,6 +61,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -58,6 +69,7 @@
       {
         "anchor": "/var/log",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -65,15 +77,25 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Ftmp/foo",
-      "\nFvar/log",
-      "\nHetc/hosts"
+      [
+        60,
+        "Ftmp/foo"
+      ],
+      [
+        76,
+        "Fvar/log"
+      ],
+      [
+        92,
+        "Hetc/hosts"
+      ]
     ]
   },
   "probe:v3_mach_global_local": {
@@ -85,13 +107,17 @@
         "literal_offsets": [
           54
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Wcom.apple.cfprefsd.agent"
+      [
+        53,
+        "Wcom.apple.cfprefsd.agent"
+      ]
     ]
   },
   "probe:v4_network_socket_require_all": {
@@ -103,13 +129,17 @@
         "literal_offsets": [
           59
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Tcom.apple.flow-divert"
+      [
+        48,
+        "Tcom.apple.flow-divert"
+      ]
     ]
   },
   "probe:v5_iokit_class_property": {
@@ -121,6 +151,7 @@
         "literal_offsets": [
           52
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -130,14 +161,21 @@
         "literal_offsets": [
           84
         ],
+        "literal_string_index": 1,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "QIOUSBHostInterface",
-      "GidVendor"
+      [
+        51,
+        "QIOUSBHostInterface"
+      ],
+      [
+        83,
+        "GidVendor"
+      ]
     ]
   },
   "probe:v6_file_mach_combo": {
@@ -147,6 +185,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -154,6 +193,7 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -163,13 +203,17 @@
         "literal_offsets": [
           58
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Wcom.apple.cfprefsd.agent"
+      [
+        57,
+        "Wcom.apple.cfprefsd.agent"
+      ]
     ]
   },
   "probe:v7_file_network_combo": {
@@ -179,6 +223,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -186,6 +231,7 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -195,13 +241,17 @@
         "literal_offsets": [
           59
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Tcom.apple.flow-divert"
+      [
+        48,
+        "Tcom.apple.flow-divert"
+      ]
     ]
   },
   "probe:v8_all_combo": {
@@ -211,6 +261,7 @@
       {
         "anchor": "/tmp/foo",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -218,6 +269,7 @@
       {
         "anchor": "/etc/hosts",
         "literal_offsets": [],
+        "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -227,6 +279,7 @@
         "literal_offsets": [
           81
         ],
+        "literal_string_index": 2,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -236,6 +289,7 @@
         "literal_offsets": [
           113
         ],
+        "literal_string_index": 3,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
@@ -245,17 +299,33 @@
         "literal_offsets": [
           155
         ],
+        "literal_string_index": 4,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "Ftmp/foo",
-      "\nHetc/hosts",
-      "QIOUSBHostInterface",
-      "Wcom.apple.cfprefsd.agent",
-      "Tcom.apple.flow-divert"
+      [
+        43,
+        "Ftmp/foo"
+      ],
+      [
+        59,
+        "Hetc/hosts"
+      ],
+      [
+        80,
+        "QIOUSBHostInterface"
+      ],
+      [
+        112,
+        "Wcom.apple.cfprefsd.agent"
+      ],
+      [
+        144,
+        "Tcom.apple.flow-divert"
+      ]
     ]
   },
   "sys:airlock": {
@@ -268,22 +338,53 @@
           1439,
           1471
         ],
+        "literal_string_index": 8,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "P/dev/dtracehelper",
-      "Msystem/library",
-      "\nFusr/lib",
-      "G/system/",
-      "Icryptexes/",
-      "Bapp",
-      "\nAos",
-      "\nYvolumes/preboot/cryptexes/",
-      "\nIapp/system",
-      "com.apple.app-sandbox.read"
+      [
+        1245,
+        "P/dev/dtracehelper"
+      ],
+      [
+        1272,
+        "Msystem/library"
+      ],
+      [
+        1295,
+        "Fusr/lib"
+      ],
+      [
+        1317,
+        "G/system/"
+      ],
+      [
+        1327,
+        "Icryptexes/"
+      ],
+      [
+        1339,
+        "Bapp"
+      ],
+      [
+        1362,
+        "Yvolumes/preboot/cryptexes/"
+      ],
+      [
+        1401,
+        "Iapp/system"
+      ],
+      [
+        1429,
+        "com.apple.app-sandbox.read"
+      ],
+      [
+        1461,
+        "com.apple.app-sandbox.read-write"
+      ]
     ]
   },
   "sys:bsd": {
@@ -296,22 +397,53 @@
           158,
           552
         ],
+        "literal_string_index": 7,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "P/dev/dtracehelper",
-      "Esystem",
-      "\nCusr/",
-      "Blib",
-      "\nDshare",
-      "\nGlibrary/",
-      "Dapple",
-      "\nRpreferences/logging",
-      "\nWfilesystems/netfsplugins",
-      "\nGprivate/"
+      [
+        56,
+        "P/dev/dtracehelper"
+      ],
+      [
+        83,
+        "Esystem"
+      ],
+      [
+        101,
+        "Cusr/"
+      ],
+      [
+        107,
+        "Blib"
+      ],
+      [
+        119,
+        "Dshare"
+      ],
+      [
+        133,
+        "Glibrary/"
+      ],
+      [
+        143,
+        "Dapple"
+      ],
+      [
+        157,
+        "Rpreferences/logging"
+      ],
+      [
+        185,
+        "Wfilesystems/netfsplugins"
+      ],
+      [
+        218,
+        "Gprivate/"
+      ]
     ]
   },
   "sys:sample": {
@@ -323,18 +455,37 @@
         "literal_offsets": [
           46
         ],
+        "literal_string_index": 0,
         "node_indices": [],
         "field2_values": [],
         "field2_names": []
       }
     ],
     "literal_strings_sample": [
-      "I/etc/hosts",
-      "Busr",
-      "\nBdev",
-      "\nEsystem",
-      "\nJtmp/sb-demo",
-      "K/tmp/sb-demo"
+      [
+        45,
+        "I/etc/hosts"
+      ],
+      [
+        72,
+        "Busr"
+      ],
+      [
+        84,
+        "Bdev"
+      ],
+      [
+        96,
+        "Esystem"
+      ],
+      [
+        111,
+        "Jtmp/sb-demo"
+      ],
+      [
+        133,
+        "K/tmp/sb-demo"
+      ]
     ]
   }
 }

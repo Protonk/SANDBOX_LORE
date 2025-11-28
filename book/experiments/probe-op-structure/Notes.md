@@ -32,6 +32,22 @@ Use this file for dated, concise notes on probe designs, compile logs, and findi
   - Node fields (stride-12 heuristic) only contain small values {0,1,2,3,5,6}; no values near literal offsets, so anchors do not show up in decoded node fields.
   - Conclusion: the current heuristic node parsing exposes filter IDs but not literal offsets; node↔literal association will require a richer decode of modern node records beyond the simple 12-byte/field view.
 - Updated `anchor_scan.py` to use raw section slicing and search node bytes for anchor offsets (relative/absolute) with strides 12/16. Anchors in literal pools are located (e.g., `/tmp/foo` at offset ~43 within pool), but no node bytes contain these offsets; `node_indices` remain empty. Fields still only carry small filter-ID-like values, confirming we need a deeper node decoder to expose literal references.
+- Added `map_literal_refs.py` to brute-force scan node bytes for literal offsets; outputs `out/literal_scan.json`. Across probes, literal offsets are found in the pools (e.g., mach name at offset 54, flow-divert at 59), but no hits in node word scans (16-bit words). This reinforces that literal references are not present in the exposed node words; a richer node decoding is required to find literal bindings.
+- Added an initial `node_decoder.py` (tag-aware scaffold) and wired it into `map_literal_refs.py` for tag counts; no anchor hits yet. Node operands remain small and do not match literal offsets, even after tag-aware parsing, underscoring the need for a fuller modern node format decode.
+- Dumped raw node bytes grouped by tag for several profiles (`out/tag_bytes.json`). Observations:
+  - Probes use low tag IDs (0–8, 11–13) with highly repetitive u16 patterns; no obvious literal offsets.
+  - `bsd` profile shows higher tags (17,26,27) and tag0 chunks containing `0e01`-like sequences; still no direct literal matches, but suggests richer tag set in system profiles.
+  - No anchor offsets appear in node bytes even with expanded tag sampling, reinforcing that literal references are encoded differently (likely outside the visible 16-bit operand slots).
+- Additional structure poking:
+  - Node region lengths vary and are not always multiples of 12; `bsd` nodes_len=498 (mod4=2), suggesting non-12-byte layouts.
+  - Tag sets depend on stride: e.g., `bsd` shows tags {0,1,5,11,15,17,18,20,26,27} at stride=6, shrinking to {0,17,26,27} at stride=12; layout likely differs per tag/stride.
+  - First bytes of `bsd` node region: repeated patterns (`1b001b00130012...`) hint at larger operand widths; underscores that fixed-stride parsing is inadequate.
+- Further poking (node region patterns):
+  - Counting u32 words shows dominant repeated values (`0x1b001b`, `0x1b001a`, `0x1a001a`), suggesting paired 16-bit operands packed together.
+  - Stride-based tag extraction shows many tag IDs at smaller strides (6/10) that collapse at stride 12; node sizes likely vary by tag.
+  - Heuristic payload extraction (tag,u16,u16,u32) yields repeating payloads for bsd; still no literal offsets.
+  - Overall: evidence points to variable-layout nodes with 16-bit edge-like fields and 32-bit payloads; literal refs are not visible without per-tag layouts.
+- Updated anchor_scan to guess anchor string index within literal pool (printable runs). We now map anchors to literal_string_index but still see no node_indices/field2: nodes remain unlinked. Literal pools contain anchors with indices (e.g., flow-divert index 0), but decoded node operands don’t match these indices.
 - Planning next steps (anchor-based slicing/traversal):
   - Implement segment-aware slicing fallback (Mach-O offsets for node/literal boundaries) to avoid node_count=0 cases like `v8_all_combo`; record when fallback is used.
   - Enforce anchor uniqueness per filter family; generate anchor maps per profile.

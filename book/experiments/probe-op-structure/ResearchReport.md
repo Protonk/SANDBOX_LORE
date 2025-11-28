@@ -40,9 +40,10 @@ Discovery: even with more structure, short op-tables and generic path/name scaff
 - Segment-aware slicing has been added (minimal Mach-O segment parser in `profile_ingestion.py`), which recovers node regions for complex profiles that previously yielded node_count=0 (e.g., `v8_all_combo`).
 - Anchor maps and an `anchor_scan` tool are in place. Even with segment-aware slicing and byte-level searches (stride 12/16), anchors found in the literal pool do not map to any node bytes or decoded fields (`node_indices` remain empty). Node fields still only show small filter-ID-like values, with no literal offsets (e.g., anchors at offsets ~461/477 in `v1_file_require_any` never appear in node fields/bytes). This confirms that the current heuristic node parsing exposes filter IDs but not literal references; modern node records need a richer decode to recover literal bindings.
 - Revised plan focuses on improving node↔literal association:
-  - Enhance decoder to parse modern node records beyond the simple 12-byte view, aiming to extract literal references or auxiliary tables.
+  - Transition away from the provisional stride-12 heuristic toward a tag-aware node decoder that interprets modern node records (per-tag layouts, 32/64-bit operands) and exposes literal/regex references via the literal/regex tables.
   - Once nodes expose literal links, rerun anchor_scan to resolve anchors → nodes → `field2`.
   - Cross-check anchor hits with system profiles and record evidence tiers; add guardrails once mappings stabilize.
+  - Initial tag-aware scaffold (`node_decoder.py`) is wired into literal scans for tag counts, but operands remain small and do not link to literal offsets. We still lack a decode that surfaces literal references; further reverse-engineering of node formats is required.
 
 ## Expected outcomes
 

@@ -66,6 +66,26 @@ def nodes_touching_bytes(nodes_bytes: bytes, anchor_offsets: List[int], literal_
     return sorted(set(hits))
 
 
+def extract_strings(buf: bytes, min_len: int = 4) -> List[Tuple[int, str]]:
+    """Extract printable runs from a buffer with their offsets."""
+    out: List[Tuple[int, str]] = []
+    start = None
+    cur: List[int] = []
+    for idx, b in enumerate(buf):
+        if 32 <= b <= 126:
+            if start is None:
+                start = idx
+            cur.append(b)
+        else:
+            if cur and len(cur) >= min_len and start is not None:
+                out.append((start, bytes(cur).decode("ascii", errors="ignore")))
+            start = None
+            cur = []
+    if cur and len(cur) >= min_len and start is not None:
+        out.append((start, bytes(cur).decode("ascii", errors="ignore")))
+    return out
+
+
 def summarize(profile_path: Path, anchors: List[str], filter_names: Dict[int, str]) -> Dict[str, Any]:
     blob = profile_path.read_bytes()
     # Decode for high-level counts/strings
@@ -80,12 +100,19 @@ def summarize(profile_path: Path, anchors: List[str], filter_names: Dict[int, st
     literal_pool = sections.regex_literals
     literal_start = len(blob) - len(literal_pool)
     nodes_bytes = sections.nodes
+    literal_strings = extract_strings(literal_pool)
 
     anchor_hits = []
     for anchor in anchors:
         a_bytes = anchor.encode()
         offsets_lit = find_anchor_offsets(literal_pool, a_bytes)
         node_idxs = nodes_touching_bytes(nodes_bytes, offsets_lit, literal_start, strides=[12, 16])
+        # also try matching by string index in literal_strings list
+        string_index = None
+        for idx, (off, s) in enumerate(literal_strings):
+            if anchor in s or s in anchor:
+                string_index = idx
+                break
         field2_vals = []
         for idx in node_idxs:
             if idx < len(nodes_decoded):
@@ -96,6 +123,7 @@ def summarize(profile_path: Path, anchors: List[str], filter_names: Dict[int, st
             {
                 "anchor": anchor,
                 "literal_offsets": offsets_lit,
+                "literal_string_index": string_index,
                 "node_indices": node_idxs,
                 "field2_values": field2_vals,
                 "field2_names": [filter_names.get(v) for v in field2_vals],
