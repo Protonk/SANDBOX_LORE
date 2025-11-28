@@ -1,0 +1,398 @@
+{
+  "probe:v0_file_require_all": {
+    "op_count_decoded": 5,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 4,
+        "count": 21,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 11,
+        "name": "file-mode"
+      }
+    ],
+    "literal_strings_sample": []
+  },
+  "probe:v1_file_require_any": {
+    "op_count_decoded": 7,
+    "node_count": 31,
+    "field2": [
+      {
+        "value": 6,
+        "count": 17,
+        "name": "local-name"
+      },
+      {
+        "value": 5,
+        "count": 12,
+        "name": "global-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      }
+    ],
+    "literal_strings_sample": [
+      "Ftmp/foo",
+      "\nHetc/hosts"
+    ]
+  },
+  "probe:v2_file_three_filters_any": {
+    "op_count_decoded": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 20,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      }
+    ],
+    "literal_strings_sample": [
+      "Ftmp/foo",
+      "\nFvar/log",
+      "\nHetc/hosts"
+    ]
+  },
+  "probe:v3_mach_global_local": {
+    "op_count_decoded": 7,
+    "node_count": 31,
+    "field2": [
+      {
+        "value": 6,
+        "count": 18,
+        "name": "local-name"
+      },
+      {
+        "value": 5,
+        "count": 12,
+        "name": "global-name"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      }
+    ],
+    "literal_strings_sample": [
+      "Wcom.apple.cfprefsd.agent"
+    ]
+  },
+  "probe:v4_network_socket_require_all": {
+    "op_count_decoded": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 8,
+        "count": 23,
+        "name": "remote"
+      },
+      {
+        "value": 7,
+        "count": 5,
+        "name": "local"
+      },
+      {
+        "value": 5,
+        "count": 1,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 1,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 2560,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 2,
+        "count": 1,
+        "name": "xattr"
+      }
+    ],
+    "literal_strings_sample": [
+      "Tcom.apple.flow-divert"
+    ]
+  },
+  "probe:v5_iokit_class_property": {
+    "op_count_decoded": 7,
+    "node_count": 31,
+    "field2": [
+      {
+        "value": 6,
+        "count": 18,
+        "name": "local-name"
+      },
+      {
+        "value": 5,
+        "count": 12,
+        "name": "global-name"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      }
+    ],
+    "literal_strings_sample": [
+      "QIOUSBHostInterface",
+      "GidVendor"
+    ]
+  },
+  "probe:v6_file_mach_combo": {
+    "op_count_decoded": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 21,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      }
+    ],
+    "literal_strings_sample": [
+      "Wcom.apple.cfprefsd.agent"
+    ]
+  },
+  "probe:v7_file_network_combo": {
+    "op_count_decoded": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 8,
+        "count": 23,
+        "name": "remote"
+      },
+      {
+        "value": 7,
+        "count": 5,
+        "name": "local"
+      },
+      {
+        "value": 5,
+        "count": 1,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 1,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 2560,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 2,
+        "count": 1,
+        "name": "xattr"
+      }
+    ],
+    "literal_strings_sample": [
+      "Tcom.apple.flow-divert"
+    ]
+  },
+  "probe:v8_all_combo": {
+    "op_count_decoded": 13,
+    "node_count": 0,
+    "field2": [],
+    "literal_strings_sample": [
+      "Ftmp/foo",
+      "\nHetc/hosts",
+      "QIOUSBHostInterface",
+      "Wcom.apple.cfprefsd.agent",
+      "Tcom.apple.flow-divert"
+    ]
+  },
+  "sys:airlock": {
+    "op_count_decoded": 167,
+    "node_count": 7,
+    "field2": [
+      {
+        "value": 166,
+        "count": 5,
+        "name": null
+      },
+      {
+        "value": 10752,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 165,
+        "count": 1,
+        "name": null
+      }
+    ],
+    "literal_strings_sample": [
+      "P/dev/dtracehelper",
+      "Msystem/library",
+      "\nFusr/lib",
+      "G/system/",
+      "Icryptexes/",
+      "Bapp",
+      "\nAos",
+      "\nYvolumes/preboot/cryptexes/",
+      "\nIapp/system",
+      "com.apple.app-sandbox.read"
+    ]
+  },
+  "sys:bsd": {
+    "op_count_decoded": 28,
+    "node_count": 41,
+    "field2": [
+      {
+        "value": 27,
+        "count": 24,
+        "name": "preference-domain"
+      },
+      {
+        "value": 26,
+        "count": 5,
+        "name": "right-name"
+      },
+      {
+        "value": 18,
+        "count": 1,
+        "name": "iokit-connection"
+      },
+      {
+        "value": 17,
+        "count": 1,
+        "name": "iokit-property"
+      },
+      {
+        "value": 5,
+        "count": 1,
+        "name": "global-name"
+      },
+      {
+        "value": 16660,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 174,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 1,
+        "count": 1,
+        "name": "mount-relative-path"
+      },
+      {
+        "value": 109,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 11,
+        "count": 1,
+        "name": "socket-type"
+      },
+      {
+        "value": 170,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 15,
+        "count": 1,
+        "name": "ioctl-command"
+      },
+      {
+        "value": 115,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 80,
+        "count": 1,
+        "name": "mac-policy-name"
+      }
+    ],
+    "literal_strings_sample": [
+      "P/dev/dtracehelper",
+      "Esystem",
+      "\nCusr/",
+      "Blib",
+      "\nDshare",
+      "\nGlibrary/",
+      "Dapple",
+      "\nRpreferences/logging",
+      "\nWfilesystems/netfsplugins",
+      "\nGprivate/"
+    ]
+  },
+  "sys:sample": {
+    "op_count_decoded": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 8,
+        "count": 19,
+        "name": "remote"
+      },
+      {
+        "value": 7,
+        "count": 9,
+        "name": "local"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      },
+      {
+        "value": 1,
+        "count": 1,
+        "name": "mount-relative-path"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      },
+      {
+        "value": 3584,
+        "count": 1,
+        "name": null
+      }
+    ],
+    "literal_strings_sample": [
+      "I/etc/hosts",
+      "Busr",
+      "\nBdev",
+      "\nEsystem",
+      "\nJtmp/sb-demo",
+      "K/tmp/sb-demo"
+    ]
+  }
+}

@@ -11,7 +11,38 @@ placeholder counts while still letting callers inspect byte ranges.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Dict, Any
+import struct
+
+# Minimal Mach-O segment parser for slicing fallbacks
+def _parse_macho_segments(data: bytes) -> List[Dict[str, Any]]:
+    # Expect 64-bit Mach-O magic 0xfeedfacf
+    if len(data) < 32 or data[0:4] not in (b"\xcf\xfa\xed\xfe", b"\xfe\xed\xfa\xcf"):
+        return []
+    # mach_header_64: uint32 magic, cpu_type, cpu_subtype, filetype, ncmds, sizeofcmds, flags, reserved
+    _, _, _, _, ncmds, _, _, _ = struct.unpack_from("<IIIIIIII", data, 0)
+    offset = 32
+    segments = []
+    for _ in range(ncmds):
+        if offset + 8 > len(data):
+            break
+        cmd, cmdsize = struct.unpack_from("<II", data, offset)
+        if cmd == 0x19:  # LC_SEGMENT_64
+            if offset + 72 > len(data):
+                break
+            segname = data[offset + 8 : offset + 24].split(b"\x00", 1)[0].decode()
+            vmaddr, vmsize, fileoff, filesize = struct.unpack_from("<QQQQ", data, offset + 24)
+            segments.append(
+                {
+                    "name": segname,
+                    "vmaddr": vmaddr,
+                    "vmsize": vmsize,
+                    "fileoff": fileoff,
+                    "filesize": filesize,
+                }
+            )
+        offset += cmdsize
+    return segments
 
 
 @dataclass
@@ -99,10 +130,18 @@ def slice_sections(blob: ProfileBlob, header: Header) -> Sections:
     op_table_end = min(len(data), op_table_start + op_table_len)
     op_table = data[op_table_start:op_table_end]
 
-    # Attempt to split node area vs literal/regex pool by looking for the onset
-    # of mostly-printable data near the tail. This is intentionally conservative;
-    # if no printable run is found, treat the whole remainder as nodes.
+    # Attempt to split node area vs literal/regex pool:
+    # 1) Use Mach-O segment info if available (prefer __TEXT.__cstring start).
+    # 2) Fall back to heuristic printable-run detection.
     def find_literal_start(buf: bytes) -> int:
+        segments = _parse_macho_segments(buf)
+        for seg in segments:
+            if seg["name"] == "__TEXT":
+                # assume __cstring follows __const within __TEXT
+                # find the earliest offset beyond op_table_end within __TEXT
+                cstring = seg["fileoff"] + seg["filesize"] - 0  # crude upper bound
+                if cstring > op_table_end:
+                    return cstring
         window = 64
         threshold = 0.7
         for i in range(op_table_end, len(buf)):

@@ -1,0 +1,51 @@
+{
+  "v0_file_require_all": [
+    "/tmp/foo",
+    "/etc/hosts"
+  ],
+  "v1_file_require_any": [
+    "/tmp/foo",
+    "/etc/hosts"
+  ],
+  "v2_file_three_filters_any": [
+    "/tmp/foo",
+    "/var/log",
+    "/etc/hosts"
+  ],
+  "v3_mach_global_local": [
+    "com.apple.cfprefsd.agent"
+  ],
+  "v4_network_socket_require_all": [
+    "flow-divert"
+  ],
+  "v5_iokit_class_property": [
+    "IOUSBHostInterface",
+    "idVendor"
+  ],
+  "v6_file_mach_combo": [
+    "/tmp/foo",
+    "/etc/hosts",
+    "com.apple.cfprefsd.agent"
+  ],
+  "v7_file_network_combo": [
+    "/tmp/foo",
+    "/etc/hosts",
+    "flow-divert"
+  ],
+  "v8_all_combo": [
+    "/tmp/foo",
+    "/etc/hosts",
+    "IOUSBHostInterface",
+    "com.apple.cfprefsd.agent",
+    "flow-divert"
+  ],
+  "sys:airlock": [
+    "app-sandbox.read"
+  ],
+  "sys:bsd": [
+    "preferences/logging"
+  ],
+  "sys:sample": [
+    "/etc/hosts"
+  ]
+}
