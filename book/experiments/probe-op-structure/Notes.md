@@ -14,3 +14,8 @@ Use this file for dated, concise notes on probe designs, compile logs, and findi
   - Network profile (`v4`) shows `remote` (8) from graph walk; file/network combo (`v7`) shows `remote` for both ops.
   - Mach/global/local variants show {5,6}; file-only require-all/any variants show {3,4} or {5,6} depending on decoder op_count.
   - Decoder heuristic failed on `v8_all_combo` (node_count 0, all ops bucket 0) likely due to literal-start detection; needs better slicing if we revisit.
+- Revised plan (do not implement yet): shift to anchor-based traversal and improved slicing:
+  - Add segment-aware slicing fallback to avoid node_count=0 on complex profiles.
+  - Use literal anchors (unique paths, mach names, iokit classes) to locate filter-specific nodes and read their `field2`.
+  - Design profiles with disjoint anchors per filter family and multi-op separation to reduce path/name masking.
+  - Cross-check with system profiles and add guardrails once mappings stabilize.

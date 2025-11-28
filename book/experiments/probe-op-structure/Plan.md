@@ -14,46 +14,55 @@ Deliverables:
 - `Plan.md`, `Notes.md`, `ResearchReport.md` in this directory.
 - A structured probe matrix describing intended SBPL variants.
 
-## 2) Probe design (structure matrix)
+## 2) Improve slicing/decoding
 
-- [ ] Define families of probes that vary:
-  - **Operation mix**: single-op vs mixed ops (file/mach/network/iokit).
-  - **Filter diversity**: multiple distinct filters in one rule, filters across different ops, nested `require-any`/`require-all`.
-  - **Literal/context clues**: include filters with strong literal anchors (paths, mach names, iokit classes) to aid identification.
-  - **Meta-filter shape**: deep vs shallow combinations to force additional nodes/branches.
-- [ ] Document the probe matrix (profile name → ops/filters/metafilters) before implementation.
+- [ ] Add segment-aware slicing fallback for complex profiles to avoid node_count=0 (e.g., use op_table length from vocab; literal/pool detection with a stronger heuristic).
+- [ ] Keep the heuristic decoder but record when fallback is used.
 
 Deliverables:
-- Probe matrix written in `Notes.md` or a dedicated table.
+- Updated helper script(s) for slicing/decoding richer profiles; note usage in `Notes.md`.
 
-## 3) Implementation and compilation
+## 3) Anchor-based traversal
 
-- [ ] Author SBPL profiles per the matrix; keep them small but structurally rich.
-- [ ] Compile via `libsandbox` into `sb/build/*.sb.bin`.
-- [ ] Capture compile logs/errors in `Notes.md`.
-
-Deliverables:
-- `sb/` source files and compiled blobs under `sb/build/`.
-
-## 4) Decoding and traversal
-
-- [ ] Decode each blob with `decoder.decode_profile_dict` and/or `profile_ingestion`.
-- [ ] For each profile:
-  - Record op-table entries (with full vocab length).
-  - Walk graphs from relevant op entries; collect `field2`, tags, and literals encountered.
-  - Where possible, tie literals (paths, names) to specific filters for context.
+- [ ] Scan decoded literals/strings for strong anchors (paths, mach names, iokit classes) per profile.
+- [ ] Map anchor literals to nodes (`field2`, tag, offsets), not just op-table entry walks.
+- [ ] Prefer anchors that are unique per filter to reduce ambiguity.
 
 Deliverables:
-- Machine-readable summaries (JSON) of per-profile traversals and `field2` findings.
+- JSON or notes tying anchor literals → node indices → `field2` → inferred filter.
 
-## 5) Analysis and mapping
+## 4) Probe design (anchor-aware)
 
-- [ ] Compare `field2` sets across probes to isolate filter-specific values.
-- [ ] Check cross-op consistency for shared filters.
-- [ ] Note any structural patterns (tags, branch shapes) that correlate with particular filters.
+- [ ] Define profiles where each filter has a disjoint anchor (e.g., unique paths, mach names, iokit class names).
+- [ ] Include multi-op profiles where different filter families live on different ops to separate traversal paths.
 
 Deliverables:
-- Updated `ResearchReport.md` with provisional mappings and structural observations.
+- Updated probe matrix in `Notes.md` reflecting anchor choices.
+
+## 5) Compilation and decoding
+
+- [ ] Author/adjust SBPL per the anchor-aware matrix; compile via `libsandbox` to `sb/build/*.sb.bin`.
+- [ ] Decode with updated slicing; collect both op-table walks and anchor-based node hits.
+
+Deliverables:
+- `sb/` sources and compiled blobs; updated summaries including anchor-based findings.
+
+## 6) Analysis and mapping
+
+- [ ] Compare anchor-derived `field2` values across probes to isolate filter-specific IDs.
+- [ ] Cross-op consistency checks for shared filters using anchor evidence.
+- [ ] Triangulate with system profiles (clear anchors) where possible.
+
+Deliverables:
+- Updated `ResearchReport.md` with provisional mappings, evidence tiers, and structural notes.
+
+## 7) Guardrails and reuse
+
+- [ ] Add a checker that locates anchor literals in probe blobs and asserts expected `field2` values once mappings stabilize.
+- [ ] Document reuse for other experiments (field2 mapping, op-table alignment).
+
+Deliverables:
+- Guardrail script/test (when mappings are ready) and usage notes in `Notes.md`.
 
 ## 6) Guardrails and reuse
 

@@ -2,38 +2,49 @@
 
 ## Purpose
 
-Design richer SBPL probes that vary operations, filters, and metafilters to expose filter-specific nodes and op-table behavior, overcoming the “generic path/name dominance” seen in minimal single-filter profiles. The goal is to extract clearer `field2` ↔ filter-ID signals and structural patterns that can be reused by other experiments.
+Design and run richer SBPL probes to surface filter-specific nodes and `field2` values by varying operations, filters, and metafilters. The goal is to overcome the “generic path/name dominance” seen in minimal profiles and extract clearer `field2` ↔ filter-ID signals and structural patterns that other experiments can reuse.
 
 ## Baseline and scope
 
-- Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled (same baseline as other experiments).
-- Vocab artifacts: `book/graph/concepts/validation/out/vocab/ops.json` (196 entries, status: ok), `filters.json` (93 entries, status: ok).
+- Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled (shared baseline).
+- Vocab artifacts: `book/graph/concepts/validation/out/vocab/ops.json` (196 entries, status: ok) and `filters.json` (93 entries, status: ok).
 - Related work:
-  - `field2-filters`: showed that tiny single-filter profiles mainly surface generic path/name `field2` values.
-  - `op-table-operation`: provides op-table bucket behavior for small operation sets.
+  - `field2-filters`: tiny single-filter profiles mostly surfaced generic path/name `field2` values.
+  - `op-table-operation`: bucket behavior for small operation sets.
   - `node-layout`: structural patterns for nodes/tags with various filter shapes.
 
-## Plan (summary)
+## What we tried and why it fell short
 
-1. Define a probe matrix that intentionally mixes multiple filters/ops and deeper metafilters (require-any/all) with strong literals to aid identification.
-2. Implement/compile these probes and decode them with full vocab length.
-3. Traverse graphs from relevant op entries to collect `field2`, tags, and literals, tying literals to likely filters.
-4. Analyze cross-probe differences to isolate filter-specific `field2` values and structural markers.
-5. Add guardrails/tests once stable mappings emerge.
+We implemented a first probe matrix (file require-all/any mixes, mach global/local, network socket filters, iokit class/property, and mixed combos) and compiled them via `libsandbox`. Decoding with vocab padding yielded:
+
+- `field2` values remained dominated by low, generic IDs: `global-name` (5), `local-name` (6), `ipc-posix-name` (4), `file-mode` (3), `remote` (8), regardless of the intended filter mix.
+- The network probe surfaced `remote` (8); mach variants surfaced {5,6}; file variants surfaced {3,4} or {5,6}. Mixed profiles showed the same low IDs.
+- The “all-combo” profile (`v8`) failed the heuristic decoder (node_count 0), likely due to literal-start detection; richer slicing would be needed there.
+
+Discovery: even with more structure, short op-tables and generic path/name scaffolding mask filter-specific `field2` signals. Graph walks from op-table entries alone tend to hit shared path/name filters instead of the specific filter nodes we’re trying to isolate. This mirrors the earlier field2 experiment and suggests we need better slicing and literal-anchored traversal.
+
+## Plan (revised)
+
+1. Improve slicing/decoding for richer profiles (better literal/pool detection; fallback to segment-aware slicing to avoid node_count=0).
+2. Anchor traversal on literals: scan decoded literals for strong anchors (paths, mach names, iokit classes), then map nodes referencing those literals to their `field2` values to isolate filter-specific nodes.
+3. Design profiles with disjoint anchor sets per filter to make literal→filter mapping unambiguous.
+4. Use multi-op profiles where different filter families live on different ops to separate paths during traversal.
+5. Triangulate with system profiles (clear anchors) to confirm mappings.
+6. Cross-op consistency: verify inferred `field2` per filter across ops that share it.
+7. Guardrails: once mappings emerge, add a checker that locates anchor literals in probe blobs and asserts expected `field2` values.
+8. Document evidence tiers: maintain a table of `field2`→filter mappings with provenance and mark uncertain cases.
 
 ## Current status
 
-- Experiment scaffold created (`Plan.md`, `Notes.md`, this report). Probe matrix and SBPL implementations are pending.
-- Initial probes implemented and compiled:
-  - File-focused: require-all/any mixes of `subpath`/`literal`/`vnode-type` (`v0`–`v2`).
-  - Single-op non-file: mach with global/local (`v3`), network with socket-domain/type/protocol (`v4`), iokit with registry-entry-class + property (`v5`).
-  - Mixed: file+mach (`v6`), file+network (`v7`), all ops combined (`v8`).
-- Early decoding results (decoder, padded to vocab length) show `field2` still dominated by generic low IDs:
-  - `global-name` (5), `local-name` (6), `ipc-posix-name` (4), `file-mode` (3), `remote` (8) appear across many probes regardless of intended filter.
-  - Network probe surfaces `remote` (8); mach/global/local variants surface {5,6}; file-only variants surface {3,4} or {5,6}.
-  - Decoder heuristic failed on `v8_all_combo` (node_count 0), likely due to literal-start detection; richer slicing may be needed if we pursue that profile.
+- Experiment scaffold and initial probes are in place; early decoding confirms the masking problem described above.
+- Revised plan focuses on anchor-based traversal and improved slicing rather than adding more small probes.
 
-Interim takeaway: even with richer structures, short op-tables and generic path/name scaffolding still mask filter-specific `field2` signals. Additional slicing or targeted traversal (e.g., anchoring on literals) may be required to isolate specific filters.
+## Expected outcomes
+
+- Probes and analysis that surface filter-specific `field2` values beyond generic path/name scaffolding.
+- Provisional `field2` ↔ filter-ID mappings supported by anchor evidence and system-profile cross-checks.
+- Structural notes (tags/branch shapes) that correlate with particular filters/metafilters.
+- Guardrail checks for key mappings once established.
 
 ## Expected outcomes
 
