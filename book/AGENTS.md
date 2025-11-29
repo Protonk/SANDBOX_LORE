@@ -1,25 +1,14 @@
-# AGENTS.md
+# AGENTS.md — book workspace router
 
-You are inside the Seatbelt textbook workspace. Use this file as a fast nav map to the major hubs; it does not prescribe workflows.
+You are in `book/`, the Seatbelt textbook workspace. Use this as a router to find the right materials; it is not a workflow script.
 
-- **graph/ (contracts + generator)**
-  - `graph/Sources/main.swift` — Swift contracts and CLI that emit JSON artifacts.
-  - `graph/Package.swift` — SwiftPM manifest.
-  - `graph/concepts/` — concept inventory, handoff notes, validation docs, generated JSON (`concepts.json`, `concept_text_map.json`, `validation/strategies.json`).
-  - `graph/regions/` — stub `text_regions.json`.
+- `Outline.md` — high-level book outline and chapter sequencing.
+- `chapters/` — per-chapter drafts/plans; filenames match chapter numbers. Check local README/notes inside each chapter.
+- `graph/` — Swift contracts and generated JSON for concepts/regions (`Sources/main.swift`, `Package.swift`, `concepts/`, `regions/`).
+- `experiments/` — research clusters with `Plan.md`, `Notes.md`, `ResearchReport.md`, and `out/` artifacts (e.g., `runtime-checks`, `op-table-operation`, `node-layout`).
+- `examples/` — runnable SBPL/demo bundles; indexed by `examples/examples.json`.
+- `profiles/` — SBPL sources/builds used by chapters, examples, and experiments.
+- `api/` — API planning/design notes (`api/PLAN.md`, etc.).
+- `tests/` — guardrails for book artifacts and experiment outputs.
 
-- **examples/**
-  - One folder per example (extensions-dynamic, mach-services, sbpl-params, etc.). Generated index: `examples/examples.json`.
-
-- **experiments/**
-  - Cross-cutting experiments designed to validate our concept inventory
-
-- **chapters/**
-  - Chapter content and plans (e.g., `chapter01-Introduction/`, `chapter03-TextEdit/`, `chapter06-Example.app/`).
-
-- **profiles/**
-  - SBPL profile sources (e.g., TextEdit profiles, tools, and outputs).
-
-- **api/**
-  - API planning notes (`api/PLAN.md`, etc.).
-
+For canonical Seatbelt vocabulary or lifecycle framing, step up to `substrate/AGENTS.md`

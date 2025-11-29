@@ -27,10 +27,9 @@ High-level map of the root and `book/`:
   - `profiles/` – SBPL/profile sources used in the book.
   - `examples/` – runnable labs and probes (each subdirectory is a unit example).
   - `experiments/` – Cross cutting experiments to validate concepts on modern macOS.
-  - `graph/` – Swift-based contracts and JSON artifacts:
-    - `graph/Package.swift`, `graph/Sources/` – BookGraph types and generator CLI.
-    - `graph/concepts/` – concept inventory, validation docs, and generated concept JSON.
-    - `graph/regions/` – stub `text_regions.json` for chapter bindings.
+  - `graph/` – Machine-readable mappings of concepts and artifacts:
+    - `graph/concepts/` – concept inventory and validation.
+    - `graph/mappings/` – machine-readable artifacts from experiments.
   - `tests/` - pytest harness for experiment and example tests
 - `substrate/` – Orientation, Concepts, Appendix, Environment, State; frozen at `SUBSTRATE_2025-frozen`.
 - `troubles/` – records of crashes or validation troubles.
