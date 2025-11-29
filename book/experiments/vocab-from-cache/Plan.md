@@ -8,7 +8,7 @@ Goal: extract Operation/Filter vocab tables (name ↔ ID) from the macOS dyld sh
 
 - [x] Record host baseline (OS/build, kernel, SIP) in `ResearchReport.md`.
 - [x] Inventory canonical blobs for alignment: `examples/extract_sbs/build/profiles/*.sb.bin`, `examples/sb/build/sample.sb.bin` (decoder op_count ~167).
-- [x] Confirm existing partial vocab artifacts (`validation/out/vocab/ops.json`, `filters.json`) and metadata (`validation/out/metadata.json`).
+- [x] Confirm existing partial vocab artifacts (`graph/mappings/vocab/ops.json`, `filters.json`) and metadata (`validation/out/metadata.json`).
 
 Deliverables:
 - `Plan.md`, `Notes.md`, `ResearchReport.md` in this directory.
@@ -42,7 +42,7 @@ Deliverables:
 - [x] Align harvested names with decoder op_table/op_count:
   - Ensure name count matches `op_count`.
   - Spot-check by compiling single-op SBPL (from op-table-operation) and verifying op_table index matches inferred ID.
-- [x] Emit `validation/out/vocab/ops.json` / `filters.json` with:
+- [x] Emit `graph/mappings/vocab/ops.json` / `filters.json` with:
   - `status: ok` (or `partial` if only names),
   - metadata (host, build, format_variant, sources, content hash),
   - entries `{name, id, provenance}`.

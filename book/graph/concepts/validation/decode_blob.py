@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[4]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from book.graph.concepts.validation import decoder
+import book.api.decoder as decoder
 
 
 def main() -> None:

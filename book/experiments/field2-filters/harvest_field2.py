@@ -12,15 +12,17 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import sys
-sys.path.append("book/graph/concepts/validation")
-import decoder  # type: ignore
+ROOT = Path(__file__).resolve().parents[4]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+import book.api.decoder as decoder  # type: ignore
 
 
 def load_filters() -> Dict[int, str]:
-    path = Path("book/graph/concepts/validation/out/vocab/filters.json")
+    path = Path("book/graph/mappings/vocab/filters.json")
     if not path.exists():
         return {}
     data = json.loads(path.read_text())
@@ -52,17 +54,30 @@ def summarize_profile(path: Path, filter_names: Dict[int, str]) -> Dict[str, Any
 
 def main() -> None:
     filter_names = load_filters()
-    profiles = {
-        "airlock": Path("book/examples/extract_sbs/build/profiles/airlock.sb.bin"),
-        "bsd": Path("book/examples/extract_sbs/build/profiles/bsd.sb.bin"),
-        "sample": Path("book/examples/sb/build/sample.sb.bin"),
+    profiles: Dict[str, Path] = {
+        "sys:airlock": Path("book/examples/extract_sbs/build/profiles/airlock.sb.bin"),
+        "sys:bsd": Path("book/examples/extract_sbs/build/profiles/bsd.sb.bin"),
+        "sys:sample": Path("book/examples/sb/build/sample.sb.bin"),
     }
+
+    # Pull in the single-filter probes for this experiment
+    probes_dir = Path("book/experiments/field2-filters/sb/build")
+    if probes_dir.exists():
+        for p in sorted(probes_dir.glob("*.sb.bin")):
+            profiles[f"probe:{p.stem}"] = p
+
     out = {
         name: summarize_profile(path, filter_names)
         for name, path in profiles.items()
         if path.exists()
     }
+
+    out_dir = Path("book/experiments/field2-filters/out")
+    out_dir.mkdir(exist_ok=True)
+    out_path = out_dir / "field2_inventory.json"
+    out_path.write_text(json.dumps(out, indent=2))
     print(json.dumps(out, indent=2))
+    print(f"[+] wrote {out_path}")
 
 
 if __name__ == "__main__":

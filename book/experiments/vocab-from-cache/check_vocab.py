@@ -21,7 +21,7 @@ def load_json(path: Path) -> dict:
 
 
 def main() -> None:
-    root = Path("book/graph/concepts/validation/out/vocab")
+root = Path("book/graph/mappings/vocab")
     ops_path = root / "ops.json"
     filters_path = root / "filters.json"
     ops = load_json(ops_path)

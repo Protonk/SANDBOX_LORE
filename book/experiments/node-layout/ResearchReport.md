@@ -322,7 +322,7 @@ The `Plan.md` file lists detailed tasks; this section highlights the most impact
    - This remains ID-agnostic but offers a structural view that can later be tied to an Operation Vocabulary Map.
 
 5. **Integration with vocabulary-mapping work**
-   - `book/graph/concepts/validation/out/vocab/ops.json` and `filters.json` now exist (`status: ok` from cache harvest):
+   - `book/graph/mappings/vocab/ops.json` and `filters.json` now exist (`status: ok` from cache harvest):
      - revisit this experiment to label observed tag/field patterns with concrete Operation/Filter IDs where possible,
      - keep a clear line between labels grounded in vocab artifacts and structural hypotheses when field semantics remain ambiguous (e.g., field2 small integers in filtered profiles).
 

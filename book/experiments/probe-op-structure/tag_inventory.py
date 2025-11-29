@@ -1,65 +1,61 @@
 #!/usr/bin/env python3
 """
-Analyze probe and system profiles for field2 histograms and literals.
+Coarse tag inventory across probe/system profiles.
 
-Outputs:
-- out/analysis.json with per-profile:
-  - op_count (decoded)
-  - node_count
-  - field2 histogram with filter-name mapping
-  - sample literal strings
+Treat stride-based parsing as a sanity check: count tags under several
+candidate strides and record remainders. This does NOT assert a final
+layout; it is intended to highlight where tags change with stride and
+where tails/remainders appear.
+
+Output:
+- out/tag_inventory.json
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import sys
-ROOT = Path(__file__).resolve().parents[4]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-import book.api.decoder as decoder  # type: ignore
+sys.path.append("book/graph/concepts/validation")
+import profile_ingestion as pi  # type: ignore
 
 
-def load_vocab() -> Dict[str, Any]:
-    ops = json.loads(Path("book/graph/mappings/vocab/ops.json").read_text())
-    filters = json.loads(Path("book/graph/mappings/vocab/filters.json").read_text())
+STRIDES = [6, 8, 10, 12, 16]
+
+
+def count_tags(nodes: bytes, stride: int) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    recs = len(nodes) // stride
+    for idx in range(recs):
+        tag = nodes[idx * stride]
+        counts[str(tag)] = counts.get(str(tag), 0) + 1
+    return counts
+
+
+def summarize(path: Path) -> Dict[str, Any]:
+    blob = path.read_bytes()
+    pb = pi.ProfileBlob(bytes=blob, source=path.name)
+    header = pi.parse_header(pb)
+    sections = pi.slice_sections(pb, header)
+    nodes = sections.nodes
+    per_stride = []
+    for stride in STRIDES:
+        per_stride.append(
+            {
+                "stride": stride,
+                "remainder": len(nodes) % stride,
+                "tag_counts": count_tags(nodes, stride),
+            }
+        )
     return {
-        "ops": ops,
-        "filters": filters,
-        "filter_id_to_name": {e["id"]: e["name"] for e in filters.get("filters", [])},
-    }
-
-
-def summarize(path: Path, vocab: Dict[str, Any]) -> Dict[str, Any]:
-    data = path.read_bytes()
-    dec = decoder.decode_profile_dict(data)
-    nodes = dec.get("nodes") or []
-    hist: Dict[int, int] = {}
-    for node in nodes:
-        fields = node.get("fields", [])
-        if len(fields) > 2:
-            val = fields[2]
-            hist[val] = hist.get(val, 0) + 1
-    filter_names = {
-        v: vocab["filter_id_to_name"].get(v)
-        for v in hist
-    }
-    return {
-        "op_count_decoded": dec.get("op_count"),
-        "node_count": dec.get("node_count"),
-        "field2": [
-            {"value": v, "count": c, "name": filter_names.get(v)}
-            for v, c in sorted(hist.items(), key=lambda x: -x[1])
-        ],
-        "literal_strings_sample": (dec.get("literal_strings") or [])[:10],
+        "node_bytes": len(nodes),
+        "per_stride": per_stride,
     }
 
 
 def main() -> None:
-    vocab = load_vocab()
     profiles = {
         "probe:v0_file_require_all": Path("book/experiments/probe-op-structure/sb/build/v0_file_require_all.sb.bin"),
         "probe:v1_file_require_any": Path("book/experiments/probe-op-structure/sb/build/v1_file_require_any.sb.bin"),
@@ -78,12 +74,12 @@ def main() -> None:
     for name, path in profiles.items():
         if not path.exists():
             continue
-        out[name] = summarize(path, vocab)
+        out[name] = summarize(path)
 
     out_dir = Path("book/experiments/probe-op-structure/out")
     out_dir.mkdir(exist_ok=True)
-    out_path = out_dir / "analysis.json"
-    out_path.write_text(json.dumps(out, indent=2))
+    out_path = out_dir / "tag_inventory.json"
+    out_path.write_text(json.dumps(out, indent=2, sort_keys=True))
     print(f"[+] wrote {out_path}")
 
 

@@ -65,7 +65,7 @@ This experiment sits between the structural experiments and the validation tooli
 
 ## 3. Vocabulary artifacts: expected contracts
 
-This experiment assumes the existence of two vocabulary artifacts under `book/graph/concepts/validation/out/vocab/`:
+This experiment assumes the existence of two vocabulary artifacts under `book/graph/mappings/vocab/`:
 
 1. `ops.json` – **Operation Vocabulary Map**
 
@@ -152,6 +152,10 @@ Bucket→ID summary (from alignment artifact on this host, vocab `generated_at=2
 - `file-read*` (ID 21), `file-write*` (ID 29), and `network-outbound` (ID 112) appear in buckets {3,4} across the synthetic profiles (unfiltered vs filtered/mach mixes).
 - `mach-lookup` (ID 96) appears in buckets {5,6}, with bucket 6 showing up only in the complex mach+filtered-read mixes.
 - No other operations are exercised here; treat these as host/profile-scoped observations, not universal rules.
+
+## Status summary (2025-12-09)
+
+- Vocab artifacts are `status: ok` (ops=196, filters=93); alignment regenerated after decoder updates with no bucket changes. For this host, op-table bucket↔operation ID mapping is up to date. Further changes would come only if vocab hashes change or new profile variants are added.
 
 ---
 

@@ -1,0 +1,625 @@
+{
+  "probe:v0_file_require_all": {
+    "node_bytes": 387,
+    "strides": {
+      "12": {
+        "node_count": 32,
+        "remainder": 3,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 1,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "3": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 24,
+        "remainder": 3,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "3584": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v1_file_require_any": {
+    "node_bytes": 388,
+    "strides": {
+      "12": {
+        "node_count": 32,
+        "remainder": 4,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "5": 1
+            }
+          },
+          "5": {
+            "count": 5,
+            "edge_fields_in_bounds": 10,
+            "edge_fields_total": 10,
+            "field2_hist": {
+              "5": 4,
+              "6": 1
+            }
+          },
+          "6": {
+            "count": 25,
+            "edge_fields_in_bounds": 50,
+            "edge_fields_total": 50,
+            "field2_hist": {
+              "0": 1,
+              "3": 1,
+              "5": 7,
+              "6": 16
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 24,
+        "remainder": 4,
+        "tags": {
+          "0": {
+            "count": 2,
+            "edge_fields_in_bounds": 3,
+            "edge_fields_total": 4,
+            "field2_hist": {
+              "5": 2
+            }
+          },
+          "5": {
+            "count": 6,
+            "edge_fields_in_bounds": 12,
+            "edge_fields_total": 12,
+            "field2_hist": {
+              "5": 1,
+              "6": 5
+            }
+          },
+          "6": {
+            "count": 15,
+            "edge_fields_in_bounds": 30,
+            "edge_fields_total": 30,
+            "field2_hist": {
+              "5": 3,
+              "6": 12
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v2_file_three_filters_any": {
+    "node_bytes": 365,
+    "strides": {
+      "12": {
+        "node_count": 30,
+        "remainder": 5,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "4": 1
+            }
+          },
+          "5": {
+            "count": 22,
+            "edge_fields_in_bounds": 44,
+            "edge_fields_total": 44,
+            "field2_hist": {
+              "3": 1,
+              "4": 5,
+              "5": 16
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 22,
+        "remainder": 13,
+        "tags": {
+          "5": {
+            "count": 13,
+            "edge_fields_in_bounds": 26,
+            "edge_fields_total": 26,
+            "field2_hist": {
+              "4": 5,
+              "5": 8
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v3_mach_global_local": {
+    "node_bytes": 375,
+    "strides": {
+      "12": {
+        "node_count": 31,
+        "remainder": 3,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "5": 1
+            }
+          },
+          "5": {
+            "count": 5,
+            "edge_fields_in_bounds": 10,
+            "edge_fields_total": 10,
+            "field2_hist": {
+              "5": 4,
+              "6": 1
+            }
+          },
+          "6": {
+            "count": 25,
+            "edge_fields_in_bounds": 50,
+            "edge_fields_total": 50,
+            "field2_hist": {
+              "0": 1,
+              "5": 7,
+              "6": 17
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 23,
+        "remainder": 7,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "5": 1
+            }
+          },
+          "5": {
+            "count": 6,
+            "edge_fields_in_bounds": 12,
+            "edge_fields_total": 12,
+            "field2_hist": {
+              "5": 1,
+              "6": 5
+            }
+          },
+          "6": {
+            "count": 15,
+            "edge_fields_in_bounds": 30,
+            "edge_fields_total": 30,
+            "field2_hist": {
+              "5": 4,
+              "6": 11
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v4_network_socket_require_all": {
+    "node_bytes": 392,
+    "strides": {
+      "12": {
+        "node_count": 32,
+        "remainder": 8,
+        "tags": {
+          "0": {
+            "count": 2,
+            "edge_fields_in_bounds": 4,
+            "edge_fields_total": 4,
+            "field2_hist": {
+              "2560": 1,
+              "7": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 24,
+        "remainder": 8,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "2816": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v5_iokit_class_property": {
+    "node_bytes": 377,
+    "strides": {
+      "12": {
+        "node_count": 31,
+        "remainder": 5,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "5": 1
+            }
+          },
+          "5": {
+            "count": 5,
+            "edge_fields_in_bounds": 10,
+            "edge_fields_total": 10,
+            "field2_hist": {
+              "5": 4,
+              "6": 1
+            }
+          },
+          "6": {
+            "count": 24,
+            "edge_fields_in_bounds": 48,
+            "edge_fields_total": 48,
+            "field2_hist": {
+              "0": 1,
+              "5": 7,
+              "6": 16
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 23,
+        "remainder": 9,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "5": 1
+            }
+          },
+          "5": {
+            "count": 6,
+            "edge_fields_in_bounds": 12,
+            "edge_fields_total": 12,
+            "field2_hist": {
+              "5": 1,
+              "6": 5
+            }
+          },
+          "6": {
+            "count": 16,
+            "edge_fields_in_bounds": 32,
+            "edge_fields_total": 32,
+            "field2_hist": {
+              "5": 4,
+              "6": 12
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v6_file_mach_combo": {
+    "node_bytes": 365,
+    "strides": {
+      "12": {
+        "node_count": 30,
+        "remainder": 5,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "4": 1
+            }
+          },
+          "5": {
+            "count": 22,
+            "edge_fields_in_bounds": 44,
+            "edge_fields_total": 44,
+            "field2_hist": {
+              "4": 5,
+              "5": 17
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 22,
+        "remainder": 13,
+        "tags": {
+          "5": {
+            "count": 14,
+            "edge_fields_in_bounds": 28,
+            "edge_fields_total": 28,
+            "field2_hist": {
+              "4": 5,
+              "5": 9
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v7_file_network_combo": {
+    "node_bytes": 392,
+    "strides": {
+      "12": {
+        "node_count": 32,
+        "remainder": 8,
+        "tags": {
+          "0": {
+            "count": 2,
+            "edge_fields_in_bounds": 4,
+            "edge_fields_total": 4,
+            "field2_hist": {
+              "2560": 1,
+              "7": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 24,
+        "remainder": 8,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "2816": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "probe:v8_all_combo": {
+    "node_bytes": 424,
+    "strides": {
+      "12": {
+        "node_count": 35,
+        "remainder": 4,
+        "tags": {
+          "6": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "3584": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 26,
+        "remainder": 8,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "2560": 1
+            }
+          },
+          "6": {
+            "count": 2,
+            "edge_fields_in_bounds": 4,
+            "edge_fields_total": 4,
+            "field2_hist": {
+              "11": 1,
+              "3584": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "sys:airlock": {
+    "node_bytes": 167,
+    "strides": {
+      "12": {
+        "node_count": 13,
+        "remainder": 11,
+        "tags": {
+          "0": {
+            "count": 4,
+            "edge_fields_in_bounds": 4,
+            "edge_fields_total": 8,
+            "field2_hist": {
+              "10752": 1,
+              "16": 1,
+              "19456": 1,
+              "52736": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 10,
+        "remainder": 7,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 0,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "39": 1
+            }
+          },
+          "6": {
+            "count": 1,
+            "edge_fields_in_bounds": 1,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "0": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "sys:bsd": {
+    "node_bytes": 498,
+    "strides": {
+      "12": {
+        "node_count": 41,
+        "remainder": 6,
+        "tags": {
+          "0": {
+            "count": 8,
+            "edge_fields_in_bounds": 12,
+            "edge_fields_total": 16,
+            "field2_hist": {
+              "11": 1,
+              "15": 1,
+              "16660": 1,
+              "27": 5
+            }
+          },
+          "17": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "17": 1
+            }
+          },
+          "26": {
+            "count": 18,
+            "edge_fields_in_bounds": 30,
+            "edge_fields_total": 36,
+            "field2_hist": {
+              "1": 1,
+              "109": 1,
+              "115": 1,
+              "170": 1,
+              "174": 1,
+              "26": 4,
+              "27": 8,
+              "80": 1
+            }
+          },
+          "27": {
+            "count": 14,
+            "edge_fields_in_bounds": 28,
+            "edge_fields_total": 28,
+            "field2_hist": {
+              "18": 1,
+              "26": 1,
+              "27": 11,
+              "5": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 31,
+        "remainder": 2,
+        "tags": {
+          "0": {
+            "count": 10,
+            "edge_fields_in_bounds": 15,
+            "edge_fields_total": 20,
+            "field2_hist": {
+              "10": 1,
+              "12": 1,
+              "15": 1,
+              "27": 6,
+              "4": 1
+            }
+          },
+          "17": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "17": 1
+            }
+          },
+          "26": {
+            "count": 5,
+            "edge_fields_in_bounds": 10,
+            "edge_fields_total": 10,
+            "field2_hist": {
+              "0": 1,
+              "26": 3,
+              "27": 1
+            }
+          },
+          "27": {
+            "count": 15,
+            "edge_fields_in_bounds": 30,
+            "edge_fields_total": 30,
+            "field2_hist": {
+              "1": 1,
+              "18": 1,
+              "26": 2,
+              "27": 8,
+              "3": 1,
+              "5": 1,
+              "9": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "sys:sample": {
+    "node_bytes": 395,
+    "strides": {
+      "12": {
+        "node_count": 32,
+        "remainder": 11,
+        "tags": {
+          "0": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "3584": 1
+            }
+          },
+          "5": {
+            "count": 1,
+            "edge_fields_in_bounds": 2,
+            "edge_fields_total": 2,
+            "field2_hist": {
+              "8": 1
+            }
+          }
+        }
+      },
+      "16": {
+        "node_count": 24,
+        "remainder": 11,
+        "tags": {}
+      }
+    }
+  }
+}

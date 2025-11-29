@@ -3,7 +3,7 @@ import pytest
 
 from pathlib import Path
 
-from book.graph.concepts.validation import decoder
+import book.api.decoder as decoder
 
 # Repo root: tests/ -> book/ (parents[2])
 ROOT = Path(__file__).resolve().parents[2]

@@ -362,8 +362,8 @@ The validation plan ties the examples in `book/examples/` to the four clusters. 
 - Annotate any TCC/SIP/platform interference explicitly so Seatbelt graph evidence is not polluted by adjacent controls.
 
 **Stage 3 — Vocabulary and Mapping**
-- From Stage 1 blobs, extract operation/filter vocab (name↔ID↔arg schema) into versioned tables under `validation/out/vocab/ops.json` and `.../filters.json`.
-- From Stage 2 logs, collect observed operation/filter names and map them to IDs using the tables; flag unknown/mismatched entries. Store results in `validation/out/vocab/runtime_usage.json`.
+- From Stage 1 blobs, extract operation/filter vocab (name↔ID↔arg schema) into versioned tables under `graph/mappings/vocab/ops.json` and `.../filters.json`.
+- From Stage 2 logs, collect observed operation/filter names and map them to IDs using the tables; flag unknown/mismatched entries. Store results in `graph/mappings/vocab/runtime_usage.json`.
 - Each vocab entry should carry provenance (which blob/log) and OS/build/variant.
 
 **Stage 4 — Runtime Lifecycle and Extension**

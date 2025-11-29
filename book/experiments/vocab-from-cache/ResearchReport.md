@@ -11,7 +11,7 @@ Extract Operation/Filter vocab tables (name ↔ ID) from the macOS dyld shared c
 - `book/examples/extract_sbs/build/profiles/airlock.sb.bin`
 - `book/examples/extract_sbs/build/profiles/bsd.sb.bin`
 - `book/examples/sb/build/sample.sb.bin`
-- Current vocab artifacts (`validation/out/vocab/ops.json` / `filters.json`) are `status: ok` (196 ops, 93 filters) harvested from the dyld cache.
+- Current vocab artifacts (`graph/mappings/vocab/ops.json` / `filters.json`) are `status: ok` (196 ops, 93 filters) harvested from the dyld cache.
 
 ## Plan (summary)
 
@@ -25,6 +25,6 @@ Extract Operation/Filter vocab tables (name ↔ ID) from the macOS dyld shared c
 - Dyld shared cache located at `/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e`; extracted via Swift shim using `/usr/lib/dsc_extractor.bundle` into `book/experiments/vocab-from-cache/extracted/` (Sandbox.framework + libsandbox pulled out).
 - Added `harvest_ops.py` to decode `_operation_names` → `__TEXT.__cstring`; harvested 196 ordered operation names (`out/operation_names.json`), confirming the op_count heuristic (167) was a decoder artifact.
 - Added `harvest_filters.py` to decode `_filter_info` → `__TEXT.__cstring`; harvested 93 ordered filter names (`out/filter_names.json`).
-- `book/graph/concepts/validation/out/vocab/ops.json` is `status: ok` (IDs 0–195); `filters.json` now `status: ok` (IDs 0–92) from the cache harvest.
+- `book/graph/mappings/vocab/ops.json` is `status: ok` (IDs 0–195); `filters.json` now `status: ok` (IDs 0–92) from the cache harvest.
 - Regenerated `book/experiments/op-table-operation/out/*` with the vocab length override (196 ops) and refreshed `op-table-vocab-alignment` to fill `operation_ids` per profile; op_table entries now cover the full vocabulary. (Filters not yet propagated into downstream experiments.)
 - Added `check_vocab.py`, a guardrail script that asserts vocab status is `ok` and counts are ops=196, filters=93 for this host.

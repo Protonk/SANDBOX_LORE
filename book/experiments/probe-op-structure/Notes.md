@@ -59,3 +59,40 @@ Use this file for dated, concise notes on probe designs, compile logs, and findi
 ## 2025-12-04
 
 - Updated `anchor_scan.py` to include an `offsets` field (alias of `literal_offsets`) in each anchor entry to satisfy anchor output tests. Regenerated `out/anchor_hits.json`.
+- Planning the decoder push:
+  - Add a per-tag inventory pass: collect bytes/stride candidates per tag across probes/system profiles to separate “front” vs “tail” sanity before decoding layouts.
+  - Form tag-specific layout hypotheses and evaluate via edge in-bounds rates and literal/regex operand plausibility (using literal-only deltas and system-profile anchors).
+  - Use literal content/count deltas (foo→bar, N literals) to spot which tag/field positions move with literals; treat stride scans only as slicing sanity checks.
+
+## 2025-12-05
+
+- Added `tag_inventory.py` to generate coarse stride-based tag counts/remainders across probe and system profiles (strides 6/8/10/12/16). Output: `out/tag_inventory.json`. This is purely a slicing sanity check; next step is per-tag layout hypotheses using these counts as guardrails.
+- Quick spot checks from `tag_inventory.json`:
+  - `sys:bsd` tag sets collapse from many tags at stride 6 ({0,1,5,11,15,17,18,20,26,27,80,109,115,170,174}) to {0,17,26,27} at stride 12/16 (rem 6/2), reinforcing tag-dependent sizes.
+  - `sys:airlock` shows high tags (165/166/194) at smaller strides; stride 12 still leaves rem 11 with tags {0,1,10,166,74}.
+  - `probe:v1_file_require_any` toggles tags between {0,1,3,5,6} (stride 6) and {0,1,5,6} (stride 12), confirming stride choice changes visible tags.
+- Added `tag_layout_hypotheses.py` to probe tags {0,5,6,17,26,27} at strides 12/16 with simple edge-in-bounds and field2 histograms. Output: `out/tag_layout_hypotheses.json`.
+  - Probes: tags 5/6 have all edges in-bounds at stride 12 (and stride 16), counts shrink at stride 16; field2 for tag6 skews to {5,6} with a single 0/3 in some cases.
+  - System `bsd`: stride 12 yields more tag26 records (18) with partial in-bounds edges (30/36) vs stride16 (5 records, 10/10 edges); tag27 edges fully in-bounds both strides. Stride ambiguity remains; need per-tag layouts beyond fixed-stride.
+  - This is an exploratory sanity check; pausing before trying broader tag/stride combinations to avoid combinatorial blowup.
+- Recorded initial tag layout assumptions in `out/tag_layout_assumptions.json`:
+  - Hypothesis: tags 5 and 6 use 12-byte records with fields[0:2] edges and fields[2] as the field2 key (edges in-bounds across probes). Literal/regex mapping still pending.
+  - Tags 26/27 left pending; stride-12 vs stride-16 ambiguity noted for system profiles.
+- Decoder update (non-layout): added validation metadata (node remainders, edge in-bounds counts, section offsets) to decoder output to aid sanity checks; tests updated to cover presence of validation fields.
+
+## 2025-12-07
+
+- Updated `decoder.py` to load tag-layout hints from `out/tag_layout_assumptions.json`, parse nodes with per-tag record sizes, and surface extra section offsets. This keeps the existing stride-12 view but tags nodes with `record_size` and merges external layouts for validation.
+- Reran `anchor_scan.py` with the new decoder; `anchor_hits.json` refreshed. Anchors are still found in literal pools but no node indices resolve yet (literal bindings remain hidden), confirming the need for deeper node decoding to expose literal/regex operands.
+
+## 2025-12-08
+
+- Decoder now emits `literal_strings_with_offsets` plus per-node `literal_refs` (heuristic: fields matching literal offsets/absolute offsets). Fixed a bug in the matching (previous tuple truthiness made every node look bound).
+- `anchor_scan.py` now normalizes prefixed literals (e.g., `Ftmp/foo`) when matching anchors and prefers decoded `literal_refs`, falling back to byte scans only if no ref hits. Anchors now resolve to literal offsets even when prefixed, though node indices remain empty for the current probes.
+- Added tests to cover decoder literal offsets/refs and anchor offset discovery.
+
+## 2025-12-09
+
+- Extended decoder literal matching: `literal_refs` now also scan node chunks for u16/u32 patterns of literal offsets, absolute offsets, and literal indices. This surfaced node hits for anchors in simple probes (e.g., `/tmp/foo` in `v1_file_require_any` now maps to nodes [16,22,30]).
+- Updated `anchor_scan` to prefer decoded `literal_refs` (with normalized prefixes) over raw byte scans; anchor hits now include node indices where available.
+- Strengthened `tests/test_anchor_scan.py` to assert node_indices are populated for the anchored probe blob.

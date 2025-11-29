@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Any
 
-from book.graph.concepts.validation import decoder
+import book.api.decoder as decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 
 
@@ -237,8 +237,8 @@ def main() -> None:
     out_dir = root / "out"
     out_dir.mkdir(exist_ok=True)
 
-    vocab_path = Path("book/graph/concepts/validation/out/vocab/ops.json")
-    filter_vocab_path = Path("book/graph/concepts/validation/out/vocab/filters.json")
+    vocab_path = Path("book/graph/mappings/vocab/ops.json")
+    filter_vocab_path = Path("book/graph/mappings/vocab/filters.json")
     vocab_len = None
     filter_map: Dict[str, int] = {}
     if vocab_path.exists():

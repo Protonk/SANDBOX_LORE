@@ -200,7 +200,7 @@ This surface is optional at first but should be designed from day one.
 **Logical tools:**
 
 - `run_probe` — Run a predefined probe and collect results.
-- `decode_profile` — Take a profile blob and produce a `profile_decode`.
+- `decode_profile` — Take a profile blob and produce a `profile_decode`. (Python decoder lives at `book/api/decoder/`.)
 - `summarize_capabilities` — Take a `profile_decode` (and context) and produce a `catalog_entry`.
 
 **Operations:**

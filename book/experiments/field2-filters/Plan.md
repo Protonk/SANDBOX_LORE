@@ -7,7 +7,7 @@ Goal: map decoder `field2` values to Filter IDs using the harvested filter vocab
 ## 1) Scope and setup
 
 - [ ] Record host baseline (OS/build, kernel, SIP) in `ResearchReport.md`.
-- [ ] Confirm vocab artifacts (`validation/out/vocab/filters.json`, `ops.json`) are `status: ok`.
+- [ ] Confirm vocab artifacts (`graph/mappings/vocab/filters.json`, `ops.json`) are `status: ok`.
 - [ ] Identify canonical blobs for cross-check: `examples/extract_sbs/build/profiles/airlock.sb.bin`, `bsd.sb.bin`, `sample.sb.bin`.
 
 Deliverables:

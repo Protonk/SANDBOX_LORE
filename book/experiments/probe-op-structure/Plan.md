@@ -7,12 +7,21 @@ Goal: design and run a set of SBPL probes with richer, varied structure to extra
 ## 1) Scope and setup
 
 - [ ] Record host baseline (OS/build, kernel, SIP) in `ResearchReport.md`.
-- [ ] Confirm vocab artifacts (`validation/out/vocab/ops.json`, `filters.json`) are `status: ok`.
+- [ ] Confirm vocab artifacts (`graph/mappings/vocab/ops.json`, `filters.json`) are `status: ok`.
 - [ ] Identify prior experiments to reuse/compare: `field2-filters`, `op-table-operation`, `node-layout`.
 
 Deliverables:
 - `Plan.md`, `Notes.md`, `ResearchReport.md` in this directory.
 - A structured probe matrix describing intended SBPL variants.
+
+## 1.5) Per-tag inventory (sanity pass)
+
+- [ ] Group decoded nodes by tag across a few profiles (simple probes + system profiles).
+- [ ] Record total bytes per tag, candidate minimal strides (common divisors), and remainders.
+- [ ] Keep stride scans as coarse slicing sanity (front vs tail), not as final layouts.
+
+Deliverables:
+- Notes on tag byte counts/stride candidates in `Notes.md`; brief summary in `ResearchReport.md`.
 
 ## 2) Improve slicing/decoding
 
@@ -27,6 +36,7 @@ Deliverables:
 - [ ] Scan decoded literals/strings for strong anchors (paths, mach names, iokit classes) per profile.
 - [ ] Map anchor literals to nodes (`field2`, tag, offsets), not just op-table entry walks.
 - [ ] Prefer anchors that are unique per filter to reduce ambiguity.
+  - Status: anchors now resolve to literal offsets; decoded `literal_refs` yield node indices for simple probes (e.g., `/tmp/foo` in `v1_file_require_any` → nodes [16,22,30]). Still heuristic; needs richer tag decoding.
 
 Deliverables:
 - JSON or notes tying anchor literals → node indices → `field2` → inferred filter.
@@ -52,6 +62,8 @@ Deliverables:
 - [ ] Compare anchor-derived `field2` values across probes to isolate filter-specific IDs.
 - [ ] Cross-op consistency checks for shared filters using anchor evidence.
 - [ ] Triangulate with system profiles (clear anchors) where possible.
+- [ ] **Tag-specific layout hypotheses:** propose per-tag record sizes/field positions; evaluate via edge in-bounds rates and literal/regex operand plausibility. Capture candidate layouts and evidence in `Notes.md`, summarize accepted/rejected in `ResearchReport.md`.
+- [ ] **Literal/regex correlation:** use profiles that differ only in literal content/count to see which tag/field positions change; cross-check with system-profile anchors to validate operand slots.
 
 Deliverables:
 - Updated `ResearchReport.md` with provisional mappings, evidence tiers, and structural notes.

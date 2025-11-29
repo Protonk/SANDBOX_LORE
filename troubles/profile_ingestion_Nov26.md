@@ -5,7 +5,7 @@ Modern profile ingestion was upgraded from “unknown-modern” to a cautious gr
 ## Traces
 
 ### Agent comment
-profile_ingestion.py needs to be enhanced to decode modern graph-based blobs sufficiently to extract operation/filter tables (IDs/names/arg schemas) from system and sample profiles, then normalize into validation/out/vocab/ keyed by OS/build/format.
+profile_ingestion.py needs to be enhanced to decode modern graph-based blobs sufficiently to extract operation/filter tables (IDs/names/arg schemas) from system and sample profiles, then normalize into graph/mappings/vocab/ keyed by OS/build/format.
 
 ## Running notes
 
@@ -25,4 +25,4 @@ profile_ingestion.py needs to be enhanced to decode modern graph-based blobs suf
 - Next steps:
   1) Reverse-engineer modern node encoding to recover node counts and filter key codes.
   2) Seed vocab with substrate’s operation/filter maps and align with decoded IDs/op-table entries per OS/build/format.
-  3) If decoding stalls, emit counts/offsets only and document the gap in `validation/out/vocab/`.
+  3) If decoding stalls, emit counts/offsets only and document the gap in `graph/mappings/vocab/`.

@@ -22,7 +22,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any, Dict, List
 
-from book.graph.concepts.validation import decoder
+import book.api.decoder as decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 
 

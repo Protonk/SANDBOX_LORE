@@ -8,11 +8,11 @@
 
 2. **Artifact inventory and placeholder alignment (Chat agent, 2025-11-29)**
    - Confirmed presence of upstream artifacts: `node-layout/out/summary.json`, `op-table-operation/out/summary.json`, and `op_table_map.json`.
-   - Checked vocabulary outputs under `book/graph/concepts/validation/out/vocab/` and found the directory empty; noted dependency on the vocabulary-mapping tasks in `validation/tasks.py`.
+   - Checked vocabulary outputs under `book/graph/mappings/vocab/` and found the directory empty; noted dependency on the vocabulary-mapping tasks in `validation/tasks.py`.
    - Generated a placeholder alignment artifact `out/op_table_vocab_alignment.json` from `op-table-operation/out/summary.json`, capturing per-profile SBPL ops, op-table indices, and operation_count with `operation_ids` left null until a vocab file exists.
 
 3. **Placeholder vocab artifacts and alignment update (Chat agent, 2025-11-29)**
-   - Created placeholder `book/graph/concepts/validation/out/vocab/ops.json` and `filters.json` (status `unavailable`, IDs unknown) using host metadata from `validation/out/metadata.json` to unblock downstream consumers; real vocab extraction remains outstanding.
+   - Created placeholder `book/graph/mappings/vocab/ops.json` and `filters.json` (status `unavailable`, IDs unknown) using host metadata from `validation/out/metadata.json` to unblock downstream consumers; real vocab extraction remains outstanding.
    - Updated `out/op_table_vocab_alignment.json` to record `vocab_present=true`, `vocab_status=unavailable`, and `vocab_version` set to the placeholder timestamp; `operation_ids` remain null pending a real vocabulary map.
 
 4. **Contract and versioning notes (Chat agent, 2025-11-29)**
@@ -45,3 +45,6 @@
      - `file-read*` (21), `file-write*` (29), `network-outbound` (112) use buckets {3,4} across profiles.
      - `mach-lookup` (96) uses buckets {5,6}; bucket 6 appears only in mach+filtered-read mixes.
    - Recorded this snapshot in `ResearchReport.md`; scoped to this host/vocab version.
+
+9. **Alignment refresh (2025-12-07)**
+   - Reran `update_alignment.py` after decoder tweaks and op-table-operation rerun; alignment artifacts regenerated with the same bucket/ID patterns (no new buckets observed).

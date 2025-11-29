@@ -4,8 +4,8 @@ Regenerate op_table_vocab_alignment.json using the harvested Operation Vocabular
 
 Inputs:
 - book/experiments/op-table-operation/out/summary.json
-- book/graph/concepts/validation/out/vocab/ops.json
-- book/graph/concepts/validation/out/vocab/filters.json
+- book/graph/mappings/vocab/ops.json
+- book/graph/mappings/vocab/filters.json
 
 Outputs:
 - book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json
@@ -18,8 +18,8 @@ from pathlib import Path
 
 
 SUMMARY_PATH = Path("book/experiments/op-table-operation/out/summary.json")
-OPS_VOCAB_PATH = Path("book/graph/concepts/validation/out/vocab/ops.json")
-FILTERS_VOCAB_PATH = Path("book/graph/concepts/validation/out/vocab/filters.json")
+OPS_VOCAB_PATH = Path("book/graph/mappings/vocab/ops.json")
+FILTERS_VOCAB_PATH = Path("book/graph/mappings/vocab/filters.json")
 OUT_PATH = Path("book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json")
 
 

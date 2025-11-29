@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 VOCAB_CACHE_OUT = ROOT / "book" / "experiments" / "vocab-from-cache" / "out"
-VALIDATION_VOCAB_OUT = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "vocab"
+VALIDATION_VOCAB_OUT = ROOT / "book" / "graph" / "mappings" / "vocab"
 
 
 def load_json(path: Path) -> dict:

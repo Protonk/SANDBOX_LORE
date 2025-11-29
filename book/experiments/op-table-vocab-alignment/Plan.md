@@ -29,7 +29,7 @@ Deliverables for this phase:
   - [x] Expected JSON shape for `ops.json` (name ↔ id ↔ notes).
   - [x] How to associate a compiled profile blob with a specific vocabulary version (OS / build).
 - [x] Record these expectations in `ResearchReport.md` as assumptions and requirements for future agents.
-  - Status: real vocab extraction still missing; placeholder artifacts exist under `validation/out/vocab/`.
+  - Status: real vocab extraction still missing; placeholder artifacts exist under `graph/mappings/vocab/`.
   - Once a decoder exists, vocabulary extraction should consume decoder outputs (op_table entries, node/tag structure) plus SBPL/profile metadata from static-format tasks, not raw blobs.
 
 Deliverables for this phase:

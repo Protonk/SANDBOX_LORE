@@ -1,0 +1,335 @@
+{
+  "/tmp/foo": {
+    "profiles": {
+      "probe:v0_file_require_all": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v1_file_require_any": [
+        {
+          "node_indices": [
+            16,
+            22,
+            30
+          ],
+          "field2_values": [
+            5,
+            6,
+            0
+          ],
+          "field2_names": [
+            "global-name",
+            "local-name",
+            "path"
+          ]
+        }
+      ],
+      "probe:v2_file_three_filters_any": [
+        {
+          "node_indices": [
+            16,
+            23
+          ],
+          "field2_values": [
+            4,
+            4
+          ],
+          "field2_names": [
+            "ipc-posix-name",
+            "ipc-posix-name"
+          ]
+        }
+      ],
+      "probe:v6_file_mach_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v7_file_network_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v8_all_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ]
+    }
+  },
+  "/etc/hosts": {
+    "profiles": {
+      "probe:v0_file_require_all": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v1_file_require_any": [
+        {
+          "node_indices": [
+            15
+          ],
+          "field2_values": [
+            6
+          ],
+          "field2_names": [
+            "local-name"
+          ]
+        }
+      ],
+      "probe:v2_file_three_filters_any": [
+        {
+          "node_indices": [
+            15
+          ],
+          "field2_values": [
+            5
+          ],
+          "field2_names": [
+            "global-name"
+          ]
+        }
+      ],
+      "probe:v6_file_mach_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v7_file_network_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "probe:v8_all_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ],
+      "sys:sample": [
+        {
+          "node_indices": [
+            15,
+            22,
+            30,
+            31
+          ],
+          "field2_values": [
+            1,
+            0,
+            3584,
+            7
+          ],
+          "field2_names": [
+            "mount-relative-path",
+            "path",
+            "local"
+          ]
+        }
+      ]
+    }
+  },
+  "/var/log": {
+    "profiles": {
+      "probe:v2_file_three_filters_any": [
+        {
+          "node_indices": [
+            16
+          ],
+          "field2_values": [
+            4
+          ],
+          "field2_names": [
+            "ipc-posix-name"
+          ]
+        }
+      ]
+    }
+  },
+  "com.apple.cfprefsd.agent": {
+    "profiles": {
+      "probe:v3_mach_global_local": [
+        {
+          "node_indices": [
+            16,
+            22,
+            30
+          ],
+          "field2_values": [
+            5,
+            6,
+            0
+          ],
+          "field2_names": [
+            "global-name",
+            "local-name",
+            "path"
+          ]
+        }
+      ],
+      "probe:v6_file_mach_combo": [
+        {
+          "node_indices": [
+            16,
+            23
+          ],
+          "field2_values": [
+            4,
+            4
+          ],
+          "field2_names": [
+            "ipc-posix-name",
+            "ipc-posix-name"
+          ]
+        }
+      ],
+      "probe:v8_all_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ]
+    }
+  },
+  "flow-divert": {
+    "profiles": {
+      "probe:v4_network_socket_require_all": [
+        {
+          "node_indices": [
+            17,
+            30,
+            31
+          ],
+          "field2_values": [
+            7,
+            2560,
+            2
+          ],
+          "field2_names": [
+            "local",
+            "xattr"
+          ]
+        }
+      ],
+      "probe:v7_file_network_combo": [
+        {
+          "node_indices": [
+            17,
+            30,
+            31
+          ],
+          "field2_values": [
+            7,
+            2560,
+            2
+          ],
+          "field2_names": [
+            "local",
+            "xattr"
+          ]
+        }
+      ],
+      "probe:v8_all_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ]
+    }
+  },
+  "IOUSBHostInterface": {
+    "profiles": {
+      "probe:v5_iokit_class_property": [
+        {
+          "node_indices": [
+            16,
+            22,
+            30
+          ],
+          "field2_values": [
+            5,
+            6,
+            0
+          ],
+          "field2_names": [
+            "global-name",
+            "local-name",
+            "path"
+          ]
+        }
+      ],
+      "probe:v8_all_combo": [
+        {
+          "node_indices": [],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ]
+    }
+  },
+  "idVendor": {
+    "profiles": {
+      "probe:v5_iokit_class_property": [
+        {
+          "node_indices": [
+            15
+          ],
+          "field2_values": [
+            6
+          ],
+          "field2_names": [
+            "local-name"
+          ]
+        }
+      ]
+    }
+  },
+  "app-sandbox.read": {
+    "profiles": {
+      "sys:airlock": [
+        {
+          "node_indices": [
+            9
+          ],
+          "field2_values": [],
+          "field2_names": []
+        }
+      ]
+    }
+  },
+  "preferences/logging": {
+    "profiles": {
+      "sys:bsd": [
+        {
+          "node_indices": [
+            12
+          ],
+          "field2_values": [
+            5
+          ],
+          "field2_names": [
+            "global-name"
+          ]
+        }
+      ]
+    }
+  }
+}

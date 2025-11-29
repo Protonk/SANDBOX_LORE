@@ -288,13 +288,13 @@ Despite the structural progress, several key questions are still open:
    - We do not yet have a principled explanation (per-profile or per-format-variant) of **why** these buckets shift, beyond “compiled profile structure changes”.
 
 4. **Connection to Operation Vocabulary Map**
-   - There is no `validation/out/vocab/ops.json` yet for this host.
+   - There is no `graph/mappings/vocab/ops.json` yet for this host.
    - As a result, we cannot:
      - label bucket 4/5/6 with concrete Operation IDs,
      - or verify our bucket observations against canonical Operation Vocabulary Maps.
 
 5. **Runtime cross-check**
-   - No semantic probes (`network-filters`, `mach-services`) have been run under these synthetic profiles to connect buckets to runtime behavior.
+   - No semantic probes (`network-filters`, `mach-services`) have been run under these synthetic profiles to connect buckets to runtime behavior. A minimal next step would be to run a tiny harness under a “mach bucket” profile vs a “network bucket” profile to confirm the expected allow/deny patterns.
 
 ---
 
@@ -317,7 +317,7 @@ The `Plan.md` file contains an up-to-date checklist; this section highlights the
      - extend this report if a new pattern emerges.
 
 3. **Integrate with vocabulary-mapping once available**
-   - Once `validation/out/vocab/ops.json` exists:
+   - Once `graph/mappings/vocab/ops.json` exists:
      - write a small script (either here or in `validation`) that:
        - reads `summary.json` and `op_table_signatures.json`,
        - maps SBPL operation names to numeric Operation IDs via the vocabulary file,
@@ -365,3 +365,8 @@ Within the project’s conceptual stack:
   - the concept docs can reference when explaining the relationship between Operation, Operation Pointer Table, and Operation Vocabulary Map.
 
 The key outcome is not a finished mapping from SBPL names to numeric IDs, but a disciplined, reproducible set of bucket-level observations and structured signatures that future vocabulary-mapping and runtime experiments can build on.***
+
+## Status summary (2025-12-09)
+
+- Bucket behavior and vocab alignment are stable on this host: unfiltered read/write/network live in buckets {3,4}; mach lives in {5,6}; bucket 6 appears only in mach+filtered-read mixes. Alignment artifacts and summaries are current.
+- Remaining work is optional: runtime probes or filter-level annotation once field2 decoding matures. Otherwise, for bucket↔operation ID mapping on this host, the experiment is effectively complete.

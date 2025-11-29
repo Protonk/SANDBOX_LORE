@@ -1,0 +1,293 @@
+{
+  "sys:airlock": {
+    "op_count": 167,
+    "node_count": 7,
+    "field2": [
+      {
+        "value": 166,
+        "count": 5,
+        "name": null
+      },
+      {
+        "value": 10752,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 165,
+        "count": 1,
+        "name": null
+      }
+    ]
+  },
+  "sys:bsd": {
+    "op_count": 28,
+    "node_count": 41,
+    "field2": [
+      {
+        "value": 27,
+        "count": 24,
+        "name": "preference-domain"
+      },
+      {
+        "value": 26,
+        "count": 5,
+        "name": "right-name"
+      },
+      {
+        "value": 18,
+        "count": 1,
+        "name": "iokit-connection"
+      },
+      {
+        "value": 17,
+        "count": 1,
+        "name": "iokit-property"
+      },
+      {
+        "value": 5,
+        "count": 1,
+        "name": "global-name"
+      },
+      {
+        "value": 16660,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 174,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 1,
+        "count": 1,
+        "name": "mount-relative-path"
+      },
+      {
+        "value": 109,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 11,
+        "count": 1,
+        "name": "socket-type"
+      },
+      {
+        "value": 170,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 15,
+        "count": 1,
+        "name": "ioctl-command"
+      },
+      {
+        "value": 115,
+        "count": 1,
+        "name": null
+      },
+      {
+        "value": 80,
+        "count": 1,
+        "name": "mac-policy-name"
+      }
+    ]
+  },
+  "sys:sample": {
+    "op_count": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 8,
+        "count": 19,
+        "name": "remote"
+      },
+      {
+        "value": 7,
+        "count": 9,
+        "name": "local"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      },
+      {
+        "value": 1,
+        "count": 1,
+        "name": "mount-relative-path"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      },
+      {
+        "value": 3584,
+        "count": 1,
+        "name": null
+      }
+    ]
+  },
+  "probe:v0_subpath.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 20,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      }
+    ]
+  },
+  "probe:v1_literal.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 20,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      }
+    ]
+  },
+  "probe:v2_global_name.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 21,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      }
+    ]
+  },
+  "probe:v3_local_name.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 21,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      }
+    ]
+  },
+  "probe:v4_vnode_type.sb": {
+    "op_count": 6,
+    "node_count": 32,
+    "field2": [
+      {
+        "value": 5,
+        "count": 21,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      }
+    ]
+  },
+  "probe:v5_socket_domain.sb": {
+    "op_count": 7,
+    "node_count": 31,
+    "field2": [
+      {
+        "value": 6,
+        "count": 18,
+        "name": "local-name"
+      },
+      {
+        "value": 5,
+        "count": 12,
+        "name": "global-name"
+      },
+      {
+        "value": 0,
+        "count": 1,
+        "name": "path"
+      }
+    ]
+  },
+  "probe:v6_iokit_registry_class.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 21,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      }
+    ]
+  },
+  "probe:v7_require_any_subpath_literal.sb": {
+    "op_count": 6,
+    "node_count": 30,
+    "field2": [
+      {
+        "value": 5,
+        "count": 20,
+        "name": "global-name"
+      },
+      {
+        "value": 4,
+        "count": 9,
+        "name": "ipc-posix-name"
+      },
+      {
+        "value": 3,
+        "count": 1,
+        "name": "file-mode"
+      }
+    ]
+  }
+}

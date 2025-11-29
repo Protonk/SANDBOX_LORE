@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Any
 
-from book.graph.concepts.validation import decoder
+import book.api.decoder as decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 
 

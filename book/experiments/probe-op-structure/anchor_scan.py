@@ -23,13 +23,15 @@ from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
 import sys
-sys.path.append("book/graph/concepts/validation")
-import decoder  # type: ignore
-import profile_ingestion as pi  # type: ignore
+ROOT = Path(__file__).resolve().parents[4]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+import book.api.decoder as decoder  # type: ignore
+from book.graph.concepts.validation import profile_ingestion as pi  # type: ignore
 
 
 def load_filter_names() -> Dict[int, str]:
-    filters = json.loads(Path("book/graph/concepts/validation/out/vocab/filters.json").read_text())
+    filters = json.loads(Path("book/graph/mappings/vocab/filters.json").read_text())
     return {e["id"]: e["name"] for e in filters.get("filters", [])}
 
 
@@ -86,11 +88,28 @@ def extract_strings(buf: bytes, min_len: int = 4) -> List[Tuple[int, str]]:
     return out
 
 
+def _strip_prefix(s: str) -> str:
+    """Drop leading non-path, non-alnum characters."""
+    while s and not s[0].isalnum() and s[0] not in ("/", "."):
+        s = s[1:]
+    return s
+
+
+def _matches_anchor(anchor: str, literal: str) -> bool:
+    """Heuristic match between anchor (often absolute) and prefixed literal."""
+    anchor_no_slash = anchor.lstrip("/")
+    if anchor in literal:
+        return True
+    stripped = _strip_prefix(literal)
+    return (anchor in stripped) or (anchor_no_slash and anchor_no_slash in stripped)
+
+
 def summarize(profile_path: Path, anchors: List[str], filter_names: Dict[int, str]) -> Dict[str, Any]:
     blob = profile_path.read_bytes()
     # Decode for high-level counts/strings
     dec = decoder.decode_profile_dict(blob)
     literal_strings = dec.get("literal_strings") or []
+    literal_strings_with_offsets = dec.get("literal_strings_with_offsets") or []
     nodes_decoded = dec.get("nodes") or []
 
     # Slice raw sections for byte-level scans
@@ -106,13 +125,26 @@ def summarize(profile_path: Path, anchors: List[str], filter_names: Dict[int, st
     for anchor in anchors:
         a_bytes = anchor.encode()
         offsets_lit = find_anchor_offsets(literal_pool, a_bytes)
-        node_idxs = nodes_touching_bytes(nodes_bytes, offsets_lit, literal_start, strides=[12, 16])
+        # Also match offsets from decoder literal_strings_with_offsets for substring anchors.
+        for off, s in literal_strings_with_offsets:
+            if _matches_anchor(anchor, s):
+                if off not in offsets_lit:
+                    offsets_lit.append(off)
+        byte_hits = nodes_touching_bytes(nodes_bytes, offsets_lit, literal_start, strides=[12, 16])
         # also try matching by string index in literal_strings list
         string_index = None
         for idx, (off, s) in enumerate(literal_strings):
             if anchor in s or s in anchor:
                 string_index = idx
                 break
+        # literal_refs-based hits from decoded nodes (preferred)
+        ref_hits: List[int] = []
+        for idx, node in enumerate(nodes_decoded):
+            for ref in node.get("literal_refs", []):
+                if _matches_anchor(anchor, ref):
+                    ref_hits.append(idx)
+                    break
+        node_idxs = sorted(set(ref_hits if ref_hits else byte_hits))
         field2_vals = []
         for idx in node_idxs:
             if idx < len(nodes_decoded):

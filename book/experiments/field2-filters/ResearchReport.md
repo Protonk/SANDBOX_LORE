@@ -7,7 +7,7 @@ Decode the meaning of `field2` values in decoded PolicyGraph nodes by aligning t
 ## Baseline and scope
 
 - Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled (same as other experiments).
-- Vocab artifacts: `book/graph/concepts/validation/out/vocab/filters.json` (93 entries, status: ok), `ops.json` (196 entries, status: ok).
+- Vocab artifacts: `book/graph/mappings/vocab/filters.json` (93 entries, status: ok), `ops.json` (196 entries, status: ok).
 - Canonical blobs for cross-check: `book/examples/extract_sbs/build/profiles/airlock.sb.bin`, `bsd.sb.bin`, `sample.sb.bin`.
 
 ## Plan (summary)
@@ -27,6 +27,11 @@ Decode the meaning of `field2` values in decoded PolicyGraph nodes by aligning t
   - `sample.sb.bin`: low IDs align with path/socket naming (`0=path`, `1=mount-relative-path`, `3=file-mode`, `7=local`, `8=remote`); a sentinel-like `3584` appears once.
   - `airlock.sb.bin`: mostly high values (166, 165, 10752) with no vocab hits yet; likely tied to profile-specific filters or padding.
 - First round of synthetic single-filter probes (`v0_subpath`, `v1_literal`, `v2_global_name`, `v3_local_name`, `v4_vnode_type`, `v5_socket_domain`, `v6_iokit_registry_class`, `v7_require_any_subpath_literal`) compiled via `libsandbox` and decoded successfully.
+- Added `out/field2_inventory.json` via `harvest_field2.py`, which now reports both system profiles and all single-filter probes:
+  - System profiles confirm that `field2` values line up with filter IDs/names from `filters.json` (e.g., `bsd` shows preference-domain/right-name/iokit-*; `sample` shows path/socket filters; `airlock` carries high, still-unknown IDs).
+  - Single-filter probes remain dominated by generic path/name scaffolding in the aggregate histogram: subpath/literal/vnode-type variants all show `field2` {5,4,3} (global-name/ipc-posix-name/file-mode); socket-domain shows {6,5,0} (local-name/global-name/path). Filter-specific IDs are not yet surfaced in these tiny profiles via histogram alone.
+
+Anchor-aware decoder integration from `probe-op-structure` is available: anchors now bind to nodes in simple probes, but the bound nodes still carry generic field2 IDs. Field2 mapping remains open pending richer tag decoding and anchor-strong probes.
 
 ## Expected outcomes
 

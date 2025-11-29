@@ -30,21 +30,47 @@
     "anchors": [
       {
         "anchor": "/tmp/foo",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          50
+        ],
+        "literal_offsets": [
+          50
+        ],
         "literal_string_index": null,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16,
+          22,
+          30
+        ],
+        "field2_values": [
+          5,
+          6,
+          0
+        ],
+        "field2_names": [
+          "global-name",
+          "local-name",
+          "path"
+        ]
       },
       {
         "anchor": "/etc/hosts",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          65
+        ],
+        "literal_offsets": [
+          65
+        ],
         "literal_string_index": null,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          15
+        ],
+        "field2_values": [
+          6
+        ],
+        "field2_names": [
+          "local-name"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -64,30 +90,63 @@
     "anchors": [
       {
         "anchor": "/tmp/foo",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          60
+        ],
+        "literal_offsets": [
+          60
+        ],
         "literal_string_index": null,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16,
+          23
+        ],
+        "field2_values": [
+          4,
+          4
+        ],
+        "field2_names": [
+          "ipc-posix-name",
+          "ipc-posix-name"
+        ]
       },
       {
         "anchor": "/var/log",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          75
+        ],
+        "literal_offsets": [
+          75
+        ],
         "literal_string_index": null,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16
+        ],
+        "field2_values": [
+          4
+        ],
+        "field2_names": [
+          "ipc-posix-name"
+        ]
       },
       {
         "anchor": "/etc/hosts",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          91
+        ],
+        "literal_offsets": [
+          91
+        ],
         "literal_string_index": null,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          15
+        ],
+        "field2_values": [
+          5
+        ],
+        "field2_names": [
+          "global-name"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -112,15 +171,29 @@
       {
         "anchor": "com.apple.cfprefsd.agent",
         "offsets": [
-          54
+          54,
+          53
         ],
         "literal_offsets": [
-          54
+          54,
+          53
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16,
+          22,
+          30
+        ],
+        "field2_values": [
+          5,
+          6,
+          0
+        ],
+        "field2_names": [
+          "global-name",
+          "local-name",
+          "path"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -137,15 +210,29 @@
       {
         "anchor": "flow-divert",
         "offsets": [
-          59
+          59,
+          51
         ],
         "literal_offsets": [
-          59
+          59,
+          51
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          17,
+          30,
+          31
+        ],
+        "field2_values": [
+          7,
+          2560,
+          2
+        ],
+        "field2_names": [
+          "local",
+          null,
+          "xattr"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -162,28 +249,50 @@
       {
         "anchor": "IOUSBHostInterface",
         "offsets": [
-          52
+          52,
+          51
         ],
         "literal_offsets": [
-          52
+          52,
+          51
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16,
+          22,
+          30
+        ],
+        "field2_values": [
+          5,
+          6,
+          0
+        ],
+        "field2_names": [
+          "global-name",
+          "local-name",
+          "path"
+        ]
       },
       {
         "anchor": "idVendor",
         "offsets": [
-          84
+          84,
+          83
         ],
         "literal_offsets": [
-          84
+          84,
+          83
         ],
         "literal_string_index": 1,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          15
+        ],
+        "field2_values": [
+          6
+        ],
+        "field2_names": [
+          "local-name"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -222,15 +331,26 @@
       {
         "anchor": "com.apple.cfprefsd.agent",
         "offsets": [
-          58
+          58,
+          57
         ],
         "literal_offsets": [
-          58
+          58,
+          57
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          16,
+          23
+        ],
+        "field2_values": [
+          4,
+          4
+        ],
+        "field2_names": [
+          "ipc-posix-name",
+          "ipc-posix-name"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -265,15 +385,29 @@
       {
         "anchor": "flow-divert",
         "offsets": [
-          59
+          59,
+          51
         ],
         "literal_offsets": [
-          59
+          59,
+          51
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          17,
+          30,
+          31
+        ],
+        "field2_values": [
+          7,
+          2560,
+          2
+        ],
+        "field2_names": [
+          "local",
+          null,
+          "xattr"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -289,8 +423,12 @@
     "anchors": [
       {
         "anchor": "/tmp/foo",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          467
+        ],
+        "literal_offsets": [
+          467
+        ],
         "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
@@ -298,8 +436,12 @@
       },
       {
         "anchor": "/etc/hosts",
-        "offsets": [],
-        "literal_offsets": [],
+        "offsets": [
+          482
+        ],
+        "literal_offsets": [
+          482
+        ],
         "literal_string_index": null,
         "node_indices": [],
         "field2_values": [],
@@ -308,10 +450,12 @@
       {
         "anchor": "IOUSBHostInterface",
         "offsets": [
-          81
+          81,
+          504
         ],
         "literal_offsets": [
-          81
+          81,
+          504
         ],
         "literal_string_index": 2,
         "node_indices": [],
@@ -321,10 +465,12 @@
       {
         "anchor": "com.apple.cfprefsd.agent",
         "offsets": [
-          113
+          113,
+          536
         ],
         "literal_offsets": [
-          113
+          113,
+          536
         ],
         "literal_string_index": 3,
         "node_indices": [],
@@ -334,10 +480,12 @@
       {
         "anchor": "flow-divert",
         "offsets": [
-          155
+          155,
+          568
         ],
         "literal_offsets": [
-          155
+          155,
+          568
         ],
         "literal_string_index": 4,
         "node_indices": [],
@@ -376,14 +524,20 @@
         "anchor": "app-sandbox.read",
         "offsets": [
           1439,
-          1471
+          1471,
+          1504,
+          1536
         ],
         "literal_offsets": [
           1439,
-          1471
+          1471,
+          1504,
+          1536
         ],
         "literal_string_index": 8,
-        "node_indices": [],
+        "node_indices": [
+          9
+        ],
         "field2_values": [],
         "field2_names": []
       }
@@ -439,16 +593,26 @@
         "anchor": "preferences/logging",
         "offsets": [
           158,
-          552
+          552,
+          156,
+          550
         ],
         "literal_offsets": [
           158,
-          552
+          552,
+          156,
+          550
         ],
         "literal_string_index": 7,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          12
+        ],
+        "field2_values": [
+          5
+        ],
+        "field2_names": [
+          "global-name"
+        ]
       }
     ],
     "literal_strings_sample": [
@@ -501,15 +665,32 @@
       {
         "anchor": "/etc/hosts",
         "offsets": [
-          46
+          46,
+          53
         ],
         "literal_offsets": [
-          46
+          46,
+          53
         ],
         "literal_string_index": 0,
-        "node_indices": [],
-        "field2_values": [],
-        "field2_names": []
+        "node_indices": [
+          15,
+          22,
+          30,
+          31
+        ],
+        "field2_values": [
+          1,
+          0,
+          3584,
+          7
+        ],
+        "field2_names": [
+          "mount-relative-path",
+          "path",
+          null,
+          "local"
+        ]
       }
     ],
     "literal_strings_sample": [

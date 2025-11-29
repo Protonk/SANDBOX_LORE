@@ -74,3 +74,7 @@
 ## 2025-12-04
 
 - Pulled a quick bucket→operation ID snapshot using the refreshed alignment: `file-read*` (21), `file-write*` (29), and `network-outbound` (112) show up in buckets {3,4}; `mach-lookup` (96) shows buckets {5,6}, with bucket 6 only in mach+filtered-read mixes. Recorded in the ResearchReport.
+
+## 2025-12-07
+
+- Reran `analyze.py` after decoder updates; summaries and alignment regenerated (no bucket shifts observed). Alignment refreshed via `op-table-vocab-alignment/update_alignment.py`.
