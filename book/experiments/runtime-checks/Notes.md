@@ -24,3 +24,9 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 
 - Added a harness shim in `run_probes.py` to emit runtime-ready profiles under `out/runtime_profiles/` with `process-exec` plus baseline system file-read allowances; the subpath profile also flips to `(allow default)` with explicit denies for `/private/tmp/bar` reads and `/tmp/foo` writes to avoid the earlier sandbox-exec abort.
 - Re-ran `run_probes.py`. Bucket-4 (`v1_read`) now executes: `/etc/hosts` and `/tmp/foo` reads succeed; `/etc/hosts` write is denied (exit 1). Bucket-5 (`v11_read_subpath`) now runs without crashing: `/tmp/foo` read succeeds; `/tmp/bar` read and `/tmp/foo` write both deny with exit 1.
+
+## 2026-01-XX
+
+- Added expected/actual/match annotations to `run_probes.py` so runtime results carry a simple verdict comparison to `out/expected_matrix.json`.
+- Re-ran `run_probes.py` on this host; `sandbox-exec` now fails to apply both bucket profiles (exit 71, `sandbox_apply: Operation not permitted`) despite the shims. All probes record `deny` due to apply failure; matches remain true only where expected=deny. System profiles still skipped (no SBPL path). Needs an alternative harness or SIP-relaxed environment to proceed.
+- Added a local `sandbox_runner` (C shim calling `sandbox_init` on SBPL text, then `execvp`) and teach `run_probes.py` to prefer it over `sandbox-exec`. On this host, `sandbox_init` also fails with EPERM (“Operation not permitted”), so probes still show `deny` from apply failure. Conclusion: SIP/entitlement gate blocks both sandbox-exec and sandbox_init here; need a different environment or privileges to get runtime traces.

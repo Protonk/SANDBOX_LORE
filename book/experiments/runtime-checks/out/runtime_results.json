@@ -6,34 +6,52 @@
     "probes": [
       {
         "name": "read_/etc/hosts",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
           "/bin/cat",
           "/etc/hosts"
         ],
-        "exit_code": 0,
-        "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       },
       {
         "name": "write_/etc/hosts",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
           "/bin/sh",
           "-c",
           "echo runtime-check >> '/etc/hosts'"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "/bin/sh: /etc/hosts: Operation not permitted\n"
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       },
       {
         "name": "read_/tmp/foo",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
           "/bin/cat",
           "/tmp/foo"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-checks foo\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       }
     ]
   },
@@ -44,34 +62,52 @@
     "probes": [
       {
         "name": "read_/tmp/foo",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
           "/bin/cat",
           "/tmp/foo"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-checks foo\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       },
       {
         "name": "read_/tmp/bar",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
           "/bin/cat",
           "/tmp/bar"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "cat: /tmp/bar: Operation not permitted\n"
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       },
       {
         "name": "write_/tmp/foo",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
         "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
           "/bin/sh",
           "-c",
           "echo runtime-check >> '/tmp/foo'"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "/bin/sh: /tmp/foo: Operation not permitted\n"
+        "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
       }
     ]
   },

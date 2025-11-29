@@ -12,3 +12,5 @@
 (allow file-read-metadata (literal "/tmp"))
 (allow file-read* (subpath "/tmp/foo"))
 (allow file-read* (subpath "/private/tmp/foo"))
+(allow default)
+(deny file-write* (literal "/etc/hosts"))

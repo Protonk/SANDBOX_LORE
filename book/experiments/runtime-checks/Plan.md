@@ -39,6 +39,7 @@ Deliverables: `out/expected_matrix.json` (profile × probe → expected verdict)
 **Upcoming**
 
 - Re-run or redesign runtime checks with a harness that can successfully apply the sandbox profiles under SIP, and capture meaningful allow/deny behavior.
+- Consider alternative runners (e.g., compiled blob apply via helper, dev mode without SIP) since `sandbox-exec` continues to return `sandbox_apply: Operation not permitted` on this host.
 
 Deliverables: `out/runtime_results.json` plus brief Notes.
 

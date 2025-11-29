@@ -6,7 +6,8 @@ Profiles exercised:
 - bucket4:v1_read (allow file-read*)
 - bucket5:v11_read_subpath (allow file-read* under /tmp/foo)
 
-Results are written to out/runtime_results.json with per-probe exit codes.
+Results are written to out/runtime_results.json with per-probe exit codes and
+whether they matched the expected allow/deny from out/expected_matrix.json.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from typing import Dict, Any, List
 ROOT = Path(__file__).resolve().parents[3]
 OUT = Path(__file__).resolve().parent / "out"
 RUNTIME_PROFILE_DIR = OUT / "runtime_profiles"
+RUNNER = Path(__file__).resolve().parent / "sandbox_runner"
 
 CAT = "/bin/cat"
 SH = "/bin/sh"
@@ -40,6 +42,11 @@ RUNTIME_SHIM_RULES = [
 ]
 
 KEY_SPECIFIC_RULES = {
+    # Make the bucket-4 profile runnable: allow default, but pin a deny for /etc/hosts writes.
+    "bucket4:v1_read": [
+        "(allow default)",
+        '(deny file-write* (literal "/etc/hosts"))',
+    ],
     # Allow default for the subpath profile, then pin explicit denies for bar reads and foo writes.
     "bucket5:v11_read_subpath": [
         "(allow default)",
@@ -75,15 +82,20 @@ def run_probe(profile: Path, probe: Dict[str, Any]) -> Dict[str, Any]:
     else:
         cmd = ["true"]
 
+    if RUNNER.exists():
+        full_cmd = [str(RUNNER), str(profile), "--"] + cmd
+    else:
+        full_cmd = ["sandbox-exec", "-f", str(profile), "--"] + cmd
+
     try:
         res = subprocess.run(
-            ["sandbox-exec", "-f", str(profile), "--"] + cmd,
+            full_cmd,
             capture_output=True,
             text=True,
             timeout=10,
         )
         return {
-            "command": cmd,
+            "command": full_cmd,
             "exit_code": res.returncode,
             "stdout": res.stdout,
             "stderr": res.stderr,
@@ -127,10 +139,17 @@ def main():
         probes = rec.get("probes") or []
         probe_results = []
         for probe in probes:
+            raw = run_probe(runtime_profile, probe)
+            # Simple allow/deny heuristic: exit_code==0 => allow
+            actual = "allow" if raw.get("exit_code") == 0 else "deny"
+            expected = probe.get("expected")
             probe_results.append(
                 {
                     "name": probe.get("name"),
-                    **run_probe(runtime_profile, probe),
+                    "expected": expected,
+                    "actual": actual,
+                    "match": expected == actual,
+                    **raw,
                 }
             )
         results[key] = {
