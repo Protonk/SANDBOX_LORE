@@ -6,7 +6,6 @@ This chapter explains what the macOS sandbox is for, why it matters, and what th
 * **1.2 Why the macOS sandbox feels opaque** — Describes why the sandbox is hard to see directly (hidden profiles, entitlements, containers) and how that shapes what users and developers experience.
 * **1.3 What this book assumes about you** — States the expected background (Unix, macOS, some security) and what you do not need to know in advance.
 * **1.4 How to read this book** — Suggests ways to navigate: following the TextEdit walkthrough, dipping into reference chapters, or using it as a lab manual.
-The chapter closes by setting expectations: we will treat the sandbox as both a formal system and a piece of fallible, evolving software.
 
 ---
 
@@ -18,7 +17,6 @@ This chapter explains how sandbox ideas in the book were treated as empirical cl
 * **2.2 Probes, experiments, and boundary objects** — Describes the basic experimental pattern: small programs or profiles that exercise a single idea and record concrete outcomes.
 * **2.3 What worked cleanly and what did not** — Classifies results into confirmed behaviours, refinements, dead ends, and areas where the system remains ambiguous.
 * **2.4 Evidence levels and how to read them** — Introduces simple markers for later chapters (empirically anchored, literature-based, model-only) and what confidence each should convey.
-The chapter ends by inviting the reader to treat later claims as hypotheses they can rerun, not as immutable facts.
 
 ---
 
@@ -30,7 +28,6 @@ This chapter uses the built-in TextEdit.app as a concrete case study of how a re
 * **3.2 Profiles, containers, and entitlements in practice** — Walks through the main components that constrain TextEdit: its app sandbox profile, its container directories, and its entitlements.
 * **3.3 Tracing real operations through the sandbox** — Follows concrete actions (opening a file, auto-saving, accessing fonts) through sandbox decisions to connect behaviour with rules.
 * **3.4 What TextEdit shows us about the broader system** — Extracts general lessons from the example: typical patterns, surprising limitations, and where system-wide policy leaks through.
-The chapter closes by summarizing TextEdit as a template for reading other apps’ sandboxes and for grounding the more abstract chapters that follow.
 
 ---
 
@@ -42,7 +39,6 @@ This chapter describes how sandbox policy flows from source definitions into the
 * **4.2 From profile text to compiled policy** — Outlines the pipeline that turns human-readable policy into internal data structures suitable for fast decision-making.
 * **4.3 How profiles are installed, stacked, and applied** — Explains how different profiles (platform, app, service) combine and how they get attached to specific processes.
 * **4.4 How a single sandbox decision is made** — Follows a typical system call through the evaluator, showing how operations, filters, and actions produce a final result.
-The chapter ends by presenting this lifecycle as the backbone that later chapters will keep returning to, regardless of which part of the sandbox they examine.
 
 ---
 
@@ -54,7 +50,6 @@ This chapter introduces the working language used to describe and author sandbox
 * **5.2 Filters, arguments, and conditions** — Explains how operations are refined by predicates on things like paths, network endpoints, and Mach resources.
 * **5.3 Metafilters and policy structure** — Describes constructs that combine conditions (any/all/not) and how they shape the logical structure of rules.
 * **5.4 Stacks, containers, and extensions as policy context** — Introduces the idea that profiles run in layers and are influenced by containers and ad hoc sandbox extensions.
-The chapter concludes by positioning this vocabulary and DSL as the shared language for the rest of the book, and as the minimum needed to read and reason about real policies.
 
 ---
 
@@ -66,7 +61,6 @@ This chapter introduces a tiny, purpose-built app and uses it to show how the sa
 * **6.2 The app’s behaviours and what they exercise** — Describes the app’s concrete actions (filesystem, network, IPC, TCC-adjacent) and connects each one to the operations and filters introduced in earlier chapters.
 * **6.3 One app, many sandboxes** — Walks through running the app as unsandboxed, as a minimally sandboxed App Sandbox app, with additional entitlements, and under custom sandbox(7) profiles, showing how each incarnation changes what it can do.
 * **6.4 Reading profiles, labels, and capability catalogs from the example** — Uses the app’s profiles and traces to illustrate compiled policy graphs, profile layers, sandbox extensions, and how they roll up into capability catalog entries.
-The chapter closes by positioning this small app as a standing testbed that other chapters can reuse when they dig deeper into binary formats, system profiles, and ecosystem-wide capability mapping.
 
 ---
 
@@ -78,7 +72,6 @@ This chapter opens the compiled side of Seatbelt: how SBPL turns into binary pro
 * **7.2 Headers, sections, and vocabulary maps** — Describes the structure of binary profiles: headers, operation pointer tables, node arrays, literal/regex tables, and how operation/filter vocabulary maps tie them back to human-readable names.
 * **7.3 PolicyGraphs: nodes, edges, and decision paths** — Explains the node-level representation of filters, metafilters, and decisions; shows how per-operation entrypoints and control flow correspond to SBPL structure and observable allow/deny results.
 * **7.4 Tools and patterns for decoding profiles** — Sketches practical approaches for inspecting and validating profiles (decoders, invariants, sanity checks) and ties them to the capability catalog and earlier example apps.
-  The chapter closes by treating the binary format and PolicyGraphs as the “implementation ground truth” that underlies all higher-level descriptions of sandbox behaviour.
 
 ---
 
@@ -90,7 +83,6 @@ This chapter steps back from individual profiles and apps to look at how Seatbel
 * **8.2 The modern pipeline: signing, containers, and consent** — Reconstructs the sign→secinit→container→Seatbelt→TCC→SIP path for typical processes and shows where sandbox policy sits among those layers.
 * **8.3 Failure modes, bypasses, and design tensions** — Uses historical bugs and structural gaps to illustrate how partial sandbox deployment, over-broad entitlements, or misconfigured profiles can create security weaknesses.
 * **8.4 Capability catalogs as a way to reason about risk** — Shows how capability catalogs can be used to compare apps and profiles, identify surprising powers, and support audits or hardening work.
-  The chapter ends by framing Seatbelt as one moving part in a larger macOS security ecosystem, and by suggesting how readers can use the book’s tools and concepts to evaluate real systems they care about.
 
 ---
 
@@ -98,11 +90,10 @@ This chapter steps back from individual profiles and apps to look at how Seatbel
 
 This concluding chapter gathers the threads of the book into a bundle of what we can now say about the macOS sandbox, and it walks the reader through the core references that underlie those threads.
 
-* **C.1 What the book has actually pinned down** — Recaps, the pieces that now hang together: SBPL and operations, compiled profiles and policy graphs, containers and extensions, profile layers and capability catalogs, and where they fit into the wider sign→secinit→Seatbelt→TCC→SIP pipeline.
+* **C.1 What the book has actually pinned down** — Recaps the pieces that now hang together: SBPL and operations, compiled profiles and policy graphs, containers and extensions, profile layers and capability catalogs, and where they fit into the wider sign→secinit→Seatbelt→TCC→SIP pipeline.
 * **C.2 The architectural canon: how policy is wired in** — Tours the references that focus on architecture and implementation details, showing how each one illuminates a different part of the policy lifecycle and how they map onto the book’s chapters on orientation, vocabulary, and binary profiles.
-* **C.3 The operational and offensive canon: how it behaves under pressure** — Walks through references that treat the sandbox as something to be poked, bypassed, or operationalised, relating their case studies and techniques to the methods and experiments developed earlier in the book.
-* **C.4 The ecosystem and evolution canon: how the sandbox sits in the real world** — Uses the more survey- and measurement-oriented references to frame the mixed deployment of Seatbelt across macOS, the role of containers and adjacent layers, and the ways the system has shifted over time.
-* **C.5 Reading the canon with new eyes** — Offers concrete suggestions for revisiting each reference using the book’s concepts and tools: what to trace, what to try to re-derive, and how to turn their examples into new probes, profiles, and capability catalog entries of your own.
+* **C.3 How the sandbox behaves under pressure** — Walks through examples and experiments that treat the sandbox as something to be poked, bypassed, or operationalised.
+* **C.4 Limits to the view of the real world** — Offers serious caveats about the limits of the book., specific to the canon, methods, and construction.
 
 ---
 
@@ -128,8 +119,8 @@ This addendum collects the concrete scaffolding behind the book’s examples: wh
   * the artifact’s short name,
   * its role (what concept or behaviour it demonstrates),
   * and its rough location in the accompanying repository.
-* A.1.2 Boundary object summary
-  * A compact table of the main “boundary objects” used in the book (probes, profiles, catalogs), with columns for: concept focus (e.g., PolicyGraph, profile layers, containers), expected outcome, and cross-references to figures or examples in the text.
+* A.1.2 Artifact summary
+  * A compact table of the main machine-readable artifacts used in the book (probes, profiles, catalogs), with columns for: concept focus (e.g., PolicyGraph, profile layers, containers), expected outcome, and cross-references to figures or examples in the text.
 
 2. **A.2 Capability Catalog Schema and Examples**
 
@@ -140,12 +131,14 @@ This addendum collects the concrete scaffolding behind the book’s examples: wh
 * A.2.3 Worked entries
   * One or two fully spelled-out catalog entries (e.g., the example app in two sandbox incarnations) that are more detailed than the abbreviated forms shown in the chapters.
   * Brief annotations showing how to read each field and how it connects back to operations, filters, PolicyGraphs, and containers.
+* A.2.4 Catalog content
+  * Full content of the capability catalog.
 
 3. **A.3 Reference Tables and Glosses**
 
 * A.3.1 Operations and filters used in the book
-  * A small table of the operations and filters that recur most often in examples, with very short descriptions and pointers to where they first appear in the text.
+  * Table of the operations and filters that recur most often in examples, with very short descriptions and pointers to the text.
 * A.3.2 Profile-layer roles and examples
-  * A table that links profile-layer roles (platform, app, helper, auxiliary) to representative examples from the chapters and to their typical place in the policy stack.
-* A.3.3 Compact glossary for recurring terms
-  * A brief glossary for terms that the book assumes once introduced (e.g., sandbox extension, Compiled Profile Source, Policy Stack Evaluation Order, capability catalog), giving the reader a quick lookup without re-entering earlier chapters.
+  * A table linking profile-layer roles (platform, app, helper, auxiliary) to representative examples from the chapters and to their typical place in the policy stack.
+* A.3.3 Concept glossary for recurring terms
+  * Complete glossary of validated concepts.
