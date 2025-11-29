@@ -58,3 +58,14 @@ For each example, clusters are listed as **Primary** (P) and **Secondary** (S).
 
 - `sbsnarf/` – Compiles arbitrary SBPL files to `.sb.bin` via `sandbox_compile_file` (no apply).  
   Clusters: **P:** Static-Format (compiled blob production across formats); **S:** Runtime Lifecycle and Extension (Compiled Profile Source for test/harness profiles).
+
+---
+
+## Inventory Summary (routing)
+
+- Metadata: `book/graph/concepts/validation/out/metadata.json` (macOS 14.4.1 / 23E224, SIP enabled, format_variant=modern-heuristic).
+- Static-format evidence: `book/graph/concepts/validation/out/static/sample.sb.json` (sample.sb.bin) and `book/graph/concepts/validation/out/static/system_profiles.json` (airlock.sb.bin, bsd.sb.bin) via `profile_ingestion.py`.
+- Vocabulary: Sonoma tables mirrored under `book/graph/concepts/validation/out/vocab/` (`ops.json`, `filters.json`, `operation_names.json`, `filter_names.json`) copied from `book/graph/mappings/vocab/`.
+- Index: `book/graph/concepts/validation/out/index.json` lists current artifacts by cluster.
+- Semantic/lifecycle probes: sandbox-exec-based runs are deferred; existing ndjson/md logs are preliminary and not routed here yet.
+- Concept bindings: `book/graph/concepts/concept_text_map.json` points each concept to substrate regions; `concepts.json` cluster tags align with the four validation clusters.

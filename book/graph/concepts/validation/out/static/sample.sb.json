@@ -1,13 +1,13 @@
 {
   "source": "sample.sb.bin",
   "length": 583,
-  "format_variant": "unknown-modern",
-  "operation_count": null,
+  "format_variant": "modern-heuristic",
+  "operation_count": 9,
   "node_count": null,
   "regex_count": null,
   "section_lengths": {
-    "op_table": 0,
-    "nodes": 0,
-    "regex_literals": 583
+    "op_table": 18,
+    "nodes": 395,
+    "regex_literals": 154
   }
 }

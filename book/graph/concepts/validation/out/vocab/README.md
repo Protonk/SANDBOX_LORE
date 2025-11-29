@@ -1,2 +1,2 @@
-Vocabulary artifacts moved to `book/graph/mappings/vocab/` to make them part of the shared graph mappings.
-Keep this stub so legacy paths fail loudly rather than silently relying on stale data.
+Vocabulary artifacts are mirrored here from `book/graph/mappings/vocab/` for validation runs.
+`ops.json`, `filters.json`, `operation_names.json`, and `filter_names.json` are copied from the Sonoma dyld-cache extraction on this host.

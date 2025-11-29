@@ -1,0 +1,47 @@
+{
+  "metadata": "book/graph/concepts/validation/out/metadata.json",
+  "static-format": [
+    {
+      "path": "book/graph/concepts/validation/out/static/sample.sb.json",
+      "source": "book/examples/sb/build/sample.sb.bin",
+      "status": "ok",
+      "notes": "Ingested with profile_ingestion.py (modern-heuristic)."
+    },
+    {
+      "path": "book/graph/concepts/validation/out/static/system_profiles.json",
+      "source": "book/examples/extract_sbs/build/profiles/{airlock,bsd}.sb.bin",
+      "status": "ok",
+      "notes": "Ingested with profile_ingestion.py (modern-heuristic)."
+    }
+  ],
+  "vocabulary-mapping": [
+    {
+      "path": "book/graph/concepts/validation/out/vocab/ops.json",
+      "provenance": "Sonoma dyld cache (Sandbox framework/libsandbox)",
+      "status": "ok"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/vocab/filters.json",
+      "provenance": "Sonoma dyld cache (Sandbox framework/libsandbox)",
+      "status": "ok"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/vocab/operation_names.json",
+      "provenance": "Sonoma dyld cache (Sandbox framework/libsandbox)",
+      "status": "ok"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/vocab/filter_names.json",
+      "provenance": "Sonoma dyld cache (Sandbox framework/libsandbox)",
+      "status": "ok"
+    }
+  ],
+  "semantic-graph": {
+    "status": "deferred",
+    "notes": "sandbox-exec-based probes pending harness fixes; existing ndjson logs are preliminary."
+  },
+  "lifecycle-extension": {
+    "status": "deferred",
+    "notes": "runtime probes (extensions, entitlements, containers) deferred; existing notes are placeholders."
+  }
+}

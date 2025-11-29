@@ -2,6 +2,8 @@
 
 This directory holds the code/metadata for validating the concept clusters against the `book/examples/` labs. The goal is to keep all harness code here and let the examples remain focused on their domain probes.
 
+Current status: sandbox-exec-based semantic and lifecycle runs are deferred while the harness is being repaired; static ingestion and vocab mapping are current.
+
 ## Files
 
 - `tasks.py` – declarative mapping of validation tasks to examples, inputs, and expected artifacts. Used as the source of truth for which examples exercise which clusters.

@@ -9,6 +9,6 @@
   },
   "sip_status": "enabled",
   "tcc_state": "not_collected",
-  "profile_format_variant": "unknown",
-  "notes": "Baseline metadata for validation runs; update fields as artifacts are collected."
+  "profile_format_variant": "modern-heuristic",
+  "notes": "Baseline metadata for validation runs; static ingestion run from extracted libsandbox blobs on this host. Semantic/lifecycle runs via sandbox-exec deferred pending harness fixes."
 }

@@ -2,27 +2,27 @@
   {
     "source": "airlock.sb.bin",
     "length": 4662,
-    "format_variant": "unknown-modern",
-    "operation_count": null,
+    "format_variant": "modern-heuristic",
+    "operation_count": 167,
     "node_count": null,
     "regex_count": null,
     "section_lengths": {
-      "op_table": 0,
-      "nodes": 0,
-      "regex_literals": 4662
+      "op_table": 334,
+      "nodes": 167,
+      "regex_literals": 4145
     }
   },
   {
     "source": "bsd.sb.bin",
     "length": 2140,
-    "format_variant": "unknown-modern",
-    "operation_count": null,
+    "format_variant": "modern-heuristic",
+    "operation_count": 28,
     "node_count": null,
     "regex_count": null,
     "section_lengths": {
-      "op_table": 0,
-      "nodes": 0,
-      "regex_literals": 2140
+      "op_table": 56,
+      "nodes": 498,
+      "regex_literals": 1570
     }
   }
 ]
