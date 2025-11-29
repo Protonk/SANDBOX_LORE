@@ -1,6 +1,6 @@
 # Examples and Concept Clusters
 
-This file maps each `book/examples/` directory to the concept-validation clusters from `CONCEPT_INVENTORY.md`:
+This file maps each `book/examples/` directory to the concept-validation clusters from `CONCEPT_INVENTORY.md`, and summarizes the validation artifacts that currently exist for those clusters.
 
 - **Static-Format** – compiled profile structure, headers, operation tables, regex/literal tables, format variants.
 - **Semantic Graph and Evaluation** – operations, filters, metafilters, decisions, policy graph behavior.
@@ -62,6 +62,8 @@ For each example, clusters are listed as **Primary** (P) and **Secondary** (S).
 ---
 
 ## Inventory Summary (routing)
+
+This section is the Stage 5/6 “evidence index” at the examples/cluster level: it points from the cluster map above to the artifacts under `book/graph/concepts/validation/out/` that currently witness those clusters.
 
 - Metadata: `book/graph/concepts/validation/out/metadata.json` (macOS 14.4.1 / 23E224, SIP enabled, format_variant=modern-heuristic).
 - Static-format evidence: `book/graph/concepts/validation/out/static/sample.sb.json` (sample.sb.bin) and `book/graph/concepts/validation/out/static/system_profiles.json` (airlock.sb.bin, bsd.sb.bin) via `profile_ingestion.py`.
