@@ -1,9 +1,11 @@
 Stable graph-level mapping artifacts live here (versioned by host/build when applicable).
 
-Current contents:
-- `vocab/` – Operation/Filter Vocabulary Maps and harvested name lists.
-- `op_table/` – Op-table bucket maps, signatures, and vocab alignment from the op-table experiments.
-- `anchors/` – Anchor-derived maps (e.g., anchor ↔ field2) from `probe-op-structure`.
-- `tag_layouts/` – Literal/regex tag layout map (to be filled by `tag-layout-decode`).
-- `system_profiles/` – Canonical system-profile digests (to be filled by `system-profile-digest`).
-- `runtime/` – Runtime probe logs/allow-deny traces (to be filled by `runtime-checks`).
+These files are the “shared IR” that tie together experiments, the decoder, and the textbook. They describe how **Operations**, **Filters**, **PolicyGraph** nodes, and concrete system profiles line up on this host, so other tools do not need to rediscover the same facts.
+
+Subdirectories:
+- `vocab/` – Operation / Filter Vocabulary Maps harvested from `libsandbox` for this host. This is the canonical **Operation Vocabulary Map** and **Filter Vocabulary Map** the rest of the project uses when decoding profiles or building capability catalogs.
+- `op_table/` – Compiled-profile **Operation Pointer Table** view: bucket maps, structural signatures, and vocab alignment from the op-table experiments. These artifacts explain how op-table indices relate to SBPL operations at the structural level.
+- `anchors/` – Anchor-derived mappings from `probe-op-structure` tying human-meaningful strings (paths, mach names, iokit classes) to `field2` values and Filters. This folder connects literal anchors in SBPL to Filter semantics in the PolicyGraph.
+- `tag_layouts/` – Tag-level PolicyGraph layouts describing how node tags map to record sizes, edge fields, and payload fields (literal/regex operands). This is the binary counterpart to “filter/metafilter node” structure in Concepts.
+- `system_profiles/` – Canonical decoded digests for selected system profiles on this host (e.g., `airlock`, `bsd`, `sample`), including op-table buckets, tag mixes, and literal samples. These ground the abstract concepts in real PolicyGraphs.
+- `runtime/` – Runtime probe expectations and (when possible) traces from running profiles under Seatbelt. This connects decoder-level predictions to observed allow/deny decisions in the live sandbox.

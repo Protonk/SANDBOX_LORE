@@ -33,3 +33,5 @@ Deliverables: `out/runtime_results.json` plus brief Notes.
 - [ ] Update `ResearchReport.md` with findings, mismatches, and next steps.
 
 Stop condition: runtime traces collected for bucket-4/bucket-5 and system profiles, with a minimal guardrail and documented alignment (or gaps) with decoder expectations.
+
+Status note: initial `sandbox-exec` attempt failed under SIP (`sandbox_apply: Operation not permitted`). Needs alternative harness or privileges.

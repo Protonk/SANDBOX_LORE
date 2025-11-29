@@ -30,3 +30,9 @@ def test_tag_layouts_present():
     sample = tags[0]
     for field in ["tag", "record_size_bytes", "edge_fields", "payload_fields"]:
         assert field in sample, f"tag layout missing {field}"
+
+
+def test_field2_inventory_present():
+    inv_path = Path("book/experiments/field2-filters/out/field2_inventory.json")
+    inv = load_json(inv_path)
+    assert "sys:bsd" in inv and "sys:sample" in inv, "expected system profiles in field2 inventory"

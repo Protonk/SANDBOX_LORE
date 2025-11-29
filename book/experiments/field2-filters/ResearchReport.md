@@ -61,6 +61,12 @@ Next steps (conceptual, without changing code yet):
 
 - Use richer profiles (including system profiles with higher `op_count` and more diverse filters) and more selective graph walks to target nodes whose surrounding context clearly indicates a specific filter (e.g., path literals for `subpath`/`literal`, mach names for `global-name`/`local-name`).
 - Treat the small synthetic profiles as structural sanity checks (confirming that low `field2` IDs like 0, 1, 3, 4, 5, 6 match known path/name filters), not as the sole evidence for a complete `field2` ↔ filter-ID mapping.
+
+## Updates (2025-12-12)
+
+- Regenerated `out/field2_inventory.json` after publishing shared tag layouts and anchor/filter mappings. Anchor entries now carry mapped filter IDs where available (e.g., `preferences/logging` → global-name, `/etc/hosts` shows path/mount-relative-path alongside sentinel 3584).
+- System profiles unchanged in structure; high-value unknowns in `airlock` persist. Synthetic probes remain dominated by generic path/name filters (global-name, ipc-posix-name, file-mode, local-name).
+- Next steps: leverage anchor-filter map to reinterpret anchor-bearing nodes and design richer probes/ops to surface non-generic filters; consider cross-op comparisons using updated tag layouts.
 ## Open questions
 
 - Are any `field2` values context-dependent (e.g., change with meta-filters or op class)?

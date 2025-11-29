@@ -1,11 +1,17 @@
 {
+  "metadata": {
+    "host": {
+      "product": "macOS",
+      "version": "14.4.1",
+      "build": "23E224",
+      "machine": "arm64"
+    },
+    "generated": "manual-2025-12-11",
+    "notes": "First-pass anchor → filter map using probe-op-structure anchor hits and filter vocab. Ambiguous anchors are conservatively pinned when used as path literals."
+  },
   "/tmp/foo": {
-    "candidates": [
-      "global-name",
-      "ipc-posix-name",
-      "local-name",
-      "path"
-    ],
+    "filter_name": "path",
+    "filter_id": 0,
     "field2_values": [
       0,
       4,
@@ -16,16 +22,12 @@
       "probe:v1_file_require_any",
       "probe:v2_file_three_filters_any"
     ],
-    "status": "ambiguous"
+    "status": "mapped",
+    "notes": "Conservatively pinned to path for file-read probes despite mixed candidates."
   },
   "/etc/hosts": {
-    "candidates": [
-      "global-name",
-      "local",
-      "local-name",
-      "mount-relative-path",
-      "path"
-    ],
+    "filter_name": "path",
+    "filter_id": 0,
     "field2_values": [
       0,
       1,
@@ -39,7 +41,8 @@
       "probe:v2_file_three_filters_any",
       "sys:sample"
     ],
-    "status": "ambiguous"
+    "status": "mapped",
+    "notes": "Pinned to path for host path probes; other candidates remain possible."
   },
   "/var/log": {
     "filter_name": "ipc-posix-name",

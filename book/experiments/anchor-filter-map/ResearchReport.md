@@ -25,7 +25,7 @@ Bind anchor labels emitted by `probe-op-structure` to concrete Filter IDs, using
 
 - Experiment scaffolded (this report, Plan, Notes).
 - Baseline candidate extraction done: `out/anchor_filter_candidates.json` holds anchor → {field2_names, field2_values, sources}.
-- First pass map published at `book/graph/mappings/anchors/anchor_filter_map.json`: single-name anchors mapped to filter IDs (`/var/log` → ipc-posix-name=4, `idVendor` → local-name=6, `preferences/logging` → global-name=5); multi-name anchors remain `status: ambiguous` with candidate filters listed. Further disambiguation remains. Guardrail added (`tests/test_mappings_guardrail.py`) to ensure map presence and mapped entries.
+- First pass map published at `book/graph/mappings/anchors/anchor_filter_map.json` (with host metadata): `/tmp/foo` and `/etc/hosts` pinned to `path` (id 0) for file probes; `/var/log` → ipc-posix-name=4; `idVendor` → local-name=6; `preferences/logging` → global-name=5; other anchors remain `status: ambiguous` with candidates noted. Guardrail added (`tests/test_mappings_guardrail.py`) to ensure map presence and mapped entries.
 
 ## Expected outcomes
 

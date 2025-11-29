@@ -1,0 +1,88 @@
+{
+  "bucket4:v1_read": {
+    "status": "completed",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/v1_read.sb",
+    "probes": [
+      {
+        "name": "read_/etc/hosts",
+        "command": [
+          "cat",
+          "/etc/hosts"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      {
+        "name": "write_/etc/hosts",
+        "command": [
+          "sh",
+          "-c",
+          "echo runtime-check >> '/etc/hosts'"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      {
+        "name": "read_/tmp/foo",
+        "command": [
+          "cat",
+          "/tmp/foo"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      }
+    ]
+  },
+  "bucket5:v11_read_subpath": {
+    "status": "completed",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+    "probes": [
+      {
+        "name": "read_/tmp/foo",
+        "command": [
+          "cat",
+          "/tmp/foo"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      {
+        "name": "read_/tmp/bar",
+        "command": [
+          "cat",
+          "/tmp/bar"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      {
+        "name": "write_/tmp/foo",
+        "command": [
+          "sh",
+          "-c",
+          "echo runtime-check >> '/tmp/foo'"
+        ],
+        "exit_code": 71,
+        "stdout": "",
+        "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+      }
+    ]
+  },
+  "sys:bsd": {
+    "status": "skipped",
+    "reason": "no profile path"
+  },
+  "sys:airlock": {
+    "status": "skipped",
+    "reason": "no profile path"
+  },
+  "sys:sample": {
+    "status": "skipped",
+    "reason": "no profile path"
+  }
+}

@@ -28,7 +28,7 @@ Deliverables: additional probe blobs (if created) and refreshed candidates.
 
 ## 4) Synthesis and guardrails
 
-- [ ] Finalize `book/graph/mappings/anchors/anchor_filter_map.json` with provenance notes.
+- [x] Finalize `book/graph/mappings/anchors/anchor_filter_map.json` with provenance notes.
 - [x] Add a small guardrail test/script that checks a few high-confidence anchor → filter mappings against reference blobs.
 - [ ] Update `ResearchReport.md` with decisions, evidence, and open questions.
 
