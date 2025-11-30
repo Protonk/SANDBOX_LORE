@@ -20,6 +20,7 @@ Using this layer we build an example-driven synthetic guide for human and machin
 
 High-level map of the root and `book/`:
 
+- `dumps/` – reverse-engineering artifacts for the current macOS build; `Sandbox-private/` is git-ignored host data. See `dumps/AGENTS.md` before touching anything here.
 - `book/` – The Cathedral of Shit
   - `AGENTS.md` – navigation map for the `book/` tree.
   - `Outline.md` – high-level textbook outline.
