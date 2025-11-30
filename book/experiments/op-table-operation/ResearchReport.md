@@ -333,6 +333,7 @@ The `Plan.md` file contains an up-to-date checklist; this section highlights the
      - exercise operations like `mach-lookup` and `network-outbound`,
      - log which SBPL operations and kernel operations appear in traces.
      - The new `book/api/SBPL-wrapper/wrapper` (SBPL and blob) plus the runtime-checks harness can drive these probes without `sandbox-exec`.
+     - When probing file-read/write behavior, create fixtures in `/tmp` first to avoid “No such file or directory” denials that mask policy decisions.
    - Use these logs to validate that:
      - “mach bucket” profiles really gate mach behavior as expected,
      - read/write/network behavior is consistent between bucket 4 and 5 where allowed by SBPL.

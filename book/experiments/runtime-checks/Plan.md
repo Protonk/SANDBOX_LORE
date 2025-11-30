@@ -41,6 +41,7 @@ Deliverables: `out/expected_matrix.json` (profile × probe → expected verdict)
 
 - Re-run or redesign runtime checks with a harness that can successfully apply system profiles on this host (current result: `sandbox_apply` → EPERM for airlock; bsd works via SBPL/compile).
 - Consider alternative runners or hosts if the local SIP/seatbelt policy refuses platform profiles; treat airlock as expected-fail locally.
+ - Add an apply-only probe for `bsd` blob/SBPL to remove execvp noise when measuring apply success.
 
 **Updates**
 

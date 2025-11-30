@@ -45,6 +45,7 @@ Deliverables:
 **Upcoming (stretch)**
 
 - Optionally run existing semantic probes via `book/api/SBPL-wrapper/wrapper` (SBPL or blob) and annotate runtime traces with op-table slots and structural signatures, writing any such results to `out/runtime_usage.json`.
+  - If running spot checks, ensure probe targets exist (e.g., create `/tmp/op_table_probe.txt`) so read/write paths exercise the allow/deny rules meaningfully.
 
 ---
 

@@ -58,6 +58,10 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 - `wrapper --blob` apply results: `airlock` still `sandbox_apply: Operation not permitted`; `bsd` failed with `execvp` on `/bin/true` in this run (needs a simpler apply-only check), but sandbox_apply via ctypes returned rc=0 earlier.
 - `sandbox_init` on SBPL text: `bsd` applies cleanly; `airlock` fails with `Operation not permitted` on this host. Conclusion: platform gating persists even when recompiling `airlock` SBPL as a user blob; use SBPL/compiled bsd as the only system profile for runtime here and treat airlock as expected-fail.
 
+## 2026-01-XX (status update)
+
+- Marked `sys:airlock` as expected-fail locally; SBPL/compiled `bsd` remains usable. Need an apply-only probe for bsd to avoid execvp noise in blob mode.
+
 ## 2026-01-XX (system profiles via SBPL)
 
 - Added `sys:airlock` and `sys:bsd` to runtime matrix using SBPL imports from `/System/Library/Sandbox/Profiles/*.sb`.

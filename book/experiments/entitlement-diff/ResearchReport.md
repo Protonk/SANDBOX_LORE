@@ -15,3 +15,4 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
 - Sample program added (`entitlement_sample.c`) and built as `entitlement_sample` (ad-hoc signed with `com.apple.security.network.server`) and `entitlement_sample_unsigned` (signed with empty entitlements).
 - Entitlements extracted to `out/entitlement_sample.entitlements.plist` and `..._unsigned.entitlements.plist` (network.server present vs empty).
 - Next steps: derive or synthesize compiled sandbox profiles that reflect these entitlements (e.g., via app sandbox template) and run probes to see behavioral deltas; use the SBPL/Blob wrapper once profiles exist to avoid the earlier `sandbox-exec` roadblock. Current blocker: generating per-entitlement profiles.
+- Updated harness plan: compile App Sandbox SBPL per entitlement variant and apply via wrapper for runtime probes (network/mach). SBPL path should avoid sandbox-exec issues; need to produce the per-entitlement SBPL first.
