@@ -198,6 +198,13 @@ General constraints:
 
 - A filter vocabulary catalog (filter ID ↔ name, argument kind/schema hints, and any constraints implied by call patterns). Persist alongside the operation vocabulary and keep it keyed by OS/build.
 
+## New experiments
+- Node/tag layout confirmation: validate tag layouts inferred from `.sb.bin` (literal/regex-bearing nodes) against kernel node structs, feeding `tag-layout-decode` and `node-layout`.
+
+- Platform profile digests: locate embedded platform/App Sandbox profiles in sandbox.kext and produce kernel-sourced digests to compare with curated system profiles (`system-profile-digest`).
+
+- Dispatcher/action plumbing: once the tag dispatcher is found, map action/modifier handling (errno/report/telemetry) to strengthen `runtime-checks` and decoder parity tests.
+
 - A PolicyGraph tag/layout map describing each node/tag type (field order, sizes, edge semantics, operand interpretation, decision/logging bits) inferred from the kernel evaluator. Persist this in the appropriate place in the graph/mappings layer so it can be reused by decoders and visualizers.
 
 - An operation entrypoint mapping (op ID ↔ PolicyGraph entry node or offset) derived from the kernel’s operation pointer table. Persist with other graph-indexing metadata for this build.
