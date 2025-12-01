@@ -10,6 +10,7 @@ Context: headless runs against `dumps/Sandbox-private/14.4.1-23E224/` via `dumps
 - **Script output silent initially**: no `scriptlog` emitted by default, making it hard to confirm script execution. Early stubs also had TypeErrors (API mismatches) that were invisible without inspecting `application.log`.
 - **Signed-pointer interpretation**: raw pointer reads in the KC can be negative; initial pointer-table scan tried to feed unsigned values to `getAddress` and crashed.
 - **Functionless tag-switch search**: when running with `-noanalysis`, functions are not recovered, so computed-jump counting returned zero candidates.
+- **Full-analysis timeout**: a headless full-analysis run on BootKernelExtensions.kc timed out after 40 minutes (2400s) with analysis still in progress; heavy analysis and script runtime compete for the same wallclock.
 
 ## Mitigations applied
 - **Force Java selection non-interactively**: run headless with `--java-home /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home` and pass `-vmPath .../bin/java`. Scaffold exports `JAVA_HOME` and injects `JAVA_TOOL_OPTIONS=-Duser.home=<repo>/dumps/ghidra/user` so LaunchSupport finds a writable home and skips prompting.
@@ -21,6 +22,7 @@ Context: headless runs against `dumps/Sandbox-private/14.4.1-23E224/` via `dumps
   - `kernel_symbols.py`: avoid `getSymbolIterator(addr_set, True)` (API mismatch), filter manually, use `data.getValue()` for strings, add trace/error logs, guard against double-run.
   - `kernel_op_table.py`: sign-extend pointer values before `getAddress`; add error logging and run guard.
   - `kernel_tag_switch.py`: add error logging, run guard; note that it needs functions present (skip `--no-analysis` if you want candidates).
+- **Long analysis mitigation**: split heavy runs into two phases—first run `analyzeHeadless` with a generous timeout and no postScript to populate functions/xrefs, then run a short postScript-only pass against the analyzed project to avoid timing out while analysis and script compete.
 
 ## Current working recipe
 - Env: `GHIDRA_HEADLESS=/opt/homebrew/opt/ghidra/libexec/support/analyzeHeadless`, `JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`.
