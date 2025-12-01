@@ -18,6 +18,15 @@ Recover the sandbox PolicyGraph dispatcher and adjacent helpers by leveraging sy
 - Header/section signature scans using `.sb.bin` fixtures to find embedded profile structures in KC.
 - Cross-correlation of the above to nominate dispatcher/action-handling functions for deeper analysis.
 
+## Current observations
+
+- Headless string/import scans (all blocks, customizable queries) surface only the known sandbox/AppleMatch strings and no references or external symbols so far, suggesting AppleMatch imports may use different library labels or be inlined; next step is to enumerate external libraries/imports to refine the filter before proceeding to MACF and structure pivots.
+- TextEdit `.sb.bin` decode yields op_count=266, magic word=0x1be, nodes_start=548, literal_start=1132; a straight byte signature of the first 32 header bytes does not appear in the KC, so embedded profiles (if any) likely have different preambles or encodings.
+- Pointer-table sweep across all KC blocks produced multiple 512-entry tables in `__desc`/`__const` (starts near 0x-7fffef5000) pointing at sandbox-region functions; these are candidates to cross-check against mac_policy_ops or op-entry tables.
+- Raw byte scan for adjacent words `0x10a, 0x1be` in the KC found three code sites (file offsets ~0x1466090, 0x148fa37, 0x14ffa9f), implying these constants surface as immediates in code rather than as embedded profile headers; mapping these to Ghidra addresses may reveal profile parsing paths.
+- Offset→address lookup shows those constant sites map into `__text` functions `FUN_ffffff8001565fc4`, `FUN_ffffff800158f618`, `FUN_ffffff80015ff7a8` (likely parsing/loader paths; no callers yet).
+- The most promising pointer table is at `__const` 0x-7fffdae120: 512 entries, 333 pointing to `FUN_ffffff8000a5f0b0` (90 unique functions total, few nulls). This shape matches an op-entry table feeding a common dispatcher candidate.
+
 ## Reporting
 
 - `Notes.md`: running log of commands, addresses, and shortlists.

@@ -2,6 +2,9 @@
 """
 Walk references to key sandbox strings and AppleMatch imports.
 Outputs JSON under dumps/ghidra/out/<build>/kernel-string-refs/.
+Args: <out_dir> [build_id] [all] [extra queries...]
+  - include "all" to scan all memory blocks (default: sandbox blocks only)
+  - provide extra query substrings to match additional strings
 """
 
 import json
@@ -35,7 +38,7 @@ def _collect_refs(addr, addr_set, func_mgr, memory, ref_mgr):
     refs = []
     for ref in ref_mgr.getReferencesTo(addr):
         from_addr = ref.getFromAddress()
-        if addr_set and not addr_set.contains(from_addr):
+        if addr_set and not addr_set.isEmpty() and not addr_set.contains(from_addr):
             continue
         func = func_mgr.getFunctionContaining(from_addr)
         block = memory.getBlock(from_addr)
@@ -117,6 +120,52 @@ def _symbols_matching(substr, addr_set):
     return matches
 
 
+def _external_library_summary():
+    symtab = currentProgram.getSymbolTable()
+    libs = {}
+    sym_iter = symtab.getExternalSymbols()
+    while sym_iter.hasNext() and not monitor.isCancelled():
+        sym = sym_iter.next()
+        loc = sym.getExternalLocation()
+        if not loc:
+            continue
+        lib = loc.getLibraryName() or ""
+        libs[lib] = libs.get(lib, 0) + 1
+    summary = []
+    for lib, count in sorted(libs.items(), key=lambda kv: kv[0].lower()):
+        summary.append({"library": lib, "symbol_count": count})
+    return summary
+
+
+def _external_functions(library_substr, addr_set):
+    symtab = currentProgram.getSymbolTable()
+    func_mgr = currentProgram.getFunctionManager()
+    memory = currentProgram.getMemory()
+    ref_mgr = currentProgram.getReferenceManager()
+    matches = []
+    sym_iter = symtab.getExternalSymbols()
+    while sym_iter.hasNext() and not monitor.isCancelled():
+        sym = sym_iter.next()
+        loc = sym.getExternalLocation()
+        if not loc:
+            continue
+        lib = (loc.getLibraryName() or "").lower()
+        if library_substr not in lib:
+            continue
+        addr = sym.getAddress()
+        refs = _collect_refs(addr, addr_set, func_mgr, memory, ref_mgr)
+        matches.append(
+            {
+                "name": sym.getName(),
+                "library": loc.getLibraryName(),
+                "type": sym.getSymbolType().toString(),
+                "address": "0x%x" % addr.getOffset(),
+                "references": refs,
+            }
+        )
+    return matches
+
+
 def run():
     global _RUN_CALLED
     if _RUN_CALLED:
@@ -126,16 +175,34 @@ def run():
     try:
         args = getScriptArgs()
         if len(args) < 1:
-            print("usage: kernel_string_refs.py <out_dir> [build_id]")
+            print("usage: kernel_string_refs.py <out_dir> [build_id] [all] [extra queries...]")
             return
         out_dir = args[0]
         build_id = args[1] if len(args) > 1 else ""
+        flags_and_queries = args[2:]
         print("kernel_string_refs: starting for build %s -> %s" % (build_id, out_dir))
 
         _ensure_out_dir(out_dir)
         queries = ["com.apple.security.sandbox", "com.apple.kext.AppleMatch"]
+        scan_all = False
+        extra_queries = []
+        extlib_substr = "applematch"
+        sym_substrs = ["applematch"]
+        for item in flags_and_queries:
+            if item.lower() == "all":
+                scan_all = True
+                continue
+            if item.lower().startswith("extlib="):
+                extlib_substr = item.split("=", 1)[1].lower()
+                continue
+            if item.lower().startswith("symsub="):
+                sym_substrs.append(item.split("=", 1)[1].lower())
+                continue
+            extra_queries.append(item)
+        if extra_queries:
+            queries.extend(extra_queries)
 
-        blocks = _sandbox_blocks()
+        blocks = list(currentProgram.getMemory().getBlocks()) if scan_all else _sandbox_blocks()
         addr_set = AddressSet()
         for blk in blocks:
             addr_set.add(blk.getStart(), blk.getEnd())
@@ -149,22 +216,49 @@ def run():
         ]
 
         string_hits = _string_matches(queries, addr_set)
-        apple_match_syms = _symbols_matching("applematch", addr_set)
+        symbol_hits = []
+        seen_symbols = set()
+        for sub in sym_substrs:
+            for match in _symbols_matching(sub, addr_set):
+                key = (match["name"], match["address"])
+                if key in seen_symbols:
+                    continue
+                seen_symbols.add(key)
+                match["query"] = sub
+                symbol_hits.append(match)
+        apple_match_externals = _external_functions(extlib_substr, addr_set)
+        library_summary = _external_library_summary()
         meta = {
             "build_id": build_id,
             "program": currentProgram.getName(),
             "block_filter": block_meta,
             "query_strings": queries,
             "string_hits": len(string_hits),
-            "applematch_symbols": len(apple_match_syms),
+            "symbol_hits": len(symbol_hits),
+            "applematch_externals": len(apple_match_externals),
+            "scan_all_blocks": scan_all,
+            "external_library_filter": extlib_substr,
+            "symbol_substrings": sym_substrs,
+            "external_library_count": len(library_summary),
         }
 
         with open(os.path.join(out_dir, "string_references.json"), "w") as f:
-            json.dump({"meta": meta, "strings": string_hits, "applematch_symbols": apple_match_syms}, f, indent=2, sort_keys=True)
+            json.dump(
+                {
+                    "meta": meta,
+                    "strings": string_hits,
+                    "symbol_hits": symbol_hits,
+                    "applematch_externals": apple_match_externals,
+                    "external_libraries": library_summary,
+                },
+                f,
+                indent=2,
+                sort_keys=True,
+            )
 
         print(
-            "kernel_string_refs: found %d string hits and %d AppleMatch symbols (filtered to sandbox blocks)"
-            % (len(string_hits), len(apple_match_syms))
+            "kernel_string_refs: found %d string hits, %d symbol hits, %d externals (lib filter: %s)"
+            % (len(string_hits), len(symbol_hits), len(apple_match_externals), extlib_substr)
         )
     except Exception:
         if out_dir:

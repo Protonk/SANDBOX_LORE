@@ -112,14 +112,17 @@ def run():
     try:
         args = getScriptArgs()
         if len(args) < 1:
-            print("usage: kernel_op_table.py <out_dir> [build_id]")
+            print("usage: kernel_op_table.py <out_dir> [build_id] [all]")
             return
         out_dir = args[0]
         build_id = args[1] if len(args) > 1 else ""
+        scan_all = False
+        if len(args) > 2 and args[2].lower() == "all":
+            scan_all = True
         print("kernel_op_table: starting for build %s -> %s" % (build_id, out_dir))
 
         _ensure_out_dir(out_dir)
-        blocks = _sandbox_blocks()
+        blocks = list(currentProgram.getMemory().getBlocks()) if scan_all else _sandbox_blocks()
         addr_set = _block_set(blocks)
         block_meta = [
             {
@@ -146,6 +149,7 @@ def run():
             "block_filter": block_meta,
             "pointer_size": ptr_size,
             "candidate_count": len(candidates),
+            "scan_all_blocks": scan_all,
         }
         with open(os.path.join(out_dir, "op_table_candidates.json"), "w") as f:
             json.dump({"meta": meta, "candidates": candidates}, f, indent=2, sort_keys=True)

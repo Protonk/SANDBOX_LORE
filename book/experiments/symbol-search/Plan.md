@@ -18,10 +18,10 @@ Deliverables: this plan, `Notes.md`, `ResearchReport.md`; `out/` for scratch JSO
 
 ## 2) Expand symbol and string pivots
 
-**Upcoming**
+**In progress**
 
-- Broaden string/import search: include AppleMatch entry points (e.g., `match_exec`, `match_compile`, regex helpers) and sandbox strings without restricting to sandbox blocks; emit reference lists via headless script.
-- Emit a caller histogram for each matched import/string to rank likely dispatchers.
+- Broadened string/import search via `kernel_string_refs.py` (all blocks, custom queries); current runs still return only the core sandbox/AppleMatch strings with no references.
+- Next: enumerate external libraries/imports to learn actual AppleMatch naming (if any) and adjust filters; add caller histograms once a viable import/string is found.
 
 Deliverables: refreshed headless outputs under `dumps/ghidra/out/.../kernel-string-refs` (or a new task) with expanded queries and caller counts.
 
@@ -45,18 +45,18 @@ Deliverables: function addresses and linkage notes tying MACF hooks to the dispa
 
 ## 5) Profile structure pivot
 
-**Upcoming**
+**In progress**
 
-- Parse a `.sb.bin` fixture (e.g., TextEdit) to confirm header/section offsets; build a multi-field signature.
-- Scan KC `.const`/`.cstring` for matching header layouts or embedded profiles; map any walker code that indexes those structures.
+- Parsed TextEdit `.sb.bin`: op_count=266, magic word=0x1be, nodes_start=548, literal_start=1132; initial 32-byte header signature not found in KC via raw byte search.
+- Next: build a more flexible signature (multiple word positions) and scan KC via headless script to surface embedded profiles, then look for code that walks those structures.
 
 Deliverables: signature JSON in `out/` if needed, plus scan results with candidate addresses.
 
 ## 6) Synthesis and stop condition
 
-**Upcoming**
+**In progress**
 
-- Cross-link AppleMatch callers, MACF hook helpers, and structure scans to nominate dispatcher/action-handler functions.
+- Cross-link AppleMatch callers (none yet), MACF hook helpers, profile-structure scans, and the new pointer-table results. Current strongest lead: 512-entry table at `__const` 0x-7fffdae120 pointing 333 times to `FUN_ffffff8000a5f0b0` (candidate op-entry dispatcher target). Also have three code sites with op_count/magic constants mapping to `FUN_ffffff8001565fc4`, `...158f618`, `...15ff7a8`.
 - Stop when one or more functions are consistently referenced across pivots and show node-array walking with two successors and action handling.
 
 Deliverables: summary in `ResearchReport.md` of evidence-backed dispatcher candidates and recommended next probes.

@@ -92,6 +92,12 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="kernel",
         description="Resolve references to sandbox strings and AppleMatch imports in the KC.",
     ),
+    "kernel-addr-lookup": TaskConfig(
+        name="kernel-addr-lookup",
+        script="kernel_addr_lookup.py",
+        import_target="kernel",
+        description="Lookup file offsets/constants to map to addresses/functions/callers.",
+    ),
 }
 
 
@@ -121,6 +127,7 @@ def build_headless_command(
     ghidra_headless: str | None,
     vm_path: Path | None,
     no_analysis: bool,
+    script_args: List[str],
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
     out_dir = OUT_ROOT / build.build_id / task.name
@@ -150,6 +157,7 @@ def build_headless_command(
             build.build_id,
         ]
     )
+    cmd.extend(script_args)
     if vm_path:
         cmd.extend(["-vmPath", str(vm_path)])
     return cmd, out_dir
@@ -161,6 +169,7 @@ def build_process_command(
     ghidra_headless: str | None,
     vm_path: Path | None,
     no_analysis: bool,
+    script_args: List[str],
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
     out_dir = OUT_ROOT / build.build_id / task.name
@@ -189,6 +198,7 @@ def build_process_command(
             build.build_id,
         ]
     )
+    cmd.extend(script_args)
     if vm_path:
         cmd.extend(["-vmPath", str(vm_path)])
     return cmd, out_dir
@@ -222,6 +232,12 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         action="store_true",
         help="Use an existing analyzed project (no import/overwrite) and run the script via -process.",
     )
+    parser.add_argument(
+        "--script-args",
+        nargs="*",
+        default=[],
+        help="Extra args passed to the Ghidra script after <out_dir> and <build_id>.",
+    )
     parser.add_argument("--exec", action="store_true", dest="do_exec", help="Execute instead of printing.")
     return parser.parse_args(argv)
 
@@ -249,9 +265,9 @@ def main(argv: List[str] | None = None) -> int:
         if not project_file.exists():
             sys.stderr.write(f"Missing project for --process-existing: {project_file}\n")
             return 1
-        cmd, out_dir = build_process_command(task, build, args.ghidra_headless, vm_path, args.no_analysis)
+        cmd, out_dir = build_process_command(task, build, args.ghidra_headless, vm_path, args.no_analysis, args.script_args)
     else:
-        cmd, out_dir = build_headless_command(task, build, args.ghidra_headless, vm_path, args.no_analysis)
+        cmd, out_dir = build_headless_command(task, build, args.ghidra_headless, vm_path, args.no_analysis, args.script_args)
     shell_cmd = render_shell_command(cmd)
     print(f"[task {task.name}] output dir: {out_dir}")
     print(f"[task {task.name}] command: {shell_cmd}")

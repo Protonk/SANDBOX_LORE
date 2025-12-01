@@ -9,6 +9,7 @@ Purpose: run repeatable, headless Ghidra jobs against the 14.4.1-23E224 artifact
   - `kernel_tag_switch.py` — rank functions by computed jumps to surface the PolicyGraph dispatcher/tag switch.
   - `kernel_op_table.py` — scan sandbox blocks for pointer-table candidates (op entrypoint table).
   - `kernel_string_refs.py` — resolve references to sandbox strings and AppleMatch imports.
+  - `kernel_addr_lookup.py` — map file offsets/constants to addresses/functions/callers in the analyzed KC.
 - `.gitignore` — ignores `out/`, `projects/`, and `user/` so runs stay untracked.
 
 ## Usage (dry-run by default)
@@ -21,7 +22,7 @@ python3 dumps/ghidra/scaffold.py kernel-symbols --ghidra-headless /path/to/analy
 ```
 
 Arguments:
-- `task`: one of `kernel-symbols`, `kernel-tag-switch`, `kernel-op-table`, `kernel-string-refs`.
+- `task`: one of `kernel-symbols`, `kernel-tag-switch`, `kernel-op-table`, `kernel-string-refs`, `kernel-addr-lookup`.
 - `--build-id`: defaults to `14.4.1-23E224`.
 - `--ghidra-headless`: path to `analyzeHeadless` (env `GHIDRA_HEADLESS` also honored).
 - `--java-home`: exported to the subprocess (plus `JAVA_TOOL_OPTIONS=-Duser.home=...`) to avoid the interactive JDK prompt.
@@ -29,6 +30,7 @@ Arguments:
 - `--user-dir`: user settings directory used for `HOME`/`GHIDRA_USER_HOME` during the run (default `dumps/ghidra/user` inside the repo sandbox).
 - `--no-analysis`: add `-noanalysis` to the headless command for faster import-only runs.
 - `--process-existing`: reuse an already-imported project/program (no overwrite) and just run scripts via `-process`.
+- `--script-args`: extra arguments passed to the Ghidra script after `<out_dir>` and `<build_id>`.
 - `--exec`: actually run; otherwise the tool prints a shell-ready command.
 
 ## Safety rules
