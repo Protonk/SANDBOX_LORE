@@ -10,6 +10,7 @@ Purpose: run repeatable, headless Ghidra jobs against the 14.4.1-23E224 artifact
   - `kernel_op_table.py` — scan sandbox blocks for pointer-table candidates (op entrypoint table).
   - `kernel_string_refs.py` — resolve references to sandbox strings and AppleMatch imports.
   - `kernel_addr_lookup.py` — map file offsets/constants to addresses/functions/callers in the analyzed KC.
+  - `kernel_function_info.py` — dump callers/callees/size for named functions.
 - `.gitignore` — ignores `out/`, `projects/`, and `user/` so runs stay untracked.
 
 ## Usage (dry-run by default)
@@ -22,7 +23,7 @@ python3 dumps/ghidra/scaffold.py kernel-symbols --ghidra-headless /path/to/analy
 ```
 
 Arguments:
-- `task`: one of `kernel-symbols`, `kernel-tag-switch`, `kernel-op-table`, `kernel-string-refs`, `kernel-addr-lookup`.
+- `task`: one of `kernel-symbols`, `kernel-tag-switch`, `kernel-op-table`, `kernel-string-refs`, `kernel-addr-lookup`, `kernel-function-info`.
 - `--build-id`: defaults to `14.4.1-23E224`.
 - `--ghidra-headless`: path to `analyzeHeadless` (env `GHIDRA_HEADLESS` also honored).
 - `--java-home`: exported to the subprocess (plus `JAVA_TOOL_OPTIONS=-Duser.home=...`) to avoid the interactive JDK prompt.

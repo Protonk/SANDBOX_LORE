@@ -2,8 +2,10 @@
 """
 Lookup file offsets or constant patterns in the current program and report addresses/functions/callers.
 Args:
-  <out_dir> [build_id] [offsets...]
-Offsets are hex without 0x (file offsets). Outputs JSON to out_dir/addr_lookup.json.
+  <out_dir> [build_id] [offsets/addresses...] [--data-only]
+Offsets are hex without 0x (file offsets, added to image base). Prefix an input with
+  'addr:' to treat it as an absolute address instead. Outputs JSON to out_dir/addr_lookup.json.
+When --data-only is present, report defined data at the computed address (type/value).
 """
 
 import json
@@ -27,12 +29,18 @@ def _lookup_offsets(offsets):
     addr_factory = currentProgram.getAddressFactory()
     img_base_addr = currentProgram.getImageBase()
     img_base = img_base_addr.getOffset()
-    for off in offsets:
-        try:
-            addr = img_base_addr.add(off)
-        except Exception:
-            addr = addr_factory.getDefaultAddressSpace().getAddress(img_base + off)
+    for off, is_addr in offsets:
+        if is_addr:
+            addr = addr_factory.getDefaultAddressSpace().getAddress("0x%x" % off)
+            file_offset = None
+        else:
+            file_offset = "0x%x" % off
+            try:
+                addr = img_base_addr.add(off)
+            except Exception:
+                addr = addr_factory.getDefaultAddressSpace().getAddress("0x%x" % (img_base + off))
         block = memory.getBlock(addr)
+        data_entry = listing.getDataAt(addr)
         func = func_mgr.getFunctionContaining(addr)
         refs = ref_mgr.getReferencesTo(addr)
         callers = []
@@ -55,13 +63,15 @@ def _lookup_offsets(offsets):
                 bytes_at = None
         res.append(
             {
-                "file_offset": "0x%x" % off,
+                "input": file_offset or ("addr:0x%x" % off),
                 "address": "0x%x" % addr.getOffset(),
                 "image_base": "0x%x" % img_base,
                 "block": block.getName() if block else None,
                 "function": func.getName() if func else None,
                 "instruction": str(instr) if instr else None,
                 "bytes": bytes_at.hex() if bytes_at else None,
+                "data_type": data_entry.getDataType().getName() if data_entry else None,
+                "data_value": str(data_entry.getValue()) if data_entry else None,
                 "callers": callers,
             }
         )
@@ -77,24 +87,33 @@ def run():
     try:
         args = getScriptArgs()
         if len(args) < 2:
-            print("usage: kernel_addr_lookup.py <out_dir> <build_id> [offsets...]")
+            print("usage: kernel_addr_lookup.py <out_dir> <build_id> [offsets...] [--data-only]")
             return
         out_dir = args[0]
         build_id = args[1]
         offsets = []
+        data_only = False
         for x in args[2:]:
+            if str(x) == "--data-only":
+                data_only = True
+                continue
             try:
-                offsets.append(int(str(x), 16))
+                token = str(x)
+                if token.startswith("addr:"):
+                    offsets.append((int(token.split("addr:", 1)[1], 16), True))
+                else:
+                    offsets.append((int(token, 16), False))
             except Exception:
                 print("skip arg %s (not an offset)" % x)
                 continue
         _ensure_out_dir(out_dir)
-        print("kernel_addr_lookup: offsets=%s" % offsets)
+        print("kernel_addr_lookup: inputs=%s data_only=%s" % (offsets, data_only))
         results = _lookup_offsets(offsets)
         meta = {
             "build_id": build_id,
             "program": currentProgram.getName(),
             "offset_count": len(offsets),
+            "data_only": data_only,
         }
         with open(os.path.join(out_dir, "addr_lookup.json"), "w") as f:
             json.dump({"meta": meta, "results": results}, f, indent=2, sort_keys=True)

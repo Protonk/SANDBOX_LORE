@@ -25,7 +25,7 @@ Recover the sandbox PolicyGraph dispatcher and adjacent helpers by leveraging sy
 - Pointer-table sweep across all KC blocks produced multiple 512-entry tables in `__desc`/`__const` (starts near 0x-7fffef5000) pointing at sandbox-region functions; these are candidates to cross-check against mac_policy_ops or op-entry tables.
 - Raw byte scan for adjacent words `0x10a, 0x1be` in the KC found three code sites (file offsets ~0x1466090, 0x148fa37, 0x14ffa9f), implying these constants surface as immediates in code rather than as embedded profile headers; mapping these to Ghidra addresses may reveal profile parsing paths.
 - Offset→address lookup shows those constant sites map into `__text` functions `FUN_ffffff8001565fc4`, `FUN_ffffff800158f618`, `FUN_ffffff80015ff7a8` (likely parsing/loader paths; no callers yet).
-- The most promising pointer table is at `__const` 0x-7fffdae120: 512 entries, 333 pointing to `FUN_ffffff8000a5f0b0` (90 unique functions total, few nulls). This shape matches an op-entry table feeding a common dispatcher candidate.
+- The most promising pointer table is at `__const` 0x-7fffdae120: 512 entries, 333 pointing to `FUN_ffffff8000a5f0b0` (90 unique functions total, few nulls). Initial function info shows this target is a tiny stub (8 bytes, DATA ref only), suggesting the real dispatcher is adjacent (data-driven jump or wrapper). Next: inspect the data reference at `0x-7ffcb08ca4` and nearby functions in the table to identify the actual evaluator/walker.
 
 ## Reporting
 

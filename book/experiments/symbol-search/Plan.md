@@ -57,6 +57,7 @@ Deliverables: signature JSON in `out/` if needed, plus scan results with candida
 **In progress**
 
 - Cross-link AppleMatch callers (none yet), MACF hook helpers, profile-structure scans, and the new pointer-table results. Current strongest lead: 512-entry table at `__const` 0x-7fffdae120 pointing 333 times to `FUN_ffffff8000a5f0b0` (candidate op-entry dispatcher target). Also have three code sites with op_count/magic constants mapping to `FUN_ffffff8001565fc4`, `...158f618`, `...15ff7a8`.
+- `FUN_ffffff8000a5f0b0` appears to be a tiny stub (8 bytes, single DATA reference). Next pivot: examine the data reference at `0x-7ffcb08ca4` and nearby functions in the table (e.g., top unique targets) to locate the real dispatcher/action walker.
 - Stop when one or more functions are consistently referenced across pivots and show node-array walking with two successors and action handling.
 
 Deliverables: summary in `ResearchReport.md` of evidence-backed dispatcher candidates and recommended next probes.

@@ -98,6 +98,18 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="kernel",
         description="Lookup file offsets/constants to map to addresses/functions/callers.",
     ),
+    "kernel-function-info": TaskConfig(
+        name="kernel-function-info",
+        script="kernel_function_info.py",
+        import_target="kernel",
+        description="Emit metadata for specified functions (callers, callees, size).",
+    ),
+    "kernel-imm-search": TaskConfig(
+        name="kernel-imm-search",
+        script="kernel_imm_search.py",
+        import_target="kernel",
+        description="Search instructions for a given immediate (scalar) value.",
+    ),
 }
 
 

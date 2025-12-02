@@ -20,7 +20,6 @@ Using this layer we build an example-driven synthetic guide for human and machin
 
 High-level map of the root and `book/`:
 
-- `dumps/` – reverse-engineering artifacts for the current macOS build; `Sandbox-private/` is git-ignored host data. See `dumps/AGENTS.md` before touching anything here.
 - `book/` – The Cathedral of Shit
   - `AGENTS.md` – navigation map for the `book/` tree.
   - `Outline.md` – high-level textbook outline.
@@ -33,6 +32,7 @@ High-level map of the root and `book/`:
     - `graph/mappings/` – machine-readable artifacts from experiments.
   - `tests/` - pytest harness for experiment and example tests
 - `substrate/` – Orientation, Concepts, Appendix, Environment, State; frozen at `SUBSTRATE_2025-frozen`.
+- `dumps/` – reverse-engineering artifacts for the current macOS build; `Sandbox-private/` is git-ignored host data. See `dumps/AGENTS.md` before touching anything here.
 - `troubles/` – records of crashes or validation troubles.
 
 ## Scope
