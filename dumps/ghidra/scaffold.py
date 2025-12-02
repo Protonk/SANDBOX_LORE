@@ -157,6 +157,7 @@ def build_headless_command(
     script_args: List[str],
     processor: str | None,
     analysis_properties: str | None,
+    pre_scripts: List[str] | None,
     project_name: str,
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
@@ -176,6 +177,9 @@ def build_headless_command(
         cmd.append("-noanalysis")
     if analysis_properties:
         cmd.extend(["-analysisProperties", str(analysis_properties)])
+    if pre_scripts:
+        for script in pre_scripts:
+            cmd.extend(["-preScript", script])
     cmd.extend(
         [
             "-import",
@@ -204,6 +208,7 @@ def build_process_command(
     no_analysis: bool,
     script_args: List[str],
     analysis_properties: str | None,
+    pre_scripts: List[str] | None,
     project_name: str,
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
@@ -220,6 +225,9 @@ def build_process_command(
         cmd.append("-noanalysis")
     if analysis_properties:
         cmd.extend(["-analysisProperties", str(analysis_properties)])
+    if pre_scripts:
+        for script in pre_scripts:
+            cmd.extend(["-preScript", script])
     cmd.extend(
         [
             "-process",
@@ -275,6 +283,12 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help="analysisProperties string or file (e.g., Analysis.X86 Constant Reference Analyzer.enabled=false).",
     )
     parser.add_argument(
+        "--pre-script",
+        nargs="*",
+        default=[],
+        help="One or more Ghidra preScripts to run before analysis (e.g., disable_x86_analyzers.py).",
+    )
+    parser.add_argument(
         "--script-args",
         nargs="*",
         default=[],
@@ -315,6 +329,7 @@ def main(argv: List[str] | None = None) -> int:
             args.no_analysis,
             args.script_args,
             args.analysis_properties,
+            args.pre_script,
             project_name,
         )
     else:
@@ -327,6 +342,7 @@ def main(argv: List[str] | None = None) -> int:
             args.script_args,
             args.processor,
             args.analysis_properties,
+            args.pre_script,
             project_name,
         )
     shell_cmd = render_shell_command(cmd)

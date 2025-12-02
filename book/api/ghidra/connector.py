@@ -166,6 +166,7 @@ class HeadlessConnector:
         java_home: Optional[str] = None,
         vm_path: Optional[str] = None,
         analysis_properties: Optional[str] = None,
+        pre_scripts: Optional[Sequence[str]] = None,
     ) -> HeadlessInvocation:
         task_spec = self.registry.get(task_name)
         task_cfg = gh_scaffold.TASKS[task_name]
@@ -187,6 +188,7 @@ class HeadlessConnector:
 
         args = list(script_args) if script_args else []
         analysis_props_value = analysis_properties or self.analysis_properties
+        pre_scripts_list = list(pre_scripts) if pre_scripts else []
         if process_existing:
             cmd, out_dir = gh_scaffold.build_process_command(
                 task_cfg,
@@ -196,6 +198,7 @@ class HeadlessConnector:
                 no_analysis,
                 args,
                 analysis_props_value,
+                pre_scripts_list,
                 project,
             )
             mode = "process"
@@ -209,6 +212,7 @@ class HeadlessConnector:
                 args,
                 processor,
                 analysis_props_value,
+                pre_scripts_list,
                 project,
             )
             mode = "import"
