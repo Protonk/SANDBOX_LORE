@@ -33,6 +33,16 @@ def _parse_targets(tokens):
     return addrs, names
 
 
+def _find_function_by_name(func_mgr, name):
+    # Ghidra API lacks direct name lookup; scan all functions once.
+    funcs = func_mgr.getFunctions(True)
+    while funcs.hasNext():
+        func = funcs.next()
+        if func.getName() == name:
+            return func
+    return None
+
+
 def _dump_function(func, listing):
     instr_iter = listing.getInstructions(func.getBody(), True)
     lines = []
@@ -104,7 +114,7 @@ def run():
                 }
             )
         for name in name_vals:
-            func = func_mgr.getFunction(name)
+            func = _find_function_by_name(func_mgr, name)
             if not func:
                 entries.append({"input": name, "error": "function not found"})
                 continue

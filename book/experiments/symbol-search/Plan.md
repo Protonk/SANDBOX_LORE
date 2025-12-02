@@ -27,19 +27,20 @@ Deliverables: refreshed headless outputs under `dumps/ghidra/out/.../kernel-stri
 
 ## 3) AppleMatch import pivot
 
-**Upcoming**
+**Upcoming → now guided by web-agent anchors**
 
-- Enumerate external imports in sandbox.kext that resolve to AppleMatch and collect their callers; flag callers that also index shared arrays or branch on tag-like values.
-- Note any adjacency to regex/literal data structures recovered from `.sb.bin` fixtures.
+- Enumerate Sandbox.kext externals/imports and specifically hunt for AppleMatch exports `_matchExec` / `_matchUnpack` (or close variants). Collect callers.
+- Cross-check callers against MACF-hook helpers (shared `(cred, op_id, …)` path) to converge on the PolicyGraph node walker.
+- Use caller intersection (AppleMatch import users ∩ op-table indexers) as the primary dispatcher shortlist.
 
 Deliverables: shortlists of AppleMatch callers plus addresses/functions, with notes in `Notes.md`.
 
 ## 4) MACF hook and mac_policy_ops pivot
 
-**Upcoming**
+**Upcoming → paired with AppleMatch pivot**
 
-- Locate the sandbox `mac_policy_conf`/`mac_policy_ops` struct; trace `mpo_*` entries into shared helpers.
-- Identify the common helper that accepts a label/policy pointer and operation ID, and follow it into the graph-walk candidate set.
+- Locate the sandbox `mac_policy_conf`/`mac_policy_ops` struct; trace `_mpo_*` entries into the shared helper (`cred_sb_evaluate`/`sb_evaluate_internal`-like).
+- Follow that helper into the inner `eval`-like routine that indexes an op-entry table and walks nodes; intersect with AppleMatch caller set to validate dispatcher identity.
 
 Deliverables: function addresses and linkage notes tying MACF hooks to the dispatcher, logged in `Notes.md`.
 
