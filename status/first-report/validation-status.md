@@ -10,14 +10,14 @@ This tracks progress toward validating the concept inventory against real artifa
 
 ## Vocabulary/mapping cluster
 - **Status:** Operation and filter vocab harvested and aligned; runtime usage missing.
-- **Evidence:** `validation/out/vocab/{ops.json,filters.json,operation_names.json,filter_names.json}` (status `ok`, counts 196/93) from `vocab-from-cache`. `op_table/op_table_vocab_alignment.json` ties synthetic profiles to operation IDs. Anchor→filter map present (`anchors/anchor_filter_map.json`).
+- **Evidence:** `validation/out/vocab/{ops.json,filters.json,operation_names.json,filter_names.json}` (treated as `status: ok` in the validation index, counts 196/93) from `vocab-from-cache`. `op_table/op_table_vocab_alignment.json` ties synthetic profiles to operation IDs. Anchor→filter map present (`anchors/anchor_filter_map.json`).
 - **Guardrails:** `check_vocab.py` and mapping guardrails; vocab mirrored in `graph/mappings/vocab/`.
 - **Gaps:** Runtime usage table (`validation/out/vocab/runtime_usage.json`) is `blocked` because sandbox_init failed; filter-ID linkage to `field2` and bucket shifts is still hypothesis-only.
 
 ## Semantic graph/evaluation cluster
-- **Status:** Blocked on runtime harness; only brittle sandbox-exec logs exist.
-- **Evidence:** Legacy runs (`metafilter.jsonl`, `sbpl_params.jsonl`, `network.jsonl`, `mach_services.jsonl`) flagged brittle; `validation/out/semantic/runtime_results.json` records EPERM from sandbox_init despite wrapper attempts. Experiments `runtime-checks` and `sbpl-graph-runtime` have partial harnesses but lack stable allow/deny evidence.
-- **Gaps:** No reliable SBPL→graph→runtime triples; cannot yet tie PolicyGraph paths to observed decisions. Need a permissive host or adjusted profiles/harness to gather semantic probes.
+- **Status:** Not yet providing reliable semantic evidence.
+- **Evidence:** Legacy runs (`metafilter.jsonl`, `sbpl_params.jsonl`, `network.jsonl`, `mach_services.jsonl`) are flagged brittle; wrapper-based runs in `validation/out/semantic/runtime_results.json` exercise SBPL microprofiles but show mismatches between expected and actual outcomes; runtime-checks runs for bucket profiles and system blobs encounter sandbox_init/sandbox_apply EPERM. Experiments `runtime-checks` and `sbpl-graph-runtime` therefore remain provisional.
+- **Gaps:** No trustworthy SBPL→graph→runtime triples; cannot yet tie PolicyGraph paths to observed decisions. Need a permissive host or adjusted profiles/harness to gather semantic probes and align expectations with runtime behavior.
 
 ## Lifecycle/extension cluster
 - **Status:** Partial.
