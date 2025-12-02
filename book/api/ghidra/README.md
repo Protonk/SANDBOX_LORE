@@ -6,6 +6,7 @@ Scope and constraints:
 - Inputs come from `dumps/Sandbox-private/<build>/...` (kernel KC, libsystem_sandbox, profiles). The connector does not copy these into tracked trees.
 - Scripts live under `book/api/ghidra/scripts/`; output and projects stay under `dumps/ghidra/out/` and `dumps/ghidra/projects/`.
 - Default env pins `HOME`/`GHIDRA_USER_HOME` to `dumps/ghidra/user/` and exports `JAVA_TOOL_OPTIONS=-Duser.home=...` to avoid leaks into the real user home and to dodge macOS Seatbelt prompts.
+- Temporary files are rooted at `dumps/ghidra/tmp/` via `TMPDIR`/`java.io.tmpdir`, with best-effort cleanup of `.lastmaint` cache markers after runs to avoid permission noise.
 
 What this layer exposes:
 - A `TaskRegistry` of Ghidra tasks (mirrors the current scaffold tasks: kernel symbols, tag switch triage, op-table scan, string refs, immediate search, etc.).

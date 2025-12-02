@@ -7,7 +7,8 @@ This wraps the existing dumps/ghidra scaffold to provide:
 - Optional execution hook (dry-run by default).
 
 Safety: inputs stay under dumps/Sandbox-private/<build>/..., outputs under dumps/ghidra/out/,
-projects under dumps/ghidra/projects/, and HOME/GHIDRA_USER_HOME point to dumps/ghidra/user/.
+projects under dumps/ghidra/projects/, HOME/GHIDRA_USER_HOME point to dumps/ghidra/user/,
+and temp files stay under dumps/ghidra/tmp via TMPDIR/java.io.tmpdir (cleanup best-effort).
 """
 
 from __future__ import annotations
@@ -94,17 +95,35 @@ class HeadlessResult:
     completed: Optional[subprocess.CompletedProcess[str]] = None
 
 
-def _build_env(java_home: Optional[str], user_dir: Path, extra_env: Optional[Mapping[str, str]]) -> Dict[str, str]:
+def _cleanup_temp_markers(temp_dir: Path) -> None:
+    """Remove known temp marker files Ghidra drops (e.g., .lastmaint) under our sandboxed temp root."""
+    for marker in temp_dir.rglob(".lastmaint"):
+        try:
+            marker.unlink()
+        except Exception:
+            continue
+
+
+def _build_env(
+    java_home: Optional[str],
+    user_dir: Path,
+    temp_dir: Path,
+    extra_env: Optional[Mapping[str, str]],
+) -> Dict[str, str]:
     env: MutableMapping[str, str] = dict(os.environ)
     if java_home:
         env["JAVA_HOME"] = java_home
     env["GHIDRA_USER_HOME"] = str(user_dir)
     env["HOME"] = str(user_dir)
+    env["TMPDIR"] = str(temp_dir)
+    env["TEMP"] = str(temp_dir)
+    env["TMP"] = str(temp_dir)
     user_home_prop = f"-Duser.home={user_dir}"
+    tmp_prop = f"-Djava.io.tmpdir={temp_dir}"
     if env.get("JAVA_TOOL_OPTIONS"):
-        env["JAVA_TOOL_OPTIONS"] = env["JAVA_TOOL_OPTIONS"] + " " + user_home_prop
+        env["JAVA_TOOL_OPTIONS"] = env["JAVA_TOOL_OPTIONS"] + " " + user_home_prop + " " + tmp_prop
     else:
-        env["JAVA_TOOL_OPTIONS"] = user_home_prop
+        env["JAVA_TOOL_OPTIONS"] = user_home_prop + " " + tmp_prop
     if extra_env:
         env.update(extra_env)
     return dict(env)
@@ -119,6 +138,7 @@ class HeadlessConnector:
         ghidra_headless: Optional[str] = None,
         java_home: Optional[str] = None,
         user_dir: Optional[Path] = None,
+        temp_dir: Optional[Path] = None,
         extra_env: Optional[Mapping[str, str]] = None,
     ):
         self.registry = registry or TaskRegistry.default()
@@ -126,6 +146,8 @@ class HeadlessConnector:
         self.java_home = java_home
         self.user_dir = user_dir if user_dir else gh_scaffold.HERE / "user"
         _ensure_under(self.user_dir, gh_scaffold.HERE)
+        self.temp_dir = temp_dir if temp_dir else gh_scaffold.HERE / "tmp"
+        _ensure_under(self.temp_dir, gh_scaffold.HERE)
         self.extra_env = dict(extra_env) if extra_env else {}
 
     def build(
@@ -183,7 +205,7 @@ class HeadlessConnector:
                 project,
             )
             mode = "import"
-        env = _build_env(use_java_home, self.user_dir, self.extra_env)
+        env = _build_env(use_java_home, self.user_dir, self.temp_dir, self.extra_env)
         return HeadlessInvocation(
             task=task_spec,
             build_id=build.build_id,
@@ -208,8 +230,14 @@ class HeadlessConnector:
         invocation.out_dir.mkdir(parents=True, exist_ok=True)
         gh_scaffold.PROJECTS_ROOT.mkdir(parents=True, exist_ok=True)
         self.user_dir.mkdir(parents=True, exist_ok=True)
+        self.temp_dir.mkdir(parents=True, exist_ok=True)
 
         completed = subprocess.run(invocation.command, check=False, env=invocation.env, timeout=timeout)
         result.completed = completed
         result.returncode = completed.returncode
+        try:
+            _cleanup_temp_markers(self.temp_dir)
+        except Exception:
+            # temp cleanup is best-effort
+            pass
         return result

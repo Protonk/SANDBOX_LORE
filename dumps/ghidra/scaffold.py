@@ -21,6 +21,7 @@ BOOK_API_SCRIPTS = REPO_ROOT / "book" / "api" / "ghidra" / "scripts"
 SCRIPTS_DIR = BOOK_API_SCRIPTS
 OUT_ROOT = HERE / "out"
 PROJECTS_ROOT = HERE / "projects"
+TEMP_ROOT = HERE / "tmp"
 DEFAULT_BUILD_ID = "14.4.1-23E224"
 
 
@@ -316,16 +317,21 @@ def main(argv: List[str] | None = None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     PROJECTS_ROOT.mkdir(parents=True, exist_ok=True)
     user_dir.mkdir(parents=True, exist_ok=True)
+    TEMP_ROOT.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
     if args.java_home:
         env["JAVA_HOME"] = args.java_home
     env["GHIDRA_USER_HOME"] = str(user_dir)
     env["HOME"] = str(user_dir)
+    env["TMPDIR"] = str(TEMP_ROOT)
+    env["TEMP"] = str(TEMP_ROOT)
+    env["TMP"] = str(TEMP_ROOT)
     user_home_prop = f"-Duser.home={user_dir}"
+    tmp_prop = f"-Djava.io.tmpdir={TEMP_ROOT}"
     if env.get("JAVA_TOOL_OPTIONS"):
-        env["JAVA_TOOL_OPTIONS"] = env["JAVA_TOOL_OPTIONS"] + " " + user_home_prop
+        env["JAVA_TOOL_OPTIONS"] = env["JAVA_TOOL_OPTIONS"] + " " + user_home_prop + " " + tmp_prop
     else:
-        env["JAVA_TOOL_OPTIONS"] = user_home_prop
+        env["JAVA_TOOL_OPTIONS"] = user_home_prop + " " + tmp_prop
     completed = subprocess.run(cmd, check=False, env=env)
     return completed.returncode
 
