@@ -4,13 +4,7 @@ Purpose: run repeatable, headless Ghidra jobs against the 14.4.1-23E224 artifact
 
 ## Layout
 - `scaffold.py` — command builder for headless runs; prints (or executes) `analyzeHeadless` invocations that import the KC or dylib and run task scripts.
-- `scripts/` — Ghidra (Jython) stubs per task:
-  - `kernel_symbols.py` — import KC and dump symbols/strings (JSON) scoped to com.apple.security.sandbox blocks.
-  - `kernel_tag_switch.py` — rank functions by computed jumps to surface the PolicyGraph dispatcher/tag switch.
-  - `kernel_op_table.py` — scan sandbox blocks for pointer-table candidates (op entrypoint table).
-  - `kernel_string_refs.py` — resolve references to sandbox strings and AppleMatch imports.
-  - `kernel_addr_lookup.py` — map file offsets/constants to addresses/functions/callers in the analyzed KC.
-  - `kernel_function_info.py` — dump callers/callees/size for named functions.
+- `scripts/` — legacy wrappers that redirect to the canonical scripts under `book/api/ghidra/scripts/` (kept for compatibility).
 - `.gitignore` — ignores `out/`, `projects/`, and `user/` so runs stay untracked.
 
 ## Usage (dry-run by default)
@@ -38,4 +32,4 @@ Arguments:
 - Inputs always come from `dumps/Sandbox-private/<build>/...`.
 - Outputs always land in `dumps/ghidra/out/<build>/<task>/`; projects in `dumps/ghidra/projects/`.
 - Commands add `-overwrite` and `-scriptlog` and set `HOME`/`GHIDRA_USER_HOME` to the repo-local `user/` dir to keep artifacts contained.
-- Scripts live in `dumps/ghidra/scripts/`; do not move or copy host data into tracked trees.
+- Scripts now live in `book/api/ghidra/scripts/` (this directory keeps thin redirectors only); do not move or copy host data into tracked trees.

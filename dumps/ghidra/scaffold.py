@@ -14,9 +14,11 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent
+ROOT = HERE.parent  # dumps/
+REPO_ROOT = ROOT.parent
 SANDBOX_PRIVATE = ROOT / "Sandbox-private"
-SCRIPTS_DIR = HERE / "scripts"
+BOOK_API_SCRIPTS = REPO_ROOT / "book" / "api" / "ghidra" / "scripts"
+SCRIPTS_DIR = BOOK_API_SCRIPTS
 OUT_ROOT = HERE / "out"
 PROJECTS_ROOT = HERE / "projects"
 DEFAULT_BUILD_ID = "14.4.1-23E224"

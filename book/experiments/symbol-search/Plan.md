@@ -8,7 +8,7 @@ Goal: locate the sandbox PolicyGraph dispatcher and related helpers inside `Boot
 
 **Done**
 
-- Scaffolded this experiment directory (Plan, Notes, ResearchReport). Inputs: `dumps/Sandbox-private/14.4.1-23E224/kernel/BootKernelExtensions.kc`, analyzed Ghidra project `dumps/ghidra/projects/sandbox_14.4.1-23E224`, headless scripts under `dumps/ghidra/scripts/`.
+- Scaffolded this experiment directory (Plan, Notes, ResearchReport). Inputs: `dumps/Sandbox-private/14.4.1-23E224/kernel/BootKernelExtensions.kc`, analyzed Ghidra project `dumps/ghidra/projects/sandbox_14.4.1-23E224`, headless scripts under `book/api/ghidra/scripts/`.
 
 **Upcoming**
 

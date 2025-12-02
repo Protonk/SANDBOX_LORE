@@ -2,7 +2,7 @@
 Agent-facing Ghidra connector for Seatbelt reverse-engineering tasks.
 
 This wraps the existing dumps/ghidra scaffold to provide:
-- A task registry rooted in dumps/ghidra/scripts.
+- A task registry rooted in book/api/ghidra/scripts.
 - A headless command builder with sandboxed env defaults.
 - Optional execution hook (dry-run by default).
 

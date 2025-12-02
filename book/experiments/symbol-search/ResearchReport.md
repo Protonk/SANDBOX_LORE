@@ -8,7 +8,7 @@ Recover the sandbox PolicyGraph dispatcher and adjacent helpers by leveraging sy
 
 - Host target: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled (same baseline as other Ghidra experiments).
 - Artifacts: `dumps/Sandbox-private/14.4.1-23E224/kernel/BootKernelExtensions.kc`, Ghidra project `dumps/ghidra/projects/sandbox_14.4.1-23E224`.
-- Tooling: headless Ghidra scripts in `dumps/ghidra/scripts/` (string refs, tag switch, op-table), `scaffold.py` with `--process-existing` to reuse the analyzed project.
+- Tooling: headless Ghidra scripts in `book/api/ghidra/scripts/` (string refs, tag switch, op-table), `scaffold.py` with `--process-existing` to reuse the analyzed project.
 - Concept anchors: dispatcher should walk compiled PolicyGraph nodes (two successors, action terminals), consult operation→entry tables, call AppleMatch for regex filters, and sit downstream of MACF hook glue.
 - Practical note: headless needs `JAVA_TOOL_OPTIONS=-Duser.home=$PWD/dumps/ghidra/home` (plus `GHIDRA_JAVA_HOME`), otherwise it tries to write under `~/Library/ghidra/` which is blocked by the workspace sandbox.
 

@@ -6,7 +6,7 @@ Purpose: keep a repeatable, stateless checklist for finding the PolicyGraph disp
 - Use full analysis (do **not** pass `--no-analysis`) so functions/instructions exist.
 - Command example (from repo root):  
   `python3 dumps/ghidra/scaffold.py kernel-tag-switch --java-home /Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home --exec`  
-  (GHIDRA_HEADLESS env should point at `analyzeHeadless`; scaffold sets `HOME`/`GHIDRA_USER_HOME` to `dumps/ghidra/user/` and writes outputs to `dumps/ghidra/out/<build>/kernel-tag-switch/`.)
+  (GHIDRA_HEADLESS env should point at `analyzeHeadless`; scaffold sets `HOME`/`GHIDRA_USER_HOME` to `dumps/ghidra/user/` and writes outputs to `dumps/ghidra/out/<build>/kernel-tag-switch/`. Script paths now point to `book/api/ghidra/scripts/`.)
 
 ## Reading `switch_candidates.json`
 - File: `dumps/ghidra/out/14.4.1-23E224/kernel-tag-switch/switch_candidates.json`
