@@ -10,6 +10,7 @@ Recover the sandbox PolicyGraph dispatcher and adjacent helpers by leveraging sy
 - Artifacts: `dumps/Sandbox-private/14.4.1-23E224/kernel/BootKernelExtensions.kc`, Ghidra project `dumps/ghidra/projects/sandbox_14.4.1-23E224`.
 - Tooling: headless Ghidra scripts in `dumps/ghidra/scripts/` (string refs, tag switch, op-table), `scaffold.py` with `--process-existing` to reuse the analyzed project.
 - Concept anchors: dispatcher should walk compiled PolicyGraph nodes (two successors, action terminals), consult operation→entry tables, call AppleMatch for regex filters, and sit downstream of MACF hook glue.
+- Practical note: headless needs `JAVA_TOOL_OPTIONS=-Duser.home=$PWD/dumps/ghidra/home` (plus `GHIDRA_JAVA_HOME`), otherwise it tries to write under `~/Library/ghidra/` which is blocked by the workspace sandbox.
 
 ## Planned pivots
 
@@ -24,8 +25,9 @@ Recover the sandbox PolicyGraph dispatcher and adjacent helpers by leveraging sy
 - TextEdit `.sb.bin` decode yields op_count=266, magic word=0x1be, nodes_start=548, literal_start=1132; a straight byte signature of the first 32 header bytes does not appear in the KC, so embedded profiles (if any) likely have different preambles or encodings.
 - Pointer-table sweep across all KC blocks produced multiple 512-entry tables in `__desc`/`__const` (starts near 0x-7fffef5000) pointing at sandbox-region functions; these are candidates to cross-check against mac_policy_ops or op-entry tables.
 - Raw byte scan for adjacent words `0x10a, 0x1be` in the KC found three code sites (file offsets ~0x1466090, 0x148fa37, 0x14ffa9f), implying these constants surface as immediates in code rather than as embedded profile headers; mapping these to Ghidra addresses may reveal profile parsing paths.
-- Offset→address lookup shows those constant sites map into `__text` functions `FUN_ffffff8001565fc4`, `FUN_ffffff800158f618`, `FUN_ffffff80015ff7a8` (likely parsing/loader paths; no callers yet).
+- Offset→address lookup shows those constant sites map into `__text` functions `FUN_ffffff8001565fc4`, `FUN_ffffff800158f618`, `FUN_ffffff80015ff7a8`. Disassembly dumps show heavy stack setup, structure writes at offsets like `[rdi+0x1328]` / `[rax+0x32f0]`, and calls into helpers (`0xffffff80016c4a16`, `0xffffff80015aaf56`, `0xffffff8002fd0f5e`), but no direct op-table indexing yet.
 - The most promising pointer table is at `__const` 0x-7fffdae120: 512 entries, 333 pointing to `FUN_ffffff8000a5f0b0` (90 unique functions total, few nulls). Initial function info shows this target is a tiny stub (8 bytes, DATA ref only), suggesting the real dispatcher is adjacent (data-driven jump or wrapper). Next: inspect the data reference at `0x-7ffcb08ca4` and nearby functions in the table to identify the actual evaluator/walker.
+- First pass at ADRP/ADD scanning into the suspected table page (`kernel_page_ref_scan.py`) returned zero hits, likely because reference analysis did not materialize ADRP targets; a follow-up needs to decode ADRP immediates directly.
 
 ## Reporting
 

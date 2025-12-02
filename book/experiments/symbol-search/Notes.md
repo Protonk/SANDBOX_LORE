@@ -27,3 +27,10 @@ Use this file for dated, concise notes on commands, findings, and pivots.
 - Looked up offsets {0x1466090, 0x148fa37, 0x14ffa9f}: map to `__text` functions `FUN_ffffff8001565fc4`, `FUN_ffffff800158f618`, `FUN_ffffff80015ff7a8` (no instruction bytes retrieved yet; likely need disassembly pass). No callers recorded.
 - Pointer table deep-dive: 512-entry table at `__const` start `0x-7fffdae120` has 333 entries pointing to `FUN_ffffff8000a5f0b0` (90 unique functions total, 27 nulls). Other 512-entry tables: `__desc` start `0x-7fffef5000` (4 funcs total) and `__const` start `0x-7fffddf830` (12 funcs). The dense table with a dominant single target looks like a strong op-entry pointer table candidate; target function is the next analysis focus.
 - Added `kernel_function_info.py` to dump callers/callees for a named function; run on `FUN_ffffff8000a5f0b0` shows: address `0x-7fff5a0f50` (`__text`), size 8 bytes, one DATA reference from `0x-7ffcb08ca4`, no callees. This suggests `FUN_ffffff8000a5f0b0` is likely a tiny stub (perhaps start of a jump table) rather than the evaluator proper; need to inspect surrounding data/callers.
+
+## 2026-01-02
+
+- Headless needed a writable home dir; set `JAVA_TOOL_OPTIONS=-Duser.home=$PWD/dumps/ghidra/home` (plus `GHIDRA_JAVA_HOME`) to avoid writing under `~/Library/ghidra` (blocked by the workspace sandbox).
+- Added `kernel_page_ref_scan.py` (ADRPs/refs into a target page) and `kernel_function_dump.py` (dump disassembly for named functions).
+- Ran page-ref scan for candidate table at `0xffffff8000251ee0` (page start `0xffffff8000251000`, 0x1000 size, all blocks): 0 direct refs, 0 ADRP+ADD hits. Likely need a variant that decodes ADRP immediates without relying on reference analysis.
+- Dumped functions carrying op-count/magic immediates (`FUN_ffffff8001565fc4`, `...158f618`, `...15ff7a8`); they are full prolog/setup routines touching per-struct offsets (e.g., `[rdi+0x1328]`, `[rax+0x32f0]`) and calling helpers at `0xffffff80016c4a16`/`0xffffff80015aaf56`/`0xffffff8002fd0f5e`. No obvious op-table usage yet; need to trace their callouts and data structures.
