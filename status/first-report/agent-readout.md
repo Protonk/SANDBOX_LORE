@@ -32,6 +32,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
 
 ### 2.1 Static structure and vocabulary
 
+This cluster tells us what modern compiled profiles look like on disk and how their Operation and Filter vocabularies are wired in: it anchors concepts like **Binary Profile Header**, **Operation Pointer Table**, **Regex/Literal Table**, **PolicyGraph**, and the **Operation/Filter Vocabulary Maps** in concrete blobs and tables. The outputs here are the backbone for the Static-Format and Vocabulary/Mapping clusters in the concept inventory: other experiments and chapters can assume that op-counts, table offsets, tag layouts, and vocab IDs are stable and correctly interpreted for this host.
+
 - **`anchor-filter-map`**  
   Binds concrete anchor strings (paths, names) to Filter IDs, using outputs from `probe-op-structure`, `field2-filters`, system profiles, and the Filter vocab.
   - Final map: `book/graph/mappings/anchors/anchor_filter_map.json`.
@@ -63,6 +65,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
 
 ### 2.2 Operation pointer table and buckets
 
+This cluster focuses on how SBPL **Operations** connect to entrypoints in the compiled **PolicyGraph** via the **Operation Pointer Table**, and how those entrypoints relate to the **Operation Vocabulary Map**. It provides concrete evidence for concepts like Operation, Operation Pointer Table, and Operation Vocabulary Map in the concept inventory, showing that on this host specific operation IDs (e.g., `file-read*`, `mach-lookup`) consistently land in particular op-table buckets and that those buckets have distinct structural signatures.
+
 - **`op-table-operation`**  
   Uses synthetic SBPL profiles to understand how the Operation Pointer Table (op-table) behaves as Operations and Filters change.
   - Confirms a structured op-table over 196 Operation IDs (from vocab).
@@ -85,6 +89,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
     - `mach-lookup` (96) uses buckets in `{5,6}`, with 6 only in complex profiles with filtered reads.
 
 ### 2.3 Node layout and `field2`
+
+This cluster drills into the shape of **PolicyGraph** nodes and the role of the `field2` key, tying together concepts like **Policy Node**, **Filter**, **Metafilter**, **Regex/Literal Table**, and (eventually) the **Filter Vocabulary Map**. It doesn’t yet name every node type, but it fixes important structural facts: where node arrays live, how tags and small integer keys change when Filters and Metafilters change, and how literal/regex pools are referenced, all of which support the Static-Format and Semantic Graph clusters in the concept inventory.
 
 - **`node-layout`**  
   Explores the compiled PolicyGraph layout for modern profiles on this host.
@@ -121,6 +127,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
 
 ### 2.4 Runtime behavior (provisional)
 
+This cluster tries to connect SBPL and compiled **PolicyGraphs** to real runtime **Decisions** (allow/deny) for specific **Operations** and **Filters**, exercising concepts like Decision, Metafilter, Action Modifier, and Profile Layer in the Semantic Graph and Runtime Lifecycle clusters. On this host the evidence is still provisional—apply gates and expectation mismatches mean we cannot treat these runs as definitive—but the harnesses and microprofiles here are the starting point for future, validated concept witnesses.
+
 - **`runtime-checks`**  
   Attempts to validate bucket-level expectations at runtime for selected profiles.
   - Targets:
@@ -148,6 +156,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
 
 ### 2.5 Entitlements and lifecycle
 
+This cluster is the seed of the Runtime Lifecycle and Extension story, focusing on **Entitlements**, **Profile Layers**, and **Policy Lifecycle Stage** rather than raw graph structure. By comparing differently signed binaries and their entitlements, it sets up the pipeline for showing how app-level metadata feeds into App Sandbox SBPL templates, compiled profiles, and effective policy, tying entitlement-driven behavior back to lifecycle concepts in the inventory.
+
 - **`entitlement-diff`**  
   Starts to connect entitlements to compiled profiles and behavior.
   - A small C sample (`entitlement_sample.c`) is built and signed in two variants:
@@ -160,6 +170,8 @@ This section walks through the `book/experiments/` tree in logical clusters rath
 Lifecycle/extension behavior is more fully tracked in the validation harness (see below), but this experiment is the main concrete starting point for entitlement-driven profile differences.
 
 ### 2.6 Kernel reverse engineering
+
+This cluster looks below the profile format into the kernel’s implementation of **PolicyGraph evaluation**, hunting for the dispatcher that walks nodes and consults AppleMatch, and for the MACF hook glue that connects syscalls to Operation IDs. When completed, it will provide low-level witnesses for concepts like Operation, PolicyGraph, Decision, and Policy Stack Evaluation Order, tying the Static-Format and Semantic Graph clusters back to concrete kernel code on this host.
 
 - **`symbol-search`**  
   Uses Ghidra to hunt for the kernel-side PolicyGraph dispatcher and related helpers in `BootKernelExtensions.kc`.
@@ -175,7 +187,13 @@ Lifecycle/extension behavior is more fully tracked in the validation harness (se
 
 ## 3. Concept inventory and validation state
 
+The concept inventory’s aim is to turn the Seatbelt model into a disciplined set of named, testable ideas rather than a vague mental model. For each concept (Operation, Filter, PolicyGraph, Profile Layer, Sandbox Extension, etc.) it tries to fix a canonical definition, identify concrete “witnesses” (profiles, probes, logs, mappings), and spell out what kinds of evidence constrain it: static structure, runtime behavior, vocabulary alignment, or lifecycle scenarios. Concepts are grouped into four clusters—Static-Format, Semantic Graph and Evaluation, Vocabulary and Mapping, and Runtime Lifecycle and Extension—so validation work can be organized by what we can actually observe and test.
+
+In terms of status, the Static-Format and Vocabulary/Mapping clusters are in the best shape: we have a working decoder, system-profile digests, op-table and tag-layout mappings, and host-specific Operation/Filter vocab tables tied back to dyld cache material. The Semantic Graph and Runtime Lifecycle clusters are scaffolded but still provisional: there are microprofiles and runtime harnesses, and some runs via the SBPL wrapper, but apply gates and expectation mismatches mean we cannot yet treat runtime evidence as firm support for concepts like Decision, Metafilter, and Policy Stack Evaluation Order. The validation index reflects this split—static and vocab outputs marked “ok,” semantic and lifecycle outputs present but explicitly flagged as brittle or partial.
+
 The conceptual “truth” lives under `book/graph/concepts/`, with the substrate definitions as the ultimate reference. Validation harness code and evidence live under `book/graph/concepts/validation/`.
+
+### Contents
 
 - **Concept inventory**  
   - `book/graph/concepts/CONCEPT_INVENTORY.md` enumerates concepts and groups them into four evidence clusters:
@@ -212,7 +230,9 @@ The conceptual “truth” lives under `book/graph/concepts/`, with the substrat
 
 ## 4. Tooling and datasets you can rely on
 
-From the perspective of an agent or human wanting to do further work, these are the core tools and mappings that are currently dependable on this host:
+### 4.1 Tooling (`book/api/`)
+
+This section covers the core tools under `book/api/` that agents and humans can call directly: used to decode profiles, apply SBPL/blobs at runtime, drive Ghidra, and run simple probes. These tools underpin both the experiments and the validation harness and are the main way to regenerate or extend evidence for the concept inventory.
 
 - **Decoder (`book.api.decoder`)**
   - Python module that decodes modern compiled profiles into a `DecodedProfile`:
@@ -242,6 +262,10 @@ From the perspective of an agent or human wanting to do further work, these are 
     - Supports `read`/`write` operations on paths.
     - Emits JSON lines with `op`, `path`, `rc`, and `errno`.
   - Used together with the SBPL wrapper in `sbpl-graph-runtime` and some validation runs.
+
+### 4.2 Mapping (`book/graph/mappings/`)
+
+This section covers the stable, host-specific mapping datasets under `book/graph/mappings/`: they are the “knowledge base” for this Sonoma build, capturing Operation/Filter vocabularies, op-table bucket behavior, tag layouts, anchor bindings, and system-profile digests. Experiments and chapters should treat these files as the canonical bridge between substrate concepts (Operation, Filter, PolicyGraph, etc.) and concrete IDs, offsets, and strings on this host.
 
 - **Graph/mapping artifacts (`book/graph/mappings/`)**
   - Vocab:
