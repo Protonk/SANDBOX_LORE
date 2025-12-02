@@ -50,6 +50,10 @@ Deliverables: function addresses and linkage notes tying MACF hooks to the dispa
 - Parsed TextEdit `.sb.bin`: op_count=266, magic word=0x1be, nodes_start=548, literal_start=1132; initial 32-byte header signature not found in KC via raw byte search.
 - Next: build a more flexible signature (multiple word positions) and scan KC via headless script to surface embedded profiles, then look for code that walks those structures.
 - Added `kernel_page_ref_scan.py` to hunt for ADRP/ADD references into the suspected 512-entry table at `0xffffff8000251ee0`; first pass (all blocks) reported 0 hits, so a follow-up variant that decodes ADRP immediates without pre-existing references is needed.
+- x86-style page scans against the same address show nothing (as expected on ARM64). De-prioritize this address as the op table until ARM64-specific evidence (ADRP+ADD/LDR or profile-walker usage) surfaces; focus on ARM patterns and profile-anchored signatures.
+- Data/constants pivot:
+  - Found one little-endian instance of the suspected table pointer at file offset `0x52978` (addr `0xffffff8000152978` in `__desc`); defining it and collecting xrefs yielded no callers (still undefined data).
+  - ARM const-base scan (`kernel_arm_const_base_scan.py`) over `0xffffff8000250000–0xffffff8000260000` saw 0 ADRP and 0 matches, suggesting Ghidra isn’t decoding ADRPs in sandbox text. Next steps for future agent: improve ADRP detection or run a profile-header signature scan to find embedded blobs, then chase code that walks them.
 
 Deliverables: signature JSON in `out/` if needed, plus scan results with candidate addresses.
 
