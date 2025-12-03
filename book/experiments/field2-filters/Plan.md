@@ -43,7 +43,7 @@ Deliverables:
 
 **Upcoming**
 
-- Design additional probes that reduce or alter generic path/name scaffolding (e.g., richer operations or more complex metafilters) to surface filter-specific `field2` values; keep richer network shapes when chasing flow-divert (minimal profile collapsed field2 to {1,2} and lost 2560).
+- Design additional probes that reduce or alter generic path/name scaffolding (e.g., richer operations or more complex metafilters) to surface filter-specific `field2` values; keep richer network shapes when chasing flow-divert (simplified profiles collapsed field2 to low IDs and lost 2560).
 
 Deliverables:
 - `sb/` variants + compiled blobs under `sb/build/`.
@@ -58,7 +58,7 @@ Deliverables:
 
 **Upcoming**
 
-- Perform focused cross-op checks for less common filters once better probes or anchors are available; chase the flow-divert-specific field2 (2560) using richer network mixes, and any other high/unknown values by varying operations.
+- Perform focused cross-op checks for less common filters once better probes or anchors are available; chase the flow-divert-specific field2 (2560) using richer network mixes, and any other high/unknown values by varying operations. Simplified dtracehelper/posix_spawn probes yielded only low IDs, so full-profile context may be required.
 - Flag and investigate any inconsistencies that appear as decoding improves.
 
 Deliverables:

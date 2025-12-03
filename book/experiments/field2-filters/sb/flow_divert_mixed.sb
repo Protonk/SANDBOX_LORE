@@ -1,0 +1,8 @@
+(version 1)
+(allow default)
+;; Mixed network profile to preserve flow-divert context
+(allow network-outbound)
+(allow network-inbound)
+(allow network-outbound (literal "com.apple.flow-divert"))
+(allow mach-lookup (global-name "com.apple.test.flowdivert"))
+;; Omit socket-domain for now; mixed ops + flow-divert literal
