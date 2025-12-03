@@ -1,69 +1,211 @@
 # Field2 hunting
 
-## Overview
+This note tracks the ongoing attempt to understand the third 16‑bit payload field in PolicyGraph nodes on this Sonoma host. Earlier notes called this slot `field2`; in the decoder and experiments we now surface it as `filter_arg_raw`. It collects the paths we have already taken, what static and kernel evidence we have in hand, and a short list of next steps that still look worth pursuing.
 
-This troubleshooting note tracks the ongoing attempt to understand the third 16‑bit payload field in policy graph nodes (our `field2`), beyond the cases that clearly line up with known filter IDs. On this Sonoma host, most nodes carry low `field2` values that match the current filter vocabulary and behave like classic `filter_arg` indices into literal/regex or small enumerations. A small but important set of nodes, however, use higher values (for example 2560, 170, 174, 115, 109, 165, 166, 10752, 16660) that do not match any known filter IDs, literal indices, or obvious table offsets, and appear only in richer platform and mixed-profile graphs. The goal here is to keep a grounded record of what has been tried, what outside sources say, and what next steps are likely to be productive, so that future work does not repeat the same blind alleys.
+The goal is **not** to guess semantics for the remaining “high” values, but to keep a grounded record of where the unknowns live, which tools and experiments now exist around them, and what work would actually move them from “mystery constant” toward a validated mapping.
 
-## Local evidence so far (host baseline)
+## Local definition and scope
 
-- Mixed network probes (`v4_network_socket_require_all` and `v7_file_network_combo` in `book/experiments/probe-op-structure/sb/build`) produce nodes where tag 0 has `field2=2560` tied to a flow‑divert literal; simplified profiles that isolate flow‑divert in cleaner SBPL lose this high value and collapse back to low filter IDs.
-- Anchor sweeps (`probe-op-structure/out/anchor_hits.json`) show anchors mostly mapping to generic path/name `field2` shapes; the {7, 2560, 2} triple tied to flow‑divert appears only in the richer probes, suggesting a context‑dependent or composite region.
-- The `bsd` platform profile (`book/examples/extract_sbs/build/profiles/bsd.sb.bin`) contains several “high” `field2` values (170, 174, 115, 109, 16660) that cluster around literals like `/dev/dtracehelper` and `posix_spawn_filtering_rules`. Targeted SBPL probes that try to reproduce just those cases only ever surface low filter IDs; the high codes remain confined to the full profile.
-- In `bsd`, the tag 0 / `field2=16660` node is a widely shared tail: it has a single valid successor (node 0, tag 27, `field2=18`) and many predecessors across operations, consistent with a shared sink or default‑tail construct.
-- The `airlock` profile shows high `field2` values 165, 166, and 10752, all confined to a single operation ID and not visible in simpler probes, suggesting profile‑local, platform‑specific use.
-- Cross‑checking high `field2` values against known literal indices, regex indices, and other table offsets shows no direct equality; the high constants are distinct from the current vocabulary and literal table positions.
+- In this project, `field2` is the third 16‑bit payload in a node record for graph‑based profiles. In the decoder and inventories it is exposed as:
+  - `filter_arg_raw` – the stored u16 from the node.
+  - `field2_hi = filter_arg_raw & 0xc000`
+  - `field2_lo = filter_arg_raw & 0x3fff`
+- For **low** values, `filter_arg_raw` lines up directly with the filter vocabulary on this host (e.g. 0=path, 1=mount-relative-path, 3=file-mode, 5=global-name, 6=local-name, 7=local, 8=remote, 11=socket-type, 17/18 iokit-*, 26/27 right-name/preference-domain, 80=mac-policy-name).
+- This note is about the **exceptions**: high or structurally odd `filter_arg_raw` values that do not map to any known filter ID, literal index, or obvious table offset, and that show up only in richer platform profiles or specific mixed probes.
 
-This evidence supports a picture where most of the graph uses the “public” filter vocabulary and AppleMatch‑backed tables as expected, while some regions (platform tails, mixed network constructs, posix_spawn‑related logic) rely on internal filters or flag‑augmented arguments we do not yet understand.
+All of the concrete data for this note now lives under `book/experiments/field2-filters/`:
 
-## Web agent advice
+- `out/field2_inventory.json` – per‑profile histograms, hi/lo splits, tag counts, op reach.
+- `out/unknown_nodes.json` – per‑profile list of “unknown” nodes (no vocab hit or non‑zero hi bits) with tag, fan‑in/fan‑out, literals, and op reach.
+- Scripts: `harvest_field2.py`, `unknown_focus.py`, and arm64e helper/evaluator dumps under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
 
-We’d been pushing on the “field2” problem: on this Sonoma host, most node payloads line up cleanly with known filter IDs, but a handful of high values (2560 in mixed network probes, 170/174/115/109/16660 in `bsd.sb.bin`, 165/166/10752 in `airlock`) don’t match any current vocabulary or literal/regex indices. We built probes and a census showing that 2560 only appears in richer mixed network graphs (and disappears in simplified SBPL), the bsd 16660 node is a widely shared tail reached from many ops, and airlock’s high codes are confined to one operation. The “other model” summarized this and we documented it in the `field2-filters` experiment.
+## Static evidence on this host
 
-You then had me formulate a single, detailed question for a web agent that could use public literature and web search. That question essentially asked: is there any published mapping or deeper explanation of this “field2” slot in modern Seatbelt blobs (especially for high values like 2560/16660), and what does the external record say about how to interpret or experiment on it? I also wrote a separate explanation of what we mean by “Field2” in this project so the web agent could align its own understanding of Seatbelt with our local model.
+### Canonical profiles (`bsd`, `airlock`, `sample`)
 
-The web agent responded not with an immediate answer but first with its own questions to tighten the picture. It asked (1) whether, for high field2 values, a cross-profile census grouping by `(tag, op-id, field2)` shows those triples recurring across profiles/versions or whether they’re profile‑local. Based on our existing census and prior work, I could say that 16660/tag 0 in `bsd` is a shared sink reached from many ops in that single profile, airlock’s high values appear only in one op in airlock, and 2560 is tied to mixed network probes, but we don’t yet have a multi‑OS, multi‑host dataset, so beyond this host we effectively “don’t know.” It then asked (2) whether we’d checked if high field2 values correlate better with any other known table/index (literal/regex/vnode-type/etc.) rather than with filter IDs; I answered that we’d already done that: the high values do not equal literal indices or offsets, and don’t obviously match any existing vocabulary tables. Finally, it asked (3) whether the tag 0 / field2=16660 node in `bsd.sb.bin` behaves structurally like a shared sink or shows local branching; I answered that we’ve already walked that region and it behaves like a shared tail: one valid successor and many predecessors across operations.
+From `book/examples/extract_sbs/build/profiles/{bsd,airlock,sample}.sb.bin`, harvested via `harvest_field2.py`:
 
-After that exchange, the web agent gave a long, literature-backed answer. It anchored our “field2” in the classic node layout: `opcode`, `filter`, `filter_arg`, and two transitions, with `filter_arg` exactly matching our field2. It stressed that public work (Blazakis, SandBlaster, SandScout, later surveys) never published a richer bit-level layout for macOS 13/14: `filter_arg` is a 16‑bit, filter‑specific payload; tools treat it as opaque and learn meanings by differential compilation, not by decoding flags. There are no public mappings for constants like 2560 or 16660. It then laid out plausible mechanisms behind the high values: (a) AppleMatch/regex/literal caches with extra indirection or flag bits; (b) metafilter glue implemented as subgraphs that may use internal pseudo‑filters and arguments not exposed in public SBPL; (c) hidden filter kinds used only in platform/bsd/airlock profiles; and (d) possible flag bits carved out of `filter_arg` (pointing at patterns like 0x4114 = 0x4000|0x0114 and 0x0A00/0x2A00). It pointed out that our bsd tail node matches the expected shape of a shared default/special tail, where such flags would be natural. Its concrete guidance was: treat field2 as “raw filter_arg with possible flags”, derive views like low/high bits rather than renaming it to a new concept, classify metafilters and tails by graph shape instead of overfitting constants, keep “unknown high” values in a separate namespace instead of forcing them into existing vocabularies, and, ultimately, let Sandbox.kext be the arbiter by finding where the kernel masks and shifts this field. I reviewed this answer and concluded it’s consistent with our substrate and local evidence: it doesn’t give us new numeric mappings, but it confirms that we’re ahead of the public record on these Sonoma constants and that the next real progress depends on kernel-side analysis rather than more SBPL‑only experiments.
+- **`bsd.sb.bin`**
+  - Node count ~41.
+  - `filter_arg_raw` values include:
+    - Low IDs with direct vocab matches: 0, 1, 3, 5, 6, 7, 8, 11, 17, 18, 26, 27, 80.
+    - High / unknowns: `170`, `174`, `115`, `109` (all with `field2_hi=0`, on tag 26), and `16660` (on tag 0 with `field2_hi=0x4000`, `field2_lo=0x0114`).
+  - `unknown_focus.py` shows:
+    - `16660` lives on tag 0 as a shared tail: `fan_in ≫ 1`, `fan_out = 1`, reachable from op IDs 0–27 (the default/file* cluster).
+    - The other high values (170/174/115/109) sit on tag 26, have `fan_out=1`, `fan_in=0`, and no op reach in the current decoding.
 
-## Working hypotheses (explicit)
+- **`airlock.sb.bin`**
+  - Very small graph (node count ~7).
+  - `filter_arg_raw` is dominated by three unknown values: `165`, `166`, and `10752` (all with `field2_hi=0`).
+  - `unknown_focus.py` shows:
+    - These nodes mostly sit on tags 166 and 1, with 10752 on tag 0.
+    - Their op reach is concentrated on a single operation ID, 162 (`system-fcntl` in the current operation vocabulary).
+    - Some are self‑loops or have only invalid/out‑of‑bounds successors.
 
-- `field2` is the historical `filter_arg` payload: a 16‑bit value whose semantics depend on the filter associated with the node.
-- For low, well‑behaved nodes, `field2` directly encodes indices or small enumerations that line up with the current filter vocabulary and literal/regex tables.
-- For “high” values seen only in platform profiles or richer probes (2560, 16660, etc.), at least one of the following is true:
-  - they are arguments to internal filter kinds that are not present in the current SBPL/vocabulary map but otherwise follow the same “index/payload” model;
-  - they carry additional structure inside the 16‑bit word (for example, a 0x4000‑style “special tail / platform‑only / meta‑glue” flag in the high bits, with the low bits retaining an index), even though the exact bitfield split is not yet known;
-  - they mark shared tail regions or metafilter glue nodes where graph shape and position, not the literal numeric value, carry most of the semantic weight.
-- Existing SBPL‑only probes have likely hit diminishing returns for these cases; the remaining structure depends on how Sandbox.kext consumes `filter_arg` at evaluation time.
+- **`sample.sb.bin`**
+  - Node count ~32.
+  - `filter_arg_raw` mostly low and well‑behaved: {0,1,3,7,8} with clear path/socket matches.
+  - A single sentinel, `3584` (`field2_hi=0`, `field2_lo=0x0e00`), appears on tag 0, op‑empty, and is marked as unknown.
 
-These hypotheses should remain tagged as provisional (`status: partial` at best) until we have kernel‑side evidence.
+### Flow‑divert and mixed‑network probes
 
-## Good next steps (short horizon)
+Across network‑focused profiles (from `probe-op-structure` and local SBPL in `book/experiments/field2-filters/sb/`), we see:
 
-- **Stabilize the data model**
-  - In graph decoders and capability catalogs, represent this slot explicitly as:
-    - `field2_raw: u16`
-    - `field2_hi:  u16 = field2_raw & 0xC000`
-    - `field2_lo:  u16 = field2_raw & 0x3FFF`
-  - Name the stored value in the decoded node type as `filter_arg_raw = field2_raw` to stay aligned with the published node layout, and treat `field2_hi` / `field2_lo` as derived views used only for analysis.
-  - Use `field2_lo` as a candidate payload only when it clearly matches known filter IDs or other small, well‑behaved values; for “high” or unclear cases (2560, 166, 10752, 16660, etc.), carry them as an `UnknownFilterArg(field2_raw)` rather than coercing them into the low‑ID vocabulary.
+- Simple, single‑filter probes (socket-domain/type/protocol, subpath/literal on file operations, vnode‑type, etc.) **collapse** to generic path/name/socket IDs: `filter_arg_raw` in {0,1,3,4,5,6,7,8,11}. These shapes are dominated by shared scaffolding; the intended filter often does not surface as a distinct ID.
+- Richer, mixed profiles do surface one repeatable unknown tied to flow‑divert:
+  - In `v4_network_socket_require_all`, `v7_file_network_combo`, and `net_require_all_domain_type_proto`, nodes referencing the literal `com.apple.flow-divert` carry:
+    - A triple `{7, 2560, 2}` across nodes (local + unknown + xattr-style IDs),
+    - A specific unknown `filter_arg_raw = 2560` (`field2_hi=0`, `field2_lo=0x0a00`) on tag 0, with both successor edges pointing at node 0 (structurally a trivial branch).
+  - Inventories and `unknown_focus.py` agree:
+    - This 2560 node appears only when **socket domain, type, and protocol are all required together** (require-all); any two of the three reduce the profile back to low IDs and the 2560 node disappears.
+    - In all current decodes, the 2560 node is op‑empty (no operation entrypoint lands there directly), and its fan‑in=0, fan‑out=2 (both edges = 0).
+- Attempts to isolate the flow‑divert behavior into small, “clean” SBPL profiles (network‑only, or network + mach‑lookup) consistently collapse back to low IDs; the 2560 value has so far remained confined to the original mixed probes.
 
-- **Systematic census on this host**
-  - Regenerate a host‑wide census of `(profile, op-id, tag, field2)` for all compiled profiles we already decode (platform, airlock, app sandbox examples).
-  - For high values, record their structural context: whether they are terminal, shared tails (fan‑in), or internal glue (fan‑out/fan‑in), and track `(tag, field2_hi, field2_lo)` distributions in a side channel.
-  - Check whether using `field2_lo` in place of `field2_raw` aligns these nodes with known low‑ID payloads, without assuming any particular interpretation of the high bits.
+### Focused synthetic probes
 
-- **Graph‑shape classification**
-  - Keep classification of graph structure (require‑all/any/not, shared tails, default‑op tails, and similar motifs) driven primarily by node shape and position in the graph, with `field2_*` values treated as auxiliary evidence rather than primary keys.
-  - For nodes classified as “shared tails” or “metafilter glue,” record their `(tag, field2_hi, field2_lo)` distributions for later comparison, but avoid baking any semantic claims about specific constants into the core model until there is clear Sandbox.kext evidence for the bitfields behind them.
-  - Identify common graph motifs where high `field2` values appear (shared tails, metafilter regions, posix_spawn‑related subgraphs, flow‑divert clusters) and record how often each motif recurs on this host.
+Several synthetic SBPL profiles were designed to “peel out” the bsd/airlock high values into simpler graphs:
 
-- **Kernel‑side reconnaissance (when Ghidra work resumes)**
-  - Locate the core evaluator in `Sandbox.kext` that walks nodes and reads `filter_arg`.
-  - Instrument or statically analyze how it masks and shifts the `filter_arg` field (look for `& 0x3FFF`, `& 0x4000`, `>> 8`, etc.).
-  - Use those masks as the authoritative definition of any bitfields inside `field2`, then re‑interpret existing high constants under that scheme.
+- `dtracehelper_posixspawn.sb` and `bsd_tail_context.sb`:
+  - Use only a few literals (`/dev/dtracehelper`, `/usr/share/posix_spawn_filtering_rules`) and simple allow/deny around file operations and mach‑lookup.
+  - Decode to graphs with only low path/socket IDs (plus the 3584 sentinel); none of the high bsd values (170/174/115/109/16660) appear.
 
-- **Guardrails for interpretation**
-  - Avoid promoting any specific numeric mapping (for example “2560 == flow‑divert filter X” or “16660 == bsd default tail Y”) without kernel evidence.
-  - Keep experiment notes and capability catalogs explicit about where conclusions rest on SBPL‑only structure vs. confirmed runtime behavior.
+- `bsd_ops_default_file.sb`:
+  - Targets ops 0,10,21–27 with simple path literals.
+  - Again, only low IDs and the 3584 sentinel appear; the bsd high values remain unique to the full `bsd.sb.bin`.
 
-Taken together, this should keep the `field2` work anchored in static artifacts and the public Canon while making it straightforward to plug in kernel‑sourced bitfield knowledge once the disassembly work catches up.
+- `airlock_system_fcntl.sb`:
+  - Focuses on op 162 (`system-fcntl`) with `fcntl-command` filters.
+  - Produces mostly low path/socket IDs but also a **new sentinel**:
+    - `filter_arg_raw = 0xffff` (`field2_hi=0xc000`, `field2_lo=0x3fff`) on tag 1, op‑empty, with no attached literals.
+  - This sentinel does not appear in the canonical `airlock` blob, but it shows up as another “high” value in the same conceptual area (system‑fcntls).
+
+Across all of these, the pattern is consistent with what we saw early on: most of the graph uses the public filter vocabulary in a straightforward way, while a small set of regions (bsd tail, airlock system‑fcntls, flow‑divert mixed graphs) rely on `filter_arg_raw` values that we cannot yet interpret.
+
+## Kernel‑side evidence (arm64e sandbox kext)
+
+The field2‑filters experiment now includes a concrete look at how the kernel consumes the third node slot on this host, using the extracted arm64e sandbox kext:
+
+- The sandbox binary (`com.apple.security.sandbox`) was carved out of the BootKC fileset and disassembled; helper search is captured under:
+  - `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
+- A small helper, identified as `__read16` at `fffffe000b40fa1c`, is the canonical u16 reader:
+  - It bounds‑checks the profile buffer and then issues a plain `ldrh/strh` on the payload.
+  - There are **no masks, bit‑tests, or shifts** applied to the u16 in this helper.
+- The main evaluator `_eval` at `fffffe000b40d698`:
+  - Uses masks like `0x7f`, `0xffffff`, and `0x7fffff` for other payload fields and indices.
+  - Contains **no `0x3fff`/`0x4000` masks or similar bit slicing on the value returned by `__read16`**.
+- Earlier automated scans for immediates (`0x3fff`, `0x4000`, `0xc000`, `0xa00`, `0x2a00`, `0x4114`) across the kernel cache and in the sandbox slice turned up no obvious bit‑field operations on `filter_arg_raw`.
+
+Taken together, the current kernel evidence on this host supports a narrow but important claim:
+
+- The kernel **reads `filter_arg_raw` as a plain 16‑bit value and forwards it to higher‑level logic unmasked**. The hi/lo split we use in the experiment (`field2_hi`, `field2_lo`) is an analytic view for humans and tools, not a structure the kernel itself enforces at the load point.
+- Any special semantics for high values (like bsd’s 16660 or airlock’s 10752/0xffff) must therefore arise either:
+  - in comparison code that looks at the raw u16 (e.g., equality/inequality against specific constants), or
+  - from code that uses `filter_arg_raw` as an index into auxiliary tables (whose contents we haven’t tied back yet),
+  and not from a generic “split hi/lo” bitfield at the reader.
+
+We do **not** yet have a confirmed call site that ties a specific unknown constant (2560, 16660, 10752, 0xffff, 3584) to a particular branch or helper; that remains open.
+
+## Paths taken so far
+
+The work to date breaks down into three main clusters:
+
+1. **System‑profile census and vocab alignment**
+   - Confirmed that low `filter_arg_raw` values in `bsd` and `sample` map cleanly to `filters.json` on this host.
+   - Identified all “unknown” values and their tag/op context via `field2_inventory.json` and `unknown_nodes.json`, with:
+     - bsd tail 16660 on tag 0, ops 0–27;
+     - bsd 170/174/115/109 on tag 26, op‑empty;
+     - airlock 165/166/10752 on tags 166/1/0, op 162;
+     - sample 3584 on tag 0, op‑empty.
+
+2. **SBPL probes (single‑filter and mixed)**
+   - Single‑filter probes (for basic path/dir/socket/iokit filters) mostly reproduce generic path/name IDs and occasionally simple sentinels; they do **not** surface the high system‑profile values.
+   - Mixed network probes did surface the 2560 value tied to `com.apple.flow-divert`, but only under a precise require‑all conjunction for domain + type + protocol; attempts to simplify these profiles stripped away 2560 and left only low IDs.
+   - Focused bsd/airlock clones (dtracehelper/posix_spawn, default/file ops, system‑fcntls) have so far:
+     - failed to replicate bsd’s high values outside the canonical blob;
+     - created one new sentinel (0xffff) in a synthetic airlock‑style profile.
+
+3. **Kernel displacement and helper search**
+   - Carved and disassembled the arm64e sandbox kext; identified a u16 reader (`__read16`) used by `_eval` and related helpers.
+   - Verified that `filter_arg_raw` is loaded and passed around as a raw u16 at the helper/evaluator level (no hi/lo bitfield splitting here).
+   - Ran targeted mask/imm searches for the most interesting constants (16660/2560/10752/0xffff/3584) and common “mask patterns” (0x3fff/0x4000/0xc000) without finding a clean bitfield scheme or constant compare in the evaluator path.
+
+At this point, further SBPL‑only probing looks like diminishing returns: synthetic profiles keep collapsing into low IDs or generating new sentinels, and the high values of interest remain anchored to the full platform profiles.
+
+## Current working hypotheses (explicit)
+
+These hypotheses are **partial** and should be treated as such:
+
+- `filter_arg_raw` is the historical `filter_arg` payload: a 16‑bit value whose meaning depends on the node’s tag and associated filter.
+- For low values, `filter_arg_raw` maps directly into the current filter vocabulary (path/socket/iokit/etc.) and the literals/regex tables. This is well‑supported by both system profiles and probes.
+- The high values we care about (16660, 2560, 10752, 165, 166, 170, 174, 115, 109, 3584, 0xffff) are **not** mis‑decoded filter IDs; instead they likely represent:
+  - arguments to internal or profile‑local filters that do not appear in `filters.json`, or
+  - payload values that drive special‑case logic in helpers (e.g., flow‑divert, default tails, system‑fcntls), possibly via equality comparisons or table lookups.
+- There is no evidence on this host that the kernel splits `filter_arg_raw` into hi/lo bitfields via a standard mask (0x3fff/0x4000/0xc000) at the reader; any hi‑bit behavior (like 16660’s `0x4000` component) would have to be interpreted by higher‑level code, not by a generic “decode” step.
+
+We explicitly do **not** know:
+
+- Whether bsd’s 16660, airlock’s 10752/0xffff, or flow‑divert’s 2560 have a clean 1:1 mapping to a semantic concept (e.g., “bsd default tail”, “flow‑divert branch”, “system‑fcntls only”) or are just indices into auxiliary tables we haven’t reconstructed.
+- Whether the same numeric values would play the same role on other macOS versions; all observations here are Sonoma‑specific.
+
+## Potentially fruitful next steps
+
+Given the current state of artifacts and tooling, the paths below look like they could still pay off without re‑treading old ground. They are phrased as small tasks that can be picked up independently.
+
+### 1. Follow `filter_arg_raw` into concrete helpers
+
+Now that `__read16` and `_eval` are located, the next kernel‑side step is to **track where the u16 payload actually drives behavior**:
+
+- Use Ghidra on `com.apple.security.sandbox` to:
+  - Identify all callers of `__read16` that forward its result to comparison or table‑index operations (e.g., `_match_network`, `_populate_syscall_mask`, or other helper families).
+  - For each caller, annotate:
+    - whether `filter_arg_raw` is compared directly against a small immediate (equality/inequality), or
+    - used as part of an index into a table whose contents we can dump.
+- If any caller shows comparisons against constants that match our unknowns (16660, 2560, 10752, 0xffff, 3584), record that as a candidate mapping in the experiment (not here), together with the surrounding control‑flow pattern.
+- If callers only ever treat `filter_arg_raw` as an index into per‑profile tables without obvious constants, we should update this note to reflect that and shift focus toward reconstructing those tables instead.
+
+### 2. Use op reach and tag layouts to bound semantics
+
+Even without full helper semantics, the combination of op reach and tag layouts gives us structural constraints:
+
+- For bsd 16660:
+  - It sits on tag 0, with high fan‑in and reachability from ops 0–27. Check `book/graph/mappings/tag_layouts/tag_layouts.json` to confirm the meaning of tag 0’s successors.
+  - Use `unknown_nodes.json` to:
+    - verify all predecessors and the unique successor for 16660,
+    - and confirm whether this tail is always the last decision stage for those operations.
+  - This should let us describe 16660 as “a shared bsd tail with specific op coverage and tag shape,” even if we can’t name the filter.
+
+- For airlock 165/166/10752/0xffff:
+  - They are tightly tied to op 162 (`system-fcntl`) on tags 166/1/0.
+  - Walk the small `airlock` graph (and the synthetic `airlock_system_fcntl` graph) with tag layouts in hand to see:
+    - whether these nodes are early branch points or tails,
+    - and how many distinct concrete predicates they appear to guard.
+  - The aim is to refine the description from “high values in airlock” to “a small system‑fcntls‑only cluster with tag shapes X/Y/Z.”
+
+- For flow‑divert 2560:
+  - Use op reach and tag layouts to confirm it is genuinely op‑empty and structurally trivial (both successors to node 0) in the current decodes.
+  - That gives us a precise structural bound: “unknown branch in mixed network probes, anchored on a flow‑divert literal, currently not reachable from any operation entrypoint in the decoded graphs.”
+
+These steps won’t “solve” the unknowns, but they will tighten the structural story and make later helper‑level findings easier to slot into place.
+
+### 3. Stop-gap probes guided by op reach (careful)
+
+SBPL‑only probes have mostly hit diminishing returns, but one more **tightly guided** round might still be informative if we constrain it by op reach instead of by intuition:
+
+- Starting from `unknown_nodes.json`, pick one or two unknowns and design probes that:
+  - preserve the same op IDs and a minimal set of literals, and
+  - adjust only the default decision or a single additional filter.
+- The goal is not to make 16660/2560/etc. disappear (we’ve already done that by simplifying too aggressively), but to find *nearby* profiles where:
+  - the same unknown persists but additional nodes around it are simple and interpretable, or
+  - the unknown disappears in favor of a known filter ID, giving us a “before/after” pair we can reason about.
+
+If another round of such probes also collapses to low IDs or spawns yet more sentinels, we should explicitly record that in `Report.md` and officially stop the SBPL branch until kernel work progresses.
+
+### 4. Guardrails for any future mapping
+
+Any eventual “mapping” from high `filter_arg_raw` values to semantic labels should:
+
+- Be anchored in **both** static structure (node/tag/op placement, literal attachments) **and** kernel helper behavior (comparisons or table lookups).
+- Remain version‑specific to this host (Sonoma 14.4.1, Apple Silicon).
+- Be emitted first as experiment‑local annotations (e.g., in `field2_inventory.json` or a separate mapping file under `book/experiments/field2-filters/`), and only promoted into shared vocab/mappings after validation and cross‑consumer checks.
+
+Until then, this trouble report should be read as: “we have a reasonably complete static atlas of where the weird `filter_arg_raw` values live, we know the kernel reads them as raw u16s, and we have a clear set of kernel‑side and structural steps that could turn specific constants into grounded concepts, but we are not there yet.”
