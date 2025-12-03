@@ -48,3 +48,20 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 
 - `flow_divert_mixed.sb` (network in/out + flow-divert literal + mach-lookup) compiled via `sbsnarf.py`: op_count=2, node_count=29, tags {0,1}, field2 collapsed to {1×29}; no flow-divert literal refs surfaced in nodes and 2560 did not appear.
 - `bsd_tail_context.sb` (dtracehelper + posix_spawn literals with simple allow/deny) compiled via `sbsnarf.py`: op_count=4, node_count=29, tags {0,1,3}, field2 {3×27, 1×2}; nodes referencing the literals carry only low field2 values. High bsd tail values (170/174/115/109/16660) remain absent outside the full profile.
+
+### 2560 re-check and anchor sweep
+
+- Revalidated 2560 signal in original mixed network probes (`v4_network_socket_require_all`, `v7_file_network_combo`): both still show field2 values dominated by 8/7 with a single node carrying 2560 (tag 0, fields [0,0,2560,0,7]) tied to `com.apple.flow-divert`. A simplified require-any clone collapsed field2 to low IDs and was discarded.
+- Anchor sweep (existing probe-op-structure outputs) remains unchanged: anchors mostly map to generic path/name field2 values; `flow-divert` anchor still pairs with {7, 2560, 2} but only in the richer probes, not in the new simplified ones.
+
+### Bsd-tail mimic with extra op
+
+- Tweaked `bsd_tail_context.sb` to add a mach-lookup rule alongside dtracehelper/posix_spawn literals. Compile/decode shows op_count=4, node_count=29, tags {0,1,3}, field2 {3×27, 1×2}. Literal-bearing nodes still carry only low IDs. High bsd tail values (170/174/115/109/16660) remain locked to the full bsd profile; adding a mach rule did not surface them.
+
+### Hi/lo census refresh and probe-op inclusion
+
+- Updated `harvest_field2.py` to treat the third slot explicitly as `filter_arg_raw` with derived `field2_hi = raw & 0xC000` and `field2_lo = raw & 0x3FFF`, and to track per-tag counts. Inventory now ingests `book/experiments/probe-op-structure/sb/build` profiles alongside the local probes and system blobs; refreshed output lives at `out/field2_inventory.json`.
+- Hi/lo observations: all current unknowns except the bsd tail carry `hi=0`; bsd’s 16660 shows `hi=0x4000`, `lo=0x114`. Unknowns 2560 (flow-divert), 10752/166/165 (airlock), and 170/174/115/109 (bsd) all keep `hi=0` and remain unmapped.
+- Tag context from the new census: airlock’s 166/165 live on tags {166,1} with 10752 on tag 0; bsd’s 170/174/115/109 cluster on tag 26, while 16660 sits on tag 0 (shared tail); flow-divert 2560 appears once each in `v4_network_socket_require_all` and `v7_file_network_combo` on tag 0, and still does not show up in the simplified `flow_divert_*` variants (which collapse to low IDs).
+- Negative notes: `v8_all_combo.sb.bin` decodes to `node_count=0` in this pass; `flow_divert_mixed.sb.bin` continues to collapse to a single low-ID path-ish node (`mount-relative-path`).
+- Added per-profile `unknown_nodes` capture in `out/field2_inventory.json` (nodes with `hi != 0` or no vocab match). This shows concrete field arrays and literal refs for the high/unknown cases (bsd 16660/170/174/115/109, airlock 165/166/10752, flow-divert 2560, sample’s 3584). No graph-walk or predecessor counts yet; edge layout ambiguity blocked that for now.

@@ -126,7 +126,7 @@ def _external_library_summary():
     sym_iter = symtab.getExternalSymbols()
     while sym_iter.hasNext() and not monitor.isCancelled():
         sym = sym_iter.next()
-        loc = sym.getExternalLocation()
+        loc = _safe_external_location(sym)
         if not loc:
             continue
         lib = loc.getLibraryName() or ""
@@ -135,6 +135,14 @@ def _external_library_summary():
     for lib, count in sorted(libs.items(), key=lambda kv: kv[0].lower()):
         summary.append({"library": lib, "symbol_count": count})
     return summary
+
+
+def _safe_external_location(sym):
+    """Return external location if available; tolerate FunctionSymbols lacking getExternalLocation."""
+    try:
+        return sym.getExternalLocation()
+    except AttributeError:
+        return None
 
 
 def _external_functions(library_substr, addr_set):
@@ -146,7 +154,7 @@ def _external_functions(library_substr, addr_set):
     sym_iter = symtab.getExternalSymbols()
     while sym_iter.hasNext() and not monitor.isCancelled():
         sym = sym_iter.next()
-        loc = sym.getExternalLocation()
+        loc = _safe_external_location(sym)
         if not loc:
             continue
         lib = (loc.getLibraryName() or "").lower()
@@ -271,4 +279,5 @@ def run():
         traceback.print_exc()
 
 
-run()
+if not os.environ.get("GHIDRA_SKIP_AUTORUN"):
+    run()

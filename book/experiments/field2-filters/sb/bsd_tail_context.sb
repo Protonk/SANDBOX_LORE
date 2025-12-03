@@ -1,7 +1,7 @@
 (version 1)
 (allow default)
-;; Mimic bsd tail context with dtracehelper and posix_spawn literals plus a simple ioctl gate
+;; Mimic bsd tail context with dtracehelper and posix_spawn literals plus an extra mach rule
 (deny file-read* (literal "/dev/dtracehelper"))
 (allow file-read* (literal "/usr/share/posix_spawn_filtering_rules"))
-;; io-ctl not available in this SBPL; fall back to path-based allow/deny pairing
+(allow mach-lookup (global-name "com.apple.test.dtracehelper"))
 (deny file-write* (literal "/dev/dtracehelper"))

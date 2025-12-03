@@ -32,24 +32,52 @@ def load_filters() -> Dict[int, str]:
 def summarize_profile(path: Path, filter_names: Dict[int, str], anchors: Dict[str, Any]) -> Dict[str, Any]:
     prof = decoder.decode_profile_dict(path.read_bytes())
     nodes = prof.get("nodes") or []
-    hist: Dict[int, int] = {}
-    for node in nodes:
+    hist: Dict[int, Dict[str, Any]] = {}
+    unknown_nodes: List[Dict[str, Any]] = []
+    for idx, node in enumerate(nodes):
         fields = node.get("fields", [])
         if len(fields) > 2:
-            val = fields[2]
-            hist[val] = hist.get(val, 0) + 1
+            # field2 is the raw filter_arg payload; derive hi/lo views for analysis
+            raw = fields[2]
+            hi = raw & 0xC000
+            lo = raw & 0x3FFF
+            entry = hist.setdefault(
+                raw,
+                {
+                    "raw": raw,
+                    "raw_hex": hex(raw),
+                    "hi": hi,
+                    "lo": lo,
+                    "name": filter_names.get(lo) if hi == 0 else None,
+                    "count": 0,
+                    "tags": {},
+                },
+            )
+            entry["count"] += 1
+            entry["tags"][node.get("tag")] = entry["tags"].get(node.get("tag"), 0) + 1
+            is_known = entry["name"] is not None
+            if (entry["hi"] != 0 or not is_known) and raw not in filter_names:
+                unknown_nodes.append(
+                    {
+                        "idx": idx,
+                        "tag": node.get("tag"),
+                        "fields": fields,
+                        "raw": raw,
+                        "raw_hex": entry["raw_hex"],
+                        "hi": entry["hi"],
+                        "lo": entry["lo"],
+                        "literal_refs": node.get("literal_refs", []),
+                    }
+                )
     anchor_hits = anchors if isinstance(anchors, list) else anchors.get(path.stem, [])
     return {
         "op_count": prof.get("op_count"),
         "node_count": prof.get("node_count"),
         "field2": [
-            {
-                "value": v,
-                "count": c,
-                "name": filter_names.get(v),
-            }
-            for v, c in sorted(hist.items(), key=lambda x: -x[1])
+            hist[k]
+            for k in sorted(hist, key=lambda key: -hist[key]["count"])
         ],
+        "unknown_nodes": unknown_nodes,
         "anchors": anchor_hits,
     }
 
@@ -67,6 +95,13 @@ def main() -> None:
     if probes_dir.exists():
         for p in sorted(probes_dir.glob("*.sb.bin")):
             profiles[f"probe:{p.stem}"] = p
+
+    # Include selected mixed-operation probes from probe-op-structure to capture flow-divert and other
+    # richer shapes that surface high/unknown field2 payloads.
+    probe_op_dir = Path("book/experiments/probe-op-structure/sb/build")
+    if probe_op_dir.exists():
+        for p in sorted(probe_op_dir.glob("*.sb.bin")):
+            profiles[f"probe-op:{p.stem}"] = p
 
     # Anchor hits (optional): reuse probe-op-structure results where names match stem keys
     anchors_map: Dict[str, Any] = {}
