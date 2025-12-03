@@ -127,3 +127,9 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
 - Arm64e scan: disassembled `__TEXT_EXEC.__text` for mask constants; only `0x3fff` uses live in `_syscall_extension_issue`, not in the graph evaluator. `_sb_evaluate_internal` shows no masking/shifting of node payloads, consistent with the helper returning a raw u16.
 - Flow-divert peel: added `net_require_all_*` variants. `field2_inventory.json` shows 2560 only when `(socket-domain AF_INET) + (socket-type SOCK_STREAM) + (socket-protocol IPPROTO_TCP)` are required together; any pair of predicates drops 2560 and collapses to low IDs. Literal `com.apple.flow-divert` stays attached to the 2560 node in the triple.
 - Unknown-focus rev: script now adds op-table reachability and sweeps all probes. `unknown_nodes.json` shows `bsd`’s 16660 tail reachable from op IDs 0–27 (default/file* cluster); other bsd highs remain op-empty. Airlock’s 165/166/10752 nodes hang off op 162 (`system-fcntl`). Flow-divert 2560 nodes remain op-empty.
+
+### Headless helper hunt (arm64e sandbox kext)
+
+- Added `book/api/ghidra/scripts/find_field2_evaluator.py` and ran it headlessly against the extracted sandbox kext (`/tmp/sandbox_arm64e/com.apple.security.sandbox`) via project `sandbox_field2_sbx`.
+- Output at `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/field2_evaluator.json`: ~60k instructions, 897 functions. Heuristic picked `__read24` at `fffffe000b410ee4` (loads a halfword + byte with bounds checks) as the smallest widely-called ldrb+ldrh helper; callers include `_eval` at `fffffe000b40d698`, `_populate_syscall_mask`, and `_check_syscall_mask_composable`. The dumped helper/evaluator disasm lives in `helper.txt` / `evaluator.txt` alongside the JSON.
+- Caveat: this heuristic is still generic; `__read24` is not yet confirmed as the field2 reader. `_eval` remains the evaluator candidate and should be dumped/inspected directly to confirm field2 handling.

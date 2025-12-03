@@ -1,14 +1,45 @@
 # AGENTS.md — book/api router
 
-You are in `book/api/`, the API/tooling layer for the Seatbelt textbook. This file routes you to the right subcomponents; it is not a workflow script.
+You are in `book/api/`, the API/tooling layer for the Seatbelt textbook. This file is a map, not a workflow script: it tells you **where** to look for a given job.
 
-- `PLAN.md` — high-level API shape and resource model (sections, concepts, artifacts, catalogs). Read first to understand intended surfaces.
-- `decoder/` — Python decoder package (`book.api.decoder`) for compiled sandbox profile blobs. See `decoder/README.md` for usage and JSON fields.
-- `SBPL-wrapper/` — helper that applies SBPL text or compiled blobs to a process (`wrapper.c`, `README.md`, `extract_cache.sh`). Used by runtime experiments to exercise profiles.
-- `ghidra/` — connector for Seatbelt-focused Ghidra headless tasks (wraps `dumps/ghidra` scripts with a registry and runner).
-- `sbpl_compile/` — canonical libsandbox compile helpers (Python CLI + C reference) used by examples and experiments to emit `.sb.bin` blobs.
-- `regex_tools/` — legacy AppleMatch extract/visualize helpers (`extract_legacy.py`, `re_to_dot.py`) for decision-tree profiles.
-- `inspect_profile/` — read-only blob inspector (section sizes, op table entries, stride/tag stats, literals, decoder echo), CLI + Python.
-- `op_table/` — op-table analysis helpers (ops/filters parsing, entry signatures, vocab alignment) with CLI.
+- `README.md`
+  - Summary of current API surfaces, host assumptions, and quick commands.
+  - Read this first if you are new to `book/api/`.
 
-For vocabulary, lifecycle, and concept discipline, step up to `substrate/AGENTS.md`.
+- `decoder/`
+  - Role: decode compiled sandbox blobs into structured Python objects (headers, op_table, nodes, literal pool).
+  - Use when: you need to reason about PolicyGraphs or build higher-level analyses without re-parsing headers.
+
+- `sbpl_compile/`
+  - Role: compile SBPL into compiled profile blobs using `libsandbox` (Python API + CLI + small C demo).
+  - Use when: you need `.sb.bin` inputs for decoder/experiments or want to regenerate example/experiment blobs.
+
+- `inspect_profile/`
+  - Role: quick, read-only inspection of a single compiled blob (section sizes, op-table entries, stride/tag stats, literals, decoder echo).
+  - Use when: you want a structural snapshot of a profile before diving into tag layouts or op-table details.
+
+- `op_table/`
+  - Role: op-table–centric analysis (SBPL ops/filters parsing, entry signatures, vocab alignment).
+  - Use when: extending or consuming `op-table-operation` / `op-table-vocab-alignment`, or when you need bucket-level fingerprints tied to vocab IDs.
+
+- `regex_tools/`
+  - Role: legacy AppleMatch helpers for decision-tree profile formats (`extract_legacy.py`, `re_to_dot.py`).
+  - Use when: working with early-format profiles; modern graph-based profiles should go through `decoder`.
+
+- `SBPL-wrapper/`
+  - Role: apply SBPL or compiled blobs to a process for runtime experiments.
+  - Use when: you need a controlled harness for `sandbox_init`/`sandbox_apply` (platform blobs may hit `EPERM` apply gates; treat those as `blocked`).
+
+- `file_probe/`
+  - Role: tiny read/write probe binary that emits JSON with `errno`.
+  - Use when: you need a low-noise target process for runtime experiments driven by `SBPL-wrapper`.
+
+- `ghidra/`
+  - Role: connectors and scaffolding for Seatbelt-related Ghidra tasks (kernel/op-table symbol work).
+  - Use when: driving reverse-engineering workflows under `dumps/` and kernel/entitlement experiments.
+
+For vocabulary, lifecycle, and concept discipline, step up to `substrate/AGENTS.md`. All new tooling here should:
+
+- target the fixed Sonoma 14.4.1 baseline,
+- consume existing mappings and validation artifacts where possible,
+- and publish enough structure that tests under `book/tests/` can keep it honest.

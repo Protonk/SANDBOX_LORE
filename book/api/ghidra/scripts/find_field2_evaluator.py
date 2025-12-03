@@ -15,18 +15,26 @@ def iter_instructions(listing, func):
 
 
 def analyze_function(listing, func):
-    has_ldrb = False
-    has_ldrh = False
-    has_mask = False
+    stats = {"ldrb": 0, "ldrh": 0, "strh": 0, "mask": 0, "bitfield": 0}
     for instr in iter_instructions(listing, func):
         m = instr.getMnemonicString().lower()
         if m.startswith("ldrb"):
-            has_ldrb = True
+            stats["ldrb"] += 1
         elif m.startswith("ldrh"):
-            has_ldrh = True
-        elif m.startswith("and") or m.startswith("tst") or m.startswith("ubfx"):
-            has_mask = True
-    return has_ldrb, has_ldrh, has_mask
+            stats["ldrh"] += 1
+        elif m.startswith("strh"):
+            stats["strh"] += 1
+        elif (
+            m.startswith("bfm")
+            or m.startswith("bfi")
+            or m.startswith("bfxil")
+            or m.startswith("ubfm")
+            or m.startswith("sbfm")
+        ):
+            stats["bitfield"] += 1
+        elif m.startswith("and") or m.startswith("tst"):
+            stats["mask"] += 1
+    return stats
 
 
 def dump_instructions(listing, func):
@@ -63,8 +71,8 @@ def run():
     func_mgr = currentProgram.getFunctionManager()
 
     for func in funcs:
-        has_ldrb, has_ldrh, has_mask = analyze_function(listing, func)
-        if has_ldrb and has_ldrh:
+        stats = analyze_function(listing, func)
+        if stats["ldrh"]:
             size = func.getBody().getNumAddresses()
             caller_funcs = set()
             for ref in ref_mgr.getReferencesTo(func.getEntryPoint()):
@@ -75,7 +83,11 @@ def run():
                 {
                     "func": func,
                     "size": size,
-                    "has_mask": has_mask,
+                    "has_mask": stats["mask"] > 0,
+                    "has_bitfield": stats["bitfield"] > 0,
+                    "ldrb": stats["ldrb"],
+                    "ldrh": stats["ldrh"],
+                    "strh": stats["strh"],
                     "caller_count": len(caller_funcs),
                 }
             )
@@ -86,6 +98,7 @@ def run():
         "evaluator": None,
         "callers": [],
         "candidates": [],
+        "candidate_count": 0,
         "function_count": len(funcs),
         "instruction_count": instr_count,
     }
@@ -98,19 +111,44 @@ def run():
                 "address": str(cand["func"].getEntryPoint()),
                 "size": cand["size"],
                 "has_mask": cand["has_mask"],
+                "has_bitfield": cand.get("has_bitfield"),
+                "ldrb": cand.get("ldrb"),
+                "ldrh": cand.get("ldrh"),
+                "strh": cand.get("strh"),
                 "caller_count": cand["caller_count"],
             }
         )
+    summary["candidate_count"] = len(candidates)
 
     helper = None
-    # Prefer widely-used small helpers with no masking.
-    widest = sorted(
-        [c for c in candidates if not c["has_mask"] and c["size"] <= 256],
-        key=lambda c: (-c["caller_count"], c["size"]),
+    # Prefer small, mask-free helpers with a single ldrh (and optional strh) and minimal bit fiddling.
+    strict = sorted(
+        [
+            c
+            for c in candidates
+            if (not c["has_mask"])
+            and (not c.get("has_bitfield"))
+            and c.get("ldrh", 0) <= 2
+            and c.get("strh", 0) <= 1
+            and c["size"] <= 128
+            and c["caller_count"] > 0
+        ],
+        key=lambda c: (-c["caller_count"], c.get("strh", 0) == 0, c["size"], c.get("ldrb", 0)),
     )
-    if widest:
-        helper = widest[0]["func"]
-    elif candidates_sorted:
+    if strict:
+        helper = strict[0]["func"]
+    else:
+        widest = sorted(
+            [
+                c
+                for c in candidates
+                if (not c["has_mask"]) and (not c.get("has_bitfield")) and c["size"] <= 256
+            ],
+            key=lambda c: (-c["caller_count"], c["size"]),
+        )
+        if widest:
+            helper = widest[0]["func"]
+    if not helper and candidates_sorted:
         helper = candidates_sorted[0]["func"]  # fallback to smallest candidate
 
     if helper:
@@ -148,6 +186,44 @@ def run():
                 "size": best.getBody().getNumAddresses(),
                 "dump": eval_path,
             }
+
+    # Always try to dump _eval explicitly for comparison.
+    eval_func = None
+    for func in funcs:
+        if func.getName() == "_eval":
+            eval_func = func
+            break
+    if eval_func:
+        eval_only_path = os.path.join(out_dir, "eval.txt")
+        with open(eval_only_path, "w") as fh:
+            fh.write("\n".join(dump_instructions(listing, eval_func)))
+        summary["eval"] = {
+            "name": eval_func.getName(),
+            "address": str(eval_func.getEntryPoint()),
+            "size": eval_func.getBody().getNumAddresses(),
+            "dump": eval_only_path,
+        }
+
+    # Emit a full candidate list for manual triage.
+    cand_dump = []
+    for cand in sorted(candidates, key=lambda c: (c["has_mask"], c.get("has_bitfield"), c["size"])):
+        cand_dump.append(
+            {
+                "name": cand["func"].getName(),
+                "address": str(cand["func"].getEntryPoint()),
+                "size": cand["size"],
+                "has_mask": cand["has_mask"],
+                "has_bitfield": cand.get("has_bitfield"),
+                "ldrb": cand.get("ldrb"),
+                "ldrh": cand.get("ldrh"),
+                "strh": cand.get("strh"),
+                "caller_count": cand["caller_count"],
+            }
+        )
+    cand_path = os.path.join(out_dir, "candidates.json")
+    with open(cand_path, "w") as fh:
+        json.dump(cand_dump, fh, indent=2)
+    summary["candidates_dump"] = cand_path
 
     out_path = os.path.join(out_dir, "field2_evaluator.json")
     with open(out_path, "w") as fh:

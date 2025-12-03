@@ -1,10 +1,12 @@
 # SBPL Wrapper
 
-This hosts a small helper that can take SBPL text or a compiled sandbox blob and apply it to a process for runtime probes. The intent is to support system profiles (`airlock`, `bsd`) and other cases where we want to exercise compiled policies under the runtime-checks harness.
+Role: apply SBPL text or compiled sandbox blobs to a process for runtime probes (e.g., `sbpl-graph-runtime`).
 
-Current status: SBPL mode is implemented; compiled-blob mode is still TODO.
+Use when: you need a controlled harness around `sandbox_init` / `sandbox_apply` instead of ad hoc `sandbox-exec`.
 
-## Usage (SBPL mode)
+Host baseline: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled; requires `libsandbox.dylib`.
+
+Status: SBPL mode works; compiled-blob mode relies on `sandbox_apply` and routinely hits apply gates (`EPERM`) for platform blobs. Treat apply failures as `blocked`, not as evidence that a profile is absent.
 
 Build:
 
@@ -16,7 +18,11 @@ clang -Wall -Wextra -o wrapper wrapper.c -lsandbox
 Run:
 
 ```sh
+# SBPL text
 ./wrapper --sbpl path/to/profile.sb -- <cmd> [args...]
+
+# Compiled blob
+./wrapper --blob path/to/profile.sb.bin -- <cmd> [args...]
 ```
 
-The wrapper applies the SBPL profile via `sandbox_init` to the current process, then execs the command. If apply fails, it prints the error and exits non-zero before exec.
+The wrapper applies the selected profile to itself, then `execvp`s the command. On failure it prints the sandbox error and exits non-zero before exec.
