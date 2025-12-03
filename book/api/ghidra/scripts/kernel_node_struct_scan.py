@@ -281,6 +281,16 @@ def is_sandbox_func(func):
     return "com.apple.security.sandbox" in name
 
 
+def block_name(func):
+    try:
+        block = currentProgram.getMemory().getBlock(func.getEntryPoint())
+        if block:
+            return block.getName()
+    except Exception:
+        pass
+    return None
+
+
 def build_reachable_from_eval(eval_entry):
     fm = currentProgram.getFunctionManager()
     start_func = getFunctionAt(eval_entry)
@@ -383,6 +393,7 @@ def scan_function(func):
     return {
         "function": func.getName(),
         "entry": str(func.getEntryPoint()),
+        "block": block_name(func),
         "index_reg": index_reg,
         "stride": stride,
         "base_reg": base_reg,
@@ -406,20 +417,21 @@ def parse_eval(arg):
     return None
 
 
-def write_reports(out_dir, candidates, unreachable_count):
+def write_reports(out_dir, candidates, scanned_count):
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
     txt_path = os.path.join(out_dir, "node_struct_scan.txt")
     json_path = os.path.join(out_dir, "node_struct_scan.json")
     lines = []
     lines.append("== Node struct scan (reachable from _eval) ==")
-    lines.append("Candidates: %d (skipped unreachable: %d)" % (len(candidates), unreachable_count))
+    lines.append("Candidates: %d (functions scanned: %d)" % (len(candidates), scanned_count))
     for cand in candidates:
         lines.append(
-            "%s (%s): base=%s index=%s stride=%s bytes=%s halfs=%s"
+            "%s (%s)%s: base=%s index=%s stride=%s bytes=%s halfs=%s"
             % (
                 cand["function"],
                 cand["entry"],
+                " block=%s" % cand["block"] if cand.get("block") else "",
                 cand["base_reg"],
                 cand["index_reg"],
                 hex(cand["stride"]) if cand["stride"] else "unknown",
@@ -453,14 +465,14 @@ def run():
         printerr("Could not resolve eval entry")
         return
     reachable = build_reachable_from_eval(eval_entry)
-    reachable = [f for f in reachable if is_sandbox_func(f)]
+    reachable_count = len(reachable)
     candidates = []
     for func in reachable:
         res = scan_function(func)
         if res:
             candidates.append(res)
     candidates.sort(key=lambda c: (-len(c["half_offsets"]), c["function"]))
-    write_reports(out_dir, candidates, 0)
+    write_reports(out_dir, candidates, reachable_count)
 
 
 run()
