@@ -31,6 +31,12 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 
 - Located the kernel evaluator in the sandbox fileset: `FUN_ffffff8002d8547a` in `com.apple.security.sandbox` (`vmaddr 0xffffff8002d70000`, fileoff `0x02c68000`, text span `0xffffff8002d71208–0xffffff8002da9f7f`). It drives the opcode switch and calls helper readers `FUN_ffffff8002d87d4a`, `FUN_ffffff8002d87d8f`, `FUN_ffffff8002d8809a`, `FUN_ffffff8002d8907f` to load edges/`field2`. High-level decompile shows `field2` forwarded directly from `FUN_2d87d4a`; any hi-bit/lo-bit handling likely lives inside these helpers.
 - Tooling state: `objdump`/`llvm-objdump` on the KC ignored the fileset entry; byte-slicing by fileoff produced “truncated/malformed object.” Need to extract the sandbox fileset (`kmutil emit-macho` or custom unwrapping) to disassemble helper functions and search for `tbz`/`tbnz`/`ubfx`/`and` masks on the payload register.
+- Follow-up disassembly (fileset carve):
+  - Parsed LC_FILESET_ENTRY to get the sandbox slice (fileoff `0x2c70000`, size `503808`), carved it, and locally fixed load-command file offsets/symtab to enable disassembly (`/tmp/sandbox_kext_fixed.bin`).
+  - `FUN_ffffff8002d87d4a`: bounds-checks and `movzwl` a u16 from the profile byte array into a caller-provided pointer; no masks/bit-tests.
+  - `FUN_ffffff8002d87d8f`/`FUN_ffffff8002d8809a`: wrappers around `2d87d4a` that scale/advance pointers; still no masking or `test/and` on the loaded u16.
+  - No `testw $0x4000`/`and $0x3fff`/`ubfx`-style operations observed in these helpers or nearby snippets; suggests `field2` is consumed raw in this x86_64 KC. Need to repeat on the arm64e fileset (Apple Silicon target) to confirm the same behavior.
+- Arm64e follow-up attempt: `kmutil emit-macho --arch arm64e` still produced an x86_64 KC (`cputype` 16777223), and the carved sandbox slice shows x86_64 headers. No arm64e slice available in this BootKC dump, so the helper scan currently only covers the x86_64 view.
 
 ## 2025-12-12
 
