@@ -281,12 +281,18 @@ def run():
     if func is None:
         try:
             func = createFunction(entry, "auto_target")
-            func.setBody(AddressSet(entry, entry.add(0x400)))
+            func.setBody(AddressSet(entry, entry.add(0x1000)))
         except Exception:
             func = getFunctionAt(entry)
     if func is None:
         printerr("Function not found at %s" % entry)
         return
+
+    try:
+        for offs in range(0, 0x1000, 4):
+            disassemble(entry.add(offs))
+    except Exception:
+        pass
 
     load_records, instr_count = collect_loads(func)
     index_reg, stride = choose_index(load_records, forced_index)

@@ -1,6 +1,6 @@
 # Node Layout Experiment – Running Notes
 
-## 2025-11-27 1
+## Pass 1
 
 - Baseline blob: `book/examples/sb/build/sample.sb.bin` (583 bytes). Heuristic slices:
   - op_count=9 → op-table length 18 bytes (offset 0x10..0x21).
@@ -24,7 +24,7 @@
   - Automate scoring over strides/fields; check that literal field points into literal pool (index×? lands near `/tmp/...` offsets).
   - Apply candidate layout to `airlock.sb.bin`/`bsd.sb.bin` to see if stride/tag pattern holds and if edges stay in bounds.
 
-## 2025-11-27 2
+## Pass 2
 
 - Created minimal SBPL variants under `book/experiments/node-layout/sb/`:
   - `v0_baseline`: allow `file-read*` only.
@@ -50,7 +50,7 @@
   - Try stride 8/16 again on v1/v2 to see if any field changes with foo→bar.
   - Consider parsing the op-table entrypoints to anchor which records belong to which operation.
 
-## 2025-11-27 3
+## Pass 3
 
 - Added open questions to Plan.md (literal index mapping, multiple literals, filter key location, op-table anchoring).
 - Still need a variant with two distinct literals in the same profile to force literal index differences; current v1 vs v2 suggests literal field isn’t simply “literal pool offset.”
@@ -59,7 +59,7 @@
   - Profile with different filter types (e.g., `literal` vs `subpath`) to see if tag or field changes more clearly.
   - Use op-table entrypoints to segment node array per operation and see if edge fields line up with op_count changes (5→6).
 
-## 2025-11-27 4
+## Pass 4
 
 - Added variants:
   - `v4_any_two_literals`: `(allow file-read* (require-any (subpath "/tmp/foo") (subpath "/tmp/bar")))`.
@@ -81,7 +81,7 @@
   - Add a variant with two different filter types on the same op but keeping op_count constant, then diff with op-table-aware segmentation.
   - Write a small analyzer to list op-table entries and dump per-op node slices for comparison across variants.
 
-## 2025-11-27 5
+## Pass 5
 
 - Wrote a quick diff/analyzer to compare node records at stride 12 and to dump op-table entries.
 - Diff results:
@@ -102,7 +102,7 @@
 - Tail inspection (v1 vs v4):
   - v1 has 30 full 12-byte records + 5-byte tail; v4 has 33 full records + 7-byte tail. Extra v4 records include a tag0 record with edges (1,4) and a record with an out-of-bounds edge value (3584), plus partial trailing bytes. This casts doubt on fixed 12-byte stride and suggests variable-length or packed structures; stride may still be a useful approximation for the front of the node array but not the tail.
 
-## 2025-11-27 6
+## Pass 6
 
 - Re-ran stride checks on v1 and v4 across strides 8/12/16:
   - All strides produce full records plus remainders; edge counts mostly in-bounds but v4 at stride 8 shows 96/100 in-bounds (some edges point past node array), supporting the idea that fixed stride is only an approximation.
@@ -125,7 +125,7 @@
   - Added `book/experiments/node-layout/analyze.py` to compile SBPL variants, emit blobs, and write `out/summary.json` (lengths, op entries, section lengths, stride stats, tail records).
   - Running with `PYTHONPATH=. python3 book/experiments/node-layout/analyze.py` regenerates build blobs and structured summaries for future analysis.
 
-## 2025-11-28 1
+## Pass 7
 
 - Tried to infer variable-size nodes by mapping tags→{8,12,16} to match total node length on v1; no exact mapping found (brute force failed).
 - Stride scan recap across v1/v4/v5: tags stay small; node lengths produce remainders for all tested strides; edges mostly in-bounds, suggesting stride=12 is a workable approximation only for the front.
@@ -152,7 +152,7 @@ From there, we introduced more focused variants to stress “multiple literals�
 
 Taken together, these steps give us a progressively tighter picture of the graph layout: we have a plausible stride, a sense of how adding filters and literals perturbs the node region, and confirmation that literal tables behave as a separate pool. The remaining work is to anchor nodes to specific operations via the op-table, examine the non-shared tails where new filters live, and build a small analyzer that can systematically test candidate field layouts for tags, edges, filter keys, and literal indices across all these controlled variants.
 
-## 2025-11-28 2
+## Pass 8
 
 - Added two more SBPL probes: `v6_read_write.sb` (allow `file-read*` + `file-write*`) and `v7_read_and_mach.sb` (allow `file-read*` + `mach-lookup` on `com.apple.cfprefsd.agent`).
 - Enhanced `analyze.py` to emit full stride=12 record dumps, per-tag counts, literal ASCII runs with offsets, and to keep the existing tail/remainder view.
@@ -162,7 +162,7 @@ Taken together, these steps give us a progressively tighter picture of the graph
   - `v7_read_and_mach` lands at op_count=6 with op entries `[5,...]`, node length 365 (same shape as the single-subpath profile), and a literal string `Wcom.apple.cfprefsd.agent` in the pool. Stride=12 counts match the subpath case (tags {0:1,1:1,4:6,5:22}); only a couple of records differ (indices 2 and 14 swap edge/extra values), suggesting the mach-lookup op uses the same entrypoint skeleton with small tweaks rather than a separate op-table entry.
 - Cross-cutting: even with multiple operations in one profile, the op-table still points every operation ID at the same entry index. Per-op segmentation remains unsolved; whatever per-op branching exists is buried in the node graph rather than the table.
 
-## 2025-11-28 3
+## Pass 9
 
 - Added mixed-op probes to stress per-op entrypoints:
   - `v8_read_write_dual_subpath.sb`: `file-read*` on `/tmp/foo`, `file-write*` on `/tmp/bar`.
@@ -195,7 +195,7 @@ Subsequent entries on 2025-11-28 move the experiment into mixed-operation territ
 
 The final notes for 2025-11-28 push further into mixed-op probes explicitly targeted at op-table behavior. Three new SBPL profiles appear: `v8_read_write_dual_subpath` (read on `/tmp/foo`, write on `/tmp/bar`), `v9_read_subpath_mach_name` (read on `/tmp/foo`, mach-lookup with the same cfprefsd global-name), and `v10_read_literal_write_subpath` (read with `literal "/etc/hosts"`, write with `subpath "/tmp/foo"`). The analyzer is rerun, now capturing per-tag counts and full stride=12 dumps for the new variants. The resulting `summary.json` shows that all three mixed-op profiles move to `op_count=7` and, for the first time, exhibit non-uniform op-table entries: `[6,6,6,6,6,6,5]`. Tag distributions include a new tag value 6; early records (indices around 3–5 and 14) differ across variants through tag6↔tag3 swaps, lit fields toggling between small IDs like 3 and 6, and “extra” bytes alternating between patterns such as `03000600` and `06000600`. Node region lengths differ slightly—v8 and v9 have 32 stride-12 records plus a 2-byte remainder, while v10 has 31 records and an 11-byte remainder—hinting that the literal-based read path imposes a slightly different structure. Literal pools now expose prefixed strings like `G/tmp/foo`, `G/tmp/bar`, `Wcom.apple.cfprefsd.agent`, and `I/etc/hosts`, which look like string-type markers (path vs global-name vs literal) attached to the payload. Even so, multiple operations still share each of the two observed entry indices, and the notes end with an explicit open task: design asymmetric profiles or extend the analyzer so that the lone `5` in the op-table can be tied back to a specific operation vocabulary ID and, eventually, to a clean per-operation slice of the PolicyGraph.
 
-## 2025-11-29 1
+## Pass 10
 
 - Goal: push further on per-op entrypoint mapping by stripping profiles down to single-operation cases and adding a network-only probe.
 - Added three SBPL variants under `sb/`:
@@ -212,7 +212,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Even when the op-table is flat, the node region shifts in a small, repeatable way across operations (few record flips near the front, tag count reshuffles). These diffs may be useful later for tag/field attribution, but they don’t yet unlock per-op entrypoint mapping.
   - The standout non-uniform pattern remains the mixed-op profiles with `op_count=7` and `[6,6,6,6,6,6,5]`; isolating which operation claims the `5` entry will likely require asymmetric multi-op profiles or additional analyzer smarts (e.g., correlating op-table index positions across different op_count shapes).
 
-## 2025-11-29 2
+## Pass 11
 
 - Added two mixed-op variants to probe whether pairing “uniform” ops would induce op-table divergence:
   - `v14_mach_and_network`: `mach-lookup` (cfprefsd) plus `network-outbound`.
@@ -222,7 +222,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - `v15`: `op_count=5`, op entries `[4,4,4,4,4]`, node length 387, no literals; tag counts {0:1,2:1,3:14,4:16}. Matches the write-only and network-only profiles; op-table still uniform.
 - Takeaway: combining operations that each produce a flat op-table on their own does not surface new entry indices; the op-table stays uniform and node differences remain confined to small record flips. The only non-uniform op-table pattern remains the earlier mixed-op profiles (`v8`–`v10`) with `[6,…,5]`, so further per-op mapping likely requires asymmetric mixes (e.g., pairing one op that yields `op_count=5` with one that forces `op_count=7`), or tooling that can correlate op-table slots to the operation vocabulary.
 
-## 2025-11-29 3
+## Pass 12
 
 - Tried more asymmetric mixes to see if the lone `5` in `[6,…,5]` would move when we blend “flat” ops with ones that previously diverged:
   - `v16_read_and_network`: read + network → `op_count=5`, op entries `[4,4,4,4,4]`, nodes 387, no literals, tags {0:1,2:1,3:13,4:17}. Uniform.
@@ -231,7 +231,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - `v19_mach_write_network`: mach + write + network → `op_count=6`, op entries `[5,5,5,5,5,5]`, nodes 365, same literal, tags {0:1,1:1,4:7,5:21}. Uniform.
 - Outcome: adding network alongside read/write/mach did not surface new op-table entries; all these combos stayed flat. The only observed non-uniform op-table remains `[6,6,6,6,6,6,5]` in `v8`–`v10`. Next lever is either smarter analyzer correlation of op-table slots to operation vocab or more deliberately asymmetric mixes that reproduce the `[6,…,5]` pattern while varying the operation set to force the `5` into a different slot.
 
-## 2025-11-30 1
+## Pass 13
 
 - Integrated the shared decoder (`decoder.decode_profile_dict`) into `analyze.py` so each summary now includes a decoder block (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literals) alongside the existing stride stats.
 - Regenerated `out/summary.json` with the decoder fields. The decoder snapshot lines up with prior heuristics:
@@ -241,7 +241,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Decoder literal strings surface the prefixed forms (`G/tmp/foo`, `I/etc/hosts`, `Wcom.apple.cfprefsd.agent`), reinforcing the literal pool structure without yet exposing index wiring.
 - No errors from the decoder or analyzer. The added fields should help the pending tasks (literal index mapping, filter key location, tail layout) by giving a consistent, shared parse rather than relying solely on stride heuristics.
 
-## 2025-11-30 2
+## Pass 14
 
 - Began chasing literal-index/filter-key hints using the decoder output directly on compiled blobs (not just the summary):
   - Compared node lists across variants with `decoder.decode_profile_dict`. `v1_subpath_foo` vs `v2_subpath_bar` are bit-identical in nodes (node_count=30 each), confirming that changing literal content leaves node bytes untouched.
@@ -256,7 +256,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
 - Decoder literal_strings remain imperfect (some prefixed strings show as `D/tmp/`, `Bbar`, etc.), but the field2 patterns are stable per profile. This supports the hypothesis that the word at offset 6–7 carries filter/literal identity (or an indirect key) that depends on which filters are present, not on literal text.
 - No direct mapping from field2 → literal pool offset yet; pending: map field2 deltas against literal pool ordering, and correlate new values (0,5,6) with specific filter combinations. Tests remain green after the decoder integration and analysis scripts.
 
-## 2025-11-30 3
+## Pass 15
 
 - Tried aligning field2 values with literal pool ordering using raw decoder objects:
   - Literal string offsets (searching the literal pool bytes) vary by profile: e.g., `v1_subpath_foo` has `G/tmp/foo` at offset 57; `v4_any_two_literals` has `D/tmp/` at 43, `Bbar` at 50, `\nBfoo` at 61; dual subpath `v8` puts `G/tmp/foo` at 45 and `G/tmp/bar` at 69; `v10` places `I/etc/hosts` at 47 and `G/tmp/foo` at 71. Field2 values do not directly match these offsets.
@@ -265,7 +265,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - In tag6-heavy profiles (v8/v9), the nodes containing field2=0/6 are concentrated in tag6 records at the front and tail; field2=6 proliferates (15–17 occurrences) and coexists with many tag6 nodes, hinting that tag6 + field2=6 is the filtered branch machinery.
 - Literal pool offsets therefore do not correlate directly with field2 values; field2 appears to be a small key space (0/3/4/5/6) tied to filter presence/structure, not byte positions. Next lever: map specific field2 values to SBPL constructs by designing deltas that introduce/remove one filter at a time and watching which value disappears.
 
-## 2025-11-30 4
+## Pass 16
 
 - Added two new probes to isolate literal-only behavior:
   - `v20_read_literal`: single `(literal "/etc/hosts")` on `file-read*`.
@@ -275,21 +275,21 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - `v21` (two literals require-any) → `op_count=6`, tag counts {0:1,1:1,4:6,5:23}, field2 counts {5:20, 4:9, 3:1, 0:1}, literals `['Ftmp/foo', '\\nHetc/hosts']`. Adds exactly one field2=0 node, mirroring the dual-subpath require-any pattern.
 - Interpretation: field2=0 tracks “second branch in a require-any” regardless of whether the children are subpath or literal. Field2=5 continues to dominate single-filter cases; field2=6 still only appears in tag6-heavy mixed profiles (mach + filtered read). Literal byte offsets remain unrelated to field2 values. Next action: craft a minimal mach+literal-only profile to see if field2=6 appears without subpath/multi-branching.
 
-## 2025-12-01 1
+## Pass 17
 
 - Added `v22_mach_literal.sb` (file-read* with `(literal "/etc/hosts")` plus `mach-lookup` for `com.apple.cfprefsd.agent`) to see whether the tag6/field2=6 pattern depends on subpath vs literal when paired with mach.
 - Reran `PYTHONPATH=. python3 analyze.py`; regenerated blobs and `out/summary.json`.
 - Decoder stats for `v22`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tag counts {0:1,5:5,6:25}, field2 histogram {6:17,5:12,4:1,0:1}, literal pool `['I/etc/hosts', 'Wcom.apple.cfprefsd.agent']`.
 - The field2/tag pattern matches `v9_read_subpath_mach_name` exactly (same values, `[6,…,5]` op-table split) even though the filter is a literal instead of a subpath. Node bytes differ slightly (node region 383 vs 389 bytes), so filter type still alters structure, but field2 values track “mach + filtered read” rather than the specific filter flavor.
 
-## 2025-12-01 2
+## Pass 18
 
 - Compared `v9_read_subpath_mach_name` vs `v22_mach_literal` at the decoded node level: decoder `nodes` lists are identical (31 nodes; same tags and fields), but raw node regions differ in length (389 vs 383 bytes) and remainder bytes; literal pools differ as expected. Conclusion: structural graph stays fixed while tail/remainder bytes and literals shift with filter flavor.
 - Added `v23_mach_two_literals_require_any.sb` (mach-lookup plus `file-read*` with `require-any` over two literals `/etc/hosts` and `/tmp/foo`) to see if a literal-only branch under mach introduces new field2 values.
 - Reran `PYTHONPATH=. python3 analyze.py`; decoder stats for `v23`: `op_count=7`, op entries `[6,6,6,6,6,6,5]`, tag counts {0:1,5:5,6:25}, field2 histogram {6:17,5:12,4:1,0:1}, literals `['Ftmp/foo', '\\nHetc/hosts', 'Wcom.apple.cfprefsd.agent']`, node_count=31.
 - Decoder `nodes` for `v22` and `v23` are identical; only literal pools and node-region tails differ (remainder hex `010005000600000e010005` vs `06`). Require-any over literals under mach did not introduce new field2 values (no extra field2=0 beyond the baseline mach+filtered pattern).
 
-## 2025-12-01 3
+## Pass 19
 
 - Added `v24_three_literals_require_any.sb` (`file-read*` with `require-any` over three literals: `/etc/hosts`, `/tmp/foo`, `/usr/bin/yes`) to stress literal count/order without mach.
 - Reran analyzer; decoder for `v24`: `op_count=6`, op entries `[5,5,5,5,5,5]`, tag counts {0:1,1:1,4:6,5:22}, field2 histogram {5:20,4:9,3:1}, literals `['Ftmp/foo', '\\nHetc/hosts', '\\nJusr/bin/yes']`, node_count=30. Notably, `field2=0` disappears (present in the two-literal require-any) and node_count drops by one; the extra branch node is gone.
@@ -302,7 +302,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Field2 continues to track filter structure, not literal content; the disappearance of field2=0 in the three-literal case suggests require-any may compile differently once there are more than two branches (possibly balancing or folding the tree without an explicit “second branch” flag).
   - Decoder `nodes` can stay identical across filter swaps while tail bytes and literal pools shift; tail differences are now logged for later modeling.
 
-## 2025-12-02 1
+## Pass 20
 
 - Added more literal probes:
   - `v25_four_literals_require_any` and `v26_four_literals_require_any_reordered` (same four literals, different order).
@@ -318,7 +318,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Require-all behaves like the baseline field2 set {3,4} regardless of literal count and does not surface literal strings via the decoder (pool still grows). Likely a different combinator path that doesn’t expose branch markers in `field2`.
   - Tail bytes track filter/combinator changes even when decoded nodes stay identical; remainders now cataloged for require-any/all families.
 
-## 2025-12-02 2
+## Pass 21
 
 - Added more require-any probes to push literal count further:
   - `v29_five_literals_require_any`: adds `/Applications/Calculator.app`.
@@ -335,7 +335,7 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - Require-all continues to hide literals from the decoder and keeps field2 at {3,4} with a stable tail `[1,3]`, independent of literal count.
   - Tail words appear to encode combinator shape/branching, not literal text; they flip in lockstep with the presence/absence of the branch marker node.
 
-## 2025-12-02 3
+## Pass 22
 
 - Pushed require-any to 7 and 8 literals (`v31_seven_literals_require_any`, `v32_eight_literals_require_any`).
 - Decoder results:

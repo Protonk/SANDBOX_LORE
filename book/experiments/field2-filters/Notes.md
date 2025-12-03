@@ -1,8 +1,8 @@
 # Field2 ↔ Filter Mapping – Notes
 
-Use this file for dated, concise notes on progress, commands, and intermediate findings.
+Use this file for concise notes on progress, commands, and intermediate findings.
 
-## 2025-12-03
+## Baseline inventory
 
 - Experiment initialized. Vocab artifacts available (`filters.json` 93 entries, `ops.json` 196 entries). Pending: baseline `field2` inventory from canonical blobs and synthetic single-filter probes.
 - Baseline `field2` inventory:
@@ -10,7 +10,7 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
   - `bsd.sb.bin`: node_count 41; field2 values {27×24, 26×5, 18×1, 17×1, 5×1, 16660×1, 174×1, 1×1, 109×1, 11×1, 170×1, 15×1, 115×1, 80×1}. Vocab hits include 27=preference-domain, 26=right-name, 18=iokit-connection, 17=iokit-property, 5=global-name, 1=mount-relative-path, 11=socket-type, 15=ioctl-command, 80=mac-policy-name.
   - `sample.sb.bin`: node_count 32; field2 values {8×19, 7×9, 3×1, 1×1, 0×1, 3584×1}. Vocab hits include 8=remote, 7=local, 3=file-mode, 1=mount-relative-path, 0=path. 3584 unknown/sentinel.
 
-## 2025-12-07
+## Single-filter probes and inventory
 
 - Added `harvest_field2.py` output for all single-filter probes under `sb/build` plus system profiles; artifact now lives at `out/field2_inventory.json`.
 - Observations:
@@ -18,16 +18,16 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
   - Single-filter probes still surface generic path/name filters regardless of intended filter (subpath/literal/vnode-type all show field2 {5,4,3}; socket-domain shows {6,5,0}). Suggests graph walks are dominated by shared scaffolding; filter-specific IDs are masked in these tiny profiles.
 - Next steps: design probes with stronger anchors or use improved decoder/anchor mapping from probe-op-structure once literal bindings surface.
 
-## 2025-12-09
+## Decoder and anchor improvements
 
 - Decoder/anchor improvements now bind anchors to nodes in simple probes (via probe-op-structure), but those nodes still carry generic field2 values (global-name/local-name/path). Filter-specific IDs remain masked; need richer tag decoding and anchor-strong probes to isolate them.
 - `harvest_field2.py` now threads anchor hits (when present in probe-op-structure outputs) into `out/field2_inventory.json`; system profiles carry anchor hits, probe profiles remain anchor-empty.
 
-## 2025-12-11
+## New shared artifacts
 
 - New shared artifacts unblocking deeper mapping: tag layouts published at `book/graph/mappings/tag_layouts/tag_layouts.json` and anchor → filter map at `book/graph/mappings/anchors/anchor_filter_map.json`. Use these to reinterpret anchor-bearing nodes and rerun `harvest_field2.py` for clearer filter IDs.
 
-## 2026-02-12
+## Kernel evaluator location (x86_64 KC)
 
 - Located the kernel evaluator in the sandbox fileset: `FUN_ffffff8002d8547a` in `com.apple.security.sandbox` (`vmaddr 0xffffff8002d70000`, fileoff `0x02c68000`, text span `0xffffff8002d71208–0xffffff8002da9f7f`). It drives the opcode switch and calls helper readers `FUN_ffffff8002d87d4a`, `FUN_ffffff8002d87d8f`, `FUN_ffffff8002d8809a`, `FUN_ffffff8002d8907f` to load edges/`field2`. High-level decompile shows `field2` forwarded directly from `FUN_2d87d4a`; any hi-bit/lo-bit handling likely lives inside these helpers.
 - Tooling state: `objdump`/`llvm-objdump` on the KC ignored the fileset entry; byte-slicing by fileoff produced “truncated/malformed object.” Need to extract the sandbox fileset (`kmutil emit-macho` or custom unwrapping) to disassemble helper functions and search for `tbz`/`tbnz`/`ubfx`/`and` masks on the payload register.
@@ -38,7 +38,7 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
   - No `testw $0x4000`/`and $0x3fff`/`ubfx`-style operations observed in these helpers or nearby snippets; suggests `field2` is consumed raw in this x86_64 KC. Need to repeat on the arm64e fileset (Apple Silicon target) to confirm the same behavior.
 - Arm64e follow-up attempt: `kmutil emit-macho --arch arm64e` still produced an x86_64 KC (`cputype` 16777223), and the carved sandbox slice shows x86_64 headers. No arm64e slice available in this BootKC dump, so the helper scan currently only covers the x86_64 view.
 
-## 2025-12-12
+## Inventory refresh after shared artifacts
 
 - Re-ran `harvest_field2.py` with fixed import path; `out/field2_inventory.json` refreshed. Anchors now show mapped filter names/IDs where available (e.g., `preferences/logging` → global-name). Synthetic probes still dominated by generic path/name field2 values; high unknowns remain in `airlock`.
 
@@ -148,7 +148,7 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
   - System profiles unchanged: bsd 16660 hi=0x4000 still reachable from ops 0–27; other bsd highs op-empty. Airlock unknowns still hang off op 162. Flow-divert 2560 remains only in the triple-socket probes (v4/v7/v_net_require_all_domain_type_proto) and op-empty.
   - Updated artifacts: `out/field2_inventory.json`, `out/unknown_nodes.json`, Ghidra outputs under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
 
-## 2026-02-13
+## Kernel helper hunt (arm64e targets)
 
 - Summarized unknown nodes from `out/unknown_nodes.json`:
   - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
@@ -158,19 +158,19 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
 - Parsed `field2_evaluator.json`: `__read16` callers include `_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`. These are the current places to hunt for comparisons/table lookups on `filter_arg_raw`.
 - `rg` across `eval.txt` still shows no immediates for the unknown constants (0xa00/0x4114/0x2a00/0xffff/0xe00), reinforcing that the helper/evaluator pass the u16 through unmasked. Next kernel step: open these caller functions in Ghidra and inspect how the loaded value is consumed (direct compare vs table index).
 
-## 2026-02-13 (afternoon) – Caller dumps attempt
+## Caller dumps attempt (headless, initial)
 
 - Tried to dump `__read16` callers directly from the carved sandbox kext using `llvm-objdump` on slices around their VM addresses. Both Mach-O and raw-binary modes failed: the extracted binary still trips `truncated or malformed object` for whole-file disassembly, and per-slice disasm reports “is not an object file.”
 - Approach to unblock: lean on Ghidra (existing `sandbox_field2_sbx` project) to emit disassembly for the caller set. Next run should add a simple headless script to print instructions for the known callers (`_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`) and capture how the `__read16` return register is used (compare vs table index). Whole-file objdump is not viable on this carved binary without repairing headers further.
 
-## 2026-02-13 (evening) – Headless Ghidra caller dump attempt
+## Headless Ghidra caller dump attempt
 
 - Attempted to run a headless Ghidra script (`dump_read16_callers.py`) against project `sandbox_field2_sbx` to dump the caller set. Command failed early with:
   - `/Users/achyland/Library/ghidra/ghidra_11.4.2_PUBLIC/java_home.save (Operation not permitted)`
   - `ERROR: Unable to prompt user for JDK path, no TTY detected.`
 - This is the familiar “JDK prompt in headless” issue noted in `ghidra_setup.md`. Resolution: rerun with `JAVA_HOME` and `-vmPath` set, and `HOME`/`GHIDRA_USER_HOME` pointing to the repo-local sandbox (`dumps/ghidra/user`). The existing scaffold does this; the ad hoc call here lacked the env. Next action: rerun the caller dump via `book/api/ghidra/run_task.py` or with explicit env (`JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`, `HOME=.../dumps/ghidra/user`, `GHIDRA_USER_HOME=.../dumps/ghidra/user`, `-vmPath $JAVA_HOME/bin/java`), then collect the disassembly into `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/callers/read16_callers.txt`.
 
-## 2026-02-14 – Headless retry still blocked
+## Headless retry still blocked
 
 - Retried the caller dump with explicit env (`JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`, `HOME`/`GHIDRA_USER_HOME` to `dumps/ghidra/user`, `-vmPath` set). The headless run still failed with the same prompt errors (`java_home.save` EPERM / “Unable to prompt user for JDK path, no TTY”).
 - This matches the `ghidra_setup.md` caution: ad hoc headless invocations that don’t set `JAVA_TOOL_OPTIONS=-Duser.home=<repo>/dumps/ghidra/user` or don’t run through the scaffold continue to hit the prompt.
@@ -179,7 +179,7 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
   - Alternatively, set `JAVA_TOOL_OPTIONS=-Duser.home=$PWD/dumps/ghidra/user` alongside `JAVA_HOME`/`-vmPath` before calling headless directly.
   - If headless continues to balk, fall back to an interactive Ghidra session to export caller disassembly, then park the dumps under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/callers/`.
 
-## 2026-02-14 (success) – Headless caller dump via settingsdir override
+## Headless caller dump via settingsdir override
 
 - Applied the settingsdir guidance: seeded a repo-local settings dir (`.ghidra-user/ghidra/ghidra_11.4.2_PUBLIC/java_home.save`) and invoked `analyzeHeadless` with `JAVA_TOOL_OPTIONS="-Dapplication.settingsdir=$PWD/.ghidra-user -Duser.home=$PWD/dumps/ghidra/user"` plus HOME/GHIDRA_USER_HOME pointing to `dumps/ghidra/user`. Dropped unsupported flags (`-vmPath`, `-logFile`).
 - Headless run succeeded; dumped caller disassembly to `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/read16_callers.txt` using a Jython script (`/tmp/dump_read16_callers.py`) that iterates functions by name.

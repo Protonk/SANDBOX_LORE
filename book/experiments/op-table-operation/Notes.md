@@ -1,13 +1,13 @@
 # Op-table vs Operation Mapping – Notes
 
-## 2025-11-27 1
+## Pass 1
 
 - Initialized a new experiment under `book/experiments/op-table-operation` to map SBPL operation names to op-table entry indices in compiled profiles.
 - Drafted `Plan.md` with a scope focused on core ops (`file-read*`, `file-write*`, `mach-lookup` with `com.apple.cfprefsd.agent`, `network-outbound`, plus a baseline/no-op profile), single-op and paired-op profiles, reuse of the existing analyzer, and a correlation artifact `out/op_table_map.json`.
 - Set expectations for artifacts: `sb/*.sb` variants and `sb/build/*.sb.bin` blobs, `out/summary.json` via analyzer/wrapper, and correlation JSON for op-table mapping. Cross-checks with existing semantic probes are noted as an optional stretch.
 - Next steps: create the `sb/` variants, wire the analyzer/wrapper, generate `summary.json`, and build the initial op-table correlation.
 
-## 2025-11-29 2
+## Pass 2
 
 - Created this note block to log execution/troubleshooting while standing up the experiment.
 - Added `sb/` variants covering the planned ops:
@@ -23,7 +23,7 @@
   - `op_table_map.json` now records single-op entries: {read: [4], write: [4], network: [4], mach: [5]} and per-profile unique entries (either {4} or {5}). No non-uniform op-table entries observed in this batch.
 - Next steps: craft asymmetric mixes that reproduce the `[6,…,5]` pattern from the node-layout experiment (e.g., include subpath literals) or add analyzer logic to correlate op_table slots across differing op_count shapes; update Plan/Report accordingly.
 
-## 2025-11-29 3
+## Pass 3
 
 - New goal: reintroduce filters/literals in this op-table experiment to see if the `[6,…,5]` pattern resurfaces and to try to pin the lone `5` to a specific op.
 - Added filtered variants:
@@ -43,7 +43,7 @@
   - Other mixes with subpath (write, network) remain uniform `[5,…]`; no additional entry indices beyond 5/6 observed so far.
 - Next: design targeted deltas to isolate whether the `[6,…,5]` split is driven by mach, by subpath+mach interaction, or by op_count shape; consider adding a pure subpath+write+network triple or toggling subpath off/on within mach profiles to watch op entries move.
 
-## 2025-11-29 4
+## Pass 4
 
 - Added literal-driven mixes to see whether literals alone provoke the `[6,…,5]` split:
   - `v15_mach_literal`: mach-lookup + `file-read*` with `(literal "/etc/hosts")`.
@@ -54,7 +54,7 @@
 - Updated `op_table_map.json`: multiple profiles now exhibit `[6,…,5]` (subpath+mach, mach+literal). The lone `5` entry persists, but we still can’t assign it to a specific op.
 - Next steps: pause analyzer changes; consider crafting single-op literal profiles (read+literal only) and mach-only with literal to see op_count/entry buckets, and design deltas that toggle mach off while keeping literals to watch op_entries shift (or not). The analyzer may need a correlation pass, but holding off for now per instruction.
 
-## 2025-11-30 1
+## Pass 5
 
 - Refreshed `analyze.py` to use the shared decoder for each blob and to emit per-entry structural signatures:
   - Each summary now includes a `decoder` block (`node_count`, decoder `tag_counts`, `op_table_offset`, decoder literal strings, section lengths) plus an `entry_signatures` map.
@@ -66,20 +66,20 @@
   - Walks are shallow (1–2 nodes) because the heuristic edges likely stop quickly, so signatures are best treated as coarse fingerprints, not decoded graphs.
 - No decoder errors; outputs regenerated cleanly. Next steps stay focused on using these decoder-backed signatures to correlate buckets across profiles once vocab IDs exist or to design deltas that move the lone `5` entry in the `[6,…,5]` pattern.
 
-## 2025-12-03
+## Pass 6
 
 - Extended `analyze.py` to parse filter symbols from SBPL (via vocab intersection) and emit `filters` / `filter_ids` alongside `ops`. This keeps per-profile summaries aligned with both operation and filter vocab.
 - Reran analyzer with current vocab lengths; regenerated `summary.json`, `op_table_map.json`, and `op_table_signatures.json` with filter annotations intact.
 
-## 2025-12-04
+## Pass 7
 
 - Pulled a quick bucket→operation ID snapshot using the refreshed alignment: `file-read*` (21), `file-write*` (29), and `network-outbound` (112) show up in buckets {3,4}; `mach-lookup` (96) shows buckets {5,6}, with bucket 6 only in mach+filtered-read mixes. Recorded in the ResearchReport.
 
-## 2025-12-07
+## Pass 8
 
 - Reran `analyze.py` after decoder updates; summaries and alignment regenerated (no bucket shifts observed). Alignment refreshed via `op-table-vocab-alignment/update_alignment.py`.
 
-## 2026-01-XX
+## Pass 9
 
 - SBPL wrapper now available (`book/api/SBPL-wrapper/wrapper --sbpl/--blob`); runtime-checks harness can invoke compiled blobs via `run_probes.py`.
 - Next actionable: reuse the wrapper to run a small runtime spot-check for representative profiles (e.g., `v1_read`, `v11_read_subpath`) and correlate observed allow/deny with the op-table buckets already mapped.
