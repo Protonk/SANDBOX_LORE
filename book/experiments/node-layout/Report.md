@@ -1,11 +1,6 @@
 # Node Layout Experiment – Research Report (Sonoma / macOS 14.4.1)
 
-This document is a self-contained report for the **node-layout** experiment under `book/experiments/node-layout/`. It explains what we have done, what we know about modern Seatbelt PolicyGraph layout on this host, and what remains to be done. New agents should be able to read this file plus `Plan.md` and `Notes.md` to resume the work.
-
----
-
-## 1. Purpose and context
-
+## Purpose
 The synthetic textbook treats compiled sandbox profiles as **PolicyGraphs**: node arrays plus edges derived from SBPL **Operations**, **Filters**, and **Metafilters**, with an **Operation Pointer Table** and shared literal/regex tables.
 
 This experiment asks:
@@ -22,8 +17,7 @@ We explicitly do **not** attempt a full reverse-engineering of modern node forma
 
 ---
 
-## 2. Environment, tools, and artifacts
-
+## Baseline & scope
 **Host / baseline**
 
 - macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
@@ -78,8 +72,163 @@ These tools give us a consistent “slice + decode” view of modern profiles th
 
 ---
 
-## 3. SBPL probes and compiled profiles
+## Deliverables / expected outcomes
+- A small library of SBPL variants under `sb/` plus compiled blobs under `sb/build/` that exercise representative operation/filter shapes.
+- `book/experiments/node-layout/out/summary.json` containing per-variant blob and section lengths, stride statistics, tag counts, and decoder snapshots for this host.
+- Narrative notes in `Notes.md` and this report describing stable format/layout facts for modern compiled profiles on Sonoma 14.4.1.
+- (Planned) lightweight guardrail checks that assert expected format variant and basic layout for a few curated reference profiles.
 
+## Plan & execution log
+### Completed
+- **1. Baseline ingestion and heuristics**
+  - Used the shared ingestion helpers (`book/graph/concepts/validation/profile_ingestion.py`) to:
+  - Classify `book/examples/sb/build/sample.sb.bin` as a modern graph-based blob.
+  - Slice it into a small preamble/op-table area, a “nodes” region, and a literal/regex tail with human-readable strings.
+  - Recorded, for the baseline blob:
+  - `operation_count` from the heuristic header and approximate op-table length (`op_count * 2` bytes).
+  - Node and literal region lengths.
+  - Stride scans (8/12/16 bytes) with tag sets and in-bounds edge rates.
+  - Persisted these observations via `analyze.py` and `out/summary.json`, with narrative in `Notes.md`.
+- **2. Synthetic SBPL variants**
+  - Added a family of variants under `sb/`:
+  - Baseline `file-read*` profile.
+  - Subpath-only and dual-subpath profiles.
+  - Literal+subpath mixes and multi-literal require-any/require-all shapes.
+  - Later probes combining mach-lookup with subpath/literal to stress the layout.
+  - Compiled all variants using `sandbox_compile_string` in `analyze.py`.
+  - For each variant, recorded blob length, op_count, section lengths (op_table, nodes, literals), and stride/tail statistics into `out/summary.json`.
+- **3. Stride and tail behavior**
+  - Treated the node region as fixed-size records at strides 8/12/16 for each variant and computed:
+  - full-record counts and remainders,
+  - distinct tags per stride,
+  - in-bounds edge counts.
+  - Inspected the last few stride-aligned records and remainder bytes (e.g., v1 vs v4) to identify “tail-only” structure.
+  - Established that:
+  - no stride yields a remainder-free node region,
+  - stride 12 gives a clean front tag set, but tails carry extra records with odd edges (e.g., 3584) and non-zero remainders.
+- **4. Literal pools, field2, and node fields**
+  - Inspected literal/regex pools to confirm expected strings across variants (e.g., `/tmp/foo`, `/tmp/bar`, `/etc/hosts`).
+  - Compared node regions for key variant pairs:
+  - v1 vs v2 (same filter, different literal content) → node bytes identical; only literal tail changes.
+  - v1 vs v4 (one vs two subpaths) → shared node prefix with extra tail nodes in v4.
+  - v0 vs v5 (baseline vs literal+subpath) → only a small set of node records differ while the literal pool grows.
+  - Used extended probes (literal-only and mach+literal/subpath mixes) plus the shared decoder to observe stable field2 sets {0,3,4,5,6} across these variants and to confirm:
+  - field2 behaves like a small key correlated with filter presence/branching rather than literal content or byte offsets.
+- **5. Op-table anchoring**
+  - Extracted op-table entries for each variant using the 0x10 + `op_count` heuristic and persisted them as `op_entries` in `out/summary.json`.
+  - Observed:
+  - Uniform buckets for small unfiltered profiles (e.g., `[4,…]` vs `[5,…]`),
+  - Non-uniform patterns such as `[6,6,6,6,6,6,5]` in mixed mach+filtered-read variants.
+  - Used these patterns as structural fingerprints to coordinate with the `op-table-operation` experiment.
+- **6. Tooling and artifacts**
+  - Implemented `analyze.py` to:
+  - compile all `sb/*.sb` into `sb/build/*.sb.bin`,
+  - slice blobs into sections,
+  - run stride/tail analysis,
+  - call the shared decoder to capture `node_count`, tag counts, op_table offsets, literals, and section lengths,
+  - write `out/summary.json` for use by other experiments.
+  - Ensured `Notes.md` references `analyze.py`, `out/summary.json`, and key observations.
+- **7. Remaining questions and follow-on work**
+  - Integrated the shared decoder into the analysis pipeline so that node/tag counts, op_table offsets, and literal strings are available alongside stride stats.
+  - Added and studied a family of literal- and mach-heavy probes (two/three/four/five/six/seven+ literal require-any/all variants, mach+literal, mach+subpath), confirming:
+  - field2 stability across literal content changes,
+  - branch-marker behavior (e.g., field2=0 appearance/disappearance) as literal counts vary,
+  - tail-word patterns that change with literal counts and compilation mode.
+
+### Planned
+- The `Plan.md` file lists detailed tasks; this section highlights the most impactful next steps for a new agent picking up the experiment.
+  
+  1. **Tighten field2 ↔ SBPL construct hypotheses**
+     - Design additional single-change SBPL variants that:
+       - add/remove **exactly one** filter of a given type (`subpath`, `literal`, `global-name`, etc.),
+       - swap `require-any` and `require-all`,
+       - move the same filter between different operations.
+     - For each new variant:
+       - re-run `analyze.py`,
+       - compare decoder `nodes` and `field2` histograms to the nearest baseline,
+       - document how `field2` changes.
+     - Goal: reach a table of the form “field2 value X consistently appears when construct Y is present” without claiming more than the data supports.
+  
+  2. **Front vs tail characterization**
+     - For a small subset of variants (baseline, single subpath, dual subpath, dual literal, one tag6-heavy mix):
+       - choose a cutoff index that separates “front” from “tail” (for example, last index shared with baseline vs new nodes),
+       - record tag distributions and field patterns separately for front and tail,
+       - look for patterns such as “require-any branch nodes only appear in the tail” or “tag6 nodes cluster at the front”.
+     - Encode these observations back into `Notes.md` and update this report if clear patterns emerge.
+  
+  3. **Minimal mach + literal probe**
+     - Add a `mach-lookup` + literal-only profile with no subpath (e.g., mach plus `literal "/etc/hosts"` but no extra read rules) to see whether:
+       - field2=6 appears without subpath,
+       - op-table entries move into the `[6,…,5]` family,
+       - tag6 emerges without additional operations.
+     - This will help disentangle “mach vs subpath vs multi-branching” in the tag6/field2=6 story.
+  
+  4. **Per-op graph signatures (optional within this experiment)**
+     - Reuse the decoder to implement small graph walks from op-table entrypoints (as in the op-table experiment), but keep the output local to this directory:
+       - for each op-table entry, record reachable tags and `field2` values,
+       - compare signatures between profiles that differ by a single Operation.
+     - This remains ID-agnostic but offers a structural view that can later be tied to an Operation Vocabulary Map.
+  
+  5. **Integration with vocabulary-mapping work**
+     - `book/graph/mappings/vocab/ops.json` and `filters.json` now exist (`status: ok` from cache harvest):
+       - revisit this experiment to label observed tag/field patterns with concrete Operation/Filter IDs where possible,
+       - keep a clear line between labels grounded in vocab artifacts and structural hypotheses when field semantics remain ambiguous (e.g., field2 small integers in filtered profiles).
+  
+  6. **Turnover discipline**
+     - Keep `Plan.md` and `Notes.md` in sync:
+       - whenever you add a new SBPL variant, describe why in `Notes.md` and add a brief bullet in `Plan.md`,
+       - when a hypothesis is strengthened or disproved, adjust this report and leave the previous version accessible via git history rather than piling on new ad‑hoc sections.
+  
+  ---
+- **1. Baseline ingestion and heuristics**
+  - None for this section; baseline ingestion is considered stable.
+  ---
+- **2. Synthetic SBPL variants**
+  - Only add new SBPL variants if new structural hypotheses require additional shapes; prefer reusing this set where possible.
+  ---
+- **3. Stride and tail behavior**
+  - Derive a consistent variable-size or mixed-stride model for the tail region, or explicitly document that no such simple model fits current data.
+  ---
+- **4. Literal pools, field2, and node fields**
+  - Use decoder-backed summaries and shared tag layouts to:
+  - identify which node fields carry literal indices versus filter/branch keys,
+  - clarify how literal references are represented (direct indices vs indirect tables),
+  - tie specific field2 values to SBPL-level constructs in cooperation with the `field2-filters` and `probe-op-structure` experiments.
+  ---
+- **5. Op-table anchoring**
+  - Treat non-uniform op-table patterns as structural hints and refine their interpretation using vocab-aligned results from `op-table-operation` and `op-table-vocab-alignment`.
+  ---
+- **6. Tooling and artifacts**
+  - Keep `analyze.py` and `out/summary.json` aligned with decoder evolution and shared mapping artifacts, without changing the core “shape” of the experiment.
+  ---
+- **7. Remaining questions and follow-on work**
+  - Literal index mapping:
+  - Use decoder-backed summaries and shared tag layouts to determine which fields, if any, encode literal-table indices versus purely filter/branch keys.
+  - Filter key location:
+  - With decoder output and vocab in hand, look for stable vs changing node fields across profiles that add/remove specific filters (subpath, literal, require-any/all) and propose candidate fields for filter key codes.
+  - Tail layout:
+  - Use decoder node and tag accounting to distinguish “front” vs “tail” regions and attempt a per-tag or per-region size model for tails; document any per-tag size patterns that emerge.
+  - Per-op segmentation:
+  - Once op-table entrypoints can be traversed more confidently, run small graph walks from each entry to characterize reachable tags/literals per bucket, then feed that structure into vocab-aligned experiments.
+
+## Evidence & artifacts
+- SBPL probe profiles under `sb/` and their compiled blobs in `sb/build/*.sb.bin`.
+- `book/experiments/node-layout/analyze.py` as the main ingestion and summary script.
+- `book/experiments/node-layout/out/summary.json` with per-variant structural data and decoder output.
+- Shared ingestion/decoder helpers under `book/graph/concepts/validation/` as referenced in the Baseline & scope section.
+
+## Blockers / risks
+- Tail-region layout and any mixed-stride node formats are still not fully characterized; current descriptions are heuristic and may change as decoding improves.
+- Field roles within nodes (especially payload fields and their relationship to `field2` and literal indices) are only partially mapped and depend on decoder assumptions.
+
+## Next steps
+- Tighten `field2` ↔ SBPL-construct hypotheses by adding carefully controlled single-change SBPL variants and comparing updated summaries.
+- Further characterize “front” versus “tail” regions for a few reference profiles to see which tags and constructs cluster where.
+- Add at least one minimal mach+literal probe and compare its node signatures to existing read/write-only variants.
+- Coordinate with `op-table-operation`, `field2-filters`, and `tag-layout-decode` once their artifacts stabilize, so this experiment can be annotated with concrete operation and filter IDs where justified.
+
+## Appendix
+### 3. SBPL probes and compiled profiles
 The SBPL variants in `sb/` are deliberately tiny and tightly controlled. They fall into several families:
 
 1. **Baselines and simple filters**
@@ -121,8 +270,7 @@ The compilation step (`analyze.py`) produces matching `*.sb.bin` blobs, guarante
 
 ---
 
-## 4. Structural layout of modern profiles
-
+### 4. Structural layout of modern profiles
 Across all variants on this host, we see the following structural invariants:
 
 - A 16‑byte preamble, followed by:
@@ -157,8 +305,7 @@ We retain stride-based views in `summary.json` for historical comparison, but th
 
 ---
 
-## 5. Literal pools and content vs structure
-
+### 5. Literal pools and content vs structure
 The literal/regex pool behaves exactly as the substrate suggests:
 
 - Human-readable strings (paths, literal filenames, mach service names) appear in the pool, often with a one-byte prefix that encodes type/class:
@@ -183,8 +330,7 @@ Literal byte offsets in the pool (as measured by naive substring search) vary pe
 
 ---
 
-## 6. Candidate node fields for filters and branches
-
+### 6. Candidate node fields for filters and branches
 The key structural observation from decoder output is that the **third 16‑bit field** in each node (bytes 6–7, `fields[2]`) changes in a way that tracks **filter presence and branching**, not literal content:
 
 - **Baseline (`v0_baseline`)**:
@@ -237,8 +383,7 @@ We still lack a mapping from these numeric keys to the **Filter Vocabulary Map**
 
 ---
 
-## 7. Mixed operations and op-table behavior (high-level tie-in)
-
+### 7. Mixed operations and op-table behavior (high-level tie-in)
 Although this experiment is node-centric, some observations intersect with the **Operation Pointer Table**:
 
 - For most small profiles, op-table entries are **uniform**:
@@ -255,8 +400,7 @@ The **op-table vs operation** experiment builds on this; here, we simply record 
 
 ---
 
-## 8. What we do **not** know yet
-
+### 8. What we do **not** know yet
 Despite the progress above, several important pieces remain unknown or only loosely constrained:
 
 1. **Exact node type semantics**
@@ -286,55 +430,7 @@ Despite the progress above, several important pieces remain unknown or only loos
 
 ---
 
-## 9. Recommended next steps (for future agents)
-
-The `Plan.md` file lists detailed tasks; this section highlights the most impactful next steps for a new agent picking up the experiment.
-
-1. **Tighten field2 ↔ SBPL construct hypotheses**
-   - Design additional single-change SBPL variants that:
-     - add/remove **exactly one** filter of a given type (`subpath`, `literal`, `global-name`, etc.),
-     - swap `require-any` and `require-all`,
-     - move the same filter between different operations.
-   - For each new variant:
-     - re-run `analyze.py`,
-     - compare decoder `nodes` and `field2` histograms to the nearest baseline,
-     - document how `field2` changes.
-   - Goal: reach a table of the form “field2 value X consistently appears when construct Y is present” without claiming more than the data supports.
-
-2. **Front vs tail characterization**
-   - For a small subset of variants (baseline, single subpath, dual subpath, dual literal, one tag6-heavy mix):
-     - choose a cutoff index that separates “front” from “tail” (for example, last index shared with baseline vs new nodes),
-     - record tag distributions and field patterns separately for front and tail,
-     - look for patterns such as “require-any branch nodes only appear in the tail” or “tag6 nodes cluster at the front”.
-   - Encode these observations back into `Notes.md` and update this report if clear patterns emerge.
-
-3. **Minimal mach + literal probe**
-   - Add a `mach-lookup` + literal-only profile with no subpath (e.g., mach plus `literal "/etc/hosts"` but no extra read rules) to see whether:
-     - field2=6 appears without subpath,
-     - op-table entries move into the `[6,…,5]` family,
-     - tag6 emerges without additional operations.
-   - This will help disentangle “mach vs subpath vs multi-branching” in the tag6/field2=6 story.
-
-4. **Per-op graph signatures (optional within this experiment)**
-   - Reuse the decoder to implement small graph walks from op-table entrypoints (as in the op-table experiment), but keep the output local to this directory:
-     - for each op-table entry, record reachable tags and `field2` values,
-     - compare signatures between profiles that differ by a single Operation.
-   - This remains ID-agnostic but offers a structural view that can later be tied to an Operation Vocabulary Map.
-
-5. **Integration with vocabulary-mapping work**
-   - `book/graph/mappings/vocab/ops.json` and `filters.json` now exist (`status: ok` from cache harvest):
-     - revisit this experiment to label observed tag/field patterns with concrete Operation/Filter IDs where possible,
-     - keep a clear line between labels grounded in vocab artifacts and structural hypotheses when field semantics remain ambiguous (e.g., field2 small integers in filtered profiles).
-
-6. **Turnover discipline**
-   - Keep `Plan.md` and `Notes.md` in sync:
-     - whenever you add a new SBPL variant, describe why in `Notes.md` and add a brief bullet in `Plan.md`,
-     - when a hypothesis is strengthened or disproved, adjust this report and leave the previous version accessible via git history rather than piling on new ad‑hoc sections.
-
----
-
-## 10. How this experiment feeds the larger project
-
+### 10. How this experiment feeds the larger project
 Within the project’s conceptual model:
 
 - This experiment provides concrete evidence for:

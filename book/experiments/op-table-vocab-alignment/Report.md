@@ -1,13 +1,6 @@
 # Op-table ↔ Operation Vocabulary Alignment – Research Report (Sonoma / macOS 14.4.1)
 
-This document is the unified report for the **op-table-vocab-alignment** experiment under `book/experiments/op-table-vocab-alignment/`. It explains why this experiment exists, what artifacts it produces, and what is still needed before we can align op-table buckets (4/5/6/…) with a proper **Operation Vocabulary Map** and **Filter Vocabulary Map** on this host.
-
-A new agent should be able to read this file plus `Plan.md` and `Notes.md` and immediately see where to pick up the work.
-
----
-
-## 1. Motivation and scope
-
+## Purpose
 The substrate distinguishes three closely-related concepts:
 
 - **Operation** – symbolic SBPL operation name (e.g., `file-read*`, `mach-lookup`, `network-outbound`).
@@ -40,8 +33,7 @@ This experiment sits between the structural experiments and the validation tooli
 
 ---
 
-## 2. Environment and dependencies
-
+## Baseline & scope
 **Host / baseline**
 
 - macOS 14.4.1 (23E224), kernel 23.4.0, Apple Silicon, SIP enabled.
@@ -63,74 +55,134 @@ This experiment sits between the structural experiments and the validation tooli
 
 ---
 
-## 3. Vocabulary artifacts: expected contracts
+## Deliverables / expected outcomes
+- This experiment assumes the existence of two vocabulary artifacts under `book/graph/mappings/vocab/`:
+  
+  1. `ops.json` – **Operation Vocabulary Map**
+  
+     - `metadata`:
+       - OS product/version/build (e.g., `"macOS 14.4.1 (23E224)"`),
+       - profile format variant(s) covered (e.g., `"modern-heuristic"`),
+       - source blobs used to derive the mapping (e.g., system profiles from `extract_sbs` and curated synthetic profiles),
+       - a content hash for the vocab file (so experiments can refer to a specific version).
+     - `entries`: list of records, each with at least:
+       - `name`: SBPL operation name (string),
+       - `id`: numeric Operation ID (integer),
+       - `arg_schema` (optional): human-readable summary of arguments (e.g., path, global-name, etc.),
+       - `provenance`: description of how this mapping was inferred (which blobs/tools).
+  
+  2. `filters.json` – **Filter Vocabulary Map**
+  
+     - `metadata` and `versioning` similar to `ops.json`.
+     - `entries`: list of records with:
+       - `name`: filter key (string, e.g., `subpath`, `literal`, `global-name`),
+       - `id`: numeric filter key code (int),
+       - `arg_schema` / `notes` (optional),
+       - `provenance`.
+  
+  Current status (Sonoma host):
+  
+  - `ops.json` and `filters.json` are harvested from the dyld cache (`status: ok`, 196 ops, 93 filters) with OS/build metadata and provenance in place.
+  
+  ---
 
-This experiment assumes the existence of two vocabulary artifacts under `book/graph/mappings/vocab/`:
+## Plan & execution log
+### Completed
+- **Current status**
+  The main artifact produced by this experiment is:
+  
+  - `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json`
+  
+  Its role is to capture, for each synthetic profile in `op-table-operation`, the information needed to later attach Operation IDs and vocabulary versions without recomputing everything.
+  
+  **Current JSON schema (per top-level alignment file):**
+  
+  - Top-level keys:
+    - `vocab_present`: whether any `out/vocab/ops.json` was found at alignment time.
+    - `vocab_version`: a timestamp or version string for the vocab file used.
+    - `source_summary`: path to the op-table-operation `out/summary.json` used as input.
+    - `records`: list of per-profile alignment records.
+  
+  **Per-profile alignment record:**
+  
+  - `profile`: profile name (e.g., `"v11_read_subpath"`).
+  - `ops`: list of SBPL operation symbols in this profile (e.g., `["file-read*"]`).
+  - `op_entries`: the op-table entries (bucket values) from `out/summary.json`.
+  - `op_count`: the `operation_count` (heuristic) from header/decoder.
+  - `operation_ids`: list of numeric Operation IDs corresponding to `ops`.
+  - `filters` / `filter_ids`: filter symbols present in the SBPL and their vocab IDs.
+  - `vocab_version`: the specific vocabulary version/hash used for this record.
+  
+  **Current status:**
+  
+  - The alignment file covers all profiles from `op-table-operation/out/summary.json`, now with `operation_ids`, `filters`, and `filter_ids` populated from the harvested vocab.
+  - `vocab_version` reflects the `generated_at` stamp in `ops.json`; `vocab_status: ok` and `filter_vocab_present: true` are recorded at the top level.
+  - The file stays conservative: it captures SBPL ops/filters, op-table buckets, op_count, host baseline, and vocab provenance without inventing mappings beyond the vocab artifacts.
+  
+  ---
+- **1. Setup and scope**
+  - Recorded host / OS baseline in `ResearchReport.md`.
+  - Inventoried upstream structural artifacts from `node-layout` and `op-table-operation`.
+  - Located and documented vocabulary-mapping tasks and outputs (`book/graph/mappings/vocab/ops.json`, `filters.json` with status ok).
+- **2. Vocabulary extraction hookup**
+  - Defined the expected JSON contracts for `ops.json` / `filters.json` and how alignment ties them to specific OS/builds.
+  - Recorded assumptions and requirements for vocabulary artifacts in `ResearchReport.md` for future agents.
+- **3. Alignment of synthetic profiles with vocab**
+  - Reused upstream summaries to build `out/op_table_vocab_alignment.json`, recording per-profile operations, op-table indices, and, once vocab became available, operation IDs and filter IDs.
+  - Summarized the alignment method and status in `ResearchReport.md`.
+- **4. Interpretation and limits**
+  - Performed a first-pass interpretation of bucket↔Operation ID relationships (e.g., mach-lookup in buckets {5,6}, file-read*/write*/network in {3,4}) and recorded them in `ResearchReport.md`.
+- **5. Turnover and integration**
+  - Kept detailed notes in `Notes.md` and maintained `ResearchReport.md` as the main narrative for this alignment layer.
 
-1. `ops.json` – **Operation Vocabulary Map**
+### Planned
+- **1. Setup and scope**
+  - None for this section.
+  Deliverables for this phase:
+  - Clear note in `ResearchReport.md` describing the host baseline and which vocab artifacts (if any) are already available.
+  ---
+- **2. Vocabulary extraction hookup**
+  - None for this section (real vocab extraction now lives in `vocab-from-cache`).
+  Deliverables for this phase:
+  - A stable description in `ResearchReport.md` of how vocabulary artifacts will be consumed, without overloading this experiment with full vocab extraction responsibilities.
+  ---
+- **3. Alignment of synthetic profiles with vocab**
+  - Refresh alignment only when vocab or upstream experiments change.
+  Deliverables for this phase:
+  - Alignment JSON artifact (even if operation IDs are still placeholders).
+  - Updated sections in `ResearchReport.md` explaining alignment logic and limitations.
+  - Status update (2025-11-28): partial vocab scaffold added (`vocab_extraction.py`) that emits decoder-derived `ops.json`/`filters.json` with `status: partial`; alignment refreshed to carry the new vocab version while keeping `operation_ids=null`.
+  ---
+- **4. Interpretation and limits**
+  - Refine and expand the interpretation as more operations/filters are exercised, keeping hard facts vs hypotheses clearly separated.
+  Deliverables for this phase:
+  - Textual interpretation in `ResearchReport.md` framed in terms of the Operation, Operation Pointer Table, and Operation Vocabulary Map concepts.
+  ---
+- **5. Turnover and integration**
+  - Add a short summary and pointer into `book/graph/concepts/EXPERIMENT_FEEDBACK.md` and any validation tasks that consume op-table/vocab data.
+  Open questions to track (Upcoming):
+  - How best to represent “buckets” in a way that stays stable across OS builds while still tying to concrete Operation IDs.
+  - How much alignment logic should live here versus shared validation tooling under `book/graph/concepts/validation/`.
+  - Whether future data reveals contradictions between bucket behavior in `op-table-operation` and the canonical Operation Vocabulary Map.
 
-   - `metadata`:
-     - OS product/version/build (e.g., `"macOS 14.4.1 (23E224)"`),
-     - profile format variant(s) covered (e.g., `"modern-heuristic"`),
-     - source blobs used to derive the mapping (e.g., system profiles from `extract_sbs` and curated synthetic profiles),
-     - a content hash for the vocab file (so experiments can refer to a specific version).
-   - `entries`: list of records, each with at least:
-     - `name`: SBPL operation name (string),
-     - `id`: numeric Operation ID (integer),
-     - `arg_schema` (optional): human-readable summary of arguments (e.g., path, global-name, etc.),
-     - `provenance`: description of how this mapping was inferred (which blobs/tools).
+## Evidence & artifacts
+- `book/graph/mappings/vocab/ops.json` and `filters.json` harvested from the dyld cache for this host (status: ok).
+- `book/experiments/op-table-operation/out/summary.json`, `op_table_map.json`, and `op_table_signatures.json` as upstream structural inputs.
+- `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json` capturing per-profile operations, op-table buckets, and (when present) vocabulary IDs and versions.
+- Host/format metadata in `book/graph/concepts/validation/out/metadata.json` that tie alignment runs to the Sonoma baseline.
 
-2. `filters.json` – **Filter Vocabulary Map**
+## Blockers / risks
+- Alignment logic is currently scoped to the synthetic profiles exercised in `op-table-operation`; operations not present there are outside this experiment’s coverage.
+- Vocabulary artifacts are host/build-specific; changes to `ops.json`/`filters.json` or to decoder behavior may invalidate older alignment files if not regenerated carefully.
+- Bucket interpretations remain structural; even with IDs attached, mislabeling is possible if upstream vocab extraction or op-table decoding is wrong.
 
-   - `metadata` and `versioning` similar to `ops.json`.
-   - `entries`: list of records with:
-     - `name`: filter key (string, e.g., `subpath`, `literal`, `global-name`),
-     - `id`: numeric filter key code (int),
-     - `arg_schema` / `notes` (optional),
-     - `provenance`.
+## Next steps
+- Refresh `out/op_table_vocab_alignment.json` whenever vocabulary artifacts or op-table experiment outputs change for this host.
+- Refine bucket and Operation-ID interpretations as more operations and filters are exercised in upstream experiments.
+- Coordinate with validation tooling under `book/graph/concepts/validation/` so that long-term vocabulary and alignment logic lives in shared code rather than being duplicated here.
 
-Current status (Sonoma host):
-
-- `ops.json` and `filters.json` are harvested from the dyld cache (`status: ok`, 196 ops, 93 filters) with OS/build metadata and provenance in place.
-
----
-
-## 4. Alignment artifact: shape and current status
-
-The main artifact produced by this experiment is:
-
-- `book/experiments/op-table-vocab-alignment/out/op_table_vocab_alignment.json`
-
-Its role is to capture, for each synthetic profile in `op-table-operation`, the information needed to later attach Operation IDs and vocabulary versions without recomputing everything.
-
-**Current JSON schema (per top-level alignment file):**
-
-- Top-level keys:
-  - `vocab_present`: whether any `out/vocab/ops.json` was found at alignment time.
-  - `vocab_version`: a timestamp or version string for the vocab file used.
-  - `source_summary`: path to the op-table-operation `out/summary.json` used as input.
-  - `records`: list of per-profile alignment records.
-
-**Per-profile alignment record:**
-
-- `profile`: profile name (e.g., `"v11_read_subpath"`).
-- `ops`: list of SBPL operation symbols in this profile (e.g., `["file-read*"]`).
-- `op_entries`: the op-table entries (bucket values) from `out/summary.json`.
-- `op_count`: the `operation_count` (heuristic) from header/decoder.
-- `operation_ids`: list of numeric Operation IDs corresponding to `ops`.
-- `filters` / `filter_ids`: filter symbols present in the SBPL and their vocab IDs.
-- `vocab_version`: the specific vocabulary version/hash used for this record.
-
-**Current status:**
-
-- The alignment file covers all profiles from `op-table-operation/out/summary.json`, now with `operation_ids`, `filters`, and `filter_ids` populated from the harvested vocab.
-- `vocab_version` reflects the `generated_at` stamp in `ops.json`; `vocab_status: ok` and `filter_vocab_present: true` are recorded at the top level.
-- The file stays conservative: it captures SBPL ops/filters, op-table buckets, op_count, host baseline, and vocab provenance without inventing mappings beyond the vocab artifacts.
-
----
-
-## 5. Updated findings (with vocab present)
-
+## Appendix
+### 5. Updated findings (with vocab present)
 With the Sonoma vocab harvested (`ops.json`/`filters.json` status: ok), we can now anchor bucket patterns to concrete Operation IDs:
 
 - Operation IDs (selected):
@@ -153,14 +205,12 @@ Bucket→ID summary (from alignment artifact on this host, vocab `generated_at=2
 - `mach-lookup` (ID 96) appears in buckets {5,6}, with bucket 6 showing up only in the complex mach+filtered-read mixes.
 - No other operations are exercised here; treat these as host/profile-scoped observations, not universal rules.
 
-## Status summary (2025-12-09)
-
+### Status summary (2025-12-09)
 - Vocab artifacts are `status: ok` (ops=196, filters=93); alignment regenerated after decoder updates with no bucket changes. For this host, op-table bucket↔operation ID mapping is up to date. Further changes would come only if vocab hashes change or new profile variants are added.
 
 ---
 
-## 6. What remains to be done
-
+### 6. What remains to be done
 This experiment can now close the Operation-ID alignment; the remaining work is filter-aware annotation and cross-linking:
 
 1. **Filter-level alignment (new)**
@@ -200,8 +250,7 @@ This experiment can now close the Operation-ID alignment; the remaining work is 
 
 ---
 
-## 7. Practical guidance for future agents
-
+### 7. Practical guidance for future agents
 If you pick up this experiment, the recommended workflow is:
 
 1. **Read the upstream experiments**
@@ -227,8 +276,7 @@ If you pick up this experiment, the recommended workflow is:
 
 ---
 
-## 8. Role in the larger project
-
+### 8. Role in the larger project
 This experiment:
 
 - encodes the **interface** between bucket-level structural experiments and vocabulary-oriented validation:

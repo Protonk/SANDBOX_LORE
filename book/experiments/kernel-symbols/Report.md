@@ -1,9 +1,41 @@
 # Research Report
 
-## Scope
+## Purpose
+Track kernel symbol and string extraction runs for the 14.4.1-23E224 kernelcache and related builds, with a focus on sandbox/AppleMatch/mac_policy anchors that could support later PolicyGraph dispatcher searches.
+
+## Baseline & scope
 Track kernel symbol/string extraction runs for the 14.4.1-23E224 kernelcache and related builds. Outputs are kept under `out/<build>/kernel-symbols/` for reuse and comparison across runs.
 
-## Current state
+## Deliverables / expected outcomes
+- Per-build symbol and string dumps under `out/<build>/kernel-symbols/` (for example `out/14.4.1-23E224/kernel-symbols/strings.json` and `symbols.json`).
+- String-reference scans for sandbox/AppleMatch/mac_policy terms under `out/<build>/kernel-string-refs/`.
+- Pointer-table candidate listings (e.g., `out/14.4.1-23E224/op_table_candidates.json`) to support op-table and dispatcher work.
+- Notes/Report entries that summarize notable hits and dead ends for later kernel experiments.
+
+## Plan & execution log
+### Completed
+- Kernel symbol and string extraction completed for the 14.4.1-23E224 kernelcache; outputs recorded under `out/14.4.1-23E224/` (see Appendix “Current state” for detailed counts and paths).
+- Initial data-define and string-reference passes run for key sandbox/AppleMatch addresses, with callers/xrefs captured in `data_refs.json` and `kernel-string-refs` outputs where available.
+- An op-table candidate sweep produced `out/14.4.1-23E224/op_table_candidates.json` for later correlation with other experiments.
+
+### Planned
+- Run additional data-define passes and string-reference scans for promising addresses and pointer tables as new hypotheses appear in downstream dispatcher work.
+
+## Evidence & artifacts
+- `out/14.4.1-23E224/kernel-symbols/strings.json` and `symbols.json` with raw string and symbol inventories.
+- `out/14.4.1-23E224/kernel-string-refs/string_references.json` from `kernel_string_refs.py` runs.
+- `out/14.4.1-23E224/op_table_candidates.json` capturing pointer-table candidates.
+- `data_refs.json` outputs from `kernel_data_define_and_refs.py` via `kernel-data-define` wrapper.
+
+## Blockers / risks
+- Many sandbox/AppleMatch-related strings and candidate tables currently have zero recorded callers/xrefs under the analyzed configuration, so their connection to the real dispatcher remains speculative.
+- Some automated scans treated this KC as x86 instead of ARM64, which can hide real references; future runs need to ensure ARM64 analyzers are active when interpreting pointer and immediate patterns.
+
+## Next steps
+- Follow the “Next pivots” in the Appendix: targeted data-define runs on candidate addresses, and, when available, coordination with mac_policy_ops/dispatcher searches in the `symbol-search` experiment.
+
+## Appendix
+### Current state
 - Latest run (Dec 2 2025) completed in ~69s with ARM64 analyzers only; outputs at `out/14.4.1-23E224/kernel-symbols/`.
 - `strings.json`: ~243k entries; ~205 entries contain sandbox/AppleMatch/mac_policy terms (addresses include `0x-7fffdf10f0` `com.apple.security.sandbox`, `0x-7fffdf3a68` `com.apple.kext.AppleMatch`).
 - `symbols.json`: ~215 entries emitted by the `kernel_symbols.py` script.
@@ -15,7 +47,7 @@ Track kernel symbol/string extraction runs for the 14.4.1-23E224 kernelcache and
 - Data-define reruns (Dec 3) on unsigned forms `addr:0xffffff800020ef10`, `addr:0xffffff800020c598`, `addr:0xffffff8002dd2920` with `--process-existing --no-analysis`; each processed 1 target, latest `data_refs.json` shows `com.apple.security.sandbox` at `0x-7ffd22d6e0` with no callers (overwrites per run).
 - Op-table refresh (Dec 3, no-analysis, process-existing): 33 pointer-table candidates regenerated; output mirrored to `out/14.4.1-23E224/op_table_candidates.json` for comparison with symbol/string pivots.
 
-## Next pivots
+### Next pivots
 - Run `run_data_define.py` with `--process-existing --no-analysis` on key addresses (e.g., `0x-7fffdf10f0`, `0x-7fffdf3a68`, selected `_sandbox_*` symbols) to gather xrefs/callers.
 - Use `run_task.py kernel-op-table --process-existing` if op-table mapping is needed alongside symbols.
 - Keep analyzer runs under ARM64 defaults; only rerun full analysis if new pre-scripts or processor IDs change.

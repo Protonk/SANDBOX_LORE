@@ -4,8 +4,8 @@ This document summarizes what `book/experiments/*` are doing as a population: wh
 
 It merges two perspectives:
 
-- the **conceptual view** from `exp-assessment.md` (what experiments are trying to accomplish), and
-- the **mechanical audits** from `audits_combined.md` (what is actually present in Plans, Reports, `out/`, mappings, and tests).
+- the **conceptual view** (what experiments are trying to accomplish), and
+- the **mechanical audits** (what is actually present in Plans, Reports, `out/`, mappings, and tests).
 
 The intent is to give future agents enough context to design, extend, or refactor experiments in a way that fits the project’s expectations.
 
@@ -66,6 +66,22 @@ From both the assessment and the scaffold census:
 - Kernel and entitlement/lifecycle work are treated as **provisional**: dispatcher candidates and entitlement-driven behaviors are recorded as hypotheses, not facts.
 
 This structural discipline is already close to what `book/experiments/AGENTS.md` should codify.
+
+The scaffold census adds a few more concrete regularities:
+
+- **Baselines are nearly always recorded**: 11 of 14 experiments have a clearly recorded host baseline; 3 are partial. Recording OS/build/SIP is already a de facto requirement.
+- **Deliverables are mostly JSON in `out/`**: `out-json` dominates the deliverable kinds; only a couple of experiments treat SBPL/profile outputs, runtime traces, or kernels as primary deliverables in their Plans.
+- **Plans share a common skeleton**:
+  - A first section like `1) Scope and setup` / `1. Setup and scope`.
+  - A second section focused on a baseline pass (`2) Baseline data pass`, `2) Baseline inventory`, `2) Cache extraction`, `2) Decode and summarize`).
+  - Later sections for targeted probes/transformations and for `Synthesis and guardrails`, `Alignment and propagation`, `Open questions / risks`, or similar.
+- **ResearchReports have a stable header spine**:
+  - Almost all use `Purpose`, `Baseline and scope` (or close variants), `Plan (summary)`, `Current status`, and `Expected outcomes`.
+  - Many add explicit sections like `What remains to be done`, `Limits and open questions`, `What we do not know yet`, and `Role in the broader/larger project`.
+- **Failures and next steps are first-class sections**:
+  - Headings such as `What we tried and why it fell short`, `Current wrinkle: ...`, `Recent probes and focused census`, `Next decoding steps (focused)` explicitly capture dead ends and planned pivots.
+
+These patterns mean that new experiments can be expected to fit into an already well-defined narrative and structural template.
 
 ---
 

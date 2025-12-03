@@ -1,0 +1,71 @@
+# Anchor ↔ Filter ID Mapping – Research Report (Sonoma / macOS 14.4.1)
+
+## Purpose
+Bind anchor labels emitted by `probe-op-structure` to concrete Filter IDs, using anchor hits, `field2` inventories, and vocab artifacts. The resulting map (`book/graph/mappings/anchors/anchor_filter_map.json`) should let other tools interpret anchors in terms of filter semantics.
+
+## Baseline & scope
+- Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
+- Inputs:
+  - Anchor hits from `book/experiments/probe-op-structure/out/anchor_hits.json`.
+  - Field2 inventory (with anchors) from `book/experiments/field2-filters/out/field2_inventory.json`.
+  - Filter vocab from `book/graph/mappings/vocab/filters.json`.
+  - Existing anchor → field2 hints from `book/graph/mappings/anchors/anchor_field2_map.json`.
+- Tooling: `book.api.decoder` for any new probes; existing probe outputs as primary evidence.
+- Target artifact: `book/graph/mappings/anchors/anchor_filter_map.json` with provenance notes.
+
+## Deliverables / expected outcomes
+- `book/graph/mappings/anchors/anchor_filter_map.json` with host metadata and per-anchor provenance.
+- `book/experiments/anchor-filter-map/out/anchor_filter_candidates.json` summarizing candidate mappings and evidence.
+- Guardrail coverage in `tests/test_mappings_guardrail.py` for at least one high-confidence anchor → filter-ID pair.
+- Notes/Report entries describing ambiguous anchors and how to revisit them.
+
+## Plan & execution log
+### Completed
+- **Current status**
+  - Experiment scaffolded (this report, Plan, Notes).
+  - Baseline candidate extraction done: `out/anchor_filter_candidates.json` holds anchor → {field2_names, field2_values, sources}.
+  - First pass map published at `book/graph/mappings/anchors/anchor_filter_map.json` (with host metadata): `/tmp/foo` and `/etc/hosts` pinned to `path` (id 0) for file probes; `/var/log` → ipc-posix-name=4; `idVendor` → local-name=6; `preferences/logging` → global-name=5; other anchors remain `status: ambiguous` with candidates noted. Guardrail added (`tests/test_mappings_guardrail.py`) to ensure map presence and mapped entries.
+- **1) Scope and setup**
+  - Host baseline (OS/build, SIP) recorded in `ResearchReport.md`.
+  - Inputs confirmed: `probe-op-structure/out/anchor_hits.json`, `field2-filters/out/field2_inventory.json`, vocab (`book/graph/mappings/vocab/filters.json`), anchor → field2 hints (`book/graph/mappings/anchors/anchor_field2_map.json`).
+  - Decoder (`book.api.decoder`) validated via existing probes and inventories.
+- **2) Baseline data pass**
+  - Loaded anchor hits and field2 inventory; identified anchors with clear filter context (paths, mach names, iokit symbols).
+  - Built initial candidates for anchor → filter-ID mapping, including conflicting and ambiguous cases.
+- **3) Targeted probes (if needed)**
+  - None so far; current map is based solely on existing probes and system profiles.
+- **4) Synthesis and guardrails**
+  - Finalized `book/graph/mappings/anchors/anchor_filter_map.json` with host metadata, status fields, and provenance notes per anchor.
+  - Added a guardrail test (`tests/test_mappings_guardrail.py`) that asserts map presence and at least one mapped anchor → filter ID.
+  - Updated `ResearchReport.md` and `Notes.md` with current mapping decisions, evidence sources, and remaining ambiguous anchors.
+
+### Planned
+- 1. Baseline pass over existing anchor hits and field2 inventory to propose anchor → filter-ID candidates.
+  2. Craft targeted probes if needed to disambiguate anchors with multiple plausible filters.
+  3. Synthesize a stable map with evidence and add guardrail checks on reference blobs.
+- **1) Scope and setup**
+  - None for this section.
+- **2) Baseline data pass**
+  - None for this section.
+- **3) Targeted probes (if needed)**
+  - Craft minimal SBPL probes to disambiguate anchors that still have multiple plausible filters.
+  - Decode and re-run anchor extraction; refine the candidate mapping where new evidence appears.
+- **4) Synthesis and guardrails**
+  - Revisit ambiguous anchors after additional probes or decoder improvements, and extend the map accordingly.
+  Stop condition: anchor → filter-ID map produced with documented evidence; guardrail added; Notes/Report updated.
+
+## Evidence & artifacts
+- Anchor hits from `book/experiments/probe-op-structure/out/anchor_hits.json`.
+- Field2 inventory from `book/experiments/field2-filters/out/field2_inventory.json`.
+- Filter vocabulary from `book/graph/mappings/vocab/filters.json`.
+- Intermediate candidates in `book/experiments/anchor-filter-map/out/anchor_filter_candidates.json`.
+- Final mapping in `book/graph/mappings/anchors/anchor_filter_map.json`.
+
+## Blockers / risks
+- Some anchors remain ambiguous and map to multiple plausible filters; these are explicitly marked in the map and may change as decoder/tag layouts improve.
+- Mapping quality depends on the current `field2` understanding; decoder or tag-layout revisions may require revisiting specific anchors.
+
+## Next steps
+- Design and run targeted SBPL probes for remaining ambiguous anchors to tighten their mappings.
+- Refresh `anchor_filter_map.json` and candidates after decoder or field2 mapping improvements.
+- Extend guardrail coverage once additional high-confidence anchors are established.
