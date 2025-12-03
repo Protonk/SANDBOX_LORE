@@ -30,3 +30,10 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 ## 2025-12-12
 
 - Re-ran `harvest_field2.py` with fixed import path; `out/field2_inventory.json` refreshed. Anchors now show mapped filter names/IDs where available (e.g., `preferences/logging` → global-name). Synthetic probes still dominated by generic path/name field2 values; high unknowns remain in `airlock`.
+
+### Recent update
+
+- Ran tag-aware decoding across single-filter probes and anchor-heavy probes (from probe-op-structure). Single-filter profiles still only surface generic path/name field2 values ({0,3,4,5,6,7,8}); no new filter-specific IDs.
+- Network/flow-divert probes surfaced a repeatable but unmapped field2: nodes tied to literal `com.apple.flow-divert` carry field2 7 (`local`), 2 (`xattr`), and an unknown 2560 (tag 0, edges 0/0, payload 2560). The 2560 node appears in both `v4_network_socket_require_all` and `v7_file_network_combo`, suggesting a flow-divert-specific filter or branch.
+- System profiles recap: `bsd.sb.bin` still shows high, unmapped field2 values (170/174/115/109/16660) on tag-26/0 nodes linked to literals such as `/dev/dtracehelper` and `posix_spawn_filtering_rules`; `airlock` remains high-valued only (165/166/10752) with sparse literals.
+- Proposed probes: a minimal flow-divert SBPL to isolate 2560 without file scaffolding; a small dtracehelper/posix_spawn-focused profile to chase the `bsd` high field2 values under simpler graphs.

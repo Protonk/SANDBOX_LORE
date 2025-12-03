@@ -59,3 +59,6 @@ Convenience runner:
   python3 book/api/ghidra/run_task.py kernel-symbols --exec
   ```
   Use `--process-existing --no-analysis` to reuse an analyzed project, `--no-pre-scripts` to skip the x86-disabling helper, and `--pre-script`/`--processor` to override defaults.
+
+Outputs:
+- Most tasks write under `dumps/ghidra/out/<build>/<task>/`. The `kernel-symbols` task is routed to the experiment tree at `book/experiments/kernel-symbols/out/<build>/kernel-symbols/` to keep symbol/string outputs co-located with notes.

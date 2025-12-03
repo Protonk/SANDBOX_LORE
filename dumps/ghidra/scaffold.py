@@ -20,6 +20,7 @@ SANDBOX_PRIVATE = ROOT / "Sandbox-private"
 BOOK_API_SCRIPTS = REPO_ROOT / "book" / "api" / "ghidra" / "scripts"
 SCRIPTS_DIR = BOOK_API_SCRIPTS
 OUT_ROOT = HERE / "out"
+KERNEL_SYMBOLS_OUT_ROOT = REPO_ROOT / "book" / "experiments" / "kernel-symbols" / "out"
 PROJECTS_ROOT = HERE / "projects"
 TEMP_ROOT = HERE / "tmp"
 DEFAULT_BUILD_ID = "14.4.1-23E224"
@@ -65,6 +66,7 @@ class TaskConfig:
     script: str
     import_target: str
     description: str
+    out_root: Path | None = None
 
     def script_path(self) -> Path:
         return SCRIPTS_DIR / self.script
@@ -76,6 +78,7 @@ TASKS: Dict[str, TaskConfig] = {
         script="kernel_symbols.py",
         import_target="kernel",
         description="Import KC and dump symbols/strings for com.apple.security.sandbox.",
+        out_root=KERNEL_SYMBOLS_OUT_ROOT,
     ),
     "kernel-tag-switch": TaskConfig(
         name="kernel-tag-switch",
@@ -161,8 +164,9 @@ def build_headless_command(
     project_name: str,
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
-    out_dir = OUT_ROOT / build.build_id / task.name
-    ensure_under(out_dir, OUT_ROOT)
+    out_root = task.out_root if task.out_root else OUT_ROOT
+    out_dir = out_root / build.build_id / task.name
+    ensure_under(out_dir, out_root)
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
     cmd = [
@@ -212,8 +216,9 @@ def build_process_command(
     project_name: str,
 ) -> Tuple[List[str], Path]:
     import_path = getattr(build, task.import_target)
-    out_dir = OUT_ROOT / build.build_id / task.name
-    ensure_under(out_dir, OUT_ROOT)
+    out_root = task.out_root if task.out_root else OUT_ROOT
+    out_dir = out_root / build.build_id / task.name
+    ensure_under(out_dir, out_root)
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
     cmd = [
