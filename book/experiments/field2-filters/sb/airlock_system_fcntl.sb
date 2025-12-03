@@ -1,0 +1,8 @@
+(version 1)
+
+;; Focus on the airlock-linked op (system-fcntl) with a narrow fcntl-command filter.
+;; This probe checks whether high/unknown field2 payloads appear in isolation.
+
+(deny default)
+(allow system-fcntl (fcntl-command 0))
+(deny system-fcntl (fcntl-command 1))

@@ -486,7 +486,62 @@
       ]
     }
   ],
+  "probe:airlock_system_fcntl.sb": [
+    {
+      "idx": 36,
+      "tag": 1,
+      "fields": [
+        14,
+        65533,
+        65535,
+        65535,
+        65535
+      ],
+      "edges": [
+        14,
+        65533
+      ],
+      "fan_out": 1,
+      "fan_in": 0,
+      "ops": [],
+      "raw": 65535,
+      "raw_hex": "0xffff",
+      "hi": 49152,
+      "lo": 16383,
+      "name_lo": null,
+      "literal_refs": []
+    }
+  ],
   "probe:bsd_broader.sb": [],
+  "probe:bsd_ops_default_file.sb": [
+    {
+      "idx": 30,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        3584,
+        1,
+        7
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "ops": [],
+      "raw": 3584,
+      "raw_hex": "0xe00",
+      "hi": 0,
+      "lo": 3584,
+      "name_lo": null,
+      "literal_refs": [
+        "O/tmp/field2-read",
+        "W/tmp/field2-default-file"
+      ]
+    }
+  ],
   "probe:bsd_tail_context.sb": [],
   "probe:dtracehelper_posixspawn.sb": [],
   "probe:flow_divert_mixed.sb": [],

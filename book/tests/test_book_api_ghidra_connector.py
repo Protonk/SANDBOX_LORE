@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from book.api.ghidra import connector
-from dumps.ghidra import scaffold
+from book.api.ghidra import scaffold
 
 
 def _stub_build(tmp_dir: Path, build_id: str = "unit") -> scaffold.BuildPaths:

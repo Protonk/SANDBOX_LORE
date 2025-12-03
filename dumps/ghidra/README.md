@@ -1,35 +1,10 @@
 # Ghidra headless scaffold (`dumps/ghidra/`)
 
-Purpose: run repeatable, headless Ghidra jobs against the 14.4.1-23E224 artifacts in `dumps/Sandbox-private/`. Outputs stay under `dumps/ghidra/out/` and projects under `dumps/ghidra/projects/`; nothing leaves `dumps/`.
+Canonical docs and scaffold now live at `book/api/ghidra/`:
+- README: workflow, env knobs, task descriptions, tag-switch triage, and safety rules.
+- Scaffold: `python -m book.api.ghidra.scaffold ...` (this `scaffold.py` is a shim for compatibility).
 
-## Layout
-- `scaffold.py` — command builder for headless runs; prints (or executes) `analyzeHeadless` invocations that import the KC or dylib and run task scripts.
-- `scripts/` — legacy wrappers that redirect to the canonical scripts under `book/api/ghidra/scripts/` (kept for compatibility).
-- `.gitignore` — ignores `out/`, `projects/`, and `user/` so runs stay untracked.
-
-## Usage (dry-run by default)
-```sh
-# Show the command for kernel symbols/strings without running it
-python3 dumps/ghidra/scaffold.py kernel-symbols --ghidra-headless /path/to/analyzeHeadless
-
-# Execute (requires Ghidra installed and env input files present)
-python3 dumps/ghidra/scaffold.py kernel-symbols --ghidra-headless /path/to/analyzeHeadless --exec
-```
-
-Arguments:
-- `task`: one of `kernel-symbols`, `kernel-tag-switch`, `kernel-op-table`, `kernel-string-refs`, `kernel-addr-lookup`, `kernel-function-info`.
-- `--build-id`: defaults to `14.4.1-23E224`.
-- `--ghidra-headless`: path to `analyzeHeadless` (env `GHIDRA_HEADLESS` also honored).
-- `--java-home`: exported to the subprocess (plus `JAVA_TOOL_OPTIONS=-Duser.home=...`) to avoid the interactive JDK prompt.
-- `--vm-path`: explicit path to `java` to feed `-vmPath` (defaults to `JAVA_HOME/bin/java` when `--java-home` is set).
-- `--user-dir`: user settings directory used for `HOME`/`GHIDRA_USER_HOME` during the run (default `dumps/ghidra/user` inside the repo sandbox).
-- `--no-analysis`: add `-noanalysis` to the headless command for faster import-only runs.
-- `--process-existing`: reuse an already-imported project/program (no overwrite) and just run scripts via `-process`.
-- `--script-args`: extra arguments passed to the Ghidra script after `<out_dir>` and `<build_id>`.
-- `--exec`: actually run; otherwise the tool prints a shell-ready command.
-
-## Safety rules
-- Inputs always come from `dumps/Sandbox-private/<build>/...`.
-- Outputs always land in `dumps/ghidra/out/<build>/<task>/`; projects in `dumps/ghidra/projects/`.
-- Commands add `-overwrite` and `-scriptlog` and set `HOME`/`GHIDRA_USER_HOME` to the repo-local `user/` dir to keep artifacts contained.
-- Scripts now live in `book/api/ghidra/scripts/` (this directory keeps thin redirectors only); do not move or copy host data into tracked trees.
+This directory remains the runtime workspace for headless runs:
+- Inputs: `dumps/Sandbox-private/<build>/...` (git-ignored; do not move into tracked trees).
+- Outputs: `dumps/ghidra/out/<build>/<task>/`, projects in `dumps/ghidra/projects/`, user/temp in `dumps/ghidra/user` and `dumps/ghidra/tmp` (all git-ignored).
+- Scripts: `dumps/ghidra/scripts/` are redirectors to `book/api/ghidra/scripts/`.

@@ -1,6 +1,6 @@
 # Ghidra headless setup notes (11.4.2 on macOS 14.4.1-23E224)
 
-Context: headless runs against `dumps/Sandbox-private/14.4.1-23E224/` via `dumps/ghidra/scaffold.py`. This log captures the friction points and the mitigations applied.
+Context: headless runs against `dumps/Sandbox-private/14.4.1-23E224/` via the canonical scaffold `book/api/ghidra/scaffold.py` (a shim remains at `dumps/ghidra/scaffold.py`). This log captures the friction points and the mitigations applied. `dumps/RE_Plan.md` is historical context only; current workflow lives in `book/api/ghidra/README.md`.
 
 Status (Dec 3, 2025): all blocking issues are mitigated with the current defaults (ARM64 processor, x86 analyzers disabled via pre-script, sandboxed HOME/GHIDRA_USER_HOME, script logging on, overwrite enabled). Java prompt/permission friction is avoided by setting `JAVA_HOME` and `-vmPath`, and data-define/string-refs are stable when using `addr:<unsigned>` inputs. Leave the cautions below as reminders (JDK prompt if env is missing, `-noanalysis` suppresses functions, warning noise in `application.log`).
 
@@ -37,8 +37,8 @@ Status (Dec 3, 2025): all blocking issues are mitigated with the current default
 ## Current working recipe
 - Env: `GHIDRA_HEADLESS=/opt/homebrew/opt/ghidra/libexec/support/analyzeHeadless`, `JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home`.
 - Command examples:
-- Symbols/strings (fast): `python3 dumps/ghidra/scaffold.py kernel-symbols --java-home $JAVA_HOME --no-analysis --exec`
-- Pointer tables: `python3 dumps/ghidra/scaffold.py kernel-op-table --java-home $JAVA_HOME --no-analysis --exec`
+- Symbols/strings (fast): `python3 -m book.api.ghidra.scaffold kernel-symbols --java-home $JAVA_HOME --no-analysis --exec`
+- Pointer tables: `python3 -m book.api.ghidra.scaffold kernel-op-table --java-home $JAVA_HOME --no-analysis --exec`
 - Tag switch (needs functions): drop `--no-analysis` for a slower but populated run.
 - Data define (script-only against existing project): `PYTHONPATH=$PWD GHIDRA_HEADLESS=$GHIDRA_HEADLESS JAVA_HOME=$JAVA_HOME python3 book/api/ghidra/run_data_define.py --address addr:0xffffff800020ef10 --process-existing --no-analysis --timeout 900`
 - Full analysis with x86 analyzers disabled: add `--pre-script disable_x86_analyzers.py` and explicitly set `--processor` to the ARM64 language for the KC (for example, `AARCH64:LE:64:AppleSilicon`) to skip x86-only passes on Apple Silicon. The convenience wrapper `python3 book/api/ghidra/run_task.py <task> --exec` applies these defaults unless overridden.

@@ -2,8 +2,8 @@
 
 This directory holds reverse-engineering artifacts and plans for the current macOS build. Treat it as the place to read from, not a staging area for tracked outputs.
 
-- `RE_Plan.md` — entry point for the 14.4.1-23E224 extraction effort; outlines kernel/userland/profile goals and desired data products.
-- `ghidra/` — headless command scaffold and stub scripts (`scaffold.py`, `scripts/`) for running Ghidra against the artifacts; outputs stay under `dumps/ghidra/out/`. Script bodies now live under `book/api/ghidra/scripts/` (the `scripts/` here are redirectors).
+- `RE_Plan.md` — entry point for the 14.4.1-23E224 extraction effort; outlines kernel/userland/profile goals and desired data products (historical; keep for context).
+- `ghidra/` — runtime workspace for headless runs (outputs in `dumps/ghidra/out/`, projects in `dumps/ghidra/projects/`). The canonical scaffold/docs now live under `book/api/ghidra/`; this directory keeps the shim `scaffold.py` and redirector scripts only.
 - `Sandbox-private/14.4.1-23E224/` — git-ignored host artifacts:
   - `kernel/BootKernelExtensions.kc` — contains `com.apple.security.sandbox` (PolicyGraph layout, op table, filter dispatch).
   - `userland/libsystem_sandbox.dylib` — compiler/loader surfaces, op/filter vocab tables.

@@ -37,6 +37,7 @@ You are in `book/api/`, the API/tooling layer for the Seatbelt textbook. This fi
 - `ghidra/`
   - Role: connectors and scaffolding for Seatbelt-related Ghidra tasks (kernel/op-table symbol work).
   - Use when: driving reverse-engineering workflows under `dumps/` and kernel/entitlement experiments.
+  - Notes: this is the canonical scaffold; `dumps/ghidra/` keeps the runtime workspace and a compatibility shim.
 
 For vocabulary, lifecycle, and concept discipline, step up to `substrate/AGENTS.md`. All new tooling here should:
 

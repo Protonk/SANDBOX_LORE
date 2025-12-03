@@ -133,3 +133,17 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
 - Added `book/api/ghidra/scripts/find_field2_evaluator.py` and ran it headlessly against the extracted sandbox kext (`/tmp/sandbox_arm64e/com.apple.security.sandbox`) via project `sandbox_field2_sbx`.
 - Output at `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/field2_evaluator.json`: ~60k instructions, 897 functions. Heuristic picked `__read24` at `fffffe000b410ee4` (loads a halfword + byte with bounds checks) as the smallest widely-called ldrb+ldrh helper; callers include `_eval` at `fffffe000b40d698`, `_populate_syscall_mask`, and `_check_syscall_mask_composable`. The dumped helper/evaluator disasm lives in `helper.txt` / `evaluator.txt` alongside the JSON.
 - Caveat: this heuristic is still generic; `__read24` is not yet confirmed as the field2 reader. `_eval` remains the evaluator candidate and should be dumped/inspected directly to confirm field2 handling.
+
+### 2026-02-12 follow-up (arm64e helper + new probes)
+
+- Refined the headless helper hunt (`book/api/ghidra/scripts/find_field2_evaluator.py`): the stricter filter now lands on `__read16` at `fffffe000b40fa1c` as the small u16 reader. Disasm in `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/helper.txt` shows bounds checks and a plain `ldrh/strh`; no bit tests or masks on the payload. The script also auto-dumps `_eval` to `eval.txt`.
+- `_eval` dump (`fffffe000b40d698`) shows masking with `0xffffff`, `0x7fffff`, `0x7f`, and bit-test on bit 0x17, but no `0x3fff`/`0x4000` masks. `rg` over `eval.txt` finds no 0x3fff/0x4000 immediates. `__read16` callers are mostly mask/populate helpers (`_populate_syscall_mask`, `_check_syscall_mask_composable`, `_match_network`, etc.); `__read24` remains used in `_eval` for other payloads.
+- Added probes:
+  - `sb/bsd_ops_default_file.sb` (default/file* cluster with simple path literals).
+  - `sb/airlock_system_fcntl.sb` (system-fcntl with `fcntl-command` filters).
+  Compiled via `python -m book.api.sbpl_compile.cli ... --out sb/build/...`.
+- Refreshed `harvest_field2.py` and `unknown_focus.py` outputs. Highlights:
+  - `airlock_system_fcntl` surfaces a new hi-bit sentinel `field2=0xffff` (hi=0xc000, lo=0x3fff) on tag 1, no literals; otherwise low path/socket IDs.
+  - `bsd_ops_default_file` mirrors `sample` with low path/socket IDs and the existing sentinel 3584; no high bsd tail values surfaced.
+  - System profiles unchanged: bsd 16660 hi=0x4000 still reachable from ops 0–27; other bsd highs op-empty. Airlock unknowns still hang off op 162. Flow-divert 2560 remains only in the triple-socket probes (v4/v7/v_net_require_all_domain_type_proto) and op-empty.
+  - Updated artifacts: `out/field2_inventory.json`, `out/unknown_nodes.json`, Ghidra outputs under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.

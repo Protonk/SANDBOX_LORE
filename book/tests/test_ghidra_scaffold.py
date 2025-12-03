@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import unittest
 
-from dumps.ghidra import scaffold
+from book.api.ghidra import scaffold
 
 
 class ScaffoldCommandTests(unittest.TestCase):

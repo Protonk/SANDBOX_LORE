@@ -1,0 +1,13 @@
+(version 1)
+
+;; Touch the default/file* cluster (ops 0, 10, 21–27) with simple path predicates.
+;; The goal is to surface any high/unknown field2 payloads tied to these ops outside the
+;; platform bsd profile.
+
+(deny default)
+
+(allow file* (literal "/tmp/field2-default-file"))
+(deny file-read* (literal "/tmp/field2-read"))
+(allow file-read-data (literal "/tmp/field2-read-data"))
+(allow file-read-metadata (literal "/tmp/field2-read-meta"))
+(allow file-test-existence (literal "/tmp/field2-test"))

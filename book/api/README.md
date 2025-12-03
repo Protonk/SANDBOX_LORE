@@ -65,6 +65,7 @@ All code here assumes the fixed host baseline (macOS 14.4.1, Apple Silicon, SIP 
 - `ghidra/`
   - Role: Provide hooks for Seatbelt-focused Ghidra analysis (kernel/op-table symbol work).
   - Use when: driving reverse-engineering tasks under `dumps/` or the kernel/entitlement experiments.
+  - Notes: canonical scaffold/CLI lives here; `dumps/ghidra/` remains the runtime workspace plus a compatibility shim.
 
 See `AGENTS.md` for a concise router view.
 

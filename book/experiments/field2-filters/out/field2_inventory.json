@@ -616,6 +616,104 @@
       }
     ]
   },
+  "probe:airlock_system_fcntl.sb": {
+    "op_count": 8,
+    "node_count": 37,
+    "field2": [
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "name": "local",
+        "count": 18,
+        "tags": {
+          "6": 4,
+          "7": 13,
+          "0": 1
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "name": "local-name",
+        "count": 11,
+        "tags": {
+          "6": 5,
+          "7": 6
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "name": "path",
+        "count": 4,
+        "tags": {
+          "7": 1,
+          "6": 1,
+          "1": 1,
+          "0": 1
+        }
+      },
+      {
+        "raw": 1,
+        "raw_hex": "0x1",
+        "hi": 0,
+        "lo": 1,
+        "name": "mount-relative-path",
+        "count": 2,
+        "tags": {
+          "2": 1,
+          "6": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "name": "global-name",
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 65535,
+        "raw_hex": "0xffff",
+        "hi": 49152,
+        "lo": 16383,
+        "name": null,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ],
+    "unknown_nodes": [
+      {
+        "idx": 36,
+        "tag": 1,
+        "fields": [
+          14,
+          65533,
+          65535,
+          65535,
+          65535
+        ],
+        "raw": 65535,
+        "raw_hex": "0xffff",
+        "hi": 49152,
+        "lo": 16383,
+        "literal_refs": []
+      }
+    ],
+    "anchors": []
+  },
   "probe:bsd_broader.sb": {
     "op_count": 8,
     "node_count": 31,
@@ -690,6 +788,106 @@
       }
     ],
     "unknown_nodes": [],
+    "anchors": []
+  },
+  "probe:bsd_ops_default_file.sb": {
+    "op_count": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "name": "remote",
+        "count": 19,
+        "tags": {
+          "6": 1,
+          "8": 13,
+          "7": 5
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "name": "local",
+        "count": 6,
+        "tags": {
+          "6": 1,
+          "7": 3,
+          "8": 2
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "name": "local-name",
+        "count": 4,
+        "tags": {
+          "6": 2,
+          "7": 1,
+          "4": 1
+        }
+      },
+      {
+        "raw": 1,
+        "raw_hex": "0x1",
+        "hi": 0,
+        "lo": 1,
+        "name": "mount-relative-path",
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "name": "path",
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 3584,
+        "raw_hex": "0xe00",
+        "hi": 0,
+        "lo": 3584,
+        "name": null,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      }
+    ],
+    "unknown_nodes": [
+      {
+        "idx": 30,
+        "tag": 0,
+        "fields": [
+          0,
+          0,
+          3584,
+          1,
+          7
+        ],
+        "raw": 3584,
+        "raw_hex": "0xe00",
+        "hi": 0,
+        "lo": 3584,
+        "literal_refs": [
+          "O/tmp/field2-read",
+          "W/tmp/field2-default-file"
+        ]
+      }
+    ],
     "anchors": []
   },
   "probe:bsd_tail_context.sb": {

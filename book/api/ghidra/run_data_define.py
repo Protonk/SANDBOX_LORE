@@ -16,7 +16,7 @@ import argparse
 import os
 
 from book.api.ghidra import connector
-from dumps.ghidra import scaffold
+from book.api.ghidra import scaffold
 
 
 def parse_args() -> argparse.Namespace:

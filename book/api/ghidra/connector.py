@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence
 
-from dumps.ghidra import scaffold as gh_scaffold
+from . import scaffold as gh_scaffold
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -146,10 +146,10 @@ class HeadlessConnector:
         self.registry = registry or TaskRegistry.default()
         self.ghidra_headless = ghidra_headless
         self.java_home = java_home
-        self.user_dir = user_dir if user_dir else gh_scaffold.HERE / "user"
-        _ensure_under(self.user_dir, gh_scaffold.HERE)
-        self.temp_dir = temp_dir if temp_dir else gh_scaffold.HERE / "tmp"
-        _ensure_under(self.temp_dir, gh_scaffold.HERE)
+        self.user_dir = user_dir if user_dir else gh_scaffold.GHIDRA_ROOT / "user"
+        _ensure_under(self.user_dir, gh_scaffold.GHIDRA_ROOT)
+        self.temp_dir = temp_dir if temp_dir else gh_scaffold.GHIDRA_ROOT / "tmp"
+        _ensure_under(self.temp_dir, gh_scaffold.GHIDRA_ROOT)
         self.extra_env = dict(extra_env) if extra_env else {}
         self.analysis_properties = analysis_properties
 
