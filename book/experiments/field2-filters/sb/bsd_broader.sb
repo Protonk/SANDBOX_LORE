@@ -1,0 +1,17 @@
+(version 1)
+
+; Broader bsd-like probe: combine multiple ops and literals seen near the high field2 nodes
+(debug deny)
+(deny default)
+
+(allow file-read* (literal "/dev/dtracehelper"))
+(allow file-read* (literal "/usr/share/posix_spawn_filtering_rules"))
+(allow file-read-metadata (literal "/usr/share/posix_spawn_filtering_rules"))
+(allow file-read* (literal "/etc/protocols"))
+(allow file-read* (literal "/etc/services"))
+
+(allow mach-lookup (global-name "com.apple.airportd"))
+(allow mach-lookup (global-name "com.apple.system.notification_center"))
+
+(allow network-outbound)
+(allow network-inbound)

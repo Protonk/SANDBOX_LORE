@@ -616,6 +616,82 @@
       }
     ]
   },
+  "probe:bsd_broader.sb": {
+    "op_count": 8,
+    "node_count": 31,
+    "field2": [
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "name": "local",
+        "count": 15,
+        "tags": {
+          "6": 4,
+          "7": 11
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "name": "local-name",
+        "count": 12,
+        "tags": {
+          "6": 6,
+          "7": 6
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "name": "global-name",
+        "count": 1,
+        "tags": {
+          "5": 1
+        }
+      },
+      {
+        "raw": 3,
+        "raw_hex": "0x3",
+        "hi": 0,
+        "lo": 3,
+        "name": "file-mode",
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "name": "xattr",
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "name": "path",
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ],
+    "unknown_nodes": [],
+    "anchors": []
+  },
   "probe:bsd_tail_context.sb": {
     "op_count": 4,
     "node_count": 29,
@@ -736,6 +812,26 @@
         "count": 2,
         "tags": {
           "2": 2
+        }
+      }
+    ],
+    "unknown_nodes": [],
+    "anchors": []
+  },
+  "probe:flow_divert_variant.sb": {
+    "op_count": 2,
+    "node_count": 29,
+    "field2": [
+      {
+        "raw": 1,
+        "raw_hex": "0x1",
+        "hi": 0,
+        "lo": 1,
+        "name": "mount-relative-path",
+        "count": 29,
+        "tags": {
+          "1": 28,
+          "0": 1
         }
       }
     ],

@@ -1,0 +1,15 @@
+(version 1)
+
+; Try to retain flow-divert 2560 by keeping the mixed shape but tweaking the op set slightly
+(debug deny)
+(allow default)
+
+; network outbound/inbound with the flow-divert literal anchor
+(allow network-outbound (literal "com.apple.flow-divert"))
+(allow network-inbound (literal "com.apple.flow-divert"))
+
+; add a mach-lookup to mimic richer graphs without collapsing to low IDs
+(allow mach-lookup (global-name "com.apple.flow-divert"))
+
+; include a file-read* to keep some file scaffolding present
+(allow file-read* (literal "/private/tmp/fd-anchor"))

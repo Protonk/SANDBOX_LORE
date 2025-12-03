@@ -84,6 +84,17 @@ Next steps (conceptual, without changing code yet):
 - Hi/lo observations: all current unknowns keep `hi=0` except for the bsd tail node, which shows `hi=0x4000`, `lo=0x114` (16660 raw). Unknowns 2560 (flow-divert), 10752/166/165 (airlock), and 170/174/115/109 (bsd) retain `hi=0` and remain unmapped.
 - Tag context: airlock’s 166/165 cluster on tags {166,1} with 10752 on tag 0; bsd’s 170/174/115/109 cluster on tag 26, while 16660 sits on tag 0 (shared sink); flow-divert 2560 appears once each in `v4_network_socket_require_all` and `v7_file_network_combo` on tag 0 and remains absent from simplified `flow_divert_*` variants. `v8_all_combo.sb.bin` decodes to `node_count=0` in this pass; `flow_divert_mixed.sb.bin` still collapses to a single low-ID (`mount-relative-path`).
 - `field2_inventory.json` now includes `unknown_nodes` entries (hi != 0 or no vocab match) with tags, raw field arrays, and literal refs, to make the high/unknown cases easier to track without hand-walking the graphs. No predecessor/fan-in counts yet; edge layout ambiguity blocked graph-walk classifiers in this pass.
+
+## Recent probes and focused census (2026-02-11)
+
+- Added `unknown_focus.py` to emit a focused table of high/unknown nodes with fan-in/out counts using tag layouts (edges at fields 0/1). Output (`out/unknown_nodes.json`) shows:
+  - `bsd`: 16660 on tag 0 has fan_in=33, fan_out=1 (second edge out of bounds); 170/174/115/109 sit on tag 26 with fan_out=1, fan_in=0.
+  - `airlock`: 166/165/10752 remain unmapped, mostly tag 166/1, some self-loops, no clear fan-out.
+  - Flow-divert 2560 nodes in `v4`/`v7` have fan_out=2 (edges 0/0), fan_in=0; `sample`’s 3584 similarly unreferenced.
+- New mixed probes:
+  - `flow_divert_variant.sb` (network in/out + flow-divert literal + mach-lookup + file-read) compiled with absolute paths; decoded to low IDs only (mount-relative-path), losing the 2560 signal. Negative.
+  - `bsd_broader.sb` (multiple bsd-ish literals + mach-lookup + network in/out) compiled; decoded to low IDs only (local/local-name/path/xattr/global-name/file-mode), no high field2 values surfaced. Negative.
+- Tooling note: `sbsnarf.py` requires absolute SBPL paths on this host; relative paths produced “profile not found.”
 ## Open questions
 
 - Are any `field2` values context-dependent (e.g., change with meta-filters or op class)?

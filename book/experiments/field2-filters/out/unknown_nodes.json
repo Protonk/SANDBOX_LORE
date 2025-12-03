@@ -1,0 +1,402 @@
+{
+  "bsd.sb": [
+    {
+      "idx": 27,
+      "tag": 0,
+      "fields": [
+        0,
+        3840,
+        16660,
+        26,
+        27
+      ],
+      "edges": [
+        0,
+        3840
+      ],
+      "fan_out": 1,
+      "fan_in": 33,
+      "raw": 16660,
+      "raw_hex": "0x4114",
+      "hi": 16384,
+      "lo": 276,
+      "name_lo": null,
+      "literal_refs": [
+        "\n[appleinternal/lib/sanitizers",
+        "\n`share/posix_spawn_filtering_rules",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 29,
+      "tag": 26,
+      "fields": [
+        27,
+        2560,
+        174,
+        26,
+        4
+      ],
+      "edges": [
+        27,
+        2560
+      ],
+      "fan_out": 1,
+      "fan_in": 0,
+      "raw": 174,
+      "raw_hex": "0xae",
+      "hi": 0,
+      "lo": 174,
+      "name_lo": null,
+      "literal_refs": [
+        "\nDshare",
+        "\n[appleinternal/lib/sanitizers",
+        "\n`share/posix_spawn_filtering_rules",
+        "Icom.apple.",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 33,
+      "tag": 26,
+      "fields": [
+        27,
+        1536,
+        109,
+        14,
+        10
+      ],
+      "edges": [
+        27,
+        1536
+      ],
+      "fan_out": 1,
+      "fan_in": 0,
+      "raw": 109,
+      "raw_hex": "0x6d",
+      "hi": 0,
+      "lo": 109,
+      "name_lo": null,
+      "literal_refs": [
+        "\n[appleinternal/lib/sanitizers",
+        "\n[wq_limit_cooperative_threads",
+        "\n`share/posix_spawn_filtering_rules",
+        "Dasswd",
+        "Nvar/db/timezone",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 35,
+      "tag": 26,
+      "fields": [
+        12,
+        1792,
+        170,
+        26,
+        15
+      ],
+      "edges": [
+        12,
+        1792
+      ],
+      "fan_out": 1,
+      "fan_in": 0,
+      "raw": 170,
+      "raw_hex": "0xaa",
+      "hi": 0,
+      "lo": 170,
+      "name_lo": null,
+      "literal_refs": [
+        "\nGrotocols",
+        "\n`share/posix_spawn_filtering_rules",
+        "Gservices",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 37,
+      "tag": 26,
+      "fields": [
+        15,
+        12800,
+        115,
+        26,
+        27
+      ],
+      "edges": [
+        15,
+        12800
+      ],
+      "fan_out": 1,
+      "fan_in": 0,
+      "raw": 115,
+      "raw_hex": "0x73",
+      "hi": 0,
+      "lo": 115,
+      "name_lo": null,
+      "literal_refs": [
+        "\nGrotocols",
+        "\n[appleinternal/lib/sanitizers",
+        "\n`share/posix_spawn_filtering_rules",
+        "P/dev/dtracehelper"
+      ]
+    }
+  ],
+  "airlock.sb": [
+    {
+      "idx": 0,
+      "tag": 166,
+      "fields": [
+        166,
+        3,
+        166,
+        166,
+        166
+      ],
+      "edges": [
+        166,
+        3
+      ],
+      "fan_out": 1,
+      "fan_in": 2,
+      "raw": 166,
+      "raw_hex": "0xa6",
+      "hi": 0,
+      "lo": 166,
+      "name_lo": null,
+      "literal_refs": [
+        "G/system/"
+      ]
+    },
+    {
+      "idx": 1,
+      "tag": 166,
+      "fields": [
+        166,
+        166,
+        166,
+        166,
+        166
+      ],
+      "edges": [
+        166,
+        166
+      ],
+      "fan_out": 0,
+      "fan_in": 0,
+      "raw": 166,
+      "raw_hex": "0xa6",
+      "hi": 0,
+      "lo": 166,
+      "name_lo": null,
+      "literal_refs": []
+    },
+    {
+      "idx": 2,
+      "tag": 1,
+      "fields": [
+        165,
+        165,
+        166,
+        166,
+        0
+      ],
+      "edges": [
+        165,
+        165
+      ],
+      "fan_out": 0,
+      "fan_in": 0,
+      "raw": 166,
+      "raw_hex": "0xa6",
+      "hi": 0,
+      "lo": 166,
+      "name_lo": null,
+      "literal_refs": [
+        "Msystem/library",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 3,
+      "tag": 166,
+      "fields": [
+        166,
+        166,
+        166,
+        166,
+        166
+      ],
+      "edges": [
+        166,
+        166
+      ],
+      "fan_out": 0,
+      "fan_in": 1,
+      "raw": 166,
+      "raw_hex": "0xa6",
+      "hi": 0,
+      "lo": 166,
+      "name_lo": null,
+      "literal_refs": []
+    },
+    {
+      "idx": 4,
+      "tag": 166,
+      "fields": [
+        166,
+        166,
+        166,
+        166,
+        165
+      ],
+      "edges": [
+        166,
+        166
+      ],
+      "fan_out": 0,
+      "fan_in": 0,
+      "raw": 166,
+      "raw_hex": "0xa6",
+      "hi": 0,
+      "lo": 166,
+      "name_lo": null,
+      "literal_refs": []
+    },
+    {
+      "idx": 5,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        10752,
+        1002,
+        39
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "raw": 10752,
+      "raw_hex": "0x2a00",
+      "hi": 0,
+      "lo": 10752,
+      "name_lo": null,
+      "literal_refs": [
+        "JIOMediaIcon",
+        "P/dev/dtracehelper"
+      ]
+    },
+    {
+      "idx": 6,
+      "tag": 166,
+      "fields": [
+        20736,
+        355,
+        165,
+        2,
+        32769
+      ],
+      "edges": [
+        20736,
+        355
+      ],
+      "fan_out": 0,
+      "fan_in": 0,
+      "raw": 165,
+      "raw_hex": "0xa5",
+      "hi": 0,
+      "lo": 165,
+      "name_lo": null,
+      "literal_refs": [
+        "\nFusr/lib",
+        "P/dev/dtracehelper"
+      ]
+    }
+  ],
+  "sample.sb": [
+    {
+      "idx": 30,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        3584,
+        1,
+        7
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "raw": 3584,
+      "raw_hex": "0xe00",
+      "hi": 0,
+      "lo": 3584,
+      "name_lo": null,
+      "literal_refs": [
+        "Busr",
+        "I/etc/hosts"
+      ]
+    }
+  ],
+  "v4_network_socket_require_all.sb": [
+    {
+      "idx": 30,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        2560,
+        0,
+        7
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "raw": 2560,
+      "raw_hex": "0xa00",
+      "hi": 0,
+      "lo": 2560,
+      "name_lo": null,
+      "literal_refs": [
+        "Tcom.apple.flow-divert"
+      ]
+    }
+  ],
+  "v7_file_network_combo.sb": [
+    {
+      "idx": 30,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        2560,
+        0,
+        7
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "raw": 2560,
+      "raw_hex": "0xa00",
+      "hi": 0,
+      "lo": 2560,
+      "name_lo": null,
+      "literal_refs": [
+        "Tcom.apple.flow-divert"
+      ]
+    }
+  ]
+}

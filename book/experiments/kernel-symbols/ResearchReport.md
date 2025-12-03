@@ -11,6 +11,9 @@ Track kernel symbol/string extraction runs for the 14.4.1-23E224 kernelcache and
 - Batch data-define (no analysis) across 11 sandbox/mac_policy targets: all defined, zero callers (LINKEDIT symbols remain null type/value).
 - Track B comparison: re-ran `addr:0xffffff800020ef10` with analysis; still zero callers. Analysis completed ~59s with only ARM64 analyzers; no xrefs surfaced.
 - String-refs pass (Dec 2): `kernel_string_refs.py` via `run_task.py kernel-string-refs --process-existing --exec` found three string hits (same sandbox/AppleMatch literals), zero symbol hits, zero external-library matches; references lists were empty. Output stored at `out/14.4.1-23E224/kernel-string-refs/string_references.json`.
+- String-refs broadened sweep (Dec 3, no-analysis, process-existing): 918 string hits, 0 symbol hits, 0 externals with queries spanning sandbox/mac_policy/seatbelt substrings and AppleMatch/sandbox strings. Notable hits include `0x-7fffdf3a68 com.apple.kext.AppleMatch`, `0x-7fffdf10f0 com.apple.security.sandbox`, `0x-7ffe53900e com.apple.security.app-sandbox`, plus generic “sandbox”/dyldPolicy strings. Output mirrored into `out/14.4.1-23E224/kernel-string-refs/string_references.json`.
+- Data-define reruns (Dec 3) on unsigned forms `addr:0xffffff800020ef10`, `addr:0xffffff800020c598`, `addr:0xffffff8002dd2920` with `--process-existing --no-analysis`; each processed 1 target, latest `data_refs.json` shows `com.apple.security.sandbox` at `0x-7ffd22d6e0` with no callers (overwrites per run).
+- Op-table refresh (Dec 3, no-analysis, process-existing): 33 pointer-table candidates regenerated; output mirrored to `out/14.4.1-23E224/op_table_candidates.json` for comparison with symbol/string pivots.
 
 ## Next pivots
 - Run `run_data_define.py` with `--process-existing --no-analysis` on key addresses (e.g., `0x-7fffdf10f0`, `0x-7fffdf3a68`, selected `_sandbox_*` symbols) to gather xrefs/callers.

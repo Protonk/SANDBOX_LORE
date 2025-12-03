@@ -2,6 +2,8 @@
 
 Context: headless runs against `dumps/Sandbox-private/14.4.1-23E224/` via `dumps/ghidra/scaffold.py`. This log captures the friction points and the mitigations applied.
 
+Status (Dec 3, 2025): all blocking issues are mitigated with the current defaults (ARM64 processor, x86 analyzers disabled via pre-script, sandboxed HOME/GHIDRA_USER_HOME, script logging on, overwrite enabled). Java prompt/permission friction is avoided by setting `JAVA_HOME` and `-vmPath`, and data-define/string-refs are stable when using `addr:<unsigned>` inputs. Leave the cautions below as reminders (JDK prompt if env is missing, `-noanalysis` suppresses functions, warning noise in `application.log`).
+
 ## Issues encountered
 - **JDK prompt blocking headless**: `analyzeHeadless` attempted to prompt for a JDK path (uses `~/Library/ghidra/.../java_home.save`), failing with “Unable to prompt user for JDK path, no TTY detected.”
 - **Path permission on host `java_home.save`**: the default `~` pointed to `/Users/achyland/Library/ghidra/ghidra_11.4.2_PUBLIC/java_home.save`, which is protected by seatbelt; writes from headless failed.

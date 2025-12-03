@@ -91,6 +91,26 @@ Deliverables:
 - Add a guardrail test/script that checks these mappings against synthetic profiles once the semantic layer is better understood; for now, keep high/unknown values in an “unknown-arg” bucket.
 - Extend `ResearchReport.md` with any newly established mappings and explicit open questions, noting where conclusions rely on hi/lo heuristics versus kernel evidence.
 
+## Current pushes (2026-02-11)
+
+- Focused census: `unknown_focus.py` emits fan-in/out details for high/unknown nodes (out/unknown_nodes.json). Use tag layouts to keep edge positions consistent.
+- Probes: `flow_divert_variant.sb` and `bsd_broader.sb` were added; both compiled (absolute paths required for sbsnarf) but collapsed to low IDs (no 2560 or bsd high values). Negative but documented.
+- Next: keep classification shape-first, chase 2560 with additional mixed shapes if any surface, and prioritize Sandbox.kext bitfield masks once available.
+
+## Next steps (2026-02-11)
+
+- **Kernel masks (high value)**: Use Ghidra on `Sandbox.kext` (14.4.1, ARM64) to find the node evaluation loop and see how the third 16-bit payload is masked/split (`& 0x3FFF`, `& 0x4000`, shifts). Re-interpret high values (16660/2560/etc.) from those masks; this is the fastest path to authoritative semantics.
+- **Graph shape (short-term)**: With tag layouts, extract fan-in/out and successor tags for high/unknown nodes (as in `out/unknown_nodes.json`); if edge layout ambiguity blocks deeper walks, note it. Look for shared tails/glue motifs across profiles to cluster unknowns by structure.
+- **Probe refinement (bounded)**: Try at most 1–2 small perturbations of the `v4`/`v7` mixed network profiles (e.g., swap one op or metafilter) to see if 2560 survives. If they collapse to low IDs again, stop this branch and record the negative.
+- **Guardrails**: Keep inventories tagging high/unknown as `UnknownFilterArg(field2_raw)` with hi/lo views; add a simple check to flag `hi != 0` in future dumps.
+- **Documentation loop**: Log outcomes (including failed probes or blocked graph-walks) in `Notes.md`; promote to `ResearchReport.md` only when kernel masks or structural clustering yield grounded conclusions.
+
 Deliverables:
 - Updated `ResearchReport.md` and `Notes.md`.
 - Guardrail test/script to prevent regressions.
+
+## Follow-on after this run
+
+- Primary next action: run the Ghidra pass on `Sandbox.kext` to find the node evaluator and any masks/shifts on the third 16-bit field; update this plan and `Notes.md` with any masks found, even if partial.
+- Secondary: only if kernel masks remain unknown, consider one last mixed-network perturbation to probe the 2560 signal; abort if it collapses again.
+- Keep high/unknown values in the `UnknownFilterArg` bucket until kernel semantics are known; add a lightweight warning in future inventories when `hi != 0` appears (currently only bsd’s 16660).
