@@ -27,6 +27,11 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 
 - New shared artifacts unblocking deeper mapping: tag layouts published at `book/graph/mappings/tag_layouts/tag_layouts.json` and anchor → filter map at `book/graph/mappings/anchors/anchor_filter_map.json`. Use these to reinterpret anchor-bearing nodes and rerun `harvest_field2.py` for clearer filter IDs.
 
+## 2026-02-12
+
+- Located the kernel evaluator in the sandbox fileset: `FUN_ffffff8002d8547a` in `com.apple.security.sandbox` (`vmaddr 0xffffff8002d70000`, fileoff `0x02c68000`, text span `0xffffff8002d71208–0xffffff8002da9f7f`). It drives the opcode switch and calls helper readers `FUN_ffffff8002d87d4a`, `FUN_ffffff8002d87d8f`, `FUN_ffffff8002d8809a`, `FUN_ffffff8002d8907f` to load edges/`field2`. High-level decompile shows `field2` forwarded directly from `FUN_2d87d4a`; any hi-bit/lo-bit handling likely lives inside these helpers.
+- Tooling state: `objdump`/`llvm-objdump` on the KC ignored the fileset entry; byte-slicing by fileoff produced “truncated/malformed object.” Need to extract the sandbox fileset (`kmutil emit-macho` or custom unwrapping) to disassemble helper functions and search for `tbz`/`tbnz`/`ubfx`/`and` masks on the payload register.
+
 ## 2025-12-12
 
 - Re-ran `harvest_field2.py` with fixed import path; `out/field2_inventory.json` refreshed. Anchors now show mapped filter names/IDs where available (e.g., `preferences/logging` → global-name). Synthetic probes still dominated by generic path/name field2 values; high unknowns remain in `airlock`.

@@ -321,4 +321,4 @@ For convenience, the mechanical audit results are summarized here:
 
 - **Mapping status audit**
   - 14 experiments scanned.
-  - Confirms that mapping responsibility is concentrated in a small subset of experiments (vocab, tag layouts, system digests, anchor maps, alignment helpers), while most other experiments consume those mappings or explore open questions.*** End Patch```ṋябрassistant to=functions.apply_patchсионary="{\"command\":\"sed -n '1,260p' status/experiments/exp-audit.md\",\"timeout_ms\":10000,\"workdir\":\"/Users/achyland/Desktop/SANDBOX_LORE\"}"} ***!
+  - Confirms that mapping responsibility is concentrated in a small subset of experiments (vocab, tag layouts, system digests, anchor maps, alignment helpers), while most other experiments consume those mappings or explore open questions.
