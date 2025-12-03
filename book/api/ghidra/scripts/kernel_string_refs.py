@@ -5,6 +5,10 @@ Outputs JSON under dumps/ghidra/out/<build>/kernel-string-refs/.
 Args: <out_dir> [build_id] [all] [extra queries...]
   - include "all" to scan all memory blocks (default: sandbox blocks only)
   - provide extra query substrings to match additional strings
+
+Pitfalls:
+- Relies on defined string data; with --no-analysis strings may be sparse. Run at least an import pass that defines data.
+- Filters to sandbox blocks unless "all" is passed to reduce noise.
 """
 
 import json

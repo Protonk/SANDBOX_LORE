@@ -1,7 +1,14 @@
 #@category Sandbox
 """
 Surface candidate dispatcher functions by counting computed jumps per function.
-Outputs a ranking under dumps/ghidra/out/<build>/kernel-tag-switch/ to speed manual tag-switch identification.
+
+Args (from scaffold): <out_dir> <build_id>
+Outputs: dumps/ghidra/out/<build>/kernel-tag-switch/switch_candidates.json (plus script.log).
+
+Assumptions/pitfalls:
+- Needs functions present (skip --no-analysis); computed_jumps will be zero otherwise.
+- Heuristic ranking only; manual triage in the Ghidra project is expected.
+- Stays within sandbox-related memory blocks when named; falls back to full-program if blocks are unnamed.
 """
 
 import json

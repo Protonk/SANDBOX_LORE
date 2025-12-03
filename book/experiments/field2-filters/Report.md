@@ -28,19 +28,25 @@ Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyG
 - Added `sb/airlock_system_fcntl.sb` (system-fcntl + fcntl-command) → mostly low path/socket IDs + new 0xffff sentinel.
 - Inventories refreshed (`harvest_field2.py`, `unknown_focus.py`); op reach now included for unknowns.
 
+## New observations (2026-02-13)
+- `unknown_nodes.json` summary:
+  - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 sit on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
+  - `airlock`: highs 165/166/10752 on tags 166/1/0; op reach concentrated on op 162 (`system-fcntl`). `airlock_system_fcntl` adds a sentinel 0xffff (hi=0xc000) on tag 1, op-empty.
+- `flow-divert`: 2560 only in mixed require-all (domain+type+protocol) probes, tag 0, fan_in=0, fan_out=2→node0, op-empty.
+- `sample` and probe clones: sentinel 3584 on tag 0, fan_out=2→node0, op-empty.
+- `field2_evaluator.json` shows `__read16` callers worth inspecting: `_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`. No immediates for the unknown constants appear in `eval.txt`, reinforcing that the helper/evaluator passes the u16 through unmasked.
+- Obstacle: direct `llvm-objdump` on the carved sandbox binary (whole file or slices) reports “truncated or malformed object” / “not an object file,” so caller disassembly needs to go through Ghidra. Plan: add a headless script to dump those callers from the existing `sandbox_field2_sbx` project and log how the `__read16` result is consumed.
+
 ## Open questions
 - Where (if anywhere) are hi/lo bits of field2 interpreted? Current evaluator dump shows no 0x3fff/0x4000 masking.
 - What semantics drive the bsd tail high (16660) and the airlock highs (165/166/10752) and the new 0xffff sentinel?
 - Can flow-divert 2560 be tied to a specific filter or tag pattern beyond “triple socket predicates + literal”?
 
 ## Next steps (handoff-ready)
-1) **Evaluator validation**: Revisit `_eval` and adjacent helpers to confirm no hidden masking; if needed, dump specific call sites that consume `__read16` results (e.g., `_populate_syscall_mask`, `_match_network`) to ensure field2 stays raw.
-2) **Targeted probes by op reach**:
-   - Bsd highs: craft profiles that keep ops 0–27 but alter literals/structure to see if 16660/170/174/115/109 can surface outside the full bsd blob.
-   - Airlock highs: vary `system-fcntl` filters/arguments to chase 165/166/10752/0xffff; look for literals or edge shapes that bind them.
-   - Flow-divert: minimally perturb the triple-socket shape (order, default decisions, require-all vs any) to see if 2560 reachability changes or gains op links.
-3) **Mapping hygiene**: Keep hi/lo split (`field2_hi = raw & 0xc000`, `field2_lo = raw & 0x3fff`) in all outputs; do not coerce unknown/high values into vocab. Record op reach and tag context for every new unknown.
-4) **Guardrails (later)**: Once any high value gets a plausible binding with static + evaluator evidence, add a small regression check (script or note) before promoting to a shared mapping.
+1) **Inspect `__read16` consumers**: In Ghidra, walk the caller list above and record how each uses `filter_arg_raw` (direct compares vs table indices). Note any constants or table shapes that could bind the known unknowns (16660/2560/10752/0xffff/3584). Add snippets/notes to the experiment before promoting any mapping.
+2) **Structural write-ups per cluster**: Using `unknown_nodes.json` + `tag_layouts.json`, document for bsd/airlock/flow-divert/sample the exact tag shapes, fan-in/out, successors, and op reach, so later helper findings can be slotted in without re-deriving structure.
+3) **One last guided probe pass (optional)**: If needed, craft minimal variants that preserve op reach for a target unknown (e.g., bsd ops 0–27, airlock op 162, flow-divert triple require-all) and tweak only default/metafilter wrapping. Record any collapse to low IDs as a negative; stop SBPL iteration thereafter.
+4) **Mapping hygiene**: Keep hi/lo split (`field2_hi = raw & 0xc000`, `field2_lo = raw & 0x3fff`) and op reach in outputs; do not add shared mappings until kernel + structural evidence line up.
 
 ## Artifacts index
 - Inventories: `book/experiments/field2-filters/out/field2_inventory.json`, `out/unknown_nodes.json`.

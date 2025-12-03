@@ -1,8 +1,19 @@
 """
-Command builder for headless Ghidra runs against Sandbox-private artifacts.
-Tasks focus on the kernel KC (com.apple.security.sandbox) and emit outputs under dumps/ghidra/out/.
+Canonical headless-command builder for Ghidra tasks on the Sonoma baseline.
 
-This is the canonical scaffold; `dumps/ghidra/scaffold.py` is a compatibility shim.
+Intent:
+- Build (and optionally run) `analyzeHeadless` invocations against the extracted host artifacts in
+  `dumps/Sandbox-private/<build>/...` without ever copying those artifacts into tracked trees.
+- Keep all Ghidra side effects inside `dumps/ghidra/{out,projects,user,tmp}`; callers should not need
+  to reason about Ghidra’s defaults or macOS prompts.
+- Provide a single source of truth for task registration (scripts + import targets + output layout).
+
+Safety reminders (why the plumbing is opinionated):
+- `HOME`/`GHIDRA_USER_HOME`/`JAVA_TOOL_OPTIONS` are forced under `dumps/ghidra/` so headless does not
+  touch the real user tree (seatbelt-protected) or prompt for a JDK path.
+- Inputs are always read from `Sandbox-private` in place; outputs stay under `dumps/ghidra/out/` with
+  optional redirects (e.g., kernel-symbols into the experiment tree).
+- Apply-gate and analysis churn are expected; scripts should log to `script.log` in their out dir.
 """
 
 from __future__ import annotations
@@ -32,6 +43,7 @@ DEFAULT_BUILD_ID = "14.4.1-23E224"
 
 @dataclass(frozen=True)
 class BuildPaths:
+    """Paths to host artifacts for a given build ID (never copied into tracked trees)."""
     build_id: str
     base: Path
     kernel: Path
@@ -66,6 +78,7 @@ class BuildPaths:
 
 @dataclass(frozen=True)
 class TaskConfig:
+    """Definition of a headless task: which script to run, where to import from, and where to write."""
     name: str
     script: str
     import_target: str
@@ -179,6 +192,7 @@ def build_headless_command(
     ensure_under(out_dir, out_root)
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
+    # Full import + analysis run that overwrites the program and runs our postScript.
     cmd = [
         str(headless),
         str(project_dir),
@@ -231,6 +245,7 @@ def build_process_command(
     ensure_under(out_dir, out_root)
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
+    # Script-only pass against an already-imported project (no overwrite).
     cmd = [
         str(headless),
         str(project_dir),
@@ -377,6 +392,7 @@ def main(argv: List[str] | None = None) -> int:
     env = dict(os.environ)
     if args.java_home:
         env["JAVA_HOME"] = args.java_home
+    # Pin HOME/temp to repo-local dirs so Ghidra does not write under the real user home (often blocked).
     env["GHIDRA_USER_HOME"] = str(user_dir)
     env["HOME"] = str(user_dir)
     env["TMPDIR"] = str(TEMP_ROOT)

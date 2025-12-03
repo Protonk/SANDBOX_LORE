@@ -3,6 +3,9 @@
 Search instructions for a given immediate (scalar) value.
 Args: <out_dir> <build_id> <imm_hex> [all]
 Scans sandbox blocks by default; include "all" to scan entire program.
+
+Outputs: dumps/ghidra/out/<build>/kernel-imm-search/<imm_hex>.json (plus script.log).
+Pitfalls: ensure ARM64 processor import so immediate widths are parsed correctly; function recovery not required but helps triage.
 """
 
 import json

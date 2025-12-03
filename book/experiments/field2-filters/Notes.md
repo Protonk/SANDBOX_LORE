@@ -147,3 +147,18 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
   - `bsd_ops_default_file` mirrors `sample` with low path/socket IDs and the existing sentinel 3584; no high bsd tail values surfaced.
   - System profiles unchanged: bsd 16660 hi=0x4000 still reachable from ops 0–27; other bsd highs op-empty. Airlock unknowns still hang off op 162. Flow-divert 2560 remains only in the triple-socket probes (v4/v7/v_net_require_all_domain_type_proto) and op-empty.
   - Updated artifacts: `out/field2_inventory.json`, `out/unknown_nodes.json`, Ghidra outputs under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
+
+## 2026-02-13
+
+- Summarized unknown nodes from `out/unknown_nodes.json`:
+  - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
+  - `airlock`: highs 165/166/10752 on tags 166/1/0; op reach concentrated on op 162 (`system-fcntl`); new sentinel 0xffff in `airlock_system_fcntl` (tag 1, hi=0xc000).
+  - `flow-divert`: 2560 only in mixed require-all (domain+type+protocol) probes, tag 0, fan_in=0, fan_out=2→node0, op-empty.
+  - `sample` and probe bsd/airlock clones: sentinel 3584 on tag 0, fan_out=2→node0, op-empty.
+- Parsed `field2_evaluator.json`: `__read16` callers include `_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`. These are the current places to hunt for comparisons/table lookups on `filter_arg_raw`.
+- `rg` across `eval.txt` still shows no immediates for the unknown constants (0xa00/0x4114/0x2a00/0xffff/0xe00), reinforcing that the helper/evaluator pass the u16 through unmasked. Next kernel step: open these caller functions in Ghidra and inspect how the loaded value is consumed (direct compare vs table index).
+
+## 2026-02-13 (afternoon) – Caller dumps attempt
+
+- Tried to dump `__read16` callers directly from the carved sandbox kext using `llvm-objdump` on slices around their VM addresses. Both Mach-O and raw-binary modes failed: the extracted binary still trips `truncated or malformed object` for whole-file disassembly, and per-slice disasm reports “is not an object file.”
+- Approach to unblock: lean on Ghidra (existing `sandbox_field2_sbx` project) to emit disassembly for the caller set. Next run should add a simple headless script to print instructions for the known callers (`_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`) and capture how the `__read16` return register is used (compare vs table index). Whole-file objdump is not viable on this carved binary without repairing headers further.

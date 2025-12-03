@@ -8,6 +8,8 @@ Each argument is either:
   - Function name.
 
 Outputs JSON to <out_dir>/function_dump.json with per-function instruction lists.
+
+Pitfalls: requires functions recovered for name-based lookup; avoid --no-analysis if you rely on names. Address targets are resolved even without names but benefit from proper processor import.
 """
 
 import json

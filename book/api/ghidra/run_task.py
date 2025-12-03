@@ -1,18 +1,21 @@
 """
-Convenience runner for Ghidra tasks with sensible ARM64 defaults.
+Convenience runner for registered Ghidra tasks with ARM64 defaults.
+
+Use when: you want a single CLI to run any task in the registry without hand-writing the scaffold args.
 
 Defaults:
-- Uses the disable_x86_analyzers pre-script to turn off x86-only analyzers.
-- Sets the processor to an ARM64 language ID (overrideable).
+- Adds the `disable_x86_analyzers.py` pre-script to avoid wasting time on x86 analyzers.
+- Sets the processor to an Apple Silicon ARM64 language ID (overrideable).
+- Pulls inputs from `dumps/Sandbox-private/<build>/...`; outputs go to `dumps/ghidra/out/<build>/<task>/`.
 
-Example (import + full analysis with defaults):
-  GHIDRA_HEADLESS=/opt/homebrew/opt/ghidra/libexec/support/analyzeHeadless \
-  JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home \
-  PYTHONPATH=$PWD \
-  python3 book/api/ghidra/run_task.py kernel-symbols --exec
-
-Reuse existing analyzed project:
-  python3 book/api/ghidra/run_task.py kernel-symbols --process-existing --no-analysis --exec
+Examples:
+- Import + (optional) analysis with defaults:
+    GHIDRA_HEADLESS=/opt/homebrew/opt/ghidra/libexec/support/analyzeHeadless \\
+    JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home \\
+    PYTHONPATH=$PWD \\
+    python3 book/api/ghidra/run_task.py kernel-symbols --exec
+- Script-only against existing project:
+    python3 book/api/ghidra/run_task.py kernel-symbols --process-existing --no-analysis --exec
 """
 
 from __future__ import annotations

@@ -1,7 +1,17 @@
 #@category Sandbox
 """
 Surface pointer-table candidates inside com.apple.security.sandbox segments.
-Heuristic: scan for contiguous pointer runs that mostly target functions; emit candidates to dumps/ghidra/out/<build>/kernel-op-table/.
+
+Args (from scaffold): <out_dir> <build_id>
+Outputs: dumps/ghidra/out/<build>/kernel-op-table/op_table_candidates.json (plus script.log).
+
+Heuristic:
+- Scan for contiguous pointer runs that mostly target functions (signed addresses handled).
+- Restrict to sandbox blocks when available; otherwise scan the full program.
+
+Pitfalls:
+- Use a correct processor import so pointer size and address sign-extension are correct.
+- With --no-analysis you still get memory blocks, but function detection may be weaker.
 """
 
 import json

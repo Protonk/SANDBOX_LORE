@@ -2,6 +2,9 @@
 """
 Import BootKernelExtensions.kc, focus on com.apple.security.sandbox blocks, and emit symbol/string tables.
 Outputs land under dumps/ghidra/out/<build>/kernel-symbols/.
+
+Args (from scaffold): <out_dir> [build_id]
+Pitfalls: with --no-analysis you still get symbol tables but fewer functions; block filtering prefers sandbox-named blocks, falls back to full program if unnamed.
 """
 
 import json

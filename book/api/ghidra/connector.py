@@ -1,14 +1,16 @@
 """
-Agent-facing Ghidra connector for Seatbelt reverse-engineering tasks.
+Agent-facing connector for Seatbelt-focused Ghidra headless runs.
 
-This wraps the existing dumps/ghidra scaffold to provide:
-- A task registry rooted in book/api/ghidra/scripts.
-- A headless command builder with sandboxed env defaults.
-- Optional execution hook (dry-run by default).
+Why this exists:
+- Centralize task registration and env policy so agents do not have to remember the headless incantations.
+- Keep all Ghidra side effects in `dumps/ghidra/{out,projects,user,tmp}` and never move host artifacts out of
+  `dumps/Sandbox-private/<build>/...`.
+- Offer a dry-run path (render shell) and an execution path with consistent HOME/TMPDIR/JAVA settings.
 
-Safety: inputs stay under dumps/Sandbox-private/<build>/..., outputs under dumps/ghidra/out/,
-projects under dumps/ghidra/projects/, HOME/GHIDRA_USER_HOME point to dumps/ghidra/user/,
-and temp files stay under dumps/ghidra/tmp via TMPDIR/java.io.tmpdir (cleanup best-effort).
+Safety/assumptions:
+- Baseline: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled; inputs must already exist under Sandbox-private.
+- `JAVA_TOOL_OPTIONS` is forced to a repo-local home/temp to dodge seatbelt prompts and permission errors.
+- `analysis_properties` is accepted for parity but ignored by Ghidra 11.4.2 (use pre-scripts instead).
 """
 
 from __future__ import annotations
@@ -74,7 +76,7 @@ class TaskRegistry:
 
 @dataclass(frozen=True)
 class HeadlessInvocation:
-    """Fully rendered headless command plus metadata."""
+    """Fully rendered headless command plus metadata (safe to print/log for repro)."""
 
     task: TaskSpec
     build_id: str
@@ -111,6 +113,7 @@ def _build_env(
     temp_dir: Path,
     extra_env: Optional[Mapping[str, str]],
 ) -> Dict[str, str]:
+    # Build a sandboxed environment so headless never touches the real HOME/TMP.
     env: MutableMapping[str, str] = dict(os.environ)
     if java_home:
         env["JAVA_HOME"] = java_home

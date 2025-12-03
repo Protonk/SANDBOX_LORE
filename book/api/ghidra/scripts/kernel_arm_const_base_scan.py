@@ -12,6 +12,8 @@ Heuristic:
   this flags base+offset loads into the segment.
 
 Outputs JSON to <out_dir>/arm_const_base_scan.json.
+
+Pitfalls: assumes ARM64 instruction set; ensure processor import is ARM64. With --no-analysis, function info may be missing but linear instruction scanning still works.
 """
 
 import json

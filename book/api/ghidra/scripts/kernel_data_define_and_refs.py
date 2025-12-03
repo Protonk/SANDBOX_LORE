@@ -1,8 +1,14 @@
 #@category Sandbox
 """
 Define data at given addresses and report references.
+
 Args: <out_dir> <build_id> addr:<hex> [addr:<hex> ...]
-Defines a 8-byte undefined as QWORD at each address and dumps xrefs.
+Outputs: dumps/ghidra/out/<build>/kernel-data-define/data_refs.json (plus script.log)
+
+Behavior/pitfalls:
+- Addresses must be prefixed with `addr:` and parsed as unsigned hex; other forms are ignored.
+- Defines 8-byte values as QWORDs, then walks xrefs to dump callers and contents.
+- Works best against an existing analyzed project (`--process-existing --no-analysis`) after a full import.
 """
 import json, os, traceback
 from ghidra.program.model.data import DataUtilities, DataTypeConflictHandler

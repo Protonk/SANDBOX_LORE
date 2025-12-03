@@ -7,6 +7,8 @@ Finds instructions that reference any address within the target page via Ghidra
 references and also detects ADRP + ADD immediate pairs that land inside the page.
 By default, only sandbox memory blocks are scanned; pass "all" to scan the entire
 program. Results are written to JSON in <out_dir>/page_refs.json.
+
+Pitfalls: processor must be ARM64 for ADRP/ADD recognition; --no-analysis reduces xref quality but immediate scans still run.
 """
 
 import json

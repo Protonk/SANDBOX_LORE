@@ -2,6 +2,9 @@
 """
 Emit metadata for specified functions: address, size, callers, callees.
 Args: <out_dir> <build_id> <function_name> [function_name...]
+
+Outputs: <out_dir>/function_info.json with per-function metadata.
+Pitfalls: depends on symbol/function recovery; avoid --no-analysis if you need caller/callee sets populated.
 """
 
 import json

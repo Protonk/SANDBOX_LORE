@@ -6,6 +6,8 @@ Args:
 Offsets are hex without 0x (file offsets, added to image base). Prefix an input with
   'addr:' to treat it as an absolute address instead. Outputs JSON to out_dir/addr_lookup.json.
 When --data-only is present, report defined data at the computed address (type/value).
+
+Pitfalls: file-offset math assumes correct image base; ensure the KC was imported with the right processor/format. Caller/callee info requires functions (avoid --no-analysis if you need it).
 """
 
 import json

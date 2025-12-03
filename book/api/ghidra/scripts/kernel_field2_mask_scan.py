@@ -4,6 +4,9 @@ Scan sandbox-related code for mask immediates used on the third node payload (fi
 Args: <out_dir> <build_id> [mask_hex ...] [all]
 Defaults to masks 0x3fff, 0x4000, 0xc000 if none provided. Add "all" to scan the entire binary
 instead of sandbox memory blocks only.
+
+Outputs: dumps/ghidra/out/<build>/kernel-field2-mask-scan/mask_scan.json (plus script.log).
+Pitfalls: with --no-analysis basic instruction iteration still works, but function metadata/xrefs will be sparse.
 """
 
 import json

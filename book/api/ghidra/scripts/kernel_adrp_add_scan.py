@@ -5,6 +5,8 @@ Args: <out_dir> <build_id> <target_addr_hex> [lookahead] [all]
 
 Scans sandbox blocks by default; pass "all" to scan the entire program.
 Writes JSON to <out_dir>/adrp_add_scan.json with matches and scan metadata.
+
+Pitfalls: assumes ARM64 mnemonics and register semantics; requires a correct processor import. With --no-analysis basic instruction traversal still works.
 """
 
 import json
