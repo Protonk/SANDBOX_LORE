@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 VOCAB_CACHE_OUT = ROOT / "book" / "experiments" / "vocab-from-cache" / "out"
 VALIDATION_VOCAB_OUT = ROOT / "book" / "graph" / "mappings" / "vocab"
 

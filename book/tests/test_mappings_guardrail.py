@@ -2,13 +2,16 @@ import json
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def load_json(path: Path):
     assert path.exists(), f"missing expected file: {path}"
     return json.loads(path.read_text())
 
 
 def test_system_profile_digests_present():
-    digests = load_json(Path("book/graph/mappings/system_profiles/digests.json"))
+    digests = load_json(ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json")
     for key in ["sys:airlock", "sys:bsd", "sys:sample"]:
         assert key in digests, f"missing digest for {key}"
     meta = digests.get("metadata", {})
@@ -16,7 +19,7 @@ def test_system_profile_digests_present():
 
 
 def test_anchor_filter_map_present():
-    amap = load_json(Path("book/graph/mappings/anchors/anchor_filter_map.json"))
+    amap = load_json(ROOT / "book" / "graph" / "mappings" / "anchors" / "anchor_filter_map.json")
     # Ensure known anchors are present and at least one has a resolved filter_id.
     assert "/var/log" in amap
     mapped = [v for v in amap.values() if v.get("filter_id") is not None]
@@ -24,7 +27,7 @@ def test_anchor_filter_map_present():
 
 
 def test_tag_layouts_present():
-    layouts = load_json(Path("book/graph/mappings/tag_layouts/tag_layouts.json"))
+    layouts = load_json(ROOT / "book" / "graph" / "mappings" / "tag_layouts" / "tag_layouts.json")
     tags = layouts.get("tags") or []
     assert tags, "expected non-empty tag layouts"
     sample = tags[0]
@@ -33,6 +36,6 @@ def test_tag_layouts_present():
 
 
 def test_field2_inventory_present():
-    inv_path = Path("book/experiments/field2-filters/out/field2_inventory.json")
+    inv_path = ROOT / "book" / "experiments" / "field2-filters" / "out" / "field2_inventory.json"
     inv = load_json(inv_path)
     assert "sys:bsd" in inv and "sys:sample" in inv, "expected system profiles in field2 inventory"

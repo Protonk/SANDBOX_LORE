@@ -5,7 +5,8 @@ from pathlib import Path
 from book.api import decoder
 
 
-FIXTURE = Path("book/experiments/sbpl-graph-runtime/out/allow_all.sb.bin")
+ROOT = Path(__file__).resolve().parents[2]
+FIXTURE = ROOT / "book" / "experiments" / "sbpl-graph-runtime" / "out" / "allow_all.sb.bin"
 
 
 def test_decode_profile_header_fields_shape():

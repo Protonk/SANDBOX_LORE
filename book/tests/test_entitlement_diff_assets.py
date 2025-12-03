@@ -2,9 +2,12 @@ import plistlib
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def test_entitlement_dumps_present():
-    server_path = Path("book/experiments/entitlement-diff/out/entitlement_sample.entitlements.plist")
-    unsigned_path = Path("book/experiments/entitlement-diff/out/entitlement_sample_unsigned.entitlements.plist")
+    server_path = ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "entitlement_sample.entitlements.plist"
+    unsigned_path = ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "entitlement_sample_unsigned.entitlements.plist"
     assert server_path.exists(), "missing server entitlement dump"
     assert unsigned_path.exists(), "missing unsigned entitlement dump"
 

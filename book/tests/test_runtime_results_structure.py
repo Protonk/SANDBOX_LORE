@@ -2,8 +2,11 @@ import json
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def test_runtime_results_have_match_fields():
-    path = Path("book/experiments/runtime-checks/out/runtime_results.json")
+    path = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "runtime_results.json"
     assert path.exists(), "expected runtime_results.json"
     data = json.loads(path.read_text())
     for key in ["bucket4:v1_read", "bucket5:v11_read_subpath"]:

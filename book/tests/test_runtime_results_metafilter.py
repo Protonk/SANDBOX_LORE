@@ -2,8 +2,11 @@ import json
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def test_metafilter_runtime_entry_present():
-    path = Path("book/experiments/runtime-checks/out/runtime_results.json")
+    path = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "runtime_results.json"
     assert path.exists(), "missing runtime_results.json"
     data = json.loads(path.read_text())
     assert "runtime:metafilter_any" in data

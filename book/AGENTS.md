@@ -1,17 +1,25 @@
-# AGENTS.md — router for `book/`
+# Agents in `book/`
 
-You are in `book/`, the Seatbelt textbook workspace. This is a router; use it to jump to the right place. For vocabulary and lifecycle discipline, defer to `substrate/AGENTS.md`.
+This is the textbook workspace. Use it with the substrate vocabulary (`substrate/`) and the host baseline (Sonoma 14.4.1, Apple Silicon, SIP on). Everything here should stay grounded in the mappings and concepts defined for this host.
 
-- `Outline.md` — top-level book outline and chapter ordering.
-- `chapters/` — per-chapter drafts and notes; filenames match chapter numbers. Look for chapter-local README/notes when editing content.
-- `graph/` — concept graph, mappings, and validation glue:
-  - `concepts/` — semantic/spec text (Orientation, Concepts, Appendix-aligned) plus validation helpers.
-  - `mappings/` — canonical vocab/op-table/tag/system-profile artifacts consumed by experiments and chapters.
-  - `validation/` — harness skeletons that import the decoder and run evidence-gathering tasks.
-- `experiments/` — research clusters, each with `Plan.md`, `Notes.md`, `ResearchReport.md`, and `out/` artifacts. Examples: `runtime-checks`, `op-table-operation`, `node-layout`, `field2-filters`.
-- `examples/` — runnable SBPL/demo bundles and extraction helpers (`examples.json`, `extract_sbs`, etc.) used by experiments and chapters.
-- `profiles/` — SBPL sources/build outputs shared across chapters/experiments (non-example-specific).
-- `api/` — API/tooling layer (see `api/AGENTS.md`); includes the SBPL/blob wrapper and shared decoder.
-- `tests/` — guardrails for book artifacts and experiment outputs; run via the repo’s test harness.
+## Router
 
-When in doubt, start from the relevant directory’s README/AGENTS before editing.
+- `Outline.md` – top-level textbook outline.
+- `chapters/` – per-chapter drafts and plans; check chapter-local notes before editing.
+- `graph/` – shared graph IR and concept inventory.
+  - See `book/graph/AGENTS.md` for norms on mappings and validation code.
+- `experiments/` – host-specific experiments and their reports/notes/artifacts.
+  - See `book/experiments/AGENTS.md` for how experiments are structured.
+- `examples/` – runnable SBPL/demo bundles and extraction helpers used by chapters and experiments.
+- `profiles/` – SBPL/profile sources shared across the book.
+- `api/` – shared tooling (decoder, SBPL/blob wrapper, Ghidra helpers); see `book/api/AGENTS.md`.
+- `tests/` – guardrails for book artifacts and experiment outputs (`pytest book/tests`).
+
+When in doubt, start with the AGENTS/README in the relevant subdirectory.
+
+## Expectations
+
+- Stay within the host baseline and substrate vocabulary; don’t import generic macOS lore.
+- Use the stable mappings under `book/graph/mappings/` (vocab, op-table, tag layouts, system digests, runtime) as the backbone for explanations and code.
+- Experiments publish stable outputs into `book/graph/mappings/` only when they are reusable and versioned; scratch lives in `book/experiments/*/out`.
+- Keep `Report.md`/`Notes.md` up to date when touching experiments; keep chapter text aligned with the current mappings and concept inventory.

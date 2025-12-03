@@ -2,13 +2,13 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 import book.api.decoder as decoder  # type: ignore
 
 
-SAMPLE = Path("book/examples/sb/build/sample.sb.bin")
+SAMPLE = ROOT / "book" / "examples" / "sb" / "build" / "sample.sb.bin"
 
 
 def test_decoder_emits_validation_fields():

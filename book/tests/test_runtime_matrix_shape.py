@@ -2,8 +2,11 @@ import json
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 def test_runtime_matrix_has_bucket_profiles():
-    path = Path("book/experiments/runtime-checks/out/expected_matrix.json")
+    path = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "expected_matrix.json"
     assert path.exists(), "expected runtime expected_matrix.json"
     matrix = json.loads(path.read_text())
     profiles = matrix.get("profiles") or {}

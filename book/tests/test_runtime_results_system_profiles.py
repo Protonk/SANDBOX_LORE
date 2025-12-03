@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
+
 def test_system_profiles_present_in_runtime_results():
-    path = Path('book/experiments/runtime-checks/out/runtime_results.json')
+    path = ROOT / 'book' / 'experiments' / 'runtime-checks' / 'out' / 'runtime_results.json'
     assert path.exists(), 'missing runtime_results.json'
     data = json.loads(path.read_text())
     for key in ['sys:airlock', 'sys:bsd']:
