@@ -4,7 +4,7 @@
 
 In this project, an experiment is a small, concrete unit of work that ties claims about the macOS sandbox on this host to observable behavior.
 
-Experiments exist to test specific questions or tensions, produce rerunnable interactions with the host, and leave behind evidence that can be checked, decoded, and reused. They are the bridge between the textbook’s concepts and what actually happens on the fixed Sonoma machine captured in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
+Experiments exist to test specific questions or tensions, produce rerunnable interactions with the host, and leave behind evidence that can be checked, decoded, and reused. They are the bridge between the textbook’s concepts and what actually happens on the fixed Sonoma machine captured in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (single source of truth for host metadata).
 
 An experiment is not just a code snippet, a story, or a design sketch. It is a defined question, a way of exercising the system, and a record of what happened.
 
@@ -18,7 +18,7 @@ A good experiment has a clear shape and limited ambition:
   It is built around a narrow, explicit question (or a small cluster of closely related questions) about how Seatbelt or related machinery behaves.
 
 * **Anchored in concepts**
-  It states which project concepts it is exercising or clarifying (for example: operations, filters, policy graphs, containers, entitlements).
+  It states which project concepts it is exercising or clarifying (for example: operations, filters, policy graphs, containers, entitlements) using the canonical vocabularies in `book/graph/mappings/vocab/{ops,filters}.json` and the project’s concept inventory—no invented op/filter names.
 
 * **Small but informative**
   It uses the simplest setup that can shed light on the question: a minimal test program, a small SBPL fragment, a focused decode, rather than a sprawling scenario.
@@ -33,7 +33,7 @@ A good experiment has a clear shape and limited ambition:
 
 ## 3. Documentation expectations
 
-An experiment should be documented so that another agent can understand it and extend it without additional explanation. The exact file layout is project-specific; this section is about content, not location.
+An experiment should be documented so that another agent can understand it and extend it without additional explanation. Each experiment uses the required scaffold: `Plan.md`, `Report.md`, `Notes.md`, and an `out/` directory for artifacts.
 
 Each experiment should capture, somewhere:
 
@@ -41,16 +41,16 @@ Each experiment should capture, somewhere:
   What the experiment is trying to find out, and why this question matters (for example, a confusion or gap in the existing concepts or state).
 
 * **Context and environment**
-  The host and OS context the experiment is intended for, and any key preconditions that affect behavior.
+  The host and OS context the experiment is intended for (reference `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`), and any key preconditions that affect behavior.
 
 * **What was done**
   The essential steps: what was run or changed, in what order, and with what key parameters or inputs.
 
 * **What was observed**
-  The important outcomes from one or more runs: successes, failures, denials, errors, unexpected no-ops, or notable artifacts.
+  The important outcomes from one or more runs: successes, failures, denials, errors, unexpected no-ops, or notable artifacts. Failures (EPERM/apply gates/decoder errors) are first-class observations and must be recorded, not omitted.
 
 * **How it is currently interpreted**
-  How these observations bear on the original question and on the relevant concepts, including the current level of confidence or status (for example, “this looks solid”, “still ambiguous”, “blocked by missing access”).
+  How these observations bear on the original question and on the relevant concepts, including the current level of confidence or status (`ok`, `partial`, `brittle`, `blocked`). Status is part of the meaning; do not upgrade it without evidence.
 
 * **Open questions**
   Any remaining uncertainties or obvious follow-ups that would make the picture clearer.
@@ -73,6 +73,6 @@ Experiments move through a simple life-cycle as they are created, refined, and i
   Over time, the experiment reaches a steady state: the setup is well-understood, key behaviors are reproducible on the host, and the relationship to the concept inventory is reasonably stable. Documentation is cleaned up so that the current best reading is easy to see while past attempts remain accessible.
 
 * **Promotion or supersession**
-  Stable experiments often produce outputs (artifacts, tools, or distilled insights) that are useful beyond the experiment itself. When that happens, the experiment should clearly mark which outputs appear stable and broadly reusable, and suggest that they be used as shared references in the wider book. If a newer experiment replaces or sharpens an older one, that relationship should be noted so that readers can follow the chain.
+  Stable experiments often produce outputs (artifacts, tools, or distilled insights) that are useful beyond the experiment itself. When that happens, the experiment should clearly mark which outputs appear stable and broadly reusable, and suggest that they be used as shared references in the wider book. Any artifact promoted into `book/graph/mappings/*` must carry host metadata and have a guardrail test (e.g., in `book/tests/`). If a newer experiment replaces or sharpens an older one, that relationship should be noted so that readers can follow the chain.
 
-Across this life-cycle, experiments remain the primary link between the project’s claims and the fixed host. Their job is to accumulate reliable, inspectable evidence, not to disappear once a story has been written.
+Across this life-cycle, experiments remain the primary link between the project’s claims and the fixed host. Their job is to accumulate reliable, inspectable evidence, not to disappear once a story has been written. Use shared tooling (`book/api/inspect_profile`, `book/api/op_table`, `book/api/decoder`) instead of reimplementing parsers.

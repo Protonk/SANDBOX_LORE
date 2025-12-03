@@ -1,6 +1,6 @@
 # Agents in `book/experiments/`
 
-These instructions apply to all subdirectories of `book/experiments/`. Experiments are scoped to the fixed host baseline recorded in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
+These instructions apply to all subdirectories of `book/experiments/`. Experiments are scoped to the fixed host baseline recorded in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (the single source of truth for host metadata).
 
 ## Experimenter role
 
@@ -40,6 +40,9 @@ This loop repeats. Do not treat “one run” as complete. Prefer several small 
 * Maintain validation status honestly
   Each experiment has a validation status (`ok`, `partial`, `blocked`, `brittle`). You are responsible for updating this based on actual runs, not on how convincing a narrative feels. Do not silently upgrade `partial` or `brittle` results to `ok` without additional evidence.
 
+* Use canonical vocab and concepts
+  Use only Operation/Filter vocabularies from `book/graph/mappings/vocab/{ops,filters}.json` and the project’s concept inventory. Do not invent new op/filter names or ad-hoc jargon.
+
 * Keep experiments neutral and reproducible
   The experiments you touch should remain role-agnostic objects: stable directory layout, clear inputs and outputs, host/build tagging, and explicit links to concepts. Use Notes for process and exploration; keep manifests and reports focused on what the experiment shows, not on your personality or preferences.
 
@@ -48,6 +51,7 @@ This loop repeats. Do not treat “one run” as complete. Prefer several small 
 
 * Propose promotion, do not self-authorize it
   When an experiment produces artifacts or tools that are stable and reusable, your job is to identify them and propose promotion: point to the files, explain why they are stable, and suggest where they should live in the shared artifacts or tools areas. Do not assume that your experiment-local results are automatically canonical.
+  Any artifact promoted into `book/graph/mappings/*` must carry host metadata and have a guardrail test (e.g., in `book/tests/`) to prevent silent drift.
 
 Your work should leave each experiment in a clearer, better-documented state than you found it, with sharper questions, cleaner artifacts, and an honest account of what is known, what is fragile, and what is still unknown.
 
@@ -79,6 +83,7 @@ New experiments should follow the same pattern: a dedicated directory with its o
 
 Shared tooling tip:
 - For quick blob snapshots (section sizes, op-table entries, stride/tag stats, literals), use `book/api/inspect_profile` (CLI or Python) instead of duplicating parsers.
+- For op-table and vocab alignment, prefer `book/api/op_table`. For decoding, use `book/api/decoder`.
 
 ## What makes a good experiment here
 
