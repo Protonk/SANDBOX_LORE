@@ -2,16 +2,12 @@
 
 This repo defines a fixed, opinionated “world” for the macOS Seatbelt sandbox and expects agents to stay inside it. All reasoning and code should be grounded in this world, not in generic or cross-version macOS lore.
 
----
-
 ## World and scope
 
 - The world is a single host baseline:
   - macOS Sonoma 14.4.1 (23E224), Apple Silicon, SIP enabled.
 - All architectural and behavioral claims are about this host unless explicitly labeled otherwise.
 - Older sources (Apple Sandbox Guide, Blazakis, SandBlaster, etc.) are mediated through the substrate and experiments; they are not direct authorities.
-
----
 
 ## Substrate and vocabulary discipline
 
@@ -26,8 +22,6 @@ This repo defines a fixed, opinionated “world” for the macOS Seatbelt sandbo
   - Prefer existing names from `substrate/Concepts.md` and `book/graph/concepts/CONCEPT_INVENTORY.md`.
   - If you believe a new concept is required, add it to the inventory (not ad-hoc) and state what evidence it is allowed to claim.
 
----
-
 ## Evidence model and mapping layer
 
 - Static artifacts on this host are primary:
@@ -41,8 +35,6 @@ This repo defines a fixed, opinionated “world” for the macOS Seatbelt sandbo
 
 When artifacts, runtime behavior, and substrate texts disagree, treat that as an open modeling or tooling bug. Record and bound the discrepancy; do not resolve it by averaging stories.
 
----
-
 ## Where to work
 
 - `substrate/` – read-only theory; do not rewrite the world without an explicit modeling change.
@@ -54,8 +46,6 @@ When artifacts, runtime behavior, and substrate texts disagree, treat that as an
   - See `dumps/AGENTS.md` before running tools or adding files.
   - Binary/reverse-engineering work happens here; its *outputs* that become stable mappings should be promoted into `book/graph/mappings/` via experiments.
 - `troubles/` – record crashes, decoding issues, and validation failures that need follow-up rather than fixing them silently.
-
----
 
 ## Things to avoid
 

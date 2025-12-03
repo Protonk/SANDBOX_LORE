@@ -7,9 +7,6 @@ The project is designed for both humans and agents:
 - Fix a workable model of Seatbelt internals and the App Sandbox.
 - Capture a stable vocabulary and concept graph tied to real artifacts.
 - Provide runnable, inspectable labs and experiments.
-- Give agents a consistent substrate to reason against without reaching outside the repo.
-
----
 
 ## What this repo actually does
 
@@ -27,7 +24,6 @@ From these, we build:
 
 Whenever static structure, runtime experiments, and canonical sources disagree, that disagreement is treated as an open modeling or tooling bug—not something to smooth over.
 
----
 
 ## Repository layout (top level)
 
@@ -62,7 +58,6 @@ High-level map of the root and `book/`:
 - `troubles/`  
   Records of crashes, decoding problems, or validation issues that need follow-up.
 
----
 
 ## Scope and invariants
 
