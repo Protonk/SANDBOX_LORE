@@ -1,10 +1,11 @@
-# Research Report
+# Kernel Symbols – Research Report (Sonoma baseline)
 
 ## Purpose
-Track kernel symbol and string extraction runs for the 14.4.1-23E224 kernelcache and related builds, with a focus on sandbox/AppleMatch/mac_policy anchors that could support later PolicyGraph dispatcher searches.
+Track kernel symbol and string extraction runs for the 14.4.1-23E224 kernelcache and related builds, with a focus on sandbox/AppleMatch/mac_policy anchors that could support later PolicyGraph dispatcher searches. Keep outputs organized so other experiments can reuse them without re-running Ghidra.
 
 ## Baseline & scope
-Track kernel symbol/string extraction runs for the 14.4.1-23E224 kernelcache and related builds. Outputs are kept under `out/<build>/kernel-symbols/` for reuse and comparison across runs.
+- Host/build: Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (14.4.1-23E224 kernelcache, arm64).
+- Outputs live under `out/<build>/kernel-symbols/` for reuse and comparison across runs.
 
 ## Deliverables / expected outcomes
 - Per-build symbol and string dumps under `out/<build>/kernel-symbols/` (for example `out/14.4.1-23E224/kernel-symbols/strings.json` and `symbols.json`).
@@ -18,8 +19,18 @@ Track kernel symbol/string extraction runs for the 14.4.1-23E224 kernelcache and
 - Initial data-define and string-reference passes run for key sandbox/AppleMatch addresses, with callers/xrefs captured in `data_refs.json` and `kernel-string-refs` outputs where available.
 - An op-table candidate sweep produced `out/14.4.1-23E224/op_table_candidates.json` for later correlation with other experiments.
 
-### Planned
-- Run additional data-define passes and string-reference scans for promising addresses and pointer tables as new hypotheses appear in downstream dispatcher work.
+### Maintenance / rerun plan
+If new dispatcher hypotheses appear or the kernelcache changes, reuse this outline:
+
+1. **Scope and setup**
+   - Confirm the target build ID and baseline in `book/world/.../world-baseline.json`, this Report, and `Notes.md`.
+   - Decide which additional addresses (strings or symbols) should be included in string-ref and data-define runs.
+2. **Symbol/string extraction**
+   - Regenerate `kernel-symbols/strings.json` and `symbols.json` under `out/<build>/kernel-symbols/` if needed.
+   - Run string-reference scans for sandbox/AppleMatch/mac_policy terms and write results under `out/<build>/kernel-string-refs/`.
+3. **Pointer-table and data-define passes**
+   - Refresh op-table candidates (`op_table_candidates.json`) when op-table mapping work evolves.
+   - Run targeted data-define and xref collection on promising addresses and update `data_refs.json` for downstream experiments.
 
 ## Evidence & artifacts
 - `out/14.4.1-23E224/kernel-symbols/strings.json` and `symbols.json` with raw string and symbol inventories.

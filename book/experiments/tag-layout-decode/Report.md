@@ -1,26 +1,27 @@
-# Tag Layout Decode – Research Report (Sonoma / macOS 14.4.1)
+# Tag Layout Decode – Research Report (Sonoma baseline)
 
 ## Purpose
 Map node tags that reference literal or regex pools to interpretable layouts (edge fields plus operand fields) using the current decoder and anchor hits. Produce a reusable map at `book/graph/mappings/tag_layouts/tag_layouts.json` for other tooling and book chapters.
 
 ## Baseline & scope
-- Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled (same baseline as other experiments).
+- Host: Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
 - Inputs: canonical system profiles (`book/examples/extract_sbs/build/profiles/{airlock,bsd,sample}.sb.bin`), probe outputs from `probe-op-structure`, and shared vocab/op-table mappings in `book/graph/mappings/`.
 - Tooling: `book.api.decoder` for profile decoding; anchor hints from `book/graph/mappings/anchors/anchor_field2_map.json`.
 - Target artifact: `book/graph/mappings/tag_layouts/tag_layouts.json` (per-tag layout with operand interpretation and provenance).
 
 ## Deliverables / expected outcomes
 - A per-tag layout map for literal/regex-bearing nodes with evidence trails.
-  - Guardrail script/test that asserts expected literal/regex placements on reference blobs.
+  - Guardrail test that asserts expected literal/regex placements on reference blobs.
   - Updated Notes and Plan with any deviations or open questions.
-- Deliverables: `Plan.md`, `Notes.md`, `ResearchReport.md` in this directory; `out/` folder for scratch JSON/histograms.
-- Deliverables: `out/tag_histogram.json` (or similar) with tag → counts, literal/regex usage.
-- Deliverables: draft `tag_layouts.json` (per-tag layout description) plus short notes on evidence.
+- Local artifacts:
+  - `Plan.md`, `Notes.md`, `Report.md` in this directory; `out/` folder for scratch JSON/histograms.
+  - `out/tag_histogram.json` (or similar) with tag → counts, literal/regex usage.
+  - `out/tag_literal_nodes.json` plus `tag_layouts.json` (per-tag layout description) and short notes on evidence.
 
 ## Plan & execution log
 ### Completed
 - **Current status**
-  - Experiment scaffolded (this report, Plan, Notes).
+  - Experiment scaffolded (this Report, Plan, Notes).
   - Baseline decode complete for canonical system profiles (`airlock`, `bsd`, `sample`); tag counts and literal counts recorded in `out/tag_histogram.json`. Decoder inputs: `book/examples/extract_sbs/build/profiles/{airlock,bsd}.sb.bin`, `book/examples/sb/build/sample.sb.bin`.
   - Sample literal-bearing nodes grouped by tag captured in `out/tag_literal_nodes.json` to support layout interpretation.
   - Best-effort tag layouts published at `book/graph/mappings/tag_layouts/tag_layouts.json` (record_size=12, edges fields[0..1], payload field[2] for literal-bearing tags 0,1,3,5,7,8,17,26,27,166). Decoder now prefers this mapping when present. Guardrail test added (`tests/test_mappings_guardrail.py`) to ensure the mapping persists.
@@ -36,19 +37,20 @@ Map node tags that reference literal or regex pools to interpretable layouts (ed
   - Added guardrail tests (`tests/test_mappings_guardrail.py`) that assert presence and basic shape of the tag layout mapping.
   - Updated `ResearchReport.md` and `Notes.md` to describe current layouts and how they are used by the decoder.
 
-### Planned
-- 1. Baseline decode and histogram of reference blobs to identify tags that carry literal/regex operands.
-  2. Reconstruct per-tag field meanings (edges vs operands) using literal/regex tables and anchor hits.
-  3. Synthesize a stable tag-layout map and add guardrail checks against reference blobs.
-- **1) Scope and setup**
-  - Make host baseline (OS/build, SIP, decoder version) explicit in `ResearchReport.md` if tag layouts are extended or revised.
-- **2) Baseline decode and tag histogram**
-  - Refine notes on which tags show literal or regex indices and any sentinel/padding patterns as decoding improves.
-- **3) Tag layout reconstruction**
-  - Use anchors from `probe-op-structure` and shared vocab/op-table mappings to refine tag layouts and detect reused structures across operations.
-- **4) Synthesis and guardrails**
-  - Revisit layouts if new tags or operand types surface in future experiments.
-  Stop condition: tag layouts for literal/regex-bearing nodes validated across reference blobs and probes; reusable map committed; guardrail in place.
+### Maintenance / rerun plan
+If tag layouts need to be extended or revised, reuse this outline:
+
+1. **Scope and setup**
+   - Confirm the baseline (OS/build, SIP, decoder version) and record it in `book/world/.../world-baseline.json`, this Report, and `Notes.md` when layouts change.
+   - Identify additional reference blobs or probe outputs that should be included.
+2. **Baseline decode and tag histogram**
+   - Decode reference blobs; refresh tag histograms, literal usage, and any sentinel/padding patterns into `out/tag_histogram.json`.
+3. **Tag layout reconstruction**
+   - Use anchors from `probe-op-structure` and shared vocab/op-table mappings to refine tag layouts and detect reused structures across operations.
+   - Update `out/tag_literal_nodes.json` as needed.
+4. **Synthesis and guardrails**
+   - Refresh `tag_layouts.json` with new or adjusted per-tag layouts.
+   - Keep guardrail tests in `tests/test_mappings_guardrail.py` in sync so they continue to assert presence and basic shape of the mapping.
 
 ## Evidence & artifacts
 - Reference blobs `airlock.sb.bin`, `bsd.sb.bin`, and `sample.sb.bin` decoded via `book.api.decoder`.

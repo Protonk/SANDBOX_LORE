@@ -1,4 +1,4 @@
-# Node Layout Experiment – Research Report (Sonoma / macOS 14.4.1)
+# Node Layout Experiment – Research Report (Sonoma baseline)
 
 ## Purpose
 The synthetic textbook treats compiled sandbox profiles as **PolicyGraphs**: node arrays plus edges derived from SBPL **Operations**, **Filters**, and **Metafilters**, with an **Operation Pointer Table** and shared literal/regex tables.
@@ -20,7 +20,7 @@ We explicitly do **not** attempt a full reverse-engineering of modern node forma
 ## Baseline & scope
 **Host / baseline**
 
-- macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
+- Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (macOS 14.4.1 / 23E224, Apple Silicon, SIP enabled).
 - Profiles compiled locally via `libsandbox.dylib` on this host; results are host-specific but conceptually aligned with `SUBSTRATE_2025-frozen`.
 
 **Directory contents**
@@ -75,7 +75,7 @@ These tools give us a consistent “slice + decode” view of modern profiles th
 ## Deliverables / expected outcomes
 - A small library of SBPL variants under `sb/` plus compiled blobs under `sb/build/` that exercise representative operation/filter shapes.
 - `book/experiments/node-layout/out/summary.json` containing per-variant blob and section lengths, stride statistics, tag counts, and decoder snapshots for this host.
-- Narrative notes in `Notes.md` and this report describing stable format/layout facts for modern compiled profiles on Sonoma 14.4.1.
+- Narrative notes in `Notes.md` and this Report describing stable format/layout facts for modern compiled profiles on this Sonoma baseline.
 - (Planned) lightweight guardrail checks that assert expected format variant and basic layout for a few curated reference profiles.
 
 ## Plan & execution log

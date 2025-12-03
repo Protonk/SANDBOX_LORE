@@ -1,4 +1,4 @@
-# Op-table ↔ Operation Vocabulary Alignment – Research Report (Sonoma / macOS 14.4.1)
+# Op-table ↔ Operation Vocabulary Alignment – Research Report (Sonoma baseline)
 
 ## Purpose
 The substrate distinguishes three closely-related concepts:
@@ -36,7 +36,7 @@ This experiment sits between the structural experiments and the validation tooli
 ## Baseline & scope
 **Host / baseline**
 
-- macOS 14.4.1 (23E224), kernel 23.4.0, Apple Silicon, SIP enabled.
+- Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (macOS 14.4.1 / 23E224, kernel 23.4.0, Apple Silicon, SIP enabled).
 - This matches the environment used by the node-layout and op-table-operation experiments.
 
 **Upstream artifacts reused**

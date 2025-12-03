@@ -1,10 +1,10 @@
-# Field2 ↔ Filter Mapping (Sonoma 14.4.1, Apple Silicon)
+# Field2 ↔ Filter Mapping – Research Report (Sonoma baseline)
 
-## Goal
-Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know.
+## Purpose
+Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know yet.
 
 ## Baseline & evidence backbone
-- Host: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
+- Host: Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
 - Canonical vocab: `book/graph/mappings/vocab/{filters,ops}.json` (status: ok).
 - Canonical profiles: `book/examples/extract_sbs/build/profiles/{bsd,airlock,sample}.sb.bin`.
 - Core outputs: `out/field2_inventory.json` (histograms + hi/lo/tag counts) and `out/unknown_nodes.json` (hi/unknown nodes with fan-in/out and op reach).
@@ -28,7 +28,7 @@ Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyG
 - Added `sb/airlock_system_fcntl.sb` (system-fcntl + fcntl-command) → mostly low path/socket IDs + new 0xffff sentinel.
 - Inventories refreshed (`harvest_field2.py`, `unknown_focus.py`); op reach now included for unknowns.
 
-## New observations (2026-02-13)
+## New observations
 - `unknown_nodes.json` summary:
   - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 sit on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
   - `airlock`: highs 165/166/10752 on tags 166/1/0; op reach concentrated on op 162 (`system-fcntl`). `airlock_system_fcntl` adds a sentinel 0xffff (hi=0xc000) on tag 1, op-empty.

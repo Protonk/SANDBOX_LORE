@@ -69,3 +69,50 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
 - Decode and diff the resulting profiles with `profile_ingestion.py`, focusing on filter/parameter changes driven by entitlements.
 - Run a small set of runtime probes (file/network/mach) under each variant using the SBPL/Blob wrapper and record behavioral deltas.
 - Summarize at least one entitlement with a clear profile/filter delta and, if possible, observable runtime behavior.
+# Entitlement Diff – Research Report (Sonoma baseline)
+
+## Purpose
+Compare entitlements, derived App Sandbox SBPL, compiled profiles, and (eventually) runtime behavior for matched binaries on this host. The goal is to turn specific entitlement changes into observable differences in compiled policy and, where possible, runtime allow/deny behavior.
+
+## Baseline & scope
+- Host: Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
+- Inputs: signed binaries with and without specific entitlements, their extracted entitlements plists, and any derived SBPL/profiles.
+- Tooling: codesign/entitlement extraction helpers, `book.api.sbpl_compile`, and decoder tooling where profile blobs are available.
+
+## Deliverables / expected outcomes
+- A small set of entitlement pairs (with/without, or before/after) with:
+  - entitlement manifests under `out/entitlement_manifest.json` (or similar),
+  - any derived SBPL or compiled profiles under `out/`,
+  - notes on structural differences in compiled profiles where they can be obtained.
+- Clear notes in this Report and in `Notes.md` about which parts of the pipeline are currently blocked (for example, profile derivation from entitlements).
+
+## Plan & execution log
+### Completed
+- Experiment scaffolded (Plan, Notes, this Report).
+- Initial entitlement extraction runs completed for at least one binary pair; manifests captured under `out/` and referenced from `Notes.md`.
+- Pipeline status recorded: entitlement comparison is working; SBPL/profile derivation from entitlements remains blocked on missing tooling and platform behavior on this host.
+
+### Maintenance / rerun plan
+As entitlement tooling improves, reuse this outline:
+
+1. **Scope and setup**
+   - Confirm the host baseline in `book/world/.../world-baseline.json`, this Report, and `Notes.md`.
+   - Choose a small set of binaries where entitlement changes are well-understood and reproducible.
+2. **Entitlement extraction and diff**
+   - Extract entitlements for each binary and write a manifest under `out/entitlement_manifest.json` (or per-pair files).
+   - Record diffs in `Notes.md` and summarize them here.
+3. **Profile derivation (when available)**
+   - Once the pipeline exists, derive App Sandbox SBPL and compiled profiles from those entitlements and decode them.
+   - Capture structural differences (operations, filters, profile layers) in `out/` and summarize them in this Report.
+
+## Evidence & artifacts
+- Entitlement manifests under `book/experiments/entitlement-diff/out/` (file names documented in `Notes.md`).
+- Any SBPL or compiled profile blobs derived from those entitlements as the pipeline comes online.
+
+## Blockers / risks
+- There is not yet a complete, reliable pipeline from entitlements → App Sandbox SBPL → compiled profile on this host; most structural comparisons remain “planned” rather than implemented.
+- Platform behavior and signing/hardening constraints may limit which binaries can be safely used for repeatable comparisons.
+
+## Next steps
+- Tighten the entitlement manifest format and keep it stable under `out/`.
+- Once SBPL/profile derivation is available, run a first end-to-end pair (with/without a single entitlement) and document structural differences.

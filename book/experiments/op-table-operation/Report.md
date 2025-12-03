@@ -1,4 +1,4 @@
-# Op-table vs Operation Mapping – Research Report (Sonoma / macOS 14.4.1)
+# Op-table vs Operation Mapping – Research Report (Sonoma baseline)
 
 ## Purpose
 In the substrate:
@@ -35,7 +35,7 @@ We intentionally avoid guessing a full Operation Vocabulary Map; that belongs to
 ## Baseline & scope
 **Host / baseline**
 
-- macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
+- Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` (macOS 14.4.1 / 23E224), Apple Silicon, SIP enabled.
 
 **Directory contents**
 
