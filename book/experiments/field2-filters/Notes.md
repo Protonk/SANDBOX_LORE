@@ -106,3 +106,18 @@ Use this file for dated, concise notes on progress, commands, and intermediate f
 - Goal: find the policy graph evaluator that walks node records and consumes the third 16-bit payload (`field2`/filter_arg).
 - Searches: look for masks/shifts like `& 0x3FFF`, `& 0x4000`, `& 0xC000` applied to a u16 loaded from a node; also look for op-table indexing and node-array traversal. Start from `sandbox_check`/`sandbox_check_bulk` or MACF hooks and follow to per-node dispatch.
 - Extract: confirm node layout (offsets for tag, edges, field2), whether `field2` is split into flags/index, any flag checks (e.g., `& 0x4000`), and any table indexing using the low bits. These masks/branches will be the authoritative semantics for the high values (2560/16660/etc.).
+
+## binutils handover
+
+• The sandbox arm64e kext is now extracted cleanly with ipsw: /tmp/sandbox_arm64e/ com.apple.security.sandbox (Mach-O arm64e, __text offset 155,648, size 262,856, vmaddr 0xfffffe000b3f34f0). Using GNU binutils (/opt/homebrew/opt/binutils/bin/objdump) on the raw __text bytes:
+
+* FUN_ffffff8002d87d4a (reader): loads a u16 from the profile buffer after bounds checks. Key sequence: ldrb w?, checks length, ldr x? [x?], ldrh/mov to store into caller’s pointer, returns. No and/tbz/ubfx; the u16 is passed through unmasked.
+* FUN_ffffff8002d87d8f and FUN_ffffff8002d8809a are wrappers that call 2d87d4a, add offsets, and propagate the u16. Again, no bit tests or masks on the loaded value.
+* FUN_ffffff8002d8907f (used in the evaluator loop) likewise uses 2d87d4a to fetch the payload and drives comparisons/branching without masking the field.
+* Scanned nearby code with objdump for tbz/tbnz/and/ubfx on the registers holding the payload: none found in these helpers. No & 0x3fff/& 0x4000 semantics evident in the arm64e helpers.
+
+Status: On arm64e (the actual Apple Silicon KC), the helper that reads field2 returns it raw; there is no hi-bit or low-bit masking at the load/dispatch layer. Field2 semantics are not split in the helpers; any special handling would have to be elsewhere (e.g., higher-level logic).
+
+Notes/Report updated: recorded that ipsw extraction works, the arm64e helpers show raw field2 (no masks), and the previous x86_64-only caveat is resolved.
+
+Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) for any downstream bit tests on the register loaded by 2d87d4a; based on helper behavior, it likely also consumes field2 raw.

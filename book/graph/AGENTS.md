@@ -2,8 +2,6 @@
 
 These instructions apply to the entire `book/graph/` tree. Treat this directory as the shared “graph IR + concept inventory” layer that sits between experiments and the textbook: it defines concepts, ingests compiled profiles, and publishes stable mappings for this Sonoma host.
 
----
-
 ## Scope and router
 
 High-level layout:
