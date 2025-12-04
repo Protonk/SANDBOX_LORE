@@ -20,7 +20,7 @@ Extending it:
 - Emit a small report under `book/graph/validation/` rather than failing silently.
 
 Directory map (agent quick reference):
-- `Sources/` – Swift generator/validator (see `main.swift`).
+- `sources/` – Swift generator/validator (see `main.swift`).
 - `concepts/` – Concept inventory source (markdown), generated JSON, and validation metadata.
 - `mappings/` – Stable host-specific IR (vocab, op_table, anchors, tag_layouts, system_profiles, runtime).
 - `regions/` – Generated chapter/section map for the textbook.

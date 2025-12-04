@@ -1,0 +1,41 @@
+{
+  "checked" : [
+    "concepts",
+    "strategies",
+    "runtime_expectations"
+  ],
+  "errors" : [
+    "strategy static-profile-parse references missing concept binary-profile-header",
+    "strategy static-profile-parse references missing concept operation-pointer-table",
+    "strategy static-profile-parse references missing concept policygraph",
+    "strategy static-profile-parse references missing concept policy-node",
+    "strategy static-profile-parse references missing concept profile-format-variant",
+    "strategy static-profile-parse references missing concept regex-literal-table",
+    "strategy static-profile-parse references missing concept compiled-profile-source",
+    "strategy static-profile-parse references missing concept sbpl-profile",
+    "strategy semantic-microprofiles references missing concept operation",
+    "strategy semantic-microprofiles references missing concept filter",
+    "strategy semantic-microprofiles references missing concept metafilter",
+    "strategy semantic-microprofiles references missing concept decision",
+    "strategy semantic-microprofiles references missing concept action-modifier",
+    "strategy semantic-microprofiles references missing concept policy-node",
+    "strategy semantic-microprofiles references missing concept policygraph",
+    "strategy semantic-microprofiles references missing concept sbpl-profile",
+    "strategy semantic-microprofiles references missing concept sbpl-parameterization",
+    "strategy vocab-mapping references missing concept operation-vocabulary-map",
+    "strategy vocab-mapping references missing concept filter-vocabulary-map",
+    "strategy vocab-mapping references missing concept operation-pointer-table",
+    "strategy vocab-mapping references missing concept profile-format-variant",
+    "strategy vocab-mapping references missing concept policygraph",
+    "strategy lifecycle-extensions references missing concept sandbox-extension",
+    "strategy lifecycle-extensions references missing concept policy-lifecycle-stage",
+    "strategy lifecycle-extensions references missing concept profile-layer",
+    "strategy lifecycle-extensions references missing concept policy-stack-evaluation-order",
+    "strategy lifecycle-extensions references missing concept compiled-profile-source",
+    "strategy lifecycle-extensions references missing concept sbpl-parameterization",
+    "strategy lifecycle-extensions references missing concept sbpl-profile"
+  ],
+  "warnings" : [
+    "runtime expectations not found or unreadable"
+  ]
+}

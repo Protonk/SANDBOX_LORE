@@ -1,4 +1,4 @@
-# Agents in `book/graph/Sources/`
+# Agents in `book/graph/sources/`
 
 Purpose: Swift generator/validator that reads concept markdown + mapping manifests and emits JSON artifacts and a validation report.
 

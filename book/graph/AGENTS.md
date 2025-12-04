@@ -6,7 +6,7 @@ These instructions apply to the entire `book/graph/` tree. Treat this directory 
 
 High-level layout:
 
-- `Package.swift`, `Sources/`
+- `Package.swift`, `sources/`
   - Swift entrypoint(s) for graph-related tooling. Keep these thin wrappers over the Python/JSON IR: they should orchestrate, not re-implement, ingestion or mapping logic.
 
 - `concepts/`
