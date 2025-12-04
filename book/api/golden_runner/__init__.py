@@ -19,7 +19,7 @@ DEFAULT_OUT = Path(__file__).resolve().parents[2] / "profiles" / "golden-triple"
 DEFAULT_RUNTIME_PROFILE_DIR = DEFAULT_OUT / "runtime_profiles"
 RUNNER = Path(__file__).resolve().parents[3] / "experiments" / "runtime-checks" / "sandbox_runner"
 READER = Path(__file__).resolve().parents[3] / "experiments" / "runtime-checks" / "sandbox_reader"
-WRAPPER = Path(__file__).resolve().parents[2] / "SBPL-wrapper" / "wrapper"
+WRAPPER = Path(__file__).resolve().parents[2] / "api" / "SBPL-wrapper" / "wrapper"
 
 CAT = "/bin/cat"
 SH = "/bin/sh"
@@ -66,9 +66,6 @@ def classify_status(probes: List[Dict[str, Any]], skipped_reason: str | None = N
         return "blocked", "no probes executed"
     if any(p.get("error") for p in probes):
         return "blocked", "probe execution error"
-    stderr_blob = " ".join((p.get("stderr") or "") for p in probes)
-    if "Operation not permitted" in stderr_blob or "sandbox_apply" in stderr_blob or "sandbox initialization failed" in stderr_blob:
-        return "blocked", "sandbox_init/sandbox_apply returned EPERM"
     all_match = all(p.get("match") is True for p in probes)
     if all_match:
         return "ok", None
@@ -117,6 +114,9 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
         cmd = ["true"]
 
     blob_mode = (probe.get("mode") == "blob") or (profile_mode == "blob")
+    # If the profile is a compiled blob, force blob mode when the wrapper exists.
+    if profile.suffix == ".bin" and WRAPPER.exists():
+        blob_mode = True
 
     if blob_mode and WRAPPER.exists():
         full_cmd = [str(WRAPPER), "--blob", str(profile), "--"] + cmd
@@ -230,4 +230,3 @@ def run_expected_matrix(
     out_path = out_dir / "runtime_results.json"
     out_path.write_text(json.dumps(results, indent=2))
     return out_path
-

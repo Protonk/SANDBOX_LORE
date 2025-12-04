@@ -66,3 +66,9 @@ Use this file for concise notes on progress, commands, and intermediate findings
 
 - Added `sys:airlock` and `sys:bsd` to runtime matrix using SBPL imports from `/System/Library/Sandbox/Profiles/*.sb`.
 - Harness uses `sandbox_reader` for reads. `airlock` mostly aligns (write to /tmp foo denied by OS perms vs expected allow; adjust expectations). `bsd` denies /etc/hosts read/write (expected mismatch). Will need to revise expectations or add minimal shims for these profiles.
+
+## Wrapper fix and SBPL mode (2025-12-04)
+
+- Fixed `book/api/golden_runner` wrapper path to `book/api/SBPL-wrapper/wrapper` and forced blob-mode for `.sb.bin`.
+- Updated the golden expected matrix to run bucket4/bucket5 via SBPL (mode `sbpl`) so `sandbox_reader` applies them without process-exec allowances; added a bucket5 entry to the golden matrix.
+- Reran `run_probes.py` with PYTHONPATH set. Results: `runtime:allow_all` and `runtime:metafilter_any` = ok; bucket4 = ok; bucket5 = partial (one mismatch); platform blobs still skipped/untouched.

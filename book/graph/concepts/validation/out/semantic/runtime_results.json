@@ -1,250 +1,334 @@
 {
-  "allow_all.sb": {
-    "status": "partial",
-    "profile": "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
+  "runtime:allow_all": {
+    "status": "ok",
+    "profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+    "base_profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
     "probes": [
       {
-        "name": "read_tmp",
+        "name": "read_/etc/hosts",
+        "expectation_id": "allow_all|file-read*|/etc/hosts",
+        "operation": "file-read*",
+        "path": "/etc/hosts",
         "expected": "allow",
         "actual": "allow",
         "match": true,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/sbpl_rt/read.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
-          "/tmp/sbpl_rt/read.txt"
-        ]
-      },
-      {
-        "name": "write_tmp",
-        "expected": "allow",
-        "actual": "allow",
-        "match": true,
-        "stdout": "{\"op\":\"write\",\"path\":\"/tmp/sbpl_rt/write.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "write",
-          "/tmp/sbpl_rt/write.txt"
-        ]
-      },
-      {
-        "name": "read_etc_hosts",
-        "expected": "allow",
-        "actual": "allow",
-        "match": true,
-        "stdout": "{\"op\":\"read\",\"path\":\"/etc/hosts\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "read",
+          "/bin/cat",
           "/etc/hosts"
-        ]
-      }
-    ],
-    "notes": "Runtime probes matched expectations; harness still provisional for semantic validation."
-  },
-  "deny_all.sb": {
-    "status": "partial",
-    "profile": "book/experiments/sbpl-graph-runtime/profiles/deny_all.sb",
-    "probes": [
-      {
-        "name": "read_tmp",
-        "expected": "deny",
-        "actual": "allow",
-        "match": false,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/sbpl_rt/read.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
+        ],
         "exit_code": 0,
+        "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+        "stderr": ""
+      },
+      {
+        "name": "read_/tmp/sbpl_rt/read.txt",
+        "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
+        "operation": "file-read*",
+        "path": "/tmp/sbpl_rt/read.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_all.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
+          "/bin/cat",
           "/tmp/sbpl_rt/read.txt"
-        ]
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-checks read\n",
+        "stderr": ""
       },
       {
-        "name": "write_tmp",
-        "expected": "deny",
-        "actual": "allow",
-        "match": false,
-        "stdout": "{\"op\":\"write\",\"path\":\"/tmp/sbpl_rt/write.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_all.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "write",
-          "/tmp/sbpl_rt/write.txt"
-        ]
-      }
-    ],
-    "notes": "Expected denies returned allow; runtime harness not trusted for strict semantics."
-  },
-  "deny_except_tmp.sb": {
-    "status": "partial",
-    "profile": "book/experiments/sbpl-graph-runtime/profiles/deny_except_tmp.sb",
-    "probes": [
-      {
-        "name": "read_allow",
+        "name": "write_/tmp/sbpl_rt/write.txt",
+        "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
+        "operation": "file-write*",
+        "path": "/tmp/sbpl_rt/write.txt",
         "expected": "allow",
         "actual": "allow",
         "match": true,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/allow/ok\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_except_tmp.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
-          "/tmp/allow/ok"
-        ]
-      },
-      {
-        "name": "write_allow",
-        "expected": "allow",
-        "actual": "allow",
-        "match": true,
-        "stdout": "{\"op\":\"write\",\"path\":\"/tmp/allow/ok\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
+          "/bin/sh",
+          "-c",
+          "echo runtime-check >> '/tmp/sbpl_rt/write.txt'"
+        ],
         "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_except_tmp.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "write",
-          "/tmp/allow/ok"
-        ]
-      },
-      {
-        "name": "read_deny",
-        "expected": "deny",
-        "actual": "allow",
-        "match": false,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/deny.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_except_tmp.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "read",
-          "/tmp/deny.txt"
-        ]
-      },
-      {
-        "name": "write_deny",
-        "expected": "deny",
-        "actual": "allow",
-        "match": false,
-        "stdout": "{\"op\":\"write\",\"path\":\"/tmp/deny.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
-        "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/deny_except_tmp.sb",
-          "--",
-          "book/api/file_probe/file_probe",
-          "write",
-          "/tmp/deny.txt"
-        ]
+        "stdout": "",
+        "stderr": ""
       }
-    ],
-    "notes": "Mixed allow/deny results; runtime harness provisional."
+    ]
   },
-  "metafilter_any.sb": {
-    "status": "partial",
-    "profile": "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+  "runtime:metafilter_any": {
+    "status": "ok",
+    "profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
+    "base_profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
     "probes": [
       {
         "name": "read_foo",
+        "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt",
+        "operation": "file-read*",
+        "path": "/tmp/foo.txt",
         "expected": "allow",
         "actual": "allow",
         "match": true,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/foo.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
+          "/bin/cat",
           "/tmp/foo.txt"
-        ]
+        ],
+        "exit_code": 0,
+        "stdout": "foo\n",
+        "stderr": ""
       },
       {
         "name": "read_bar",
+        "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt",
+        "operation": "file-read*",
+        "path": "/tmp/bar.txt",
         "expected": "allow",
         "actual": "allow",
         "match": true,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/bar.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
+          "/bin/cat",
           "/tmp/bar.txt"
-        ]
+        ],
+        "exit_code": 0,
+        "stdout": "bar\n",
+        "stderr": ""
       },
       {
-        "name": "read_baz",
-        "expected": "deny",
+        "name": "read_other",
+        "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt",
+        "operation": "file-read*",
+        "path": "/tmp/qux.txt",
+        "expected": "allow",
         "actual": "allow",
-        "match": false,
-        "stdout": "{\"op\":\"read\",\"path\":\"/tmp/baz.txt\",\"rc\":0,\"errno\":0}\n",
-        "stderr": "",
-        "exit_code": 0,
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--sbpl",
-          "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
           "--",
-          "book/api/file_probe/file_probe",
-          "read",
-          "/tmp/baz.txt"
-        ]
+          "/bin/cat",
+          "/tmp/qux.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "qux\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "bucket4:v1_read": {
+    "status": "ok",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+    "base_profile_path": "book/experiments/op-table-operation/sb/v1_read.sb",
+    "probes": [
+      {
+        "name": "read_/etc/hosts",
+        "expectation_id": "bucket4:v1_read|file-read*|/etc/hosts",
+        "operation": "file-read*",
+        "path": "/etc/hosts",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/etc/hosts"
+        ],
+        "exit_code": 0,
+        "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+        "stderr": ""
+      },
+      {
+        "name": "write_/etc/hosts",
+        "expectation_id": null,
+        "operation": "file-write*",
+        "path": "/etc/hosts",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 1
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
+          "/bin/sh",
+          "-c",
+          "echo runtime-check >> '/etc/hosts'"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "/bin/sh: /etc/hosts: Operation not permitted\n"
+      },
+      {
+        "name": "read_/tmp/foo",
+        "expectation_id": "bucket4:v1_read|file-read*|/tmp/foo",
+        "operation": "file-read*",
+        "path": "/tmp/foo",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/tmp/foo"
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-checks foo\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "bucket5:v11_read_subpath": {
+    "status": "partial",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+    "base_profile_path": "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+    "probes": [
+      {
+        "name": "read_/tmp/foo",
+        "expectation_id": "bucket5:v11_read_subpath|file-read*|/tmp/foo",
+        "operation": "file-read*",
+        "path": "/tmp/foo",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/tmp/foo"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "read_/tmp/bar",
+        "expectation_id": null,
+        "operation": "file-read*",
+        "path": "/tmp/bar",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/tmp/bar"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "write_/tmp/foo",
+        "expectation_id": null,
+        "operation": "file-write*",
+        "path": "/tmp/foo",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/sh",
+          "-c",
+          "echo runtime-check >> '/tmp/foo'"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
       }
     ],
-    "notes": "Metafilter probes partly matched; runtime harness provisional."
-  },
-  "param_path.sb": {
-    "status": "blocked",
-    "reason": "probe lacks param injection"
+    "notes": "runtime results diverged from expected allow/deny matrix"
   }
 }

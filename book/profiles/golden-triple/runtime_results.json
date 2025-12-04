@@ -1,8 +1,8 @@
 {
   "runtime:allow_all": {
     "status": "ok",
-    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
-    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
+    "profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+    "base_profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
     "probes": [
       {
         "name": "read_/etc/hosts",
@@ -18,8 +18,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
+          "--",
+          "/bin/cat",
           "/etc/hosts"
         ],
         "exit_code": 0,
@@ -40,8 +43,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
+          "--",
+          "/bin/cat",
           "/tmp/sbpl_rt/read.txt"
         ],
         "exit_code": 0,
@@ -62,8 +68,9 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/allow_all.sb.bin",
           "--",
           "/bin/sh",
           "-c",
@@ -77,8 +84,8 @@
   },
   "runtime:metafilter_any": {
     "status": "ok",
-    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
-    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+    "profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
+    "base_profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
     "probes": [
       {
         "name": "read_foo",
@@ -94,8 +101,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "--",
+          "/bin/cat",
           "/tmp/foo.txt"
         ],
         "exit_code": 0,
@@ -116,8 +126,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "--",
+          "/bin/cat",
           "/tmp/bar.txt"
         ],
         "exit_code": 0,
@@ -138,8 +151,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "--",
+          "/bin/cat",
           "/tmp/qux.txt"
         ],
         "exit_code": 0,
@@ -151,7 +167,7 @@
   "bucket4:v1_read": {
     "status": "ok",
     "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
-    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/v1_read.sb",
+    "base_profile_path": "book/experiments/op-table-operation/sb/v1_read.sb",
     "probes": [
       {
         "name": "read_/etc/hosts",
@@ -167,8 +183,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "sandbox-exec",
+          "-f",
           "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
+          "/bin/cat",
           "/etc/hosts"
         ],
         "exit_code": 0,
@@ -187,9 +206,10 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_runner",
+          "sandbox-exec",
+          "-f",
           "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
           "--",
           "/bin/sh",
@@ -198,7 +218,7 @@
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "/bin/sh: /etc/hosts: Permission denied\n"
+        "stderr": "/bin/sh: /etc/hosts: Operation not permitted\n"
       },
       {
         "name": "read_/tmp/foo",
@@ -214,8 +234,11 @@
         },
         "violation_summary": null,
         "command": [
-          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "sandbox-exec",
+          "-f",
           "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+          "--",
+          "/bin/cat",
           "/tmp/foo"
         ],
         "exit_code": 0,
@@ -223,5 +246,89 @@
         "stderr": ""
       }
     ]
+  },
+  "bucket5:v11_read_subpath": {
+    "status": "partial",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+    "base_profile_path": "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+    "probes": [
+      {
+        "name": "read_/tmp/foo",
+        "expectation_id": "bucket5:v11_read_subpath|file-read*|/tmp/foo",
+        "operation": "file-read*",
+        "path": "/tmp/foo",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/tmp/foo"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "read_/tmp/bar",
+        "expectation_id": null,
+        "operation": "file-read*",
+        "path": "/tmp/bar",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/cat",
+          "/tmp/bar"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "write_/tmp/foo",
+        "expectation_id": null,
+        "operation": "file-write*",
+        "path": "/tmp/foo",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6
+        },
+        "violation_summary": null,
+        "command": [
+          "sandbox-exec",
+          "-f",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+          "--",
+          "/bin/sh",
+          "-c",
+          "echo runtime-check >> '/tmp/foo'"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   }
 }

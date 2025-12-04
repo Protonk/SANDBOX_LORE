@@ -2,6 +2,7 @@
   "profiles": {
     "runtime:allow_all": {
       "blob": "book/profiles/golden-triple/allow_all.sb.bin",
+      "mode": "blob",
       "probes": [
         {
           "name": "read_/etc/hosts",
@@ -29,6 +30,7 @@
     },
     "runtime:metafilter_any": {
       "blob": "book/profiles/golden-triple/metafilter_any.sb.bin",
+      "mode": "blob",
       "probes": [
         {
           "name": "read_foo",
@@ -55,7 +57,8 @@
       "notes": "require-any literal foo/bar"
     },
     "bucket4:v1_read": {
-      "blob": "book/profiles/golden-triple/bucket4_v1_read.sb.bin",
+      "blob": "book/experiments/op-table-operation/sb/v1_read.sb",
+      "mode": "sbpl",
       "probes": [
         {
           "name": "read_/etc/hosts",
@@ -79,6 +82,32 @@
         }
       ],
       "notes": "Baseline bucket-4 profile: allow file-read* only."
+    },
+    "bucket5:v11_read_subpath": {
+      "blob": "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+      "mode": "sbpl",
+      "probes": [
+        {
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "bucket5:v11_read_subpath|file-read*|/tmp/foo"
+        },
+        {
+          "name": "read_/tmp/bar",
+          "operation": "file-read*",
+          "target": "/tmp/bar",
+          "expected": "deny"
+        },
+        {
+          "name": "write_/tmp/foo",
+          "operation": "file-write*",
+          "target": "/tmp/foo",
+          "expected": "deny"
+        }
+      ],
+      "notes": "Bucket-5 subpath profile: allow read under /tmp/foo; deny other reads/writes."
     }
   }
 }

@@ -49,14 +49,14 @@
     }
   ],
   "semantic-graph": {
-    "status": "blocked",
-    "notes": "sandbox_init/sandbox_exec return EPERM on this host; see runtime_results.json for apply failures captured via sandbox_runner/reader.",
+    "status": "partial",
+    "notes": "Wrapper-based runtime probes now succeed for allow_all, metafilter_any, and bucket4; bucket5 is partial; platform profiles still skipped.",
     "artifacts": [
       {
         "path": "book/graph/concepts/validation/out/semantic/runtime_results.json",
         "source": "book/experiments/runtime-checks/run_probes.py",
-        "status": "blocked",
-        "notes": "sandbox_init EPERM (all probes denied)"
+        "status": "partial",
+        "notes": "Wrapper + SBPL reader; allow_all/metafilter_any/bucket4 ok, bucket5 partial."
       },
       {
         "path": "book/graph/concepts/validation/out/semantic/metafilter.jsonl",

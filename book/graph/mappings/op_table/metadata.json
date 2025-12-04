@@ -6,8 +6,8 @@
     "op_table_vocab_alignment": "op_table_vocab_alignment.json"
   },
   "generated_at": {
-    "op_table_catalog_v1": "refreshed_with_ops_ids",
-    "op_table_operation_summary": "refreshed_with_196_ops_vocab"
+    "op_table_catalog_v1": "refreshed_with_ops_ids (runtime harness refresh 2025-12-04)",
+    "op_table_operation_summary": "refreshed_with_196_ops_vocab (runtime harness refresh 2025-12-04)"
   },
   "host": {
     "build": "23E224",
