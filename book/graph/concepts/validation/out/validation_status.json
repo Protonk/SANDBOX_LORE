@@ -1,94 +1,162 @@
 {
-  "generated_at": "2025-12-04T19:41:58Z",
+  "generated_at": "2025-12-04T20:22:22Z",
+  "schema": {
+    "job_id": "string",
+    "status": "ok|partial|brittle|blocked|skipped",
+    "host": "object",
+    "inputs": "list[str]",
+    "outputs": "list[str]",
+    "timestamp": "rfc3339",
+    "tags": "list[str]",
+    "notes": "string?",
+    "metrics": "object?",
+    "error": "string?"
+  },
   "jobs": [
     {
-      "id": "vocab:stub-harvest",
+      "job_id": "vocab:sonoma-14.4.1",
       "status": "ok",
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
+      "inputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib"
+      ],
+      "outputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/ops.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json"
+      ],
+      "timestamp": "2025-12-04T20:22:22Z",
       "tags": [
         "vocab",
-        "graph"
+        "host:sonoma-14.4.1",
+        "smoke",
+        "golden"
       ],
-      "inputs": [
-        "book/examples/extract_sbs/build/profiles/*.sb.bin",
-        "book/examples/sb/build/*.sb.bin"
-      ],
-      "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab/ops.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab/filters.json"
-      ],
-      "metadata": {}
+      "notes": "Verified libsandbox vocab against canonical mappings.",
+      "metrics": {
+        "ops": 196,
+        "filters": 93
+      }
     },
     {
-      "id": "graph:fixtures",
+      "job_id": "experiment:field2",
       "status": "ok",
-      "tags": [
-        "graph",
-        "fixtures"
-      ],
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
       "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/fixtures/fixtures.json"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/field2-filters/out/field2_inventory.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/field2-filters/out/unknown_nodes.json"
       ],
       "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/fixtures_status.json"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json"
       ],
-      "metadata": {
-        "generated_at": "2025-12-04T19:41:58Z",
-        "entries": [
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/examples/extract_sbs/build/profiles/airlock.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 7,
-            "op_count": 167,
-            "format_variant": "modern-heuristic",
-            "error": null
-          },
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/examples/extract_sbs/build/profiles/bsd.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 41,
-            "op_count": 28,
-            "format_variant": "modern-heuristic",
-            "error": null
-          },
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/examples/sb/build/sample.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 32,
-            "op_count": 9,
-            "format_variant": "modern-heuristic",
-            "error": null
-          },
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/build/v1_read.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 32,
-            "op_count": 5,
-            "format_variant": "modern-heuristic",
-            "error": null
-          },
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/build/v3_mach.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 30,
-            "op_count": 6,
-            "format_variant": "modern-heuristic",
-            "error": null
-          },
-          {
-            "path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/op-table-operation/sb/build/v11_read_subpath.sb.bin",
-            "exists": true,
-            "status": "ok",
-            "node_count": 30,
-            "op_count": 6,
-            "format_variant": "modern-heuristic",
-            "error": null
-          }
-        ]
+      "timestamp": "2025-12-04T20:22:22Z",
+      "tags": [
+        "experiment:field2",
+        "experiment",
+        "field2",
+        "smoke"
+      ],
+      "notes": "Normalized field2 inventory and unknown nodes into IR.",
+      "metrics": {
+        "profiles": 32,
+        "unknown_nodes": 0
+      }
+    },
+    {
+      "job_id": "experiment:runtime-checks",
+      "status": "ok",
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
+      "inputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_results.json"
+      ],
+      "outputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json"
+      ],
+      "timestamp": "2025-12-04T20:22:22Z",
+      "tags": [
+        "experiment:runtime-checks",
+        "experiment",
+        "runtime",
+        "smoke",
+        "golden"
+      ],
+      "notes": "Normalized runtime_results into shared IR.",
+      "metrics": {
+        "entries": 1
+      }
+    },
+    {
+      "job_id": "experiment:system-profile-digest",
+      "status": "ok",
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
+      "inputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/system-profile-digest/out/digests.json"
+      ],
+      "outputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
+      ],
+      "timestamp": "2025-12-04T20:22:22Z",
+      "tags": [
+        "experiment:system-profile-digest",
+        "experiment",
+        "system-profiles",
+        "golden"
+      ],
+      "notes": "Normalized system profile digests into IR.",
+      "metrics": {
+        "profiles": 3
+      }
+    },
+    {
+      "job_id": "validation:schema-check",
+      "status": "blocked",
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
+      "inputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/validation_status.json"
+      ],
+      "outputs": [],
+      "timestamp": "2025-12-04T20:22:22Z",
+      "tags": [
+        "meta",
+        "schema"
+      ],
+      "notes": "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/runtime/runtime_signatures.json missing host/build metadata; /Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/runtime/runtime_signatures.json missing source_jobs metadata",
+      "metrics": {
+        "checked": 4,
+        "errors": 2
       }
     }
   ]

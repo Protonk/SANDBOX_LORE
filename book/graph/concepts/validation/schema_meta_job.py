@@ -1,0 +1,106 @@
+"""
+Meta validation job to assert status files conform to the expected schema.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+import time
+
+from book.graph.concepts.validation import registry
+from book.graph.concepts.validation.registry import ValidationJob
+
+ROOT = Path(__file__).resolve().parents[4]
+STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "validation_status.json"
+EXPERIMENT_STATUS_DIR = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments"
+MAPPING_CHECKS = [
+    ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_signatures.json",
+    ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json",
+]
+META_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
+
+REQUIRED_FIELDS = {"job_id", "status", "host", "inputs", "outputs", "timestamp", "tags"}
+ALLOWED_STATUS = {"ok", "partial", "brittle", "blocked", "skipped"}
+
+
+def check_record(rec: dict, source: Path) -> None:
+    missing = REQUIRED_FIELDS - set(rec.keys())
+    if missing:
+        raise ValueError(f"{source} missing fields: {missing}")
+    if rec.get("status") not in ALLOWED_STATUS:
+        raise ValueError(f"{source} has invalid status: {rec.get('status')}")
+    if not isinstance(rec.get("inputs"), list) or not isinstance(rec.get("outputs"), list):
+        raise ValueError(f"{source} inputs/outputs must be lists")
+    if not isinstance(rec.get("tags"), list):
+        raise ValueError(f"{source} tags must be a list")
+
+
+def run_schema_job():
+    host = {}
+    if META_PATH.exists():
+        try:
+            host = json.loads(META_PATH.read_text()).get("os", {})
+        except Exception:
+            host = {}
+
+    sources = []
+    errors = []
+
+    if STATUS_PATH.exists():
+        data = json.loads(STATUS_PATH.read_text())
+        for rec in data.get("jobs", []):
+            try:
+                check_record(rec, STATUS_PATH)
+                sources.append(str(STATUS_PATH))
+            except Exception as exc:
+                errors.append(str(exc))
+
+    if EXPERIMENT_STATUS_DIR.exists():
+        for status_file in EXPERIMENT_STATUS_DIR.glob("*/status.json"):
+            try:
+                rec = json.loads(status_file.read_text())
+                check_record(rec, status_file)
+                sources.append(str(status_file))
+            except Exception as exc:
+                errors.append(str(exc))
+
+    # Mapping provenance checks
+    for mapping_path in MAPPING_CHECKS:
+        if not mapping_path.exists():
+            errors.append(f"missing mapping for provenance check: {mapping_path}")
+            continue
+        data = json.loads(mapping_path.read_text())
+        meta = data.get("metadata") or {}
+        if not meta.get("host") or not meta.get("host", {}).get("build"):
+            errors.append(f"{mapping_path} missing host/build metadata")
+        if not meta.get("source_jobs"):
+            errors.append(f"{mapping_path} missing source_jobs metadata")
+
+    status = "ok" if not errors else "blocked"
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    payload = {
+        "job_id": "validation:schema-check",
+        "generated_at": now,
+        "timestamp": now,
+        "status": status,
+        "host": host,
+        "inputs": [str(STATUS_PATH), str(EXPERIMENT_STATUS_DIR / '*/status.json')],
+        "outputs": [],
+        "notes": "; ".join(errors) if errors else "status files conform to schema",
+        "metrics": {"checked": len(sources), "errors": len(errors)},
+    }
+    return {**payload, "outputs": []}
+
+
+registry.register(
+    ValidationJob(
+        id="validation:schema-check",
+        inputs=[str(STATUS_PATH)],
+        outputs=[],
+        tags=["meta", "schema"],
+        description="Sanity-check validation status files for schema compliance.",
+        example_command="python -m book.graph.concepts.validation --tag meta",
+        runner=run_schema_job,
+    )
+)

@@ -24,6 +24,7 @@ class ValidationJob:
     outputs: List[str] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     description: str = ""
+    example_command: str = ""
 
     def expanded_inputs(self) -> List[Path]:
         """Expand input patterns relative to repo root."""
@@ -52,7 +53,12 @@ JOBS: List[ValidationJob] = []
 # Modules that self-register jobs on import.
 JOB_MODULES = [
     "book.graph.concepts.validation.vocab_extraction",
+    "book.graph.concepts.validation.vocab_harvest_job",
+    "book.graph.concepts.validation.field2_experiment_job",
+    "book.graph.concepts.validation.runtime_checks_experiment_job",
+    "book.graph.concepts.validation.system_profile_experiment_job",
     "book.graph.concepts.validation.fixtures_job",
+    "book.graph.concepts.validation.schema_meta_job",
 ]
 
 

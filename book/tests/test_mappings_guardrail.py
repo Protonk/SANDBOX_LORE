@@ -36,9 +36,10 @@ def test_tag_layouts_present():
 
 
 def test_field2_inventory_present():
-    inv_path = ROOT / "book" / "experiments" / "field2-filters" / "out" / "field2_inventory.json"
+    inv_path = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "field2" / "field2_ir.json"
     inv = load_json(inv_path)
-    assert "sys:bsd" in inv and "sys:sample" in inv, "expected system profiles in field2 inventory"
+    profiles = inv.get("profiles") or {}
+    assert "sys:bsd" in profiles and "sys:sample" in profiles, "expected system profiles in field2 inventory"
 
 
 def test_op_table_mappings_and_metadata():

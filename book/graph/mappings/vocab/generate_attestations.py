@@ -18,10 +18,14 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any, Dict, List
+import subprocess
+import sys
 
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OUT_PATH = REPO_ROOT / "book/graph/mappings/vocab/attestations.json"
+VALIDATION_STATUS = REPO_ROOT / "book/graph/concepts/validation/out/validation_status.json"
+VALIDATION_JOB_ID = "vocab:sonoma-14.4.1"
 
 
 def sha256(path: Path) -> str:
@@ -47,7 +51,28 @@ def blob_hashes(paths: List[Path]) -> List[Dict[str, Any]]:
     return rows
 
 
+def run_validation_job(job_id: str) -> None:
+    """Invoke the validation driver for the given job id and gate on status."""
+    cmd = [sys.executable, "-m", "book.graph.concepts.validation", "--id", job_id]
+    subprocess.check_call(cmd, cwd=REPO_ROOT)
+    if not VALIDATION_STATUS.exists():
+        raise SystemExit(f"validation status missing after running {cmd}")
+    status = json.loads(VALIDATION_STATUS.read_text())
+    jobs = {j.get("job_id") or j.get("id"): j for j in status.get("jobs", [])}
+    job = jobs.get(job_id)
+    if not job:
+        raise SystemExit(f"validation job {job_id} missing from validation_status.json")
+    if job.get("status") != "ok":
+        raise SystemExit(f"validation job {job_id} not ok: {job.get('status')}")
+    # Simple freshness check: status file must be newer than libsandbox slice.
+    lib_path = REPO_ROOT / "book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib"
+    if lib_path.exists():
+        if VALIDATION_STATUS.stat().st_mtime < lib_path.stat().st_mtime:
+            raise SystemExit(f"validation status older than libsandbox slice for {job_id}")
+
+
 def main() -> None:
+    run_validation_job(VALIDATION_JOB_ID)
     meta = load_json(REPO_ROOT / "book/graph/concepts/validation/out/metadata.json")
     ops = load_json(REPO_ROOT / "book/graph/mappings/vocab/ops.json")
     filters = load_json(REPO_ROOT / "book/graph/mappings/vocab/filters.json")

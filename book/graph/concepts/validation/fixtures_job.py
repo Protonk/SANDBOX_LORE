@@ -8,7 +8,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
-import traceback
 import time
 
 # Ensure repo root on sys.path for book.* imports.
@@ -22,35 +21,58 @@ from book.graph.concepts.validation.registry import ValidationJob
 
 FIXTURES_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "fixtures" / "fixtures.json"
 OUT_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "fixtures_status.json"
+META_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
+
+
+def load_host():
+    if META_PATH.exists():
+        try:
+            return json.loads(META_PATH.read_text()).get("os", {})
+        except Exception:
+            return {}
+    return {}
 
 
 def run_fixtures_job():
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     status = "ok"
     entries = []
+    host = load_host()
     if not FIXTURES_PATH.exists():
         status = "blocked"
+        now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         payload = {
-            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "job_id": "graph:fixtures",
+            "generated_at": now,
+            "timestamp": now,
             "status": status,
+            "host": host,
             "error": f"missing fixtures file: {FIXTURES_PATH}",
             "entries": [],
+            "inputs": [str(FIXTURES_PATH)],
+            "outputs": [str(OUT_PATH)],
         }
         OUT_PATH.write_text(json.dumps(payload, indent=2))
-        return payload
+        return {"status": status, "outputs": [str(OUT_PATH)], "notes": payload.get("error")}
 
     try:
         fixtures = json.loads(FIXTURES_PATH.read_text()).get("blobs", [])
     except Exception as exc:  # pragma: no cover
         status = "blocked"
+        now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         payload = {
-            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "job_id": "graph:fixtures",
+            "generated_at": now,
+            "timestamp": now,
             "status": status,
+            "host": host,
             "error": f"failed to parse fixtures: {exc}",
             "entries": [],
+            "inputs": [str(FIXTURES_PATH)],
+            "outputs": [str(OUT_PATH)],
         }
         OUT_PATH.write_text(json.dumps(payload, indent=2))
-        return payload
+        return {"status": status, "outputs": [str(OUT_PATH)], "notes": payload.get("error")}
 
     for entry in fixtures:
         path = ROOT / entry["path"]
@@ -79,13 +101,19 @@ def run_fixtures_job():
                 status = "partial"
         entries.append(rec)
 
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     payload = {
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "job_id": "graph:fixtures",
+        "generated_at": now,
+        "timestamp": now,
         "status": status,
+        "host": host,
+        "inputs": [str(FIXTURES_PATH)],
+        "outputs": [str(OUT_PATH)],
         "entries": entries,
     }
     OUT_PATH.write_text(json.dumps(payload, indent=2))
-    return payload
+    return {"status": status, "outputs": [str(OUT_PATH)], "metrics": {"entries": len(entries)}, "host": host}
 
 
 registry.register(
@@ -95,6 +123,7 @@ registry.register(
         outputs=[str(OUT_PATH)],
         tags=["graph", "fixtures"],
         description="Decode curated fixtures to ensure decoder stays in sync with known blobs.",
+        example_command="python -m book.graph.concepts.validation --id graph:fixtures",
         runner=run_fixtures_job,
     )
 )

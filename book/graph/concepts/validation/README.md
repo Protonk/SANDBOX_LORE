@@ -22,7 +22,18 @@ Python validation driver (single entrypoint):
 - List jobs: `python -m book.graph.concepts.validation --list`
 - Run everything: `python -m book.graph.concepts.validation --all`
 - Run by tag/experiment: `python -m book.graph.concepts.validation --tag vocab` or `--experiment field2`
+- Describe a job: `python -m book.graph.concepts.validation --describe <job_id>`
 Jobs are registered in `registry.py`; add new ones next to the decode/ingestion logic they exercise.
+
+Status schema (applies to `validation_status.json` and per-experiment status files):
+- `job_id` (string), `status` (`ok|partial|brittle|blocked|skipped`), `host` (object), `inputs` (list of paths), `outputs` (list of paths), `timestamp` (RFC3339), `tags` (list of strings), optional `notes` and `metrics`.
+- Meta check: `python -m book.graph.concepts.validation --tag meta` runs `validation:schema-check` to assert status files follow this schema.
+
+Smoke tag:
+- `python -m book.graph.concepts.validation --tag smoke` runs the core fast jobs (vocab:sonoma-14.4.1 + experiment:field2 + experiment:runtime-checks) as a default pre-promotion gate. `tag:golden` marks canonical jobs.
+
+Promotion contract:
+- Mapping generators must: (1) run the validation driver for relevant tags/IDs, (2) refuse to proceed on non-`ok` jobs, (3) read normalized validation IR only (not raw experiment out/), and (4) carry host/provenance (`host`, `source_jobs`) into outputs. See `book/graph/mappings/run_promotion.py` and `generate_runtime_signatures.py` / `generate_digests_from_ir.py` for the pattern.
 
 Keep Swift-side validation non-fatal: extend the report rather than blocking generation when checks fail.
 

@@ -3,8 +3,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RESULTS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "runtime_results.json"
-MATRIX = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "expected_matrix.json"
+RUNTIME_IR = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "runtime-checks" / "runtime_results.normalized.json"
 GOLDEN = {
     "bucket4:v1_read",
     "bucket5:v11_read_subpath",
@@ -15,9 +14,10 @@ GOLDEN = {
 }
 
 
-def _load_results():
-    assert RESULTS.exists(), "missing runtime_results.json"
-    return json.loads(RESULTS.read_text())
+def _load_ir():
+    assert RUNTIME_IR.exists(), "missing normalized runtime IR"
+    data = json.loads(RUNTIME_IR.read_text())
+    return data.get("results") or {}, (data.get("expected_matrix") or {}).get("profiles", {})
 
 
 def _probe_map(entry):
@@ -25,15 +25,13 @@ def _probe_map(entry):
 
 
 def test_golden_presence():
-    results = _load_results()
-    assert MATRIX.exists(), "missing expected_matrix.json"
-    matrix = json.loads(MATRIX.read_text()).get("profiles") or {}
+    results, matrix = _load_ir()
     assert GOLDEN.issubset(matrix.keys()), "golden profiles missing from expected_matrix"
     assert GOLDEN.issubset(results.keys()), "golden profiles missing from runtime_results"
 
 
 def test_bucket_profiles_allow_deny():
-    data = _load_results()
+    data, _ = _load_ir()
     bucket4 = _probe_map(data["bucket4:v1_read"])
     assert bucket4["read_/etc/hosts"]["actual"] == "allow"
     assert bucket4["write_/etc/hosts"]["actual"] == "deny"
@@ -46,14 +44,14 @@ def test_bucket_profiles_allow_deny():
 
 
 def test_sys_bsd_expected_denies():
-    data = _load_results()
+    data, _ = _load_ir()
     bsd = _probe_map(data["sys:bsd"])
     for name in ["read_/etc/hosts", "write_/etc/hosts", "read_/tmp/foo", "write_/tmp/foo"]:
         assert bsd[name]["actual"] == "deny"
 
 
 def test_sys_airlock_expected_fail():
-    data = _load_results()
+    data, _ = _load_ir()
     airlock = data["sys:airlock"]
     # All probes should fail due to sandbox_init EPERM
     assert airlock["status"] in {"ok", "blocked", "partial"}
@@ -63,7 +61,7 @@ def test_sys_airlock_expected_fail():
 
 
 def test_metafilter_any_outcomes():
-    data = _load_results()
+    data, _ = _load_ir()
     meta = _probe_map(data["runtime:metafilter_any"])
     assert meta["read_foo"]["actual"] == "allow"
     assert meta["read_bar"]["actual"] == "allow"
@@ -73,7 +71,7 @@ def test_metafilter_any_outcomes():
 
 
 def test_strict_profile_outcomes():
-    data = _load_results()
+    data, _ = _load_ir()
     strict = _probe_map(data["runtime:strict_1"])
     assert strict["read_ok"]["actual"] == "allow"
     assert strict["write_ok"]["actual"] == "allow"

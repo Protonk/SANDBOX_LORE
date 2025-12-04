@@ -43,6 +43,11 @@ This loop repeats. Do not treat “one run” as complete. Prefer several small 
 * Use canonical vocab and concepts  
   Use only Operation/Filter vocabularies from `book/graph/mappings/vocab/{ops,filters}.json` and the project’s concept inventory. Do not invent new op/filter names or ad‑hoc jargon.
 
+* Use the validation driver  
+  When your experiment already has a registered selector, run it instead of bespoke scripts (e.g., `python -m book.graph.concepts.validation --experiment field2` for `book/experiments/field2-filters`). For host vocab reuse, prefer `--tag vocab`/`--id vocab:sonoma-14.4.1` and consume the JSONs under `book/graph/mappings/vocab/`.
+  Default smoke check before promotion: `python -m book.graph.concepts.validation --tag smoke` (runs vocab + field2 + runtime-checks).
+  If you need to know what a job does, `--describe <job_id>` shows inputs/outputs and the intent; prefer `tag:golden` jobs for canonical IR.
+
 * Keep experiments neutral and reproducible  
   Experiments should keep a stable layout, clear inputs and outputs, host/build tagging, and explicit links to concepts. Use Notes for process and exploration; keep Plans and Reports focused on what the experiment shows, not on your personality or preferences.
 

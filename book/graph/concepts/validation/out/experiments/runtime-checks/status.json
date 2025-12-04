@@ -1,0 +1,29 @@
+{
+  "job_id": "experiment:runtime-checks",
+  "generated_at": "2025-12-04T20:22:22Z",
+  "timestamp": "2025-12-04T20:22:22Z",
+  "status": "ok",
+  "host": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "machine": "arm64"
+  },
+  "inputs": [
+    "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_results.json"
+  ],
+  "outputs": [
+    "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
+  ],
+  "metrics": {
+    "entries": 1
+  },
+  "notes": "Normalized runtime_results into shared IR.",
+  "tags": [
+    "experiment:runtime-checks",
+    "experiment",
+    "runtime",
+    "smoke"
+  ]
+}

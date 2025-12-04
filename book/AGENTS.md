@@ -23,3 +23,10 @@ When in doubt, start with the AGENTS/README in the relevant subdirectory.
 - Use the stable mappings under `book/graph/mappings/` (vocab, op-table, tag layouts, system digests, runtime) as the backbone for explanations and code.
 - Experiments publish stable outputs into `book/graph/mappings/` only when they are reusable and versioned; scratch lives in `book/experiments/*/out`.
 - Keep `Report.md`/`Notes.md` up to date when touching experiments; keep chapter text aligned with the current mappings and concept inventory.
+- For validations, prefer the driver: `python -m book.graph.concepts.validation --list|--all|--tag <tag>`. For vocab on this host, run `--tag vocab` (or `--id vocab:sonoma-14.4.1`) and consume `book/graph/mappings/vocab/*.json`. For field2 work, run `--experiment field2` to refresh/verify `book/experiments/field2-filters` outputs before promotion. For a quick pre-promotion sweep, run `--tag smoke` (vocab + field2 + runtime-checks).
+- Prefer `tag:golden` jobs when you need canonical IR; use `--describe <job_id>` if you’re unsure what a job does or which inputs/outputs it covers.
+
+Routing cheat-sheet:
+- Runtime behavior: `python -m book.graph.concepts.validation --tag smoke` → consume `book/graph/mappings/runtime/runtime_signatures.json`.
+- Vocab: `python -m book.graph.concepts.validation --tag vocab` (or smoke) → consume `book/graph/mappings/vocab/{ops,filters}.json`.
+- System profiles: `python -m book.graph.concepts.validation --tag system-profiles` → consume `book/graph/mappings/system_profiles/digests.json`.

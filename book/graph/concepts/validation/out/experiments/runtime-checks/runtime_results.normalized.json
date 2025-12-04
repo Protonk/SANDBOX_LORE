@@ -1,0 +1,863 @@
+{
+  "host": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "machine": "arm64"
+  },
+  "results": {
+    "bucket4:v1_read": {
+      "base_profile_path": "book/experiments/op-table-operation/sb/v1_read.sb",
+      "probes": [
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 0,
+          "expectation_id": null,
+          "expected": "allow",
+          "match": true,
+          "name": "read_/etc/hosts",
+          "operation": "file-read*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/etc/hosts",
+          "operation": "file-write*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 0,
+          "expectation_id": null,
+          "expected": "allow",
+          "match": true,
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "runtime-checks foo\n",
+          "violation_summary": null
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+      "status": "ok"
+    },
+    "bucket5:v11_read_subpath": {
+      "base_profile_path": "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+      "probes": [
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 0,
+          "expectation_id": null,
+          "expected": "allow",
+          "match": true,
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "runtime-checks foo\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+            "/tmp/bar"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_/tmp/bar",
+          "operation": "file-read*",
+          "path": "/tmp/bar",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/tmp/foo",
+          "operation": "file-write*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+      "status": "ok"
+    },
+    "runtime:allow_all": {
+      "base_profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+      "notes": "runtime results diverged from expected allow/deny matrix",
+      "probes": [
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "--",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "/etc/hosts"
+          ],
+          "exit_code": 1,
+          "expectation_id": "allow_all|file-read*|/etc/hosts",
+          "expected": "allow",
+          "match": false,
+          "name": "read_/etc/hosts",
+          "operation": "file-read*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n",
+          "stdout": "",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "--",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "/tmp/sbpl_rt/read.txt"
+          ],
+          "exit_code": 1,
+          "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
+          "expected": "allow",
+          "match": false,
+          "name": "read_/tmp/sbpl_rt/read.txt",
+          "operation": "file-read*",
+          "path": "/tmp/sbpl_rt/read.txt",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n",
+          "stdout": "",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "--",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "book/profiles/golden-triple/allow_all.sb.bin",
+            "/tmp/sbpl_rt/write.txt"
+          ],
+          "exit_code": 1,
+          "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
+          "expected": "allow",
+          "match": false,
+          "name": "write_/tmp/sbpl_rt/write.txt",
+          "operation": "file-write*",
+          "path": "/tmp/sbpl_rt/write.txt",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n",
+          "stdout": "",
+          "violation_summary": null
+        }
+      ],
+      "profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+      "status": "partial"
+    },
+    "runtime:metafilter_any": {
+      "base_profile_path": "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+      "probes": [
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+            "/tmp/foo.txt"
+          ],
+          "exit_code": 0,
+          "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt",
+          "expected": "allow",
+          "match": true,
+          "name": "read_foo",
+          "operation": "file-read*",
+          "path": "/tmp/foo.txt",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "foo\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+            "/tmp/bar.txt"
+          ],
+          "exit_code": 0,
+          "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt",
+          "expected": "allow",
+          "match": true,
+          "name": "read_bar",
+          "operation": "file-read*",
+          "path": "/tmp/bar.txt",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "bar\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+            "/tmp/qux.txt"
+          ],
+          "exit_code": 0,
+          "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt",
+          "expected": "allow",
+          "match": true,
+          "name": "read_other",
+          "operation": "file-read*",
+          "path": "/tmp/qux.txt",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "qux\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+            "/tmp/baz.txt"
+          ],
+          "exit_code": 2,
+          "expectation_id": "metafilter_any|file-read*|/tmp/baz.txt",
+          "expected": "deny",
+          "match": true,
+          "name": "read_baz",
+          "operation": "file-read*",
+          "path": "/tmp/baz.txt",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+            "/tmp/baz.txt"
+          ],
+          "exit_code": 2,
+          "expectation_id": "metafilter_any|file-write*|/tmp/baz.txt",
+          "expected": "deny",
+          "match": true,
+          "name": "write_baz",
+          "operation": "file-write*",
+          "path": "/tmp/baz.txt",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+      "status": "ok"
+    },
+    "runtime:strict_1": {
+      "base_profile_path": "book/experiments/runtime-checks/strict_1.sb",
+      "notes": "runtime results aligned with expected allow/deny matrix",
+      "probes": [
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+            "/private/tmp/strict_ok/allow.txt"
+          ],
+          "exit_code": 0,
+          "expectation_id": null,
+          "expected": "allow",
+          "match": true,
+          "name": "read_ok",
+          "operation": "file-read*",
+          "path": "/private/tmp/strict_ok/allow.txt",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "strict allow\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "allow",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+            "/private/tmp/strict_ok/allow.txt"
+          ],
+          "exit_code": 0,
+          "expectation_id": null,
+          "expected": "allow",
+          "match": true,
+          "name": "write_ok",
+          "operation": "file-write*",
+          "path": "/private/tmp/strict_ok/allow.txt",
+          "runtime_result": {
+            "errno": null,
+            "status": "success"
+          },
+          "stderr": "",
+          "stdout": "write ok\n",
+          "violation_summary": null
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_hosts",
+          "operation": "file-read*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_hosts",
+          "operation": "file-write*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+      "status": "ok"
+    },
+    "sys:airlock": {
+      "base_profile_path": "/System/Library/Sandbox/Profiles/airlock.sb",
+      "probes": [
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 1,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_/etc/hosts",
+          "operation": "file-read*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 1,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/etc/hosts",
+          "operation": "file-write*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 1,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 1,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/tmp/foo",
+          "operation": "file-write*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": 1,
+            "status": "errno"
+          },
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb",
+      "status": "ok"
+    },
+    "sys:bsd": {
+      "base_profile_path": "/System/Library/Sandbox/Profiles/bsd.sb",
+      "probes": [
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_/etc/hosts",
+          "operation": "file-read*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
+            "/etc/hosts"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/etc/hosts",
+          "operation": "file-write*",
+          "path": "/etc/hosts",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        },
+        {
+          "actual": "deny",
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_writer",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
+            "/tmp/foo"
+          ],
+          "exit_code": 2,
+          "expectation_id": null,
+          "expected": "deny",
+          "match": true,
+          "name": "write_/tmp/foo",
+          "operation": "file-write*",
+          "path": "/tmp/foo",
+          "runtime_result": {
+            "errno": 2,
+            "status": "errno"
+          },
+          "stderr": "open target: Operation not permitted\n",
+          "stdout": "",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
+      "status": "ok"
+    }
+  },
+  "expected_matrix": {
+    "profiles": {
+      "bucket4:v1_read": {
+        "blob": "book/experiments/op-table-operation/sb/v1_read.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_/etc/hosts",
+            "operation": "file-read*",
+            "target": "/etc/hosts",
+            "expected": "allow"
+          },
+          {
+            "name": "write_/etc/hosts",
+            "operation": "file-write*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "read_/tmp/foo",
+            "operation": "file-read*",
+            "target": "/tmp/foo",
+            "expected": "allow"
+          }
+        ],
+        "notes": "Baseline bucket-4 profile: allow file-read* only."
+      },
+      "bucket5:v11_read_subpath": {
+        "blob": "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_/tmp/foo",
+            "operation": "file-read*",
+            "target": "/tmp/foo",
+            "expected": "allow"
+          },
+          {
+            "name": "read_/tmp/bar",
+            "operation": "file-read*",
+            "target": "/tmp/bar",
+            "expected": "deny"
+          },
+          {
+            "name": "write_/tmp/foo",
+            "operation": "file-write*",
+            "target": "/tmp/foo",
+            "expected": "deny"
+          }
+        ],
+        "notes": "Bucket-5 subpath profile: allow read under /tmp/foo; deny other reads/writes."
+      },
+      "runtime:allow_all": {
+        "blob": "book/profiles/golden-triple/allow_all.sb.bin",
+        "mode": "blob",
+        "probes": [
+          {
+            "name": "read_/etc/hosts",
+            "operation": "file-read*",
+            "target": "/etc/hosts",
+            "expected": "allow",
+            "expectation_id": "allow_all|file-read*|/etc/hosts"
+          },
+          {
+            "name": "read_/tmp/sbpl_rt/read.txt",
+            "operation": "file-read*",
+            "target": "/tmp/sbpl_rt/read.txt",
+            "expected": "allow",
+            "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt"
+          },
+          {
+            "name": "write_/tmp/sbpl_rt/write.txt",
+            "operation": "file-write*",
+            "target": "/tmp/sbpl_rt/write.txt",
+            "expected": "allow",
+            "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt"
+          }
+        ],
+        "notes": "allow default; should allow all file read/write"
+      },
+      "runtime:metafilter_any": {
+        "blob": "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_foo",
+            "operation": "file-read*",
+            "target": "/tmp/foo.txt",
+            "expected": "allow",
+            "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt"
+          },
+          {
+            "name": "read_bar",
+            "operation": "file-read*",
+            "target": "/tmp/bar.txt",
+            "expected": "allow",
+            "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt"
+          },
+          {
+            "name": "read_other",
+            "operation": "file-read*",
+            "target": "/tmp/qux.txt",
+            "expected": "allow",
+            "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt"
+          },
+          {
+            "name": "read_baz",
+            "operation": "file-read*",
+            "target": "/tmp/baz.txt",
+            "expected": "deny",
+            "expectation_id": "metafilter_any|file-read*|/tmp/baz.txt"
+          },
+          {
+            "name": "write_baz",
+            "operation": "file-write*",
+            "target": "/tmp/baz.txt",
+            "expected": "deny",
+            "expectation_id": "metafilter_any|file-write*|/tmp/baz.txt"
+          }
+        ],
+        "notes": "require-any literal foo/bar; deny baz."
+      },
+      "sys:bsd": {
+        "blob": "/System/Library/Sandbox/Profiles/bsd.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_/etc/hosts",
+            "operation": "file-read*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "write_/etc/hosts",
+            "operation": "file-write*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "read_/tmp/foo",
+            "operation": "file-read*",
+            "target": "/tmp/foo",
+            "expected": "deny"
+          },
+          {
+            "name": "write_/tmp/foo",
+            "operation": "file-write*",
+            "target": "/tmp/foo",
+            "expected": "deny"
+          }
+        ],
+        "notes": "System bsd profile via SBPL (no platform blob entitlements); observed denies on this host."
+      },
+      "sys:airlock": {
+        "blob": "/System/Library/Sandbox/Profiles/airlock.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_/etc/hosts",
+            "operation": "file-read*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "write_/etc/hosts",
+            "operation": "file-write*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "read_/tmp/foo",
+            "operation": "file-read*",
+            "target": "/tmp/foo",
+            "expected": "deny"
+          },
+          {
+            "name": "write_/tmp/foo",
+            "operation": "file-write*",
+            "target": "/tmp/foo",
+            "expected": "deny"
+          }
+        ],
+        "notes": "Platform-only profile expected to fail apply on this host."
+      },
+      "runtime:strict_1": {
+        "blob": "book/experiments/runtime-checks/strict_1.sb",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "name": "read_ok",
+            "operation": "file-read*",
+            "target": "/private/tmp/strict_ok/allow.txt",
+            "expected": "allow"
+          },
+          {
+            "name": "write_ok",
+            "operation": "file-write*",
+            "target": "/private/tmp/strict_ok/allow.txt",
+            "expected": "allow"
+          },
+          {
+            "name": "read_hosts",
+            "operation": "file-read*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          },
+          {
+            "name": "write_hosts",
+            "operation": "file-write*",
+            "target": "/etc/hosts",
+            "expected": "deny"
+          }
+        ],
+        "notes": "Strict deny-default profile with minimal allow-set for helper liveness."
+      }
+    }
+  }
+}
