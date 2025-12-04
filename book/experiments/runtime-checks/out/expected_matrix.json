@@ -182,8 +182,36 @@
       ],
       "notes": "Platform-only profile expected to fail apply on this host."
     },
-    "runtime:strict_todo": {
-      "notes": "TODO: strict profile placeholder (deny default, minimal allow-set); not wired into harness yet"
+    "runtime:strict_1": {
+      "blob": "book/experiments/runtime-checks/strict_1.sb",
+      "mode": "sbpl",
+      "probes": [
+        {
+          "name": "read_ok",
+          "operation": "file-read*",
+          "target": "/private/tmp/strict_ok/allow.txt",
+          "expected": "allow"
+        },
+        {
+          "name": "write_ok",
+          "operation": "file-write*",
+          "target": "/private/tmp/strict_ok/allow.txt",
+          "expected": "allow"
+        },
+        {
+          "name": "read_hosts",
+          "operation": "file-read*",
+          "target": "/etc/hosts",
+          "expected": "deny"
+        },
+        {
+          "name": "write_hosts",
+          "operation": "file-write*",
+          "target": "/etc/hosts",
+          "expected": "deny"
+        }
+      ],
+      "notes": "Strict deny-default profile with minimal allow-set for helper liveness."
     }
   }
 }

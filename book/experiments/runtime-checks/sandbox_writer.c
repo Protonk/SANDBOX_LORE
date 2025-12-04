@@ -1,0 +1,67 @@
+#include <sandbox.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+
+/*
+ * sandbox_writer: apply SBPL profile from file via sandbox_init, then append
+ * a line to the target path. Avoids execing external binaries.
+ *
+ * Usage: sandbox_writer <profile.sb> <path>
+ */
+static void usage(const char *prog) {
+    fprintf(stderr, "Usage: %s <profile.sb> <path>\n", prog);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        usage(argv[0]);
+        return 64; /* EX_USAGE */
+    }
+    const char *profile_path = argv[1];
+    const char *target = argv[2];
+
+    FILE *fp = fopen(profile_path, "r");
+    if (!fp) {
+        perror("open profile");
+        return 66; /* EX_NOINPUT */
+    }
+    fseek(fp, 0, SEEK_END);
+    long len = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char *buf = (char *)malloc((size_t)len + 1);
+    if (!buf) {
+        fprintf(stderr, "oom\n");
+        fclose(fp);
+        return 70; /* EX_SOFTWARE */
+    }
+    size_t nread = fread(buf, 1, (size_t)len, fp);
+    fclose(fp);
+    buf[nread] = '\0';
+
+    char *err = NULL;
+    int rc = sandbox_init(buf, 0, &err);
+    free(buf);
+    if (rc != 0) {
+        fprintf(stderr, "sandbox_init failed: %s\n", err ? err : "unknown");
+        if (err) sandbox_free_error(err);
+        return 1;
+    }
+
+    int fd = open(target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd < 0) {
+        perror("open target");
+        return 2;
+    }
+    const char *line = "runtime-check\n";
+    ssize_t nw = write(fd, line, strlen(line));
+    if (nw < 0) {
+        perror("write");
+        close(fd);
+        return 3;
+    }
+    close(fd);
+    return 0;
+}

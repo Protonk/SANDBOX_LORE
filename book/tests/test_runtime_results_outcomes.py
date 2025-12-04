@@ -35,6 +35,16 @@ def test_sys_bsd_expected_denies():
         assert bsd[name]["actual"] == "deny"
 
 
+def test_sys_airlock_expected_fail():
+    data = _load_results()
+    airlock = data["sys:airlock"]
+    # All probes should fail due to sandbox_init EPERM
+    assert airlock["status"] in {"ok", "blocked", "partial"}
+    for probe in airlock.get("probes") or []:
+        assert probe["violation_summary"] == "EPERM"
+        assert probe["actual"] == "deny"
+
+
 def test_metafilter_any_outcomes():
     data = _load_results()
     meta = _probe_map(data["runtime:metafilter_any"])
@@ -43,3 +53,12 @@ def test_metafilter_any_outcomes():
     assert meta["read_other"]["actual"] == "allow"
     assert meta["read_baz"]["actual"] == "deny"
     assert meta["write_baz"]["actual"] == "deny"
+
+
+def test_strict_profile_outcomes():
+    data = _load_results()
+    strict = _probe_map(data["runtime:strict_1"])
+    assert strict["read_ok"]["actual"] == "allow"
+    assert strict["write_ok"]["actual"] == "allow"
+    assert strict["read_hosts"]["actual"] == "deny"
+    assert strict["write_hosts"]["actual"] == "deny"

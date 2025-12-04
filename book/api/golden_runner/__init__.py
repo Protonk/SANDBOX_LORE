@@ -19,6 +19,7 @@ DEFAULT_OUT = Path(__file__).resolve().parents[2] / "profiles" / "golden-triple"
 DEFAULT_RUNTIME_PROFILE_DIR = DEFAULT_OUT / "runtime_profiles"
 RUNNER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_runner"
 READER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_reader"
+WRITER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_writer"
 WRAPPER = Path(__file__).resolve().parents[2] / "api" / "SBPL-wrapper" / "wrapper"
 
 CAT = "/bin/cat"
@@ -54,6 +55,9 @@ def ensure_tmp_files(fixture_root: Path = Path("/tmp")) -> None:
     (rt / "write.txt").write_text("runtime-checks write\n")
     (rt / "param_root").mkdir(parents=True, exist_ok=True)
     (rt / "param_root" / "foo").write_text("runtime-checks param_root foo\n")
+    strict_dir = Path("/private/tmp/strict_ok")
+    strict_dir.mkdir(parents=True, exist_ok=True)
+    (strict_dir / "allow.txt").write_text("strict allow\n")
 
 
 def classify_status(probes: List[Dict[str, Any]], skipped_reason: str | None = None) -> tuple[str, str | None]:
@@ -100,6 +104,7 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
     op = probe.get("operation")
     cmd: List[str]
     reader_mode = False
+    writer_mode = False
     if op == "file-read*":
         if READER.exists():
             cmd = [str(READER), str(profile), target]
@@ -107,7 +112,11 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
         else:
             cmd = [CAT, target]
     elif op == "file-write*":
-        cmd = [SH, "-c", f"echo runtime-check >> '{target}'"]
+        if WRITER.exists():
+            cmd = [str(WRITER), str(profile), target]
+            writer_mode = True
+        else:
+            cmd = [SH, "-c", f"echo runtime-check >> '{target}'"]
     elif op == "process-exec":
         cmd = ["true"]
     else:
@@ -121,6 +130,8 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
     if blob_mode and WRAPPER.exists():
         full_cmd = [str(WRAPPER), "--blob", str(profile), "--"] + cmd
     elif reader_mode:
+        full_cmd = cmd
+    elif writer_mode:
         full_cmd = cmd
     elif RUNNER.exists():
         full_cmd = [str(RUNNER), str(profile), "--"] + cmd

@@ -83,3 +83,5 @@ Use this file for concise notes on progress, commands, and intermediate findings
 - Baseline controls: `sys:bsd` is intentionally treated as a deny-only negative control (applies via SBPL, denies all probed paths); `sys:airlock` is expected to return `EPERM` on apply on this host (platform-only profile).
 - Added `runtime:metafilter_any` as a positive case in the expected matrix with allow foo/bar/qux and deny baz (including /private/tmp alias). Refreshed runtime_results: status ok with expected allow/deny mix.
 - Added placeholder `runtime:strict_todo` entry in expected_matrix (deny-default profile to be designed later); not wired into the harness yet.
+- Added a minimal strict profile `runtime:strict_1` (deny default; allow read/write only under `/private/tmp/strict_ok`; explicit deny for `/etc/hosts`). Added fixtures in `ensure_tmp_files`, wired it into the expected matrix and harness; runtime_results shows allow on strict_ok read/write and deny on hosts. Guardrail updated to assert these outcomes.
+- Added `sandbox_writer` helper to avoid exec-based writes; `run_probe` now prefers it for file-write probes.
