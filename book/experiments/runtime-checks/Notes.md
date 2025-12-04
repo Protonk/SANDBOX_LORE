@@ -72,3 +72,14 @@ Use this file for concise notes on progress, commands, and intermediate findings
 - Fixed `book/api/golden_runner` wrapper path to `book/api/SBPL-wrapper/wrapper` and forced blob-mode for `.sb.bin`.
 - Updated the golden expected matrix to run bucket4/bucket5 via SBPL (mode `sbpl`) so `sandbox_reader` applies them without process-exec allowances; added a bucket5 entry to the golden matrix.
 - Reran `run_probes.py` with PYTHONPATH set. Results: `runtime:allow_all` and `runtime:metafilter_any` = ok; bucket4 = ok; bucket5 = partial (one mismatch); platform blobs still skipped/untouched.
+
+## Harness alignment and system profiles
+
+- Fixed `book/api/golden_runner` to point `RUNNER`/`READER` at `book/experiments/runtime-checks` (parents offset was wrong, so probes were falling back to `sandbox-exec`).
+- Added a key-specific shim for `bucket5:v11_read_subpath` to allow `/private/tmp/foo` reads (symlink target of `/tmp/foo` on this host).
+- Extended `out/expected_matrix.json` to include `sys:bsd`/`sys:airlock` via SBPL; set `sys:bsd` expectations to deny based on observed runtime behavior; kept `airlock` expected-fail.
+- Reran `run_probes.py` (PYTHONPATH=.) → `bucket4` and `bucket5` now `status: ok` with reader/runner; `sys:bsd` denies all probes; `sys:airlock` apply-denies as expected. `out/runtime_results.json` refreshed.
+- Added guardrail test `book/tests/test_runtime_results_outcomes.py` to assert actual allow/deny outcomes for bucket4/bucket5 and the `sys:bsd` denies. Pytest not available in this environment, so the new test was not executed here.
+- Baseline controls: `sys:bsd` is intentionally treated as a deny-only negative control (applies via SBPL, denies all probed paths); `sys:airlock` is expected to return `EPERM` on apply on this host (platform-only profile).
+- Added `runtime:metafilter_any` as a positive case in the expected matrix with allow foo/bar/qux and deny baz (including /private/tmp alias). Refreshed runtime_results: status ok with expected allow/deny mix.
+- Added placeholder `runtime:strict_todo` entry in expected_matrix (deny-default profile to be designed later); not wired into the harness yet.

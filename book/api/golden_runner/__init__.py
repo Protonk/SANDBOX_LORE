@@ -17,8 +17,8 @@ from typing import Any, Dict, List, Optional
 
 DEFAULT_OUT = Path(__file__).resolve().parents[2] / "profiles" / "golden-triple"
 DEFAULT_RUNTIME_PROFILE_DIR = DEFAULT_OUT / "runtime_profiles"
-RUNNER = Path(__file__).resolve().parents[3] / "experiments" / "runtime-checks" / "sandbox_runner"
-READER = Path(__file__).resolve().parents[3] / "experiments" / "runtime-checks" / "sandbox_reader"
+RUNNER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_runner"
+READER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_reader"
 WRAPPER = Path(__file__).resolve().parents[2] / "api" / "SBPL-wrapper" / "wrapper"
 
 CAT = "/bin/cat"
