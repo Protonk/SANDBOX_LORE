@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-04T20:23:05Z",
+  "generated_at": "2025-12-04T22:29:41Z",
   "schema": {
     "job_id": "string",
     "status": "ok|partial|brittle|blocked|skipped",
@@ -14,7 +14,7 @@
   },
   "jobs": [
     {
-      "job_id": "validation:schema-check",
+      "job_id": "experiment:system-profile-digest",
       "status": "ok",
       "host": {
         "product": "macOS",
@@ -24,18 +24,26 @@
         "machine": "arm64"
       },
       "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/validation_status.json"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/system-profile-digest/out/digests.json"
       ],
-      "outputs": [],
-      "timestamp": "2025-12-04T20:23:05Z",
+      "outputs": [
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
+      ],
+      "timestamp": "2025-12-04T22:29:41Z",
       "tags": [
-        "meta",
-        "schema"
+        "experiment:system-profile-digest",
+        "experiment",
+        "system-profiles",
+        "golden"
       ],
-      "notes": "status files conform to schema",
+      "hashes": {
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "d1215374a853b0f7c10fbaae5a8f3195011bface9347593fc970b11474e207a0",
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "6173a7869a9cbcf38624bc93757912ddc7ac3de74cce983cb73d17260130a004"
+      },
+      "notes": "Normalized system profile digests into IR.",
       "metrics": {
-        "checked": 6,
-        "errors": 0
+        "profiles": 3
       }
     }
   ]

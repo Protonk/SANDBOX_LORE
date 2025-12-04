@@ -1,7 +1,7 @@
 {
   "job_id": "experiment:system-profile-digest",
-  "generated_at": "2025-12-04T20:22:22Z",
-  "timestamp": "2025-12-04T20:22:22Z",
+  "generated_at": "2025-12-04T22:29:41Z",
+  "timestamp": "2025-12-04T22:29:41Z",
   "status": "ok",
   "host": {
     "product": "macOS",

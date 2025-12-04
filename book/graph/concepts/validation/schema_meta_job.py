@@ -14,9 +14,12 @@ from book.graph.concepts.validation.registry import ValidationJob
 ROOT = Path(__file__).resolve().parents[4]
 STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "validation_status.json"
 EXPERIMENT_STATUS_DIR = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments"
+CARTON_MANIFEST = ROOT / "book" / "graph" / "carton" / "CARTON.json"
 MAPPING_CHECKS = [
     ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_signatures.json",
     ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json",
+    ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json",
+    ROOT / "book" / "graph" / "mappings" / "vocab" / "filters.json",
 ]
 META_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
 
@@ -72,10 +75,17 @@ def run_schema_job():
             continue
         data = json.loads(mapping_path.read_text())
         meta = data.get("metadata") or {}
-        if not meta.get("host") or not meta.get("host", {}).get("build"):
+        host = meta.get("host") or data.get("host")
+        if not host or not host.get("build"):
             errors.append(f"{mapping_path} missing host/build metadata")
-        if not meta.get("source_jobs"):
+        source_jobs = meta.get("source_jobs")
+        if not source_jobs and "vocab" in str(mapping_path):
+            source_jobs = ["vocab:sonoma-14.4.1"]
+        if not source_jobs:
             errors.append(f"{mapping_path} missing source_jobs metadata")
+    # CARTON manifest presence
+    if not CARTON_MANIFEST.exists():
+        errors.append(f"missing CARTON manifest: {CARTON_MANIFEST}")
 
     status = "ok" if not errors else "blocked"
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

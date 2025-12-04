@@ -1001,7 +1001,7 @@
     }
   },
   "metadata": {
-    "generated_at": "2025-12-04T20:23:01Z",
+    "generated_at": "2025-12-04T22:29:36Z",
     "host": {
       "build": "23E224",
       "kernel": "23.4.0",
@@ -1015,10 +1015,33 @@
     ],
     "notes": "Derived from validation IR (smoke tag).",
     "source_jobs": [
-      "experiment:field2",
-      "experiment:runtime-checks"
+      "experiment:runtime-checks",
+      "experiment:field2"
     ],
     "status": "ok"
+  },
+  "profiles_metadata": {
+    "bucket4:v1_read": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb"
+    },
+    "bucket5:v11_read_subpath": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb"
+    },
+    "runtime:allow_all": {
+      "runtime_profile": "--blob"
+    },
+    "runtime:metafilter_any": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb"
+    },
+    "runtime:strict_1": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb"
+    },
+    "sys:airlock": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/airlock.sys_airlock.runtime.sb"
+    },
+    "sys:bsd": {
+      "runtime_profile": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb"
+    }
   },
   "signatures": {
     "bucket4:v1_read": {

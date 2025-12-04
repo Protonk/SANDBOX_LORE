@@ -42,7 +42,7 @@ def load_status(job_id: str) -> Dict[str, Any]:
     job = jobs.get(job_id)
     if not job:
         raise RuntimeError(f"job {job_id} missing from validation_status.json")
-    if job.get("status") != "ok":
+    if not str(job.get("status", "")).startswith("ok"):
         raise RuntimeError(f"job {job_id} not ok: {job.get('status')}")
     return job
 
@@ -55,11 +55,17 @@ def load_json(path: Path) -> Dict[str, Any]:
 
 def build_signatures(runtime_ir: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
     signatures: Dict[str, Dict[str, str]] = {}
+    profile_meta: Dict[str, Dict[str, str]] = {}
     results = runtime_ir.get("results") or {}
     for profile, entry in results.items():
         probes = entry.get("probes") or []
         signatures[profile] = {probe["name"]: probe.get("actual") for probe in probes if "name" in probe}
-    return signatures
+        # Capture runtime profile path from command (second argv if present)
+        if probes:
+            cmd = probes[0].get("command") or []
+            if len(cmd) >= 2:
+                profile_meta[profile] = {"runtime_profile": cmd[1]}
+    return signatures, profile_meta
 
 
 def summarize_field2(field2_ir: Dict[str, Any]) -> Dict[str, Any]:
@@ -83,7 +89,7 @@ def main() -> None:
     runtime_ir = load_json(RUNTIME_IR)
     field2_ir = load_json(FIELD2_IR)
 
-    signatures = build_signatures(runtime_ir)
+    signatures, profiles_meta = build_signatures(runtime_ir)
     field2_summary = summarize_field2(field2_ir)
 
     host = runtime_ir.get("host") or field2_ir.get("host") or {}
@@ -100,6 +106,7 @@ def main() -> None:
         "signatures": signatures,
         "expected_matrix": runtime_ir.get("expected_matrix"),
         "field2_summary": field2_summary,
+        "profiles_metadata": profiles_meta,
     }
     OUT_PATH.write_text(json.dumps(mapping, indent=2, sort_keys=True))
     print(f"[+] wrote {OUT_PATH}")

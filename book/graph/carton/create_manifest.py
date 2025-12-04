@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Create a frozen substrate manifest for Sonoma 14.4.1.
+Create the CARTON manifest for Sonoma 14.4.1.
 
 Outputs:
-- book/graph/substrate/SUBSTRATE_2025-v1.json
+- book/graph/carton/CARTON.json
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ FILES = [
     "book/graph/concepts/validation/out/validation_status.json",
 ]
 
-OUT_PATH = ROOT / "book/graph/substrate/SUBSTRATE_2025-v1.json"
+OUT_PATH = ROOT / "book/graph/carton/CARTON.json"
 
 
 def sha256(path: Path) -> str:
@@ -45,14 +45,13 @@ def main() -> None:
         p = ROOT / rel
         rows.append({"path": rel, "sha256": sha256(p)})
 
-    # host from validation metadata
     meta_path = ROOT / "book/graph/concepts/validation/out/metadata.json"
     host = {}
     if meta_path.exists():
         host = json.loads(meta_path.read_text()).get("os", {})
 
     manifest = {
-        "name": "SUBSTRATE_2025-v1",
+        "name": "CARTON",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "host": host,
         "files": rows,

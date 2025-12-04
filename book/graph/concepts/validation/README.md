@@ -34,6 +34,7 @@ Smoke tag:
 
 Promotion contract:
 - Mapping generators must: (1) run the validation driver for relevant tags/IDs, (2) refuse to proceed on non-`ok` jobs, (3) read normalized validation IR only (not raw experiment out/), and (4) carry host/provenance (`host`, `source_jobs`) into outputs. See `book/graph/mappings/run_promotion.py` and `generate_runtime_signatures.py` / `generate_digests_from_ir.py` for the pattern.
+- CARTON: frozen IR/mapping layer for Sonoma 14.4.1 lives at `book/graph/carton/CARTON.json`; changes to CARTON require updating the manifest after rerunning validation + generators. Schema checks assert CARTON and mapping provenance.
 
 Keep Swift-side validation non-fatal: extend the report rather than blocking generation when checks fail.
 

@@ -1,6 +1,6 @@
 {
-  "name": "SUBSTRATE_2025-v1",
-  "generated_at": "2025-12-04T20:28:57Z",
+  "name": "CARTON",
+  "generated_at": "2025-12-04T22:29:46Z",
   "host": {
     "product": "macOS",
     "version": "14.4.1",
@@ -19,11 +19,11 @@
     },
     {
       "path": "book/graph/mappings/runtime/runtime_signatures.json",
-      "sha256": "55e20508719a22a0482fee42cd873b17ba17727522767ef86db5ec9103cc557b"
+      "sha256": "2d38c0dbf5eca35a2eb30165e869be83877e8f9a2ecdb95d25a59f3cf1a67016"
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "69f4105aaf9e292de30dd2ea28fe1afa12e5d1abc0c73502de5237877ba09b58"
+      "sha256": "cd469170a859cd8096b86c4e43106d6e5e3e4aa753ad91636857fa9220f38931"
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
@@ -39,11 +39,11 @@
     },
     {
       "path": "book/graph/concepts/validation/out/vocab_status.json",
-      "sha256": "701d4ca07d3f5055a2019a7c33b0e58f5ad030f2d813e94f09fc7926de9ff80a"
+      "sha256": "c4ce6a4b831b543b16e12a6527738f564ff86ead345236c64696b4fb678e3782"
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "386685b2b89cb998e24f7d30168b46215f63f3bd43bd08cbc63eed212d66fd8b"
+      "sha256": "7fa3ae97bdf6d8a74968389e6fc8646f16b7c831d36b3d644bdb5adf0e1d336e"
     }
   ]
 }

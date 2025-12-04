@@ -3,7 +3,7 @@ import hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-MANIFEST = ROOT / "book" / "graph" / "substrate" / "SUBSTRATE_2025-v1.json"
+MANIFEST = ROOT / "book" / "graph" / "carton" / "CARTON.json"
 
 
 def sha256(path: Path) -> str:
@@ -14,8 +14,8 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def test_substrate_manifest_hashes():
-    assert MANIFEST.exists(), "missing substrate manifest"
+def test_carton_manifest_hashes():
+    assert MANIFEST.exists(), "missing CARTON manifest"
     data = json.loads(MANIFEST.read_text())
     files = data.get("files") or []
     assert files, "manifest contains no files"
@@ -26,7 +26,7 @@ def test_substrate_manifest_hashes():
         assert sha256(path) == expected, f"hash mismatch for {path}"
 
 
-def test_substrate_manifest_host():
+def test_carton_manifest_host():
     data = json.loads(MANIFEST.read_text())
     host = data.get("host") or {}
     assert host.get("build") == "23E224"
