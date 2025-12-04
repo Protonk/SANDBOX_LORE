@@ -1,10 +1,12 @@
-This report captures the arc of the [`field2` investigation](../../book/experiments/field2-filters/Report.md) on macOS 14.4.1: from early suspicion that the old 2011-era tricks wouldn’t scale, through a coordinated web–codex loop, to a clear negative conclusion and a set of concrete gains.
+This report follows the [`field2` investigation](../../book/experiments/field2-filters/Report.md) on macOS 14.4.1, tracing how an initial suspicion that older node-layout heuristics might not scale turned into a structured web–codex pairing over static graphs and kernel artifacts. It documents how that collaboration converged on a bounded negative result—`filter_arg_raw` is a plain u16 payload whose high values are structurally understood but still unmapped—and the concrete experiments, tooling, and guardrails that now anchor any future `field2` work on this host.
 
----
+## Report
+
+
 
 ### Background and early suspicion
 
-The project’s [decoded policy graphs](../../book/experiments/node-layout/Report.md) expose a familiar shape for each node: two edge pointers and a third 16-bit payload, dubbed `field2`. For most nodes on this Sonoma host, `field2` lines up cleanly with the harvested filter vocabulary: path, mount-relative-path, global/local name, socket-type, iokit filters, and so on. System profiles reinforce those mappings.
+The project’s [decoded policy graphs](../../book/experiments/node-layout/Report.md) expose a familiar shape for each node: two edge pointers and a third 16-bit payload, dubbed `field2`. For most nodes on this Sonoma host, `field2` lines up cleanly with the harvested filter vocabulary: path, mount-relative-path, global/local name, socket-type, iokit filters, and so on. System profiles ([airlock, bsd, sample](../../book/experiments/system-profile-digest/Report.md)) reinforce those mappings.
 
 But a small set of nodes in richer profiles do something else entirely. In the bsd profile, the tail region carries high `field2` codes like 16660 and nearby 170/174/115/109; in airlock, there are clusters around 165/166/10752 and a 0xffff sentinel; in flow-divert mixed profiles, a `com.apple.flow-divert` branch carries 2560 that disappears as soon as the profile is simplified. These values don’t match the known filter IDs, literal indices, or obvious derived indices.
 
@@ -76,8 +78,8 @@ Those scans, built from the web agent’s high-level patterns, were aimed square
 In parallel with the kernel work, the decoded graphs were being combed for patterns that might suggest an alternate explanation for high `field2` values: literal or regex indices, parameter tables, or graph-level metafilters. Those hypotheses were systematically knocked down:
 
 * high values did not match literal table indices, offsets, or any simple linear transformation thereof;
-* their presence was tightly tied to rich, mixed profiles (e.g., require-all network + flow-divert) and to specific tails, not scattered randomly; and
-* small synthetic SBPL fragments built around the interesting literals (flow-divert, `/dev/dtracehelper`, etc.) collapsed back to low IDs, suggesting context-sensitivity in the compiler or emitter rather than an obvious “use this filter ID when you see this literal” mapping.
+* their presence was tightly tied to rich, mixed profiles (e.g., require-all network + flow-divert) studied in the [probe-op-structure experiment](../../book/experiments/probe-op-structure/Report.md) and to specific tails, not scattered randomly; and
+* small synthetic SBPL fragments built around the interesting literals (flow-divert, `/dev/dtracehelper`, etc.) in the [`field2-filters` probes](../../book/experiments/field2-filters/sb/) collapsed back to low IDs, suggesting context-sensitivity in the compiler or emitter rather than an obvious “use this filter ID when you see this literal” mapping.
 
 On the kernel side, the sequence of hypotheses and results went roughly as follows:
 
