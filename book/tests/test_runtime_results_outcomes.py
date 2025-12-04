@@ -4,6 +4,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "runtime_results.json"
+MATRIX = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "expected_matrix.json"
+GOLDEN = {
+    "bucket4:v1_read",
+    "bucket5:v11_read_subpath",
+    "runtime:metafilter_any",
+    "runtime:strict_1",
+    "sys:bsd",
+    "sys:airlock",
+}
 
 
 def _load_results():
@@ -13,6 +22,14 @@ def _load_results():
 
 def _probe_map(entry):
     return {p["name"]: p for p in entry.get("probes") or []}
+
+
+def test_golden_presence():
+    results = _load_results()
+    assert MATRIX.exists(), "missing expected_matrix.json"
+    matrix = json.loads(MATRIX.read_text()).get("profiles") or {}
+    assert GOLDEN.issubset(matrix.keys()), "golden profiles missing from expected_matrix"
+    assert GOLDEN.issubset(results.keys()), "golden profiles missing from runtime_results"
 
 
 def test_bucket_profiles_allow_deny():
