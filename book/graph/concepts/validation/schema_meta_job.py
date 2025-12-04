@@ -20,11 +20,12 @@ MAPPING_CHECKS = [
     ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json",
     ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json",
     ROOT / "book" / "graph" / "mappings" / "vocab" / "filters.json",
+    ROOT / "book" / "graph" / "mappings" / "carton" / "operation_coverage.json",
 ]
 META_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
 
 REQUIRED_FIELDS = {"job_id", "status", "host", "inputs", "outputs", "timestamp", "tags"}
-ALLOWED_STATUS = {"ok", "partial", "brittle", "blocked", "skipped"}
+ALLOWED_STATUS = {"ok", "ok-unchanged", "ok-changed", "partial", "brittle", "blocked", "skipped"}
 
 
 def check_record(rec: dict, source: Path) -> None:

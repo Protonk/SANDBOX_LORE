@@ -1,6 +1,6 @@
 {
   "name": "CARTON",
-  "generated_at": "2025-12-04T22:29:46Z",
+  "generated_at": "2025-12-04T22:41:10Z",
   "host": {
     "product": "macOS",
     "version": "14.4.1",
@@ -19,11 +19,15 @@
     },
     {
       "path": "book/graph/mappings/runtime/runtime_signatures.json",
-      "sha256": "2d38c0dbf5eca35a2eb30165e869be83877e8f9a2ecdb95d25a59f3cf1a67016"
+      "sha256": "253ee22bf6f3c2a6ec8d431cab4a015852434455014e3ca028429ecd04408eaa"
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "cd469170a859cd8096b86c4e43106d6e5e3e4aa753ad91636857fa9220f38931"
+      "sha256": "6a5d6ceb2a78eb89aa1738f6526e0dccf49df3b5b85186de20846870b78245a7"
+    },
+    {
+      "path": "book/graph/mappings/carton/operation_coverage.json",
+      "sha256": "9871c4e771b326585bfd5d731e594967441f6732758a683cf0a00a4b1378f388"
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
@@ -39,11 +43,11 @@
     },
     {
       "path": "book/graph/concepts/validation/out/vocab_status.json",
-      "sha256": "c4ce6a4b831b543b16e12a6527738f564ff86ead345236c64696b4fb678e3782"
+      "sha256": "6fb77f2ae8e63c23423bc72c059cbe864f7a3927ee8ab55088dfee37215e0542"
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "7fa3ae97bdf6d8a74968389e6fc8646f16b7c831d36b3d644bdb5adf0e1d336e"
+      "sha256": "aae0c29126a55ea84c15fd82e2ac5cecb5a993a356061c86e6220d041d7565fd"
     }
   ]
 }

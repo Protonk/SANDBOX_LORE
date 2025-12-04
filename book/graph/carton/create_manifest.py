@@ -21,6 +21,7 @@ FILES = [
     "book/graph/mappings/vocab/filters.json",
     "book/graph/mappings/runtime/runtime_signatures.json",
     "book/graph/mappings/system_profiles/digests.json",
+    "book/graph/mappings/carton/operation_coverage.json",
     "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
     "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
     "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",

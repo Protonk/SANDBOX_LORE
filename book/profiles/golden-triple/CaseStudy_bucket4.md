@@ -12,6 +12,6 @@ Host: Sonoma 14.4.1 (23E224), CARTON snapshot (book/graph/carton/CARTON.json).
     - `write_/etc/hosts` → deny.
   - Summarized in `book/graph/mappings/runtime/runtime_signatures.json` under `signatures["bucket4:v1_read"]`.
 - **Graph linkage:** op-table entrypoints decoded in `book/graph/mappings/runtime/runtime_signatures.json` come from the same blob; vocab IDs tie back to `ops.json`. Use `--describe experiment:runtime-checks` to see the IR job that feeds this mapping.
+- **CARTON lookup:** `book/api/carton/carton_query.py` and `book/graph/carton/USAGE_examples.md` show how to pull the same facts (probes, runtime blob path, op coverage) directly from the CARTON API.
 
-This profile is the exemplar for the validation→IR→mapping pipeline: SBPL source → compiled blob → validated runtime IR → frozen mapping (SUBSTRATE_2025-v1).
 This profile is the exemplar for the validation→IR→mapping pipeline: SBPL source → compiled blob → validated runtime IR → frozen CARTON mapping.

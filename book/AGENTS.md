@@ -30,4 +30,4 @@ Routing cheat-sheet:
 - Runtime behavior: `python -m book.graph.concepts.validation --tag smoke` → consume `book/graph/mappings/runtime/runtime_signatures.json`.
 - Vocab: `python -m book.graph.concepts.validation --tag vocab` (or smoke) → consume `book/graph/mappings/vocab/{ops,filters}.json`.
 - System profiles: `python -m book.graph.concepts.validation --tag system-profiles` → consume `book/graph/mappings/system_profiles/digests.json`.
-- CARTON: use `book/graph/carton/CARTON.json` for textbook-grade Sonoma 14.4.1 facts; do not mutate listed files—add new experiments/IR/mappings separately. Prefer `book/graph/api/carton_query.py` for lookups across CARTON mappings.
+- CARTON: use `book/graph/carton/CARTON.json` for textbook-grade Sonoma 14.4.1 facts; do not mutate listed files—add new experiments/IR/mappings separately. Prefer `book/api/carton/carton_query.py` (backed by the CARTON coverage mapping) for lookups; see `book/graph/carton/API.md` + `USAGE_examples.md`.

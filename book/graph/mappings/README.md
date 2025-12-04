@@ -10,3 +10,4 @@ Subdirectories:
 - `system_profiles/` – Canonical decoded digests for selected system profiles on this host (e.g., `airlock`, `bsd`, `sample`) plus attestations tying blob hashes, op-table entries, tag counts, literal/anchor hits, and vocab/tag-layout/runtime links together. These ground the abstract concepts in real PolicyGraphs and keep them reproducible.
 - `runtime/` – Runtime probe expectations and (when possible) traces from running profiles under Seatbelt. This connects decoder-level predictions to observed allow/deny decisions in the live sandbox.
 - `vocab/` – Operation/Filter vocabulary maps with attestations linking the tables to dyld slices and reference blobs for this host/build.
+- `carton/` – CARTON-derived overlays (e.g., operation coverage) built purely from the frozen CARTON interface, not raw experiment outputs.
