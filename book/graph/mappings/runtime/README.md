@@ -10,6 +10,7 @@ Current artifacts:
 - `traces/golden_traces.jsonl` — normalized probe rows for the golden set from runtime-checks.
 - `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set.
 - `runtime_signatures.json` — small IR derived from validation outputs (`field2_ir.json` + normalized runtime results) summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/generate_runtime_signatures.py` (which runs the validation driver `--tag smoke`).
+- SUBSTRATE snapshot: see `book/graph/substrate/SUBSTRATE_2025-v1.json` for frozen hashes/paths of the runtime mappings/IR on Sonoma 14.4.1.
 
 Role in the substrate:
 - Adds the enforcement layer to the static mappings: which Operations (by vocab ID) and inputs were allowed/denied under specific compiled profiles on this host.

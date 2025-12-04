@@ -25,7 +25,15 @@ from book.graph.concepts.validation import registry
 
 METADATA_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
 STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "validation_status.json"
-ALLOWED_STATUS = {"ok", "partial", "brittle", "blocked", "skipped"}
+ALLOWED_STATUS = {
+    "ok",
+    "ok-unchanged",
+    "ok-changed",
+    "partial",
+    "brittle",
+    "blocked",
+    "skipped",
+}
 
 
 def load_host_meta() -> Dict:
@@ -35,6 +43,32 @@ def load_host_meta() -> Dict:
         except Exception:
             return {}
     return {}
+
+
+def load_prev_status() -> Dict[str, Dict]:
+    if not STATUS_PATH.exists():
+        return {}
+    try:
+        data = json.loads(STATUS_PATH.read_text())
+        return {rec.get("job_id") or rec.get("id"): rec for rec in data.get("jobs", [])}
+    except Exception:
+        return {}
+
+
+def compute_hashes(paths: List[str]) -> Dict[str, str]:
+    import hashlib
+
+    hashes: Dict[str, str] = {}
+    for p in paths or []:
+        path = Path(p)
+        if not path.exists():
+            continue
+        h = hashlib.sha256()
+        with path.open("rb") as f:
+            for chunk in iter(lambda: f.read(8192), b""):
+                h.update(chunk)
+        hashes[str(path)] = h.hexdigest()
+    return hashes
 
 
 def select_jobs(
@@ -61,19 +95,31 @@ def select_jobs(
     return selected
 
 
-def normalize_record(job: registry.ValidationJob, result: Dict, host_meta: Dict) -> Dict:
+def normalize_record(job: registry.ValidationJob, result: Dict, host_meta: Dict, prev_record: Dict | None) -> Dict:
     ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     status = result.get("status", "ok")
+    outputs = result.get("outputs", job.outputs)
+    hashes = compute_hashes(outputs)
+    change = "unknown"
+    if prev_record and prev_record.get("hashes"):
+        if hashes == prev_record.get("hashes"):
+            change = "unchanged"
+        else:
+            change = "changed"
+    if status == "ok" and change in {"unchanged", "changed"}:
+        status = f"ok-{change}"
     if status not in ALLOWED_STATUS:
         status = "blocked"
+
     record = {
         "job_id": job.id,
         "status": status,
         "host": result.get("host") or host_meta,
         "inputs": job.inputs,
-        "outputs": result.get("outputs", job.outputs),
+        "outputs": outputs,
         "timestamp": ts,
         "tags": job.tags,
+        "hashes": hashes,
     }
     if "notes" in result:
         record["notes"] = result["notes"]
@@ -81,21 +127,24 @@ def normalize_record(job: registry.ValidationJob, result: Dict, host_meta: Dict)
         record["metrics"] = result["metrics"]
     if "error" in result:
         record["error"] = result["error"]
+    if change in {"unchanged", "changed"}:
+        record["change"] = change
     return record
 
 
-def run_job(job: registry.ValidationJob, skip_missing_inputs: bool, host_meta: Dict) -> Dict:
+def run_job(job: registry.ValidationJob, skip_missing_inputs: bool, host_meta: Dict, prev_record: Dict | None) -> Dict:
     if skip_missing_inputs and not job.has_inputs():
         return normalize_record(
             job,
             {"status": "skipped", "notes": "inputs missing"},
             host_meta,
+            prev_record,
         )
     try:
         result = job.runner() or {}
-        return normalize_record(job, result, host_meta)
+        return normalize_record(job, result, host_meta, prev_record)
     except Exception as exc:  # pragma: no cover
-        return normalize_record(job, {"status": "blocked", "error": f"{exc}"}, host_meta)
+        return normalize_record(job, {"status": "blocked", "error": f"{exc}"}, host_meta, prev_record)
 
 
 def main() -> None:
@@ -110,6 +159,7 @@ def main() -> None:
     args = ap.parse_args()
 
     jobs = registry.load_all_jobs()
+    prev_status = load_prev_status()
 
     if args.describe:
         job = next((j for j in jobs if j.id == args.describe), None)
@@ -138,7 +188,7 @@ def main() -> None:
         sys.exit(1)
 
     host_meta = load_host_meta()
-    results = [run_job(job, args.skip_missing_inputs, host_meta) for job in selected]
+    results = [run_job(job, args.skip_missing_inputs, host_meta, prev_status.get(job.id)) for job in selected]
     STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),

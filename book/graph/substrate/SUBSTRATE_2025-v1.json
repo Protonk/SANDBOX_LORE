@@ -1,0 +1,49 @@
+{
+  "name": "SUBSTRATE_2025-v1",
+  "generated_at": "2025-12-04T20:28:57Z",
+  "host": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "machine": "arm64"
+  },
+  "files": [
+    {
+      "path": "book/graph/mappings/vocab/ops.json",
+      "sha256": "fcbd568760622b9cbe6d494a8293b4c006cb040aa9160b464bda46504be3e785"
+    },
+    {
+      "path": "book/graph/mappings/vocab/filters.json",
+      "sha256": "624cb590dc79558af4addd506b7f67878232e74c4d6946598873da2a1fedc23c"
+    },
+    {
+      "path": "book/graph/mappings/runtime/runtime_signatures.json",
+      "sha256": "55e20508719a22a0482fee42cd873b17ba17727522767ef86db5ec9103cc557b"
+    },
+    {
+      "path": "book/graph/mappings/system_profiles/digests.json",
+      "sha256": "69f4105aaf9e292de30dd2ea28fe1afa12e5d1abc0c73502de5237877ba09b58"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
+      "sha256": "9dd2c86352486766ee6c0210ac031bc60bfd7ab8dc3791dcc5654b253f3aaa3d"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
+      "sha256": "9ccc9b696f24ae51310a87737c50ef63a274823fef6e6a65de9c080db9695aeb"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
+      "sha256": "d1215374a853b0f7c10fbaae5a8f3195011bface9347593fc970b11474e207a0"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/vocab_status.json",
+      "sha256": "701d4ca07d3f5055a2019a7c33b0e58f5ad030f2d813e94f09fc7926de9ff80a"
+    },
+    {
+      "path": "book/graph/concepts/validation/out/validation_status.json",
+      "sha256": "386685b2b89cb998e24f7d30168b46215f63f3bd43bd08cbc63eed212d66fd8b"
+    }
+  ]
+}
