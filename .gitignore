@@ -13,6 +13,7 @@ dumps/ghidra/tmp/
 __pycache__/
 .pytest_cache/
 .venv/
+book/out/ci-stamps/
 
 # vscode
 .vscode/

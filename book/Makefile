@@ -4,14 +4,17 @@ PYTHON ?= python3
 SWIFT ?= swift
 REPO_ROOT := $(abspath $(CURDIR)/..)
 
-.PHONY: test python-tests swift-check
+.PHONY: test ci validate swift
 
-test: python-tests swift-check
+test: ci
 
-python-tests:
-	@echo "Running Python tests (pytest-free harness)..."
-	PYTHONPATH=$(REPO_ROOT) $(PYTHON) -m book.tests.run_all
+ci:
+	@echo "Running unified CI harness..."
+	PYTHONPATH=$(REPO_ROOT) SWIFT=$(SWIFT) $(PYTHON) ci.py
 
-swift-check:
-	@echo "Building Swift sources..."
-	cd graph && SWIFT_BIN="$(SWIFT)" $(PYTHON) swift_build.py
+# Optional subtargets to run pieces directly.
+validate:
+	PYTHONPATH=$(REPO_ROOT) $(PYTHON) -c "import ci; ci.run_python_harness()"
+
+swift:
+	PYTHONPATH=$(REPO_ROOT) SWIFT=$(SWIFT) $(PYTHON) -c "import ci; ci.run_swift_build()"
