@@ -20,7 +20,15 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "allow_all|file-read*|/etc/hosts"
         },
         {
           "profile_id": "allow_all",
@@ -34,7 +42,15 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt"
         },
         {
           "profile_id": "allow_all",
@@ -48,7 +64,15 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt"
         }
       ]
     },
@@ -76,7 +100,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_all|file-read*|/tmp/sbpl_rt/read.txt"
         },
         {
           "profile_id": "deny_all",
@@ -92,7 +126,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_all|file-write*|/tmp/sbpl_rt/write.txt"
         },
         {
           "profile_id": "deny_all",
@@ -108,7 +152,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_all|file-read*|/etc/hosts"
         }
       ]
     },
@@ -134,7 +188,16 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_except_tmp|file-read*|/tmp/deny.txt"
         },
         {
           "profile_id": "deny_except_tmp",
@@ -149,7 +212,16 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_except_tmp|file-write*|/tmp/deny.txt"
         },
         {
           "profile_id": "deny_except_tmp",
@@ -164,7 +236,16 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_except_tmp|file-read*|/tmp/allow/foo"
         },
         {
           "profile_id": "deny_except_tmp",
@@ -179,7 +260,16 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_except_tmp|file-write*|/tmp/allow/foo"
         },
         {
           "profile_id": "deny_except_tmp",
@@ -194,7 +284,16 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "deny_except_tmp|file-read*|/etc/hosts"
         }
       ]
     },
@@ -222,7 +321,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt"
         },
         {
           "profile_id": "metafilter_any",
@@ -238,7 +347,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt"
         },
         {
           "profile_id": "metafilter_any",
@@ -254,7 +373,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "metafilter_any|file-read*|/tmp/baz.txt"
         },
         {
           "profile_id": "metafilter_any",
@@ -270,7 +399,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "metafilter_any|file-write*|/tmp/baz.txt"
         },
         {
           "profile_id": "metafilter_any",
@@ -286,7 +425,17 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt"
         }
       ]
     },
@@ -320,7 +469,20 @@
           ],
           "terminal_node_id": 16,
           "terminal_tag": 1,
-          "terminal_note": null
+          "terminal_note": null,
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminal_resolved": true,
+          "terminal_source": "literal-match-heuristic",
+          "expectation_id": "param_path_concrete|process-exec|/Users/achyland/Desktop/SANDBOX_LORE/book/api/file_probe/file_probe"
         },
         {
           "profile_id": "param_path_concrete",
@@ -339,7 +501,20 @@
           ],
           "terminal_node_id": 18,
           "terminal_tag": 5,
-          "terminal_note": null
+          "terminal_note": null,
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminal_resolved": true,
+          "terminal_source": "literal-match-heuristic",
+          "expectation_id": "param_path_concrete|file-read*|/tmp/sbpl_rt/param_root/foo"
         },
         {
           "profile_id": "param_path_concrete",
@@ -358,7 +533,20 @@
           ],
           "terminal_node_id": null,
           "terminal_tag": null,
-          "terminal_note": "no literal-matching node found"
+          "terminal_note": "no literal-matching node found",
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminal_resolved": false,
+          "terminal_source": null,
+          "expectation_id": "param_path_concrete|file-read*|/etc/hosts"
         },
         {
           "profile_id": "param_path_concrete",
@@ -377,12 +565,27 @@
           ],
           "terminal_node_id": 18,
           "terminal_tag": 5,
-          "terminal_note": null
+          "terminal_note": null,
+          "entrypoint_resolved": false,
+          "entrypoint_op_index_candidates": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminal_resolved": true,
+          "terminal_source": "literal-match-heuristic",
+          "expectation_id": "param_path_concrete|file-write*|/tmp/sbpl_rt/param_root/foo"
         }
       ],
       "template_of": "book/experiments/sbpl-graph-runtime/profiles/param_path.sb"
     }
   },
   "status": "static",
-  "validation": "SBPL-level expectations; best-effort node references from decoder (tag-aware, heuristic)."
+  "validation": "SBPL-level expectations; best-effort node references from decoder (tag-aware, heuristic).",
+  "schema_version": "v0.1",
+  "runtime_join_key": "expectation_id"
 }

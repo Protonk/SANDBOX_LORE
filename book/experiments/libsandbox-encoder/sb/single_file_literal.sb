@@ -1,0 +1,4 @@
+;; Single filter sanity check: literal path for file-read*
+(version 1)
+(allow default)
+(deny file-read* (literal "/tmp/encoder/lit_only"))

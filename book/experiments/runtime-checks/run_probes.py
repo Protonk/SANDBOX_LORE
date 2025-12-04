@@ -87,6 +87,15 @@ def ensure_tmp_files():
     for name in ["foo", "bar"]:
         p = Path("/tmp") / name
         p.write_text(f"runtime-checks {name}\n")
+        (p.with_suffix(".txt")).write_text(f"{name}\n")
+    # Additional metafilter targets
+    Path("/tmp/baz.txt").write_text("baz\n")
+    Path("/tmp/qux.txt").write_text("qux\n")
+    rt = Path("/tmp/sbpl_rt")
+    rt.mkdir(parents=True, exist_ok=True)
+    (rt / "read.txt").write_text("runtime-checks read\n")
+    (rt / "param_root").mkdir(parents=True, exist_ok=True)
+    (rt / "param_root" / "foo").write_text("runtime-checks param_root foo\n")
 
 
 def classify_status(probes: list[dict[str, Any]], skipped_reason: str | None = None) -> tuple[str, str | None]:
@@ -199,12 +208,25 @@ def main():
             # Simple allow/deny heuristic: exit_code==0 => allow
             actual = "allow" if raw.get("exit_code") == 0 else "deny"
             expected = probe.get("expected")
+            expectation_id = probe.get("expectation_id")
+            runtime_result = {
+                "status": "success" if raw.get("exit_code") == 0 else "errno",
+                "errno": raw.get("exit_code") if raw.get("exit_code") else None,
+            }
+            violation_summary = None
+            if raw.get("stderr") and "Operation not permitted" in raw.get("stderr", ""):
+                violation_summary = "EPERM"
             probe_results.append(
                 {
                     "name": probe.get("name"),
+                    "expectation_id": expectation_id,
+                    "operation": probe.get("operation"),
+                    "path": probe.get("target"),
                     "expected": expected,
                     "actual": actual,
                     "match": expected == actual,
+                    "runtime_result": runtime_result,
+                    "violation_summary": violation_summary,
                     **raw,
                 }
             )

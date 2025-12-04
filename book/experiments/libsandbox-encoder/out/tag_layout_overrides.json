@@ -1,0 +1,43 @@
+{
+  "tags": [
+    {
+      "tag": 2,
+      "record_size_bytes": 12,
+      "edge_fields": [0, 1],
+      "payload_fields": [],
+      "status": "hypothesis",
+      "notes": "Likely non-filter/meta node; seen as tag 2 with self-referential fields in tiny probes. Skip payload extraction."
+    },
+    {
+      "tag": 3,
+      "record_size_bytes": 12,
+      "edge_fields": [0, 1],
+      "payload_fields": [2],
+      "status": "partial",
+      "notes": "Matches tag 3 samples from probe-op-structure (payload carries filter-ish IDs such as 8/7)."
+    },
+    {
+      "tag": 8,
+      "record_size_bytes": 12,
+      "edge_fields": [0, 1],
+      "payload_fields": [2],
+      "status": "partial",
+      "notes": "Matches tag 8 samples from probe-op-structure (network remote/local filters)."
+    },
+    {
+      "tag": 10,
+      "record_size_bytes": 12,
+      "edge_fields": [0, 1],
+      "payload_fields": [2],
+      "status": "hypothesis",
+      "notes": "Provisional layout for tag 10 seen in matrix_v1; treat like generic filter node until confirmed."
+    }
+  ],
+  "host": {
+    "product": "macOS",
+    "version": "14.4.1",
+    "build": "23E224",
+    "machine": "arm64"
+  },
+  "context": "libsandbox-encoder experiment (local staging); override/extend tag layouts for Phase A decoding before promotion."
+}

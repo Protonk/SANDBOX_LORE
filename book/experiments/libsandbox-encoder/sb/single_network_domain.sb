@@ -1,0 +1,4 @@
+;; Single filter sanity check: socket-domain for network-outbound
+(version 1)
+(allow default)
+(deny network-outbound (socket-domain 2)) ; AF_INET

@@ -1,0 +1,64 @@
+{
+  "schema_version": "v0.1",
+  "join_key": "expectation_id",
+  "fields": [
+    {
+      "name": "expectation_id",
+      "type": "string",
+      "required": true,
+      "notes": "Matches static expectations (v0.1) expectation_id = profile_id|op|path."
+    },
+    {
+      "name": "profile_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "op",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "path",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "static_expected_decision",
+      "type": "string",
+      "enum": ["allow", "deny"],
+      "required": true
+    },
+    {
+      "name": "runtime_result",
+      "type": "object",
+      "required": true,
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "enum": ["success", "errno", "error"]
+        },
+        {
+          "name": "errno",
+          "type": "integer",
+          "required": false,
+          "notes": "Process exit code if errno surfaced; null when status=success."
+        }
+      ]
+    },
+    {
+      "name": "entrypoint_op_index",
+      "type": "integer",
+      "required": false,
+      "notes": "Runtime-visible op index if observable; may remain null in v0.1."
+    },
+    {
+      "name": "violation_summary",
+      "type": "string",
+      "required": false,
+      "notes": "Short structured hint (e.g., EPERM) if sandbox error surfaced."
+    }
+  ],
+  "notes": "Aligns runtime probes with static_expectations v0.1; unresolved entrypoints and heuristic terminals remain explicit."
+}

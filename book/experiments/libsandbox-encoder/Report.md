@@ -10,12 +10,15 @@ Map how this host’s `libsandbox` encodes filter arguments into the `field2` u1
 
 ## Plan & execution log
 
-- Phase A — SBPL→blob matrix (encoder output view): scoped ops/filters/args captured in Notes; matrix and probes to be authored next.
+- Phase A — SBPL→blob matrix (encoder output view): matrix v1 (regex-free) compiled via `sbpl_compile`; nodes parsed via `profile_ingestion` + custom helper; table emitted to `out/field2_encoder_matrix.json`.
 - Phase B — libsandbox internals (encoder implementation view): not started (heuristics collected in Notes).
 
 ## Evidence & artifacts
 
-- Pending: `out/field2_encoder_matrix.json`, `out/encoder_sites.json`; initial probes under `sb/matrix_v1.sb` (regex-free).
+- `sb/matrix_v1.sb` (regex-free baseline).
+- `out/tag_layout_overrides.json` (local, staged) for tags 2/3/8/10.
+- `out/matrix_v1.sb.bin` (compiled blob), `out/matrix_v1.inspect.json` (inspect_profile snapshot), `out/matrix_v1.op_table.json` (op_table summary), `out/field2_encoder_matrix.json` (Phase A table generated with local tag layouts).
+- Pending: `out/encoder_sites.json`.
 
 ## Blockers / risks
 

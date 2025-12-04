@@ -24,5 +24,5 @@ Establish how this host’s `libsandbox` encodes filter arguments into the `fiel
 
 ## Status
 
-- Phase A: scoped (ops/filters/args selected); probes and matrix output pending.
+- Phase A: matrix v1 compiled/decoded; field2 table emitted to `out/field2_encoder_matrix.json`.
 - Phase B: not started (heuristics gathered; disassembly pending).

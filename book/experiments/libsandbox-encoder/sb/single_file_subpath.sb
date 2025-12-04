@@ -1,0 +1,4 @@
+;; Single filter sanity check: subpath for file-read*
+(version 1)
+(allow default)
+(deny file-read* (subpath "/tmp/encoder/sub_only"))
