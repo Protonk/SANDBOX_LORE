@@ -226,6 +226,7 @@ func parseConceptDetails(mapPath: String, concepts: [Concept]) -> [ConceptDetail
                         let trimmed = line.replacingOccurrences(of: "*", with: "")
                             .replacingOccurrences(of: "-", with: "")
                             .trimmingCharacters(in: .whitespaces)
+                        if trimmed.contains("Validation pattern:") { continue }
                         if !trimmed.isEmpty {
                             items.append(trimmed)
                         }
@@ -513,6 +514,12 @@ func textRegions(base: URL) -> [TextRegion] {
 // MARK: - Binding stub
 
 func conceptTextBindings() -> [ConceptTextBinding] {
+    let path = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        .appendingPathComponent("book/graph/concepts/concept_text_map.json")
+    if let data = try? Data(contentsOf: path),
+       let existing = try? JSONDecoder().decode([ConceptTextBinding].self, from: data) {
+        return existing
+    }
     return []
 }
 

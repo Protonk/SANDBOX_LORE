@@ -231,6 +231,11 @@ This cluster is more “macro” than the others, but aligning it with shared in
 
 The validation plan ties the examples in `book/examples/` to the four clusters. All harness code and task metadata live under `book/concepts/validation/` (see `validation/README.md` and `validation/tasks.py`). Each run should record OS/build and profile format variant so evidence stays versioned.
 
+Current manifests to consult:
+- `book/graph/concepts/validation/out/index.json` – cluster-level summary of produced evidence (static/semantic/vocab/lifecycle) for the Sonoma baseline.
+- `book/graph/mappings/runtime/expectations.json` – runtime probe expectations/traces normalized for mapping use.
+- `book/graph/mappings/system_profiles/attestations.json` – compiled-profile attestations (blob hashes, tag layout/vocab versions, anchor hits, runtime links).
+
 **Stage 0 — Setup and metadata**
 - Record host OS/build, hardware, SIP/TCC state, and profile format variant cues before collecting evidence.
 - Use the shared ingestion spine (`book/concepts/validation/profile_ingestion.py`) for all blob parsing to keep IR consistent across clusters.

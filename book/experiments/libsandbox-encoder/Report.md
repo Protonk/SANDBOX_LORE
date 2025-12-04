@@ -43,6 +43,7 @@ Map how this host’s `libsandbox` encodes filter arguments into the `field2` u1
 - `_record_condition_data` is a compact linker: it decrements `c->ec_free_count`, uses that index to write a 0x18-byte entry `{data_ptr, data_len?, filter_id}` into the `ec_data` array, and threads the entry into a per-op linked list via `[ctx + (tag?)*8 + 0x20]`. This is likely how filter ID + data offset get paired before serialization.
 - Tooling note: `inspect_profile` now emits `nodes_raw` (offset, tag byte, raw bytes, halfwords) to make per-record layouts explicit. `dump_raw_nodes.py` can also read `nodes_start`/`nodes_len` from the adjacent `*.inspect.json` via `--header` (using `nodes_raw` count/size). Phase A matrix now emits both `filter_id_raw` and `payload_raw` for payload-bearing tags (tag10: tag=h0.low, filter_id=h1, payload=h2 confirmed via matrix_v1_domain2/30).
 - Encoder sites logged in `out/encoder_sites.json`: `_emit` (bytes→mutable buffer via `_sb_mutable_buffer_write`), `_emit_network` (domain/type/proto via three `_emit` calls), `_record_condition_data` (stores data_ptr/len/index into per-op list), and the mutable buffer handle at builder+0xe98 (partial).
+- Finalize path: `_compile` calls `_sb_mutable_buffer_make_immutable` on the builder’s mutable buffer (builder+0xe98) at 0x183ced36c and stores the resulting `sb_buffer*`; explicit handoff of that immutable buffer to `__sandbox_ms` remains to be traced.
 
 ## Next steps
 

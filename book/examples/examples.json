@@ -216,7 +216,8 @@
       "book\/examples\/sb\/compile_sample.py",
       "book\/examples\/sb\/run-demo.sh",
       "book\/examples\/sb\/sample.sb",
-      "book\/examples\/sb\/sb-flat.md"
+      "book\/examples\/sb\/sb-flat.md",
+      "book\/examples\/sb\/variant1.sb"
     ],
     "tags" : [
       "sb"

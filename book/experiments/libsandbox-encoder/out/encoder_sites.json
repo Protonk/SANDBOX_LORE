@@ -27,6 +27,13 @@
       "role": "buffer handle",
       "status": "partial",
       "details": "Across encoder helpers (e.g., _emit_network, _encode_address), the mutable buffer handle used by _sb_mutable_buffer_set_minimum_size/_write resides at builder+0xe98; _sb_mutable_buffer_make_immutable is later called on this handle before handoff to the kernel."
+    },
+    {
+      "function": "_compile (finalize slice)",
+      "address": "0x183ced36c",
+      "role": "finalize mutable buffer",
+      "status": "partial",
+      "details": "Calls _sb_mutable_buffer_make_immutable on the builder’s mutable buffer (builder+0xe98) once parsing completes; stores resulting sb_buffer* at sp+0x60/0x96. Caller of this finalize is expected to carry the immutable buffer into the registration/apply path; explicit handoff to __sandbox_ms still to be confirmed."
     }
   ]
 }

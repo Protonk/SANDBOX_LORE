@@ -1,167 +1,162 @@
 [
   {
-    "anchorID": "sbpl-profile",
-    "clusterTags": [
+    "anchorID" : "sbpl-profile",
+    "clusterTags" : [
+
+    ],
+    "id" : "sbpl-profile",
+    "name" : "SBPL Profile"
+  },
+  {
+    "anchorID" : "sbpl-parameterization",
+    "clusterTags" : [
+
+    ],
+    "id" : "sbpl-parameterization",
+    "name" : "SBPL Parameterization"
+  },
+  {
+    "anchorID" : "operation",
+    "clusterTags" : [
       "semantic-graph-and-evaluation"
     ],
-    "id": "sbpl-profile",
-    "name": "SBPL Profile"
+    "id" : "operation",
+    "name" : "Operation"
   },
   {
-    "anchorID": "sbpl-parameterization",
-    "clusterTags": [
-      "semantic-graph-and-evaluation",
-      "runtime-lifecycle-and-extension"
-    ],
-    "id": "sbpl-parameterization",
-    "name": "SBPL Parameterization"
-  },
-  {
-    "anchorID": "operation",
-    "clusterTags": [
-      "semantic-graph-and-evaluation",
-      "vocabulary-and-mapping"
-    ],
-    "id": "operation",
-    "name": "Operation"
-  },
-  {
-    "anchorID": "filter",
-    "clusterTags": [
-      "semantic-graph-and-evaluation",
-      "vocabulary-and-mapping"
-    ],
-    "id": "filter",
-    "name": "Filter"
-  },
-  {
-    "anchorID": "metafilter",
-    "clusterTags": [
+    "anchorID" : "filter",
+    "clusterTags" : [
       "semantic-graph-and-evaluation"
     ],
-    "id": "metafilter",
-    "name": "Metafilter"
+    "id" : "filter",
+    "name" : "Filter"
   },
   {
-    "anchorID": "decision",
-    "clusterTags": [
+    "anchorID" : "metafilter",
+    "clusterTags" : [
       "semantic-graph-and-evaluation"
     ],
-    "id": "decision",
-    "name": "Decision"
+    "id" : "metafilter",
+    "name" : "Metafilter"
   },
   {
-    "anchorID": "action-modifier",
-    "clusterTags": [
+    "anchorID" : "decision",
+    "clusterTags" : [
       "semantic-graph-and-evaluation"
     ],
-    "id": "action-modifier",
-    "name": "Action Modifier"
+    "id" : "decision",
+    "name" : "Decision"
   },
   {
-    "anchorID": "profile-layer",
-    "clusterTags": [
+    "anchorID" : "action-modifier",
+    "clusterTags" : [
+      "semantic-graph-and-evaluation"
+    ],
+    "id" : "action-modifier",
+    "name" : "Action Modifier"
+  },
+  {
+    "anchorID" : "profile-layer",
+    "clusterTags" : [
+
+    ],
+    "id" : "profile-layer",
+    "name" : "Profile Layer"
+  },
+  {
+    "anchorID" : "sandbox-extension",
+    "clusterTags" : [
       "runtime-lifecycle-and-extension"
     ],
-    "id": "profile-layer",
-    "name": "Profile Layer"
+    "id" : "sandbox-extension",
+    "name" : "Sandbox Extension"
   },
   {
-    "anchorID": "sandbox-extension",
-    "clusterTags": [
+    "anchorID" : "policy-lifecycle-stage",
+    "clusterTags" : [
       "runtime-lifecycle-and-extension"
     ],
-    "id": "sandbox-extension",
-    "name": "Sandbox Extension"
+    "id" : "policy-lifecycle-stage",
+    "name" : "Policy Lifecycle Stage"
   },
   {
-    "anchorID": "policy-lifecycle-stage",
-    "clusterTags": [
-      "runtime-lifecycle-and-extension"
-    ],
-    "id": "policy-lifecycle-stage",
-    "name": "Policy Lifecycle Stage"
-  },
-  {
-    "anchorID": "binary-profile-header",
-    "clusterTags": [
+    "anchorID" : "binary-profile-header",
+    "clusterTags" : [
       "static-format"
     ],
-    "id": "binary-profile-header",
-    "name": "Binary Profile Header"
+    "id" : "binary-profile-header",
+    "name" : "Binary Profile Header"
   },
   {
-    "anchorID": "operation-pointer-table",
-    "clusterTags": [
+    "anchorID" : "operation-pointer-table",
+    "clusterTags" : [
       "static-format"
     ],
-    "id": "operation-pointer-table",
-    "name": "Operation Pointer Table"
+    "id" : "operation-pointer-table",
+    "name" : "Operation Pointer Table"
   },
   {
-    "anchorID": "policy-node",
-    "clusterTags": [
+    "anchorID" : "policy-node",
+    "clusterTags" : [
       "semantic-graph-and-evaluation"
     ],
-    "id": "policy-node",
-    "name": "Policy Node"
+    "id" : "policy-node",
+    "name" : "Policy Node"
   },
   {
-    "anchorID": "policygraph",
-    "clusterTags": [
-      "semantic-graph-and-evaluation",
+    "anchorID" : "policygraph",
+    "clusterTags" : [
+      "semantic-graph-and-evaluation"
+    ],
+    "id" : "policygraph",
+    "name" : "PolicyGraph"
+  },
+  {
+    "anchorID" : "regex-literal-table",
+    "clusterTags" : [
+
+    ],
+    "id" : "regex-literal-table",
+    "name" : "Regex \/ Literal Table"
+  },
+  {
+    "anchorID" : "profile-format-variant",
+    "clusterTags" : [
       "static-format"
     ],
-    "id": "policygraph",
-    "name": "PolicyGraph"
+    "id" : "profile-format-variant",
+    "name" : "Profile Format Variant"
   },
   {
-    "anchorID": "regex-literal-table",
-    "clusterTags": [
-      "static-format"
-    ],
-    "id": "regex-literal-table",
-    "name": "Regex / Literal Table"
-  },
-  {
-    "anchorID": "profile-format-variant",
-    "clusterTags": [
-      "static-format",
+    "anchorID" : "operation-vocabulary-map",
+    "clusterTags" : [
       "vocabulary-and-mapping"
     ],
-    "id": "profile-format-variant",
-    "name": "Profile Format Variant"
+    "id" : "operation-vocabulary-map",
+    "name" : "Operation Vocabulary Map"
   },
   {
-    "anchorID": "operation-vocabulary-map",
-    "clusterTags": [
+    "anchorID" : "filter-vocabulary-map",
+    "clusterTags" : [
       "vocabulary-and-mapping"
     ],
-    "id": "operation-vocabulary-map",
-    "name": "Operation Vocabulary Map"
+    "id" : "filter-vocabulary-map",
+    "name" : "Filter Vocabulary Map"
   },
   {
-    "anchorID": "filter-vocabulary-map",
-    "clusterTags": [
-      "vocabulary-and-mapping"
-    ],
-    "id": "filter-vocabulary-map",
-    "name": "Filter Vocabulary Map"
-  },
-  {
-    "anchorID": "policy-stack-evaluation-order",
-    "clusterTags": [
+    "anchorID" : "policy-stack-evaluation-order",
+    "clusterTags" : [
       "runtime-lifecycle-and-extension"
     ],
-    "id": "policy-stack-evaluation-order",
-    "name": "Policy Stack Evaluation Order"
+    "id" : "policy-stack-evaluation-order",
+    "name" : "Policy Stack Evaluation Order"
   },
   {
-    "anchorID": "compiled-profile-source",
-    "clusterTags": [
+    "anchorID" : "compiled-profile-source",
+    "clusterTags" : [
       "runtime-lifecycle-and-extension"
     ],
-    "id": "compiled-profile-source",
-    "name": "Compiled Profile Source"
+    "id" : "compiled-profile-source",
+    "name" : "Compiled Profile Source"
   }
 ]

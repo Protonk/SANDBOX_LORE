@@ -1,68 +1,68 @@
 [
   {
-    "concept": "sbpl-profile",
-    "regions": [
+    "concept" : "sbpl-profile",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "sbpl-parameterization",
-    "regions": [
+    "concept" : "sbpl-parameterization",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "operation",
-    "regions": [
+    "concept" : "operation",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "filter",
-    "regions": [
+    "concept" : "filter",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "metafilter",
-    "regions": [
+    "concept" : "metafilter",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "decision",
-    "regions": [
+    "concept" : "decision",
+    "regions" : [
       "orientation",
       "concepts"
     ]
   },
   {
-    "concept": "action-modifier",
-    "regions": [
+    "concept" : "action-modifier",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "profile-layer",
-    "regions": [
+    "concept" : "profile-layer",
+    "regions" : [
       "orientation",
       "concepts",
       "environment"
     ]
   },
   {
-    "concept": "sandbox-extension",
-    "regions": [
+    "concept" : "sandbox-extension",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix",
@@ -70,80 +70,80 @@
     ]
   },
   {
-    "concept": "policy-lifecycle-stage",
-    "regions": [
+    "concept" : "policy-lifecycle-stage",
+    "regions" : [
       "orientation",
       "appendix"
     ]
   },
   {
-    "concept": "binary-profile-header",
-    "regions": [
+    "concept" : "binary-profile-header",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "operation-pointer-table",
-    "regions": [
+    "concept" : "operation-pointer-table",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "policy-node",
-    "regions": [
+    "concept" : "policy-node",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "policygraph",
-    "regions": [
+    "concept" : "policygraph",
+    "regions" : [
       "orientation",
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "regex-literal-table",
-    "regions": [
+    "concept" : "regex-literal-table",
+    "regions" : [
       "concepts",
       "appendix"
     ]
   },
   {
-    "concept": "profile-format-variant",
-    "regions": [
+    "concept" : "profile-format-variant",
+    "regions" : [
       "concepts",
       "appendix",
       "state"
     ]
   },
   {
-    "concept": "operation-vocabulary-map",
-    "regions": [
+    "concept" : "operation-vocabulary-map",
+    "regions" : [
       "concepts",
       "state"
     ]
   },
   {
-    "concept": "filter-vocabulary-map",
-    "regions": [
+    "concept" : "filter-vocabulary-map",
+    "regions" : [
       "concepts",
       "state"
     ]
   },
   {
-    "concept": "policy-stack-evaluation-order",
-    "regions": [
+    "concept" : "policy-stack-evaluation-order",
+    "regions" : [
       "orientation",
       "concepts"
     ]
   },
   {
-    "concept": "compiled-profile-source",
-    "regions": [
+    "concept" : "compiled-profile-source",
+    "regions" : [
       "orientation",
       "appendix",
       "state"
