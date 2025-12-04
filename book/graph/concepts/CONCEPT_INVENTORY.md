@@ -70,6 +70,7 @@ These concepts are about how profiles look when compiled and stored: the concret
   - Next steps are to finish tag-aware node decoding (per-tag variable-width layouts carrying literal/regex indices), rerun anchor scans to map anchors→nodes→filter IDs with guardrails for key anchors, and cross-check against strong anchors in system profiles.
 - **Stable mapping artifacts**
   - Static witnesses for this host/build are published under `book/graph/mappings/`: system profile digests (`system_profiles/digests.json`), op-table buckets/signatures and vocab alignment (`op_table/*`), per-tag literal/regex layouts (`tag_layouts/tag_layouts.json`), and anchor→filter bindings (`anchors/anchor_filter_map.json`). These can be cited directly for Binary Profile Header, Operation Pointer Table, Profile Format Variant, PolicyGraph/Policy Node, and Filter evidence without rerunning probes.
+  - `system_profiles/attestations.json` ties those static snapshots to tag-layout/vocab versions, anchor coverage, blob hashes, and runtime links (when available), giving a mechanically checkable bridge from compiled profile → literals/anchors → runtime expectations on this host.
 
 ---
 

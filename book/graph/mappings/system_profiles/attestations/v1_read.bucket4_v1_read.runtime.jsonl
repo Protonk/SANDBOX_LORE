@@ -1,0 +1,39 @@
+{
+  "anchors": [],
+  "format_variant": "modern-heuristic",
+  "length": 396,
+  "literal_strings": [
+    "y default)",
+    "(allow file-read*)",
+    "(allow process-exec*)",
+    "(allow file-read* (subpath \"/System\"))",
+    "(allow file-read* (subpath \"/usr\"))",
+    "(allow file-read* (subpath \"/bin\"))",
+    "(allow file-read* (subpath \"/sbin\"))",
+    "(allow file-read* (subpath \"/dev\"))",
+    "(allow file-read-metadata (literal \"/private\"))",
+    "(allow file-read-metadata (literal \"/private/tmp\"))",
+    "(allow file-read-metadata (literal \"/tmp\"))"
+  ],
+  "op_count": null,
+  "op_entries": [],
+  "profile_id": "v1_read.bucket4_v1_read.runtime",
+  "runtime_link": {
+    "profile_id": "bucket4:v1_read",
+    "status": "ok",
+    "trace_path": "book/graph/mappings/runtime/traces/bucket4_v1_read.jsonl"
+  },
+  "sections": {
+    "literals": 380,
+    "nodes": 0,
+    "op_table": 0
+  },
+  "sha256": "c4b59ce1ada17d736b107369ddfce80e090d041239942982969fa949344f7ebd",
+  "source": "book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+  "tag_counts": {},
+  "tag_layout_version": "782f92d2b2be0635a16c69c29d1a50b48553b560081e8c5f2549a64f161a1718",
+  "vocab_versions": {
+    "filters_generated_at": "2025-11-28T01:37:58Z",
+    "ops_generated_at": "2025-11-28T01:25:13Z"
+  }
+}
