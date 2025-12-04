@@ -32,6 +32,7 @@ class Summary:
     remainder_stride12_hex: str
     literal_strings: List[Dict[str, Any]]
     decoder: Dict[str, Any]
+    nodes_raw: List[Dict[str, Any]] | None = None
 
 
 def load_blob(path: Path) -> bytes:
@@ -107,6 +108,22 @@ def summarize_blob(blob: bytes, strides: Sequence[int] = (8, 12, 16)) -> Summary
     op_count = header.operation_count or 0
     op_entries = _op_entries(blob, op_count) if op_count else []
     decoded = decoder.decode_profile_dict(blob)
+    # Emit raw nodes for debugging/layout work: tag byte + halfwords
+    nodes_raw: List[Dict[str, Any]] | None = None
+    if sections.nodes:
+        stride = 12  # default modern stride for Sonoma baseline
+        recs = len(sections.nodes) // stride
+        nodes_raw = []
+        for idx in range(recs):
+            rec = sections.nodes[idx * stride : (idx + 1) * stride]
+            nodes_raw.append(
+                {
+                    "offset": idx * stride,
+                    "tag": rec[0],
+                    "bytes": rec.hex(),
+                    "halfwords": [int.from_bytes(rec[i : i + 2], "little") for i in range(0, stride, 2)],
+                }
+            )
     stride_stats = [_stride_stats(sections.nodes, s) for s in strides]
     return Summary(
         format_variant=header.format_variant,
@@ -131,4 +148,5 @@ def summarize_blob(blob: bytes, strides: Sequence[int] = (8, 12, 16)) -> Summary
             "literal_strings": decoded.get("literal_strings"),
             "sections": decoded.get("sections"),
         },
+        nodes_raw=nodes_raw,
     )
