@@ -580,8 +580,9 @@ func main() {
         warnings: warnings,
         checked: ["concepts", "strategies", "runtime_expectations"]
     )
-    ensureDirectory(for: root.appendingPathComponent("book/graph/validation/validation_report.json").path)
-    writeValidationReport(report, to: root.appendingPathComponent("book/graph/validation/validation_report.json").path)
+    let reportPath = root.appendingPathComponent("book/graph/concepts/validation/validation_report.json").path
+    ensureDirectory(for: reportPath)
+    writeValidationReport(report, to: reportPath)
 }
 
 main()

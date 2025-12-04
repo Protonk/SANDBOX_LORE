@@ -4,6 +4,15 @@ This directory holds the code/metadata for validating the concept clusters again
 
 Current status: sandbox-exec-based semantic and lifecycle runs are deferred while the harness is being repaired; static ingestion and vocab mapping are current.
 
+The Swift `book/graph` generator also writes a lightweight validation report here as `validation_report.json`, capturing schema/ID checks (e.g., concept IDs referenced by strategies and runtime expectations). Run it via:
+
+```
+cd book/graph
+swift run
+```
+
+Keep Swift-side validation non-fatal: extend the report rather than blocking generation when checks fail.
+
 ## Files
 
 - `tasks.py` – declarative mapping of validation tasks to examples, inputs, and expected artifacts. Used as the source of truth for which examples exercise which clusters.
