@@ -10,15 +10,16 @@ Map how this host’s `libsandbox` encodes filter arguments into the `field2` u1
 
 ## Plan & execution log
 
-- Phase A — SBPL→blob matrix (encoder output view): matrix v1 (regex-free) compiled via `sbpl_compile`; nodes parsed via `profile_ingestion` + custom helper with local tag overrides; table emitted to `out/matrix_v1_field2_encoder_matrix.json`. Tag2/tag3 treated as meta/no payload; tag10 field[2] = filter ID, payload slot remains ambiguous (field[3]/[4]).
-- Phase B — libsandbox internals (encoder implementation view): not started (next step; proceed to serializer/encoder site identification).
+- Phase A — SBPL→blob matrix (encoder output view): matrix v1 (regex-free) compiled via `sbpl_compile`; nodes parsed via `profile_ingestion` + custom helper with local tag overrides; table emitted to `out/matrix_v1_field2_encoder_matrix.json`. Tag2/tag3 treated as meta/no payload; tag10 resolved header-aligned layout (tag=h0.low, filter_id=h1, payload=h2) via full-context socket-domain 2→30 variants; matrix now exposes both `filter_id_raw` and `payload_raw` for tag10. Tag8 left filter-id-only.
+- Phase B — libsandbox internals (encoder implementation view): serializer RE in progress; buffer at builder+0xe98 confirmed; `_emit_network` ordering/widths noted; finalize path to `__sandbox_ms` and explicit store offsets still pending.
 
 ## Evidence & artifacts
 
-- `sb/matrix_v1.sb` (regex-free baseline); `sb/matrix_v2.sb` (arg-variance probe; decode pending infra fixes).
-- `out/tag_layout_overrides.json` (local, staged) for tags 2/3/8/10; tag10 now resolved: tag=h0.low, filter_id=h1, payload=h2 (confirmed via matrix_v1_domain2/30).
-- `out/matrix_v1.sb.bin`, `out/matrix_v1.inspect.json`, `out/matrix_v1.op_table.json`, `out/matrix_v1_field2_encoder_matrix.json` (Phase A table with tag2/3 excluded).
-- `out/matrix_v2.sb.bin`, `out/matrix_v2.inspect.json`, `out/matrix_v2_field2_encoder_matrix.json` (decode currently skewed to tag6/5; not relied on).
+- `sb/matrix_v1.sb` (regex-free baseline); `sb/matrix_v2.sb` (arg-variance probe; decode currently skewed to tag6/5; not used for conclusions).
+- `sb/matrix_v1_domain2.sb`, `sb/matrix_v1_domain30.sb` (full-context copies of matrix_v1 with socket-domain 2 vs 30) used to confirm tag10 payload offset.
+- `out/tag_layout_overrides.json` (local, staged) for tags 2/3/8/10; tag10 resolved: tag=h0.low, filter_id=h1, payload=h2 (header-aligned).
+- `out/matrix_v1.sb.bin`, `out/matrix_v1.inspect.json`, `out/matrix_v1.op_table.json`, `out/matrix_v1_field2_encoder_matrix.json` (Phase A table with tag2/3 excluded; tag10 includes payload).
+- `out/matrix_v2.sb.bin`, `out/matrix_v2.inspect.json`, `out/matrix_v2_field2_encoder_matrix.json` (decode skewed; not relied on).
 - `dump_raw_nodes.py` (heuristic node dumper used in Phase B; now also supports `--header` to slice using `inspect_profile`’s `nodes_start`/`nodes_len`). For `matrix_v1.sb.bin` it locates a 12-byte-stride node block at [0,480) and shows the seven records closest to the literal pool as:
   - 396: [0, 0, 2560, 21, 10, 1]
   - 408: [3328, 6, 9, 2, 3072, 1]
@@ -44,11 +45,5 @@ Map how this host’s `libsandbox` encodes filter arguments into the `field2` u1
 
 ## Next steps
 
-- Stand up Phase A probes and capture the matrix.
-- Begin Phase B disassembly once Phase A is stable.
-- ### Phase A v1 Status (frozen)
-
-- Tag roles: tag2/tag3 are classified as meta/header (no payload) and are excluded from the encoder matrix. Payload-bearing tags in scope are currently {10,8,6,9}.
-- Tag10 layout: field[2] is confirmed as the filter ID slot (values {6,8,9,10} matching the Filter Vocabulary Map). The payload slot for tag10 remains ambiguous between field[3] and field[4] based on matrix_v1; Phase A does not resolve this.
-- Matrices: `matrix_v1_field2_encoder_matrix.json` provides a clean, vocab-aligned baseline; `matrix_v2` exists but its decode is skewed (tag6/5 only) and is not used for conclusions.
-- Next step: Phase B will inspect libsandbox’s profile serializer to identify the per-tag10 store pattern, resolve the payload offset, and feed that back into tag_layout_overrides and future Phase A matrices.
+- Continue Phase B disassembly: confirm buffer finalize path into `__sandbox_ms`; tie `_emit_network`/`_record_condition_data` offsets to the tag10 payload slot for a code-level provenance.
+- Optional follow-up: if needed later, resolve tag8 payload via the same “vary one arg” header-aligned method; currently treated as filter-id-only.

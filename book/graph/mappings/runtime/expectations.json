@@ -1,0 +1,54 @@
+{
+  "baseline": "sonoma-14.4.1-23E224-arm64",
+  "generated_at": "2025-12-04T14:25:40.881964Z",
+  "host": {
+    "build": "23E224",
+    "kernel": "23.4.0",
+    "machine": "arm64",
+    "product": "macOS",
+    "version": "14.4.1"
+  },
+  "profile_format_variant": "modern-heuristic",
+  "profiles": [
+    {
+      "notes": null,
+      "probe_count": 3,
+      "profile_id": "runtime:allow_all",
+      "profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+      "profile_sha256": "19832eb9716a32459bee8398c8977fd1dfd575fa26606928f95728462a833c92",
+      "status": "ok",
+      "trace_path": "book/graph/mappings/runtime/traces/runtime_allow_all.jsonl"
+    },
+    {
+      "notes": null,
+      "probe_count": 3,
+      "profile_id": "runtime:metafilter_any",
+      "profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
+      "profile_sha256": "8bbfd0929503ef11229ee4b48e7a0b6beb05af81fdbc441c7409a10464865b66",
+      "status": "ok",
+      "trace_path": "book/graph/mappings/runtime/traces/runtime_metafilter_any.jsonl"
+    },
+    {
+      "notes": null,
+      "probe_count": 3,
+      "profile_id": "bucket4:v1_read",
+      "profile_path": "book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
+      "profile_sha256": "c4b59ce1ada17d736b107369ddfce80e090d041239942982969fa949344f7ebd",
+      "status": "ok",
+      "trace_path": "book/graph/mappings/runtime/traces/bucket4_v1_read.jsonl"
+    },
+    {
+      "notes": "runtime results diverged from expected allow/deny matrix",
+      "probe_count": 3,
+      "profile_id": "bucket5:v11_read_subpath",
+      "profile_path": "book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
+      "profile_sha256": "172766f1897fb960eaf6bf32f25a7335419934ce39184b4426b57103a62cb8ad",
+      "status": "partial",
+      "trace_path": "book/graph/mappings/runtime/traces/bucket5_v11_read_subpath.jsonl"
+    }
+  ],
+  "sip_status": "enabled",
+  "source_logs": [
+    "book/graph/concepts/validation/out/semantic/runtime_results.json"
+  ]
+}
