@@ -18,3 +18,10 @@ Extending it:
 - Add new Swift types for the JSON slice you want to validate (e.g., attestations, runtime manifests).
 - Parse and validate against the generated `concepts.json` and host manifests.
 - Emit a small report under `book/graph/validation/` rather than failing silently.
+
+Directory map (agent quick reference):
+- `Sources/` – Swift generator/validator (see `main.swift`).
+- `concepts/` – Concept inventory source (markdown), generated JSON, and validation metadata.
+- `mappings/` – Stable host-specific IR (vocab, op_table, anchors, tag_layouts, system_profiles, runtime).
+- `regions/` – Generated chapter/section map for the textbook.
+- `validation/` – Validation reports from the Swift pass and any future schema checks.

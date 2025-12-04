@@ -568,10 +568,13 @@ func writeJSON<T: Encodable>(_ value: T, to path: String) {
 
 func main() {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+
+    // Parse concept sources from substrate + inventory markdown
     let concepts = parseConcepts(
         conceptsPath: root.appendingPathComponent("substrate/Concepts.md").path,
         inventoryPath: root.appendingPathComponent("book/graph/concepts/CONCEPT_INVENTORY.md").path
     )
+    // Enrich with validation-friendly detail blocks
     let conceptDetails = parseConceptDetails(
         mapPath: root.appendingPathComponent("book/graph/concepts/validation/Concept_map.md").path,
         concepts: concepts
@@ -581,6 +584,7 @@ func main() {
     let regions = textRegions(base: root)
     let bindings = conceptTextBindings()
 
+    // Emit core JSON artifacts
     writeJSON(concepts, to: root.appendingPathComponent("book/graph/concepts/concepts.json").path)
     writeJSON(conceptDetails, to: root.appendingPathComponent("book/graph/concepts/concept_map.json").path)
     writeJSON(strategyList, to: root.appendingPathComponent("book/graph/concepts/validation/strategies.json").path)
@@ -588,7 +592,7 @@ func main() {
     writeJSON(regions, to: root.appendingPathComponent("book/graph/regions/text_regions.json").path)
     writeJSON(bindings, to: root.appendingPathComponent("book/graph/concepts/concept_text_map.json").path)
 
-    // Lightweight validation report
+    // Lightweight validation report (non-fatal)
     var errors: [String] = []
     var warnings: [String] = []
     let conceptIDs = Set(concepts.map { $0.id })
