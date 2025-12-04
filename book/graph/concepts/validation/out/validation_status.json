@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-04T20:22:22Z",
+  "generated_at": "2025-12-04T20:23:05Z",
   "schema": {
     "job_id": "string",
     "status": "ok|partial|brittle|blocked|skipped",
@@ -14,129 +14,8 @@
   },
   "jobs": [
     {
-      "job_id": "vocab:sonoma-14.4.1",
-      "status": "ok",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib"
-      ],
-      "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/ops.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json"
-      ],
-      "timestamp": "2025-12-04T20:22:22Z",
-      "tags": [
-        "vocab",
-        "host:sonoma-14.4.1",
-        "smoke",
-        "golden"
-      ],
-      "notes": "Verified libsandbox vocab against canonical mappings.",
-      "metrics": {
-        "ops": 196,
-        "filters": 93
-      }
-    },
-    {
-      "job_id": "experiment:field2",
-      "status": "ok",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/field2-filters/out/field2_inventory.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/field2-filters/out/unknown_nodes.json"
-      ],
-      "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json"
-      ],
-      "timestamp": "2025-12-04T20:22:22Z",
-      "tags": [
-        "experiment:field2",
-        "experiment",
-        "field2",
-        "smoke"
-      ],
-      "notes": "Normalized field2 inventory and unknown nodes into IR.",
-      "metrics": {
-        "profiles": 32,
-        "unknown_nodes": 0
-      }
-    },
-    {
-      "job_id": "experiment:runtime-checks",
-      "status": "ok",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/out/runtime_results.json"
-      ],
-      "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json"
-      ],
-      "timestamp": "2025-12-04T20:22:22Z",
-      "tags": [
-        "experiment:runtime-checks",
-        "experiment",
-        "runtime",
-        "smoke",
-        "golden"
-      ],
-      "notes": "Normalized runtime_results into shared IR.",
-      "metrics": {
-        "entries": 1
-      }
-    },
-    {
-      "job_id": "experiment:system-profile-digest",
-      "status": "ok",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/system-profile-digest/out/digests.json"
-      ],
-      "outputs": [
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
-      ],
-      "timestamp": "2025-12-04T20:22:22Z",
-      "tags": [
-        "experiment:system-profile-digest",
-        "experiment",
-        "system-profiles",
-        "golden"
-      ],
-      "notes": "Normalized system profile digests into IR.",
-      "metrics": {
-        "profiles": 3
-      }
-    },
-    {
       "job_id": "validation:schema-check",
-      "status": "blocked",
+      "status": "ok",
       "host": {
         "product": "macOS",
         "version": "14.4.1",
@@ -148,15 +27,15 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/validation_status.json"
       ],
       "outputs": [],
-      "timestamp": "2025-12-04T20:22:22Z",
+      "timestamp": "2025-12-04T20:23:05Z",
       "tags": [
         "meta",
         "schema"
       ],
-      "notes": "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/runtime/runtime_signatures.json missing host/build metadata; /Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/runtime/runtime_signatures.json missing source_jobs metadata",
+      "notes": "status files conform to schema",
       "metrics": {
-        "checked": 4,
-        "errors": 2
+        "checked": 6,
+        "errors": 0
       }
     }
   ]

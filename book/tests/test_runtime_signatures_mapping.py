@@ -14,8 +14,9 @@ def load_signatures():
 
 def test_signatures_present_and_host():
     data = load_signatures()
-    assert data.get("status") == "ok"
-    host = data.get("host") or {}
+    meta = data.get("metadata") or {}
+    assert meta.get("status") == "ok"
+    host = meta.get("host") or {}
     assert host.get("build") == "23E224"
     sigs = data.get("signatures") or {}
     for key in GOLDEN:

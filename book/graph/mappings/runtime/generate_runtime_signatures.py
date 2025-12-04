@@ -89,15 +89,17 @@ def main() -> None:
     host = runtime_ir.get("host") or field2_ir.get("host") or {}
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     mapping = {
-        "generated_at": now,
-        "status": "ok",
-        "host": host,
-        "inputs": [str(RUNTIME_IR.relative_to(ROOT)), str(FIELD2_IR.relative_to(ROOT))],
-        "source_jobs": list(EXPECTED_JOBS),
+        "metadata": {
+            "host": host,
+            "generated_at": now,
+            "inputs": [str(RUNTIME_IR.relative_to(ROOT)), str(FIELD2_IR.relative_to(ROOT))],
+            "source_jobs": list(EXPECTED_JOBS),
+            "status": "ok",
+            "notes": "Derived from validation IR (smoke tag).",
+        },
         "signatures": signatures,
         "expected_matrix": runtime_ir.get("expected_matrix"),
         "field2_summary": field2_summary,
-        "notes": "Derived from validation IR (smoke tag).",
     }
     OUT_PATH.write_text(json.dumps(mapping, indent=2, sort_keys=True))
     print(f"[+] wrote {OUT_PATH}")
