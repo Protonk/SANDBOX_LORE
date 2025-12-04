@@ -85,6 +85,7 @@ We intentionally avoid guessing a full Operation Vocabulary Map; that belongs to
   - Built `out/op_table_map.json` capturing op_entries, unique buckets, and operation sets per profile, including filter annotations.
 - **3. Cross-check with semantic probes (optional stretch)**
   - Reused the shared decoder to walk from each op-table entrypoint and record per-entry signatures (tag_counts, field2 distributions, reachable literals), stored in `out/op_table_signatures.json`.
+  - Added an in-process runtime spot-check for the `[6,…,5]` profile (`v12_read_subpath_mach`) via `runtime_probe.c`: `sandbox_init` succeeded; `mach-lookup` (`com.apple.cfprefsd.agent`) returned `kr=0`; file reads of both the allowed subpath and `/etc/hosts` returned `EPERM`. Runtime results recorded in `out/runtime_signatures.json` (schema `provisional`).
 - **4. Documentation and reporting**
   - Kept dated notes in `Notes.md`.
   - Summarized findings and open questions in `ResearchReport.md`.

@@ -84,3 +84,14 @@
 - SBPL wrapper now available (`book/api/SBPL-wrapper/wrapper --sbpl/--blob`); runtime-checks harness can invoke compiled blobs via `run_probes.py`.
 - Next actionable: reuse the wrapper to run a small runtime spot-check for representative profiles (e.g., `v1_read`, `v11_read_subpath`) and correlate observed allow/deny with the op-table buckets already mapped.
 - Quick spot-check (sandbox_reader without creating targets): `v1_read` denies missing file `/tmp/op_table_probe.txt` (expected once file exists); `v11_read_subpath` denies `/tmp/op_table_probe_denied.txt` as expected. For a meaningful probe, create fixtures in `/tmp` before running.
+
+## Pass 10
+
+- Added an in-process runtime probe (`runtime_probe.c`) to apply SBPL via `sandbox_init` (no process-exec shims) and exercise file-read and mach-lookup in one process.
+- Targeted the `[6,…,5]` profile `v12_read_subpath_mach` with real fixtures (`/tmp/foo/allowed.txt`, `/etc/hosts`, `com.apple.cfprefsd.agent`). `sandbox_init` succeeded; `mach_lookup` returned `kr=0`; both file reads returned `EPERM` (allowed and denied paths alike), highlighting that this strict profile still blocks even the intended subpath at runtime.
+- Captured the runtime signature in `out/runtime_signatures.json` with schema `provisional` for `v12_read_subpath_mach` (op-table unique entries {5,6}). This can be joined to op_table_map once `ops.json` exists to label the lone bucket 5.
+
+## Pass 11
+
+- Ran the control profile `v11_read_subpath` (bucket {5} only) through `runtime_probe` with the same fixtures. `sandbox_init` succeeded, but both reads returned `EPERM`; `mach_lookup` (not allowed by the profile) returned `kr=1100`. Added this signature to `out/runtime_signatures.json`.
+- Quick sandbox-exec sanity with a minimal process-exec shim still failed (signal 6), so the harness denial likely reflects missing bootstrap allowances rather than a regression in `runtime_probe`. Treat both runtime signatures as provisional context for later ops.json joins, not as promoted behavior.

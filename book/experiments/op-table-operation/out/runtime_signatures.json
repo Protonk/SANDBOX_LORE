@@ -1,0 +1,50 @@
+{
+  "schema": "provisional",
+  "profiles": {
+    "v12_read_subpath_mach": {
+      "profile": "sb/v12_read_subpath_mach.sb",
+      "op_table_unique_entries": [
+        5,
+        6
+      ],
+      "runtime_signature": {
+        "mach_lookup": {
+          "service": "com.apple.cfprefsd.agent",
+          "kr": 0
+        },
+        "file_read_allow": {
+          "path": "/tmp/foo/allowed.txt",
+          "rc": -1,
+          "errno": 1
+        },
+        "file_read_deny": {
+          "path": "/etc/hosts",
+          "rc": -1,
+          "errno": 1
+        }
+      }
+    },
+    "v11_read_subpath": {
+      "profile": "sb/v11_read_subpath.sb",
+      "op_table_unique_entries": [
+        5
+      ],
+      "runtime_signature": {
+        "mach_lookup": {
+          "service": "com.apple.cfprefsd.agent",
+          "kr": 1100
+        },
+        "file_read_allow": {
+          "path": "/tmp/foo/allowed.txt",
+          "rc": -1,
+          "errno": 1
+        },
+        "file_read_deny": {
+          "path": "/etc/hosts",
+          "rc": -1,
+          "errno": 1
+        }
+      }
+    }
+  }
+}
