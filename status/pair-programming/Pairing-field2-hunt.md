@@ -1,12 +1,11 @@
-This report follows the [`field2` investigation](../../book/experiments/field2-filters/Report.md) on macOS 14.4.1, tracing how an initial suspicion that older node-layout heuristics might not scale turned into a structured web–codex pairing over static graphs and kernel artifacts. It documents how that collaboration converged on a bounded negative result—`filter_arg_raw` is a plain u16 payload whose high values are structurally understood but still unmapped—and the concrete experiments, tooling, and guardrails that now anchor any future `field2` work on this host.
+# Zero knowledge macOS Reverse Engineering 
+> Validating policy graphs from scratch through pair programming
+
+This report looks at what happened when we ask an agent pair, starting from the project’s substrate and mappings but no pre-baked reversing lore, to validate a very specific question about the Sonoma sandbox: what the third node slot (“field2”) actually does in practice. It follows a single run on macOS 14.4.1 (23E224, Apple Silicon, SIP enabled) in which web and codex agents worked against decoded system/probe profiles, inventories, and Ghidra-based kernel slices to test concrete hypotheses about hi/lo bit usage and in-kernel node layouts for the third PolicyGraph field.
+
+Along the way, the run became a test of the project’s working discipline as much as of `field2` itself: static artifacts stayed in charge, validation status was carried through every step, and the web↔codex loop continued to add value even after public sources had nothing new to say. The result is a bounded negative answer about `filter_arg_raw` on this host, a clearer sense of how to structure “zero knowledge” kernel inquiries, and a set of shared examples and tools that future agents can lean on instead of replaying the same search.
 
 ## Report
-
-The investigation began with a small but stubborn set of high `field2` values in otherwise well-understood system profiles, prompting a focused pass over decoded graphs and synthetic probes to see whether these numbers could be tied to known Filters or literal indices. That phase produced stable inventories and unknown-node tables, clarified where each interesting value lives in the PolicyGraphs, and showed that low `field2` values line up cleanly with the canonical filter vocabulary while the highs remain sparse and profile-specific.
-
-From there, the work moved into the kernel: pairing Ghidra-based searches and helper/evaluator scripts with the static view of profiles to test concrete hypotheses about hi/lo bit usage and in-memory node layouts. Those scans located the evaluator and its u16 reader, ruled out any visible 0x3fff/0x4000-style bit splits or magic-constant compares for the high values, and found no evidence of a Blazakis-style node array reachable from `_eval`, reinforcing the view that `filter_arg_raw` is consumed as a plain 16-bit payload in a VM-like evaluator.
-
-The result is a deliberately negative but useful closure: the `field2` slot is now treated as `filter_arg_raw`, with all known high values structurally bounded but semantically unmapped, and further progress explicitly deferred to new experiments that must build on these artifacts rather than repeat earlier guesses. Along the way, the pairing left behind reusable tooling (Ghidra scaffolding, node-struct scanners, profile inventories) and guardrails that prevent future work on this host from silently reintroducing disproven assumptions about hi/lo flags or simple node structs.
 
 ### Background and early suspicion
 
@@ -33,7 +32,7 @@ For example, the inventory records the `bsd` tail node like this:
 }
 ```
 
-Given Blazakis-era layouts, the natural instinct was to treat `field2` as `filter_arg`, assume a struct like `[byte tag, byte filter, u16 arg, u16 edge0, u16 edge1]`, and go hunting for that pattern in the kernel: fixed stride arrays, base+index addressing, hi/lo bitfields for flags. The initial suspicion was that Sonoma’s kernel might have moved past that simple representation, but this was only a suspicion; nothing in the codebase or public sources had yet forced the issue.
+Given Blazakis-era layouts, the natural instinct was to treat `field2` as `filter_arg`, assume a struct like `[byte tag, byte filter, u16 arg, u16 edge0, u16 edge1]`, and go hunting for that pattern in the kernel: fixed stride arrays, base+index addressing, hi/lo bitfields for flags. The initial suspicion was that Sonoma’s kernel might have moved past that simple representation, but this was only a suspicion; nothing in the codebase or public sources had yet forced the issue, and those older layouts were treated—as `substrate/Canon.md` explicitly insists—as hypotheses to test, not as ground truth for this host.
 
 ### Bringing the web agent into the loop
 
@@ -48,7 +47,7 @@ The web agent confirmed that public work still describes the third 16-bit slot a
 * there are internal filters and predicates not exposed in SBPL or libsandbox strings, and
 * those internal filters may encode extra semantics in the argument bits,
 
-but the details are not written down. On this host, the “mystery” values are a small, fixed set—0x4114, 0x0a00, 0x2a00, 0xe00, 0xffff and the mid-range IDs 165/166/170/174/115/109—that only appear in the curated system blobs and a handful of probes.
+but the details are not written down. On this host, the “mystery” values are a small, fixed set—0x4114, 0x0a00, 0x2a00, 0xe00, 0xffff and the mid-range IDs 165/166/170/174/115/109—that only appear in the curated system blobs and a handful of probes, and the web agent’s role was to frame them, not to name their semantics.
 
 Given that, the web agent recommended:
 
@@ -89,7 +88,7 @@ From there, the human user largely stepped out, and the interaction became a str
 
 There were a few distinct phases.
 
-First, the environment had to be made workable. Headless [Ghidra](../../book/api/ghidra/README.md) runs were blocked by the usual JDK selection prompt and writes under the real `$HOME`. The web agent explained how Ghidra locates its settings directory and `java_home.save` cache, and suggested redirecting both to repo-local paths via JVM properties and environment variables, then seeding a local `java_home.save`. The codex agent implemented that pattern; once in place, `analyzeHeadless` could run against the BootKernelCollection and reuse an existing project without any interactive prompts. That setup became reusable infrastructure for everything that followed and is now the standard recipe for kernel tasks under `dumps/ghidra/out/14.4.1-23E224`.
+First, the environment had to be made workable. Headless [Ghidra](../../book/api/ghidra/README.md) runs were blocked by the usual JDK selection prompt and writes under the real `$HOME`. The web agent explained how Ghidra locates its settings directory and `java_home.save` cache, and suggested redirecting both to repo-local paths; the codex agent implemented that pattern so `analyzeHeadless` could run against the BootKernelCollection and reuse an existing project without interactive prompts. That setup became reusable infrastructure for everything that followed and is now the standard recipe for kernel tasks under `dumps/ghidra/out/14.4.1-23E224`.
 
 Second, the codex agent built and used a small family of Ghidra scripts:
 
@@ -102,7 +101,7 @@ At each stage, the web agent read the summaries, connected them back to the conc
 The codex agent’s findings can be summarized at this level:
 
 * `__read16` really is a plain u16 read from the profile stream, with callers sometimes masking back to 0xffff but never testing for the high `field2` constants directly.
-* `_eval` is a central evaluator, but it presents as a bytecode VM: it reads a tag/opcode byte from `[profile_base + cursor]`, checks bounds, dispatches via a jump table, and lets helpers interpret operands; one arm uses a 24-bit immediate with masks like 0xffffff and 0x7fffff.
+* `_eval` is a central evaluator, but it presents as a bytecode VM: it reads a tag/opcode byte from `[profile_base + cursor]`, checks bounds, dispatches via a jump table, and lets helpers interpret operands; one arm uses a 24-bit immediate masked with 0xffffff.
 * No 0x3fff/0x4000/0xc000 masks or high-constant compares show up in `_eval` or the immediate operand-decode helpers.
 
 Those helper and evaluator entrypoints are recorded verbatim in `field2_evaluator.json`, so later experiments can relocate them without repeating the whole search.
@@ -116,7 +115,7 @@ Those scans, built from the web agent’s high-level patterns, were aimed square
 
 ### Exhausting the obvious explanations
 
-In parallel with the kernel work, the decoded graphs were being combed for patterns that might suggest an alternate explanation for high `field2` values: literal or regex indices, parameter tables, or graph-level metafilters. Those hypotheses were systematically knocked down:
+In parallel with the kernel work, the decoded graphs were being combed for patterns that might suggest an alternate explanation for high `field2` values: literal or regex indices, parameter tables, or graph-level metafilters. Those hypotheses were systematically knocked down, and each closed path was reflected back into the inventories and notes rather than left as a vague impression:
 
 * high values did not match literal table indices, offsets, or any simple linear transformation thereof;
 * their presence was tightly tied to rich, mixed profiles (e.g., require-all network + flow-divert) studied in the [probe-op-structure experiment](../../book/experiments/probe-op-structure/Report.md) and to specific tails, not scattered randomly; and
@@ -124,11 +123,11 @@ In parallel with the kernel work, the decoded graphs were being combed for patte
 
 On the kernel side, the sequence of hypotheses and results went roughly as follows:
 
-* If the kernel were splitting `filter_arg_raw` into hi/lo bits using masks like 0x3fff/0x4000, we would expect to see those masks (or equivalent bit tests) in the evaluator. The codex agent’s searches turned up none; masking was uniformly 0xffff, just preserving the u16 range.
-* If high `field2` values were being singled out as magic constants, we would expect to see immediate values like 0x0a00, 0x4114, 0x2a00, 0xffff showing up in sandbox kext code. Immediate scans and focused disassembly around `_eval` and its helpers did not reveal any such comparands.
-* If the kernel still had an in-memory node array matching the decoded layout, we would expect to find functions that do `base + (index * stride)` and then read a byte and two halfwords from small offsets. The dedicated struct scans, restricted to the sandbox kext and functions reachable from `_eval`, reported no convincing instances of that pattern.
+* If the kernel were splitting `filter_arg_raw` into hi/lo bits using masks like 0x3fff/0x4000, we would expect to see those masks in the evaluator; none appeared, and masking was uniformly 0xffff, just preserving the u16 range.
+* If high `field2` values were being singled out as magic constants, we would expect to see immediate values like 0x0a00, 0x4114, 0x2a00, 0xffff in sandbox kext code; immediate scans and focused disassembly around `_eval` and its helpers did not.
+* If the kernel still had an in-memory node array matching the decoded layout, we would expect to find functions that do `base + (index * stride)` and then read a byte and two halfwords from small offsets; dedicated struct scans over the sandbox kext functions reachable from `_eval` reported no convincing instances.
 
-Each of these avenues was explored with scripts, recorded outputs, and concrete addresses; each came back negative for this host. In practice that meant multiple passes of `kernel_field2_mask_scan`, `kernel_imm_search`, and `kernel_node_struct_scan.py` over the sandbox kext slice for build 23E224. By the end of the run, the combination of:
+Each of these avenues was explored with scripts, recorded outputs, and concrete addresses; each came back negative for this host, including multiple passes of `kernel_field2_mask_scan`, `kernel_imm_search`, and `kernel_node_struct_scan.py` over the sandbox kext slice for build 23E224. By the end of the run, the combination of:
 
 * public knowledge about how the historical format behaved,
 * [decoded graph inventories](../../book/experiments/field2-filters/out/field2_inventory.json) and [unknown-node tables](../../book/experiments/field2-filters/out/unknown_nodes.json), and
@@ -154,7 +153,7 @@ That closure has several concrete advantages:
 
 * It prevents future agents or contributors from silently re-running the same “maybe there’s a node array / hi-bit flag” lines of attack every time `field2` comes up.
 * It clarifies that further progress on `field2` mapping will require genuinely new work—dynamic analysis of specific helpers, or a userland `libsandbox` compiler study—rather than more fine-grained heuristics over the same KC.
-* It leaves behind improved tooling and wiring: reliable headless Ghidra on this host, reusable scan scripts, and schema-tagged outputs that can be fed into later experiments. In practice this means the `book/api/ghidra` scaffold, the `find_field2_evaluator` and `kernel_node_struct_scan` tasks, and their outputs under `dumps/ghidra/out/14.4.1-23E224/` now serve as the common entrypoint for any kernel/evaluator work the textbook needs, not just this one trouble.
+* It leaves behind improved tooling and wiring: more reliable headless Ghidra on this host, reusable scan scripts, and schema-tagged outputs that can be fed into later experiments. In practice this means the `book/api/ghidra` scaffold, the `find_field2_evaluator` and `kernel_node_struct_scan` tasks, and their outputs under `dumps/ghidra/out/14.4.1-23E224/` now serve as the common entrypoint for any kernel/evaluator work the textbook needs, not just this one trouble.
 
 The jumping-off points are therefore fairly crisp: if the project wants to learn more about high `field2` values, it can design a new experiment that either:
 
@@ -165,6 +164,14 @@ Either way, the current experiment’s job is done; its role is to be a fixed ba
 
 ## On structured agent pairing
 
-This result depended on a deliberate split between a web-facing agent and a repo-local codex agent. The web agent never touched the Sonoma host or its artifacts; its job was to keep the historical picture of Seatbelt in view, propose lines of attack, and set stopping rules that respected the project’s invariants. The codex agent, in turn, stayed inside this repo and machine, turning those proposals into concrete scripts, experiment runs, and Ghidra tasks. Critically, this loop did not require expert guidance by a human, merely situated action.
+This result depended on a deliberate split between a web-facing agent and a repo-local codex agent. The web agent never touched the Sonoma host or its artifacts; its job was to keep the historical picture of Seatbelt in view, propose lines of attack, and set stopping rules that respected the project’s invariants. The codex agent, in turn, stayed inside this repo and machine, turning those proposals into concrete scripts, experiment runs, and Ghidra tasks against the fixed Sonoma baseline.
 
-That division of labour mattered because the main outcome was “no, but not in the way we expected.” Suspicions about hi/lo flags and node arrays are easy to form and hard to retire; having one agent hold the conceptual map and another produce the inventories, dumps, and scans made it easier to decide when a hypothesis had really been exhausted for this host. When both views aligned on “VM-style evaluator, raw u16 payload, high values still unmapped,” the project gained a stable negative result with a clear trail back to the work that produced it. 
+That division of labour mattered because the main outcome was “no, but not in the way we expected.” Suspicions about hi/lo flags and node arrays are easy to form and hard to retire; having one agent hold the conceptual map and another produce the inventories, dumps, and scans made it easier to decide when a hypothesis had really been exhausted for this host. When both views aligned on “VM-style evaluator, raw u16 payload, high values still unmapped,” the project gained a stable negative result with a clear trail back to the work that produced it—and a concrete example of how to structure similar “zero knowledge” runs in the future.
+
+## Conclusion
+
+Our outcome this is that on this host, the third node slot is best described as `filter_arg_raw`: a plain u16 payload whose high values are rare, structurally bounded, and still semantically unmapped, with new tooling in place to keep future work grounded. We also learned the web agent <-> codex agent loop works even when web search is exhausted. We quickly moved past what exists in published work the model searched and the benefits of a partner did not drop. This suggests that the value is not only in the web search, but in the dyadic exchange.
+
+Beyond that, this work nudges the project into better long-term habits: it treats negative results as first-class artifacts rather than private hunches, reinforces the practice of threading validation status and inventories into every claim, and exercises the shared Ghidra and decoder APIs in a way that will make future experiments easier to compare and audit. Even if `field2` itself remains only partially understood, the investigation tightened the feedback loop between substrate concepts, mapping datasets, and reverse-engineering tools on this host.
+
+The above benefits sound airy and ethereal. They are, in a sense. The quality of work and the speed of the loop in agentic coding is bound up in the richness and clarity of examples showing paths for agents to follow. A "nudge" for agents is an example of best practices, one they will take seriously, but only probalistically. This is the first. The rest will be easier. 
