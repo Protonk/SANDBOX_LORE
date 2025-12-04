@@ -426,7 +426,7 @@ Despite the progress above, several important pieces remain unknown or only loos
    - We do not yet have a clean way, within this experiment alone, to walk from a specific Operation ID to a distinct region of the node graph and say “these nodes belong to `file-read*` vs `mach-lookup`”.
 
 5. **Connection to vocabulary maps**
-   - There is still no Operation or Filter Vocabulary Map (`ops.json`, `filters.json`) available for this host.
+  - Operation and Filter Vocabulary Maps now exist (`book/graph/mappings/vocab/ops.json` 196 entries, `filters.json` 93 entries, status: ok). Use these to tag op_table entrypoints and filter IDs when comparing variants.
    - We intentionally avoid labeling any numeric tag or field value with a human-readable Filter or Operation name; that will require canonical vocabulary artifacts and possibly runtime traces.
 
 ---

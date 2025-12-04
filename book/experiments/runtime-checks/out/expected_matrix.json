@@ -77,6 +77,30 @@
         }
       ],
       "notes": "require-any literal foo/bar"
+    },
+    "bucket5:v11_read_subpath": {
+      "blob": "book/experiments/op-table-operation/sb/build/v11_read_subpath.sb.bin",
+      "probes": [
+        {
+          "name": "read_/tmp/foo",
+          "operation": "file-read*",
+          "target": "/tmp/foo",
+          "expected": "allow"
+        },
+        {
+          "name": "read_/tmp/bar",
+          "operation": "file-read*",
+          "target": "/tmp/bar",
+          "expected": "deny"
+        },
+        {
+          "name": "write_/tmp/foo",
+          "operation": "file-write*",
+          "target": "/tmp/foo",
+          "expected": "deny"
+        }
+      ],
+      "notes": "Bucket-5 subpath profile: allow read under /tmp/foo; deny other reads/writes."
     }
   }
 }

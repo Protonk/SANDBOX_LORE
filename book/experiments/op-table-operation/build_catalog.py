@@ -37,6 +37,9 @@ def main() -> None:
     op_map = load_json(OUT / "op_table_map.json") or {}
     sig_list = load_json(OUT / "op_table_signatures.json") or []
     runtime = load_json(OUT / "runtime_signatures.json") or {}
+    vocab_ops_path = Path(__file__).resolve().parents[2] / "graph" / "mappings" / "vocab" / "ops.json"
+    vocab_ops = load_json(vocab_ops_path) or {}
+    ops_index = {entry["name"]: entry["id"] for entry in vocab_ops.get("ops", []) if isinstance(entry, dict)}
 
     map_profiles = op_map.get("profiles", {})
     runtime_profiles = runtime.get("profiles", {}) if isinstance(runtime, dict) else {}
@@ -52,6 +55,7 @@ def main() -> None:
         op_entries = map_rec.get("op_entries") or rec.get("op_entries") or []
         decoder_signatures = sig_map.get(name)
         runtime_entry = runtime_profiles.get(name)
+        op_ids = [ops_index.get(op) for op in rec.get("ops") or []]
 
         record = {
             "profile_id": name,
@@ -59,6 +63,7 @@ def main() -> None:
             "op_count": rec.get("op_count"),
             "op_entries": op_entries,
             "sbpl_ops": rec.get("ops") or [],
+            "op_ids": op_ids,
             "filters": rec.get("filters") or [],
             "decoder_signatures": decoder_signatures,
             "profile_path": f"sb/{name}.sb",

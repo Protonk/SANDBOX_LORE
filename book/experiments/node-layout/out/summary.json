@@ -8,7 +8,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -384,7 +386,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 88,
+        "literal_start": 411,
         "nodes": 381,
+        "nodes_start": 30,
         "op_table": 14
       },
       "tag_counts": {
@@ -763,7 +767,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -1123,7 +1129,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -1496,7 +1504,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -1871,7 +1881,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -2231,7 +2243,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -2604,7 +2618,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -2977,7 +2993,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -3352,7 +3370,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -3714,7 +3734,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -4076,7 +4098,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 74,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -4440,7 +4464,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 72,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -4805,7 +4831,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 74,
+        "literal_start": 405,
         "nodes": 377,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -5183,7 +5211,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 100,
+        "literal_start": 411,
         "nodes": 381,
+        "nodes_start": 30,
         "op_table": 14
       },
       "tag_counts": {
@@ -5561,7 +5591,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 106,
+        "literal_start": 413,
         "nodes": 383,
+        "nodes_start": 30,
         "op_table": 14
       },
       "tag_counts": {
@@ -5953,7 +5985,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 102,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -6328,7 +6362,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 125,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -6707,7 +6743,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 125,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -7081,7 +7119,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -7454,7 +7494,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -7833,7 +7875,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 157,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -8213,7 +8257,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 74,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -8582,7 +8628,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 193,
+        "literal_start": 405,
         "nodes": 377,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -8981,7 +9029,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 231,
+        "literal_start": 405,
         "nodes": 377,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -9385,7 +9435,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 283,
+        "literal_start": 405,
         "nodes": 377,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -9784,7 +9836,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -10161,7 +10215,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 74,
+        "literal_start": 407,
         "nodes": 379,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -10557,7 +10613,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -10930,7 +10988,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 27,
+        "literal_start": 413,
         "nodes": 387,
+        "nodes_start": 26,
         "op_table": 10
       },
       "tag_counts": {
@@ -11305,7 +11365,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 393,
         "nodes": 365,
+        "nodes_start": 28,
         "op_table": 12
       },
       "tag_counts": {
@@ -11668,7 +11730,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 86,
+        "literal_start": 413,
         "nodes": 383,
+        "nodes_start": 30,
         "op_table": 14
       },
       "tag_counts": {
@@ -12058,7 +12122,9 @@
       "op_table_offset": 16,
       "sections": {
         "literal_pool": 98,
+        "literal_start": 413,
         "nodes": 383,
+        "nodes_start": 30,
         "op_table": 14
       },
       "tag_counts": {

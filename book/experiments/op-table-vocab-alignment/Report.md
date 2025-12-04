@@ -132,7 +132,7 @@ This experiment sits between the structural experiments and the validation tooli
   - Reused upstream summaries to build `out/op_table_vocab_alignment.json`, recording per-profile operations, op-table indices, and, once vocab became available, operation IDs and filter IDs.
   - Summarized the alignment method and status in `ResearchReport.md`.
 - **4. Interpretation and limits**
-  - Performed a first-pass interpretation of bucket↔Operation ID relationships (e.g., mach-lookup in buckets {5,6}, file-read*/write*/network in {3,4}) and recorded them in `ResearchReport.md`.
+  - Performed a first-pass interpretation of bucket↔Operation ID relationships (e.g., mach-lookup (op ID 96) in buckets {5,6} with filters driving bucket 6; file-read*/write*/network in {3,4}) and recorded them in `ResearchReport.md`.
 - **5. Turnover and integration**
   - Kept detailed notes in `Notes.md` and maintained `ResearchReport.md` as the main narrative for this alignment layer.
 
