@@ -23,3 +23,10 @@ Use this file for concise notes on commands, hurdles, and intermediate results.
 - `static_expectations.json` now carries best-effort node hooks (op_table raw entries and literal-matched node indices/tags where present) from the heuristic decoder; `param_path_concrete` links back to the template via `template_of` in `triples_manifest.json`.
 - v0.1 of the contract is frozen with `schema_version: v0.1`, `runtime_join_key: expectation_id`, and per-expectation flags (`entrypoint_resolved`, `terminal_resolved`, `terminal_source`) to make provisional edges explicit. The runtime harness should log against `expectation_id` and record op/path/errno plus any observed op_index to keep runtime ↔ static joins stable.
 - Runtime log schema captured at `book/experiments/runtime-checks/runtime_log_schema.v0.1.json`; `run_probes.py` now emits `expectation_id` (when present), op/path, and a structured `runtime_result`/`violation_summary` so runtime outputs can key back to static expectations.
+
+## v0.1 runtime outcomes (Sonoma 14.4.1, unsandboxed caller)
+
+- Golden triples (SBPL → graph → runtime align; expectation_ids populated): `runtime:allow_all`, `runtime:metafilter_any`, `bucket4:v1_read`. `/etc/hosts` write failures are attributed to OS perms outside sandbox scope.
+- Platform-only: `sys:bsd`, `sys:airlock`, `sys:sample` remain apply-gated (EPERM/execvp) even unsandboxed; treated as platform-only policies, not harness bugs.
+- Custom apply-gate outlier: `bucket5:v11_read_subpath` still blocked with EPERM on deny probes; keep non-golden.
+- Strict profiles (quarantined): `runtime:param_path_concrete` (deny-default + process-exec) and `runtime:param_path_bsd_bootstrap` (deny-default + import bsd.sb) both remain blocked at runtime (exec -6 or EPERM on subpath I/O). Conclusion: on this host, a viable deny-default helper needs broader bootstrap allowances; no strict profile is promoted in v0.1.

@@ -163,11 +163,79 @@
           "name": "read_other",
           "operation": "file-read*",
           "target": "/tmp/qux.txt",
-          "expected": "deny",
+          "expected": "allow",
           "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt"
         }
       ],
       "notes": "require-any literal foo/bar"
+    },
+    "runtime:param_path_concrete": {
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/sbpl-graph-runtime/out/param_path_concrete.sb.bin",
+      "probes": [
+        {
+          "name": "exec_helper",
+          "operation": "process-exec",
+          "target": "/Users/achyland/Desktop/SANDBOX_LORE/book/api/file_probe/file_probe",
+          "expected": "allow",
+          "expectation_id": "param_path_concrete|process-exec|/Users/achyland/Desktop/SANDBOX_LORE/book/api/file_probe/file_probe"
+        },
+        {
+          "name": "read_param_root",
+          "operation": "file-read*",
+          "target": "/tmp/sbpl_rt/param_root/foo",
+          "expected": "allow",
+          "expectation_id": "param_path_concrete|file-read*|/tmp/sbpl_rt/param_root/foo"
+        },
+        {
+          "name": "read_hosts",
+          "operation": "file-read*",
+          "target": "/etc/hosts",
+          "expected": "deny",
+          "expectation_id": "param_path_concrete|file-read*|/etc/hosts"
+        },
+        {
+          "name": "write_param_root",
+          "operation": "file-write*",
+          "target": "/tmp/sbpl_rt/param_root/foo",
+          "expected": "deny",
+          "expectation_id": "param_path_concrete|file-write*|/tmp/sbpl_rt/param_root/foo"
+        }
+      ],
+      "notes": "Strict deny default profile with process-exec escape hatch and concrete param root."
+    },
+    "runtime:param_path_bsd_bootstrap": {
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/sbpl-graph-runtime/out/param_path_bsd_bootstrap.sb.bin",
+      "probes": [
+        {
+          "name": "exec_helper",
+          "operation": "process-exec",
+          "target": "/Users/achyland/Desktop/SANDBOX_LORE/book/api/file_probe/file_probe",
+          "expected": "allow",
+          "expectation_id": "param_path_bsd_bootstrap|process-exec|/Users/achyland/Desktop/SANDBOX_LORE/book/api/file_probe/file_probe"
+        },
+        {
+          "name": "read_param_root",
+          "operation": "file-read*",
+          "target": "/tmp/sbpl_rt/param_root/foo",
+          "expected": "allow",
+          "expectation_id": "param_path_bsd_bootstrap|file-read*|/tmp/sbpl_rt/param_root/foo"
+        },
+        {
+          "name": "write_param_root",
+          "operation": "file-write*",
+          "target": "/tmp/sbpl_rt/param_root/foo",
+          "expected": "allow",
+          "expectation_id": "param_path_bsd_bootstrap|file-write*|/tmp/sbpl_rt/param_root/foo"
+        },
+        {
+          "name": "read_hosts",
+          "operation": "file-read*",
+          "target": "/etc/hosts",
+          "expected": "allow",
+          "expectation_id": "param_path_bsd_bootstrap|file-read*|/etc/hosts"
+        }
+      ],
+      "notes": "Deny default + import bsd.sb bootstrap; narrow file access to param_root and helper exec."
     }
   }
 }

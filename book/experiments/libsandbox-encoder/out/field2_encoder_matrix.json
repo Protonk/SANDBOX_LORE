@@ -599,29 +599,6 @@
         "Bsub",
         "L/tmp/encoder/"
       ]
-    },
-    {
-      "node_offset": 384,
-      "tag": 3,
-      "record_size": 12,
-      "fields": [
-        2816,
-        2,
-        9,
-        10,
-        1536
-      ],
-      "op_hint": "network-outbound (hint)",
-      "filter_id": 9,
-      "filter_name": "control-name",
-      "field2_raw": 9,
-      "field2_hi": 0,
-      "field2_lo": 9,
-      "literal_refs": [
-        "\nBlit",
-        "KIOUserClient",
-        "L/tmp/encoder/"
-      ]
     }
   ]
 }

@@ -165,7 +165,7 @@ def build_matrix(sb_path: Path, out_blob: Path, out_json: Path) -> None:
         tag = node.get("tag")
         rec_size, edge_idx, payload_idx = layouts.get(tag, (12, (0, 1), ()))
         if not payload_idx:
-            continue  # skip nodes without a defined payload slot
+            continue  # meta/header nodes (no payload)
         # For now, assume single payload slot; if multiple, take first
         payload_field_index = payload_idx[0] if payload_idx else None
         if payload_field_index is None or payload_field_index >= len(fields):

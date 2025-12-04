@@ -69,6 +69,16 @@ KEY_SPECIFIC_RULES = {
         "(allow process-exec*)",
         '(allow file-read* (literal "/tmp/foo.txt"))',
         '(allow file-read* (literal "/tmp/bar.txt"))',
+    ],
+    "runtime:param_path_concrete": [
+        "(allow process-exec*)",
+        '(allow file-read* (subpath "/tmp/sbpl_rt/param_root"))',
+    ]
+    ,
+    "runtime:param_path_bsd_bootstrap": [
+        "(allow process-exec*)",
+        '(allow file-read* (subpath "/tmp/sbpl_rt/param_root"))',
+        '(allow file-write* (subpath "/tmp/sbpl_rt/param_root"))',
     ]
 }
 
@@ -77,6 +87,8 @@ PROFILE_PATHS = {
     "bucket5:v11_read_subpath": ROOT / "book/experiments/op-table-operation/sb/v11_read_subpath.sb",
     "runtime:allow_all": ROOT / "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
     "runtime:metafilter_any": ROOT / "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
+    "runtime:param_path_concrete": ROOT / "book/experiments/sbpl-graph-runtime/profiles/param_path_concrete.sb",
+    "runtime:param_path_bsd_bootstrap": ROOT / "book/experiments/sbpl-graph-runtime/profiles/param_path_bsd_bootstrap.sb",
     "sys:airlock": ROOT / "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
     "sys:bsd": ROOT / "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
 }

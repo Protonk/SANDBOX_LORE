@@ -17,7 +17,7 @@ Map how this host’s `libsandbox` encodes filter arguments into the `field2` u1
 
 - `sb/matrix_v1.sb` (regex-free baseline).
 - `out/tag_layout_overrides.json` (local, staged) for tags 2/3/8/10.
-- `out/matrix_v1.sb.bin` (compiled blob), `out/matrix_v1.inspect.json` (inspect_profile snapshot), `out/matrix_v1.op_table.json` (op_table summary), `out/field2_encoder_matrix.json` (Phase A table generated with local tag layouts).
+- `out/matrix_v1.sb.bin` (compiled blob), `out/matrix_v1.inspect.json` (inspect_profile snapshot), `out/matrix_v1.op_table.json` (op_table summary), `out/field2_encoder_matrix.json` (Phase A table generated with local tag layouts; tag2/tag3 treated as meta/no payload).
 - Pending: `out/encoder_sites.json`.
 
 ## Blockers / risks

@@ -5,16 +5,18 @@
       "record_size_bytes": 12,
       "edge_fields": [0, 1],
       "payload_fields": [],
+      "role": "meta",
       "status": "hypothesis",
-      "notes": "Likely non-filter/meta node; seen as tag 2 with self-referential fields in tiny probes. Skip payload extraction."
+      "notes": "Meta/header scaffolding; fields stable across SBPL variants. Exclude from encoder matrix (no payload)."
     },
     {
       "tag": 3,
       "record_size_bytes": 12,
       "edge_fields": [0, 1],
-      "payload_fields": [2],
-      "status": "partial",
-      "notes": "Matches tag 3 samples from probe-op-structure (payload carries filter-ish IDs such as 8/7)."
+      "payload_fields": [],
+      "role": "meta",
+      "status": "hypothesis",
+      "notes": "Meta/scaffolding observed with constant fields in tiny profiles; exclude from encoder matrix."
     },
     {
       "tag": 8,
