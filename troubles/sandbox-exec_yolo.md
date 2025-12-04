@@ -1,11 +1,13 @@
-# Seatbelt runtime harness – sandbox-exec path (State: macOS 14.4.1 / SIP on)
-
-This is a detailed read-out of the sandbox-exec harness work in `book/experiments/runtime-checks/`, keeping to the substrate’s State/Concept vocabulary. Sequence first, narrative summary appended at the end.
+# Seatbelt runtime harness – sandbox-exec path
 
 ## Context
-- Host State: macOS 14.4.1 (23E224), Apple Silicon, SIP enabled.
-- Goal: run the bucket-4 (`v1_read`) and bucket-5 (`v11_read_subpath`) SBPL profiles via sandbox-exec to collect runtime allow/deny traces for the runtime-checks experiment.
-- Harness: `run_probes.py` driving sandbox-exec with SBPL source (not the compiled `.sb.bin`), writing `out/runtime_results.json`.
+
+- Host: Sonoma baseline (see `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`), Apple Silicon, SIP enabled.
+- Experiment: `book/experiments/runtime-checks/`.
+- Goal: run the bucket-4 (`v1_read`) and bucket-5 (`v11_read_subpath`) SBPL profiles via `sandbox-exec` to collect runtime allow/deny traces.
+- Harness: `run_probes.py` driving `sandbox-exec` with SBPL source (not the compiled `.sb.bin`), writing `out/runtime_results.json`.
+
+## Sequence of events and investigation
 
 ## Sequence of events and investigation
 
@@ -131,5 +133,17 @@ Using Orientation’s “stack and graph” mental model, the three failure mode
   - A “minimal” SBPL Profile that looks correct at the SBPL and PolicyGraph level can still be unusable on a modern State because it conflicts with Environment-level invariants.
   - Runtime experiments must be designed with those invariants in mind; sometimes the harness needs its own small profile layer (our shims) that keeps the system viable while still letting you carve out a narrow region of the operation/filter space to study.
 
-## Narrative summary (appended)
-Started with pure SBPL profiles and a simple sandbox-exec harness; everything died with exit 71 because Seatbelt blocked `process-exec` for `cat`/`sh`. Verified sandbox-exec works when permissive. Added process-exec shim and absolute paths; bucket-4 recovered, but bucket-5 kept aborting (exit -6/SIGABRT). Layered in system file-read and tmp metadata allows; still crashed. Finally, for the bucket-5 subpath profile, flipped to `(allow default)` with targeted denies for `/tmp/bar` reads and `/tmp/foo` writes. That avoided the abort and produced the expected verdicts on the probed operations. Tradeoff: the runtime shim now diverges from the strict `(deny default)` policy, so unprobed operations may be over-permitted. Crash root cause under the strict profile remains unsolved; no sandboxd telemetry was visible, only crash reports pointing at Seatbelt/dyld resource issues. System profiles remain untested pending SBPL paths.
+## Status
+
+- Status: **partial / usable with caveats**.
+- On this host:
+  - `sandbox-exec` is functional with permissive profiles.
+  - bucket-4 runs as intended with a small shim that allows `process-exec*` and basic loader paths.
+  - bucket-5 requires a profile that uses `(allow default)` plus targeted denies, rather than a pure `(deny default)` subpath profile, to avoid SIGABRT.
+- The harness now produces the expected runtime results for the probed operations, but:
+  - the shimmed bucket-5 profile does not globally match the strict SBPL shape,
+  - the exact crash mechanism under a strict `(deny default)` remains unresolved and is plausibly due to loader/resource starvation.
+
+## Narrative summary
+
+Started with pure SBPL profiles and a simple `sandbox-exec` harness; everything died with exit 71 because Seatbelt blocked `process-exec` for `cat`/`sh`. Verified `sandbox-exec` works when permissive. Added a `process-exec*` shim and absolute paths; bucket-4 recovered, but bucket-5 kept aborting (exit -6/SIGABRT). Layered in system file-read and tmp metadata allows; still crashed. Finally, for the bucket-5 subpath profile, flipped to `(allow default)` with targeted denies for `/tmp/bar` reads and `/tmp/foo` writes. That avoided the abort and produced the expected verdicts on the probed operations. Tradeoff: the runtime shim now diverges from the strict `(deny default)` policy, so unprobed operations may be over-permitted. Crash root cause under the strict profile remains unsolved; system profiles remain untested pending SBPL paths and a more robust, in-process probe.

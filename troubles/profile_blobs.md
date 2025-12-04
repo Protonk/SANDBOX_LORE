@@ -1,7 +1,8 @@
-# Profile Blobs – Current State and Blockers
+# Profile blobs – current state and blockers
 
 ## Problem
-We need to apply compiled sandbox profile blobs (`.sb.bin`, e.g., system profiles `airlock.sb.bin`, `bsd.sb.bin`) at runtime. SBPL-mode wrapper works; blob-mode is still missing because we cannot locate or resolve the private apply API (`sandbox_apply` / similar) on this host.
+
+We need to apply compiled sandbox profile blobs (`.sb.bin`), including system profiles such as `airlock.sb.bin` and `bsd.sb.bin`, at runtime. The SBPL-mode wrapper works, and we can now call the private apply API (`sandbox_apply` / `sandbox_apply_container`) via `libsandbox.1.dylib`, but blob mode still behaves differently for platform profiles: custom blobs apply cleanly, while some shipped platform blobs fail with `EPERM`.
 
 ## What we tried
 1. **Library discovery**
@@ -31,16 +32,16 @@ The host environment hides `libsandbox` inside the dyld cache and we don’t hav
 ## Fallback
 If blob mode remains unavailable, disassemble system blobs to SBPL (`sbdis`) and use the SBPL wrapper (accepting lossy conversion) for runtime probes.
 
-## Update (2026-XX-XX)
+## Update
 - Found dyld caches under `/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/` (including `dyld_shared_cache_arm64e` and map files). No extractor installed; `extract_cache.sh` stub added in `book/api/SBPL-wrapper` but fails until `dyld-shared-cache-extractor` (or equivalent) is available.
 - System SBPL text profiles are present on disk under `/System/Library/Sandbox/Profiles/` (e.g., `airlock.sb`, `bsd.sb`), so SBPL fallback is viable without decompiling blobs.
 - Blob mode remains blocked pending cache extraction and symbol inspection for `sandbox_apply`/`sandbox_apply_container`.
 
-## Update (cache extracted externally)
+## Update: cache extracted externally
 - `libsystem_sandbox.dylib` is available under `book/graph/mappings/dyld-libs/usr/lib/system/libsystem_sandbox.dylib` (extracted from the cache). `nm` shows sandbox-related symbols (`sandbox_check*`, `sandbox_register_app_bundle_*`, etc.) but no `sandbox_apply`/`sandbox_apply_container` exports in the global symbol table.
 - Next: inspect the extracted dylib for private symbols (internal, non-exported) or consider that blob-apply may be non-exported on this build; SBPL fallback remains viable.
 
-## Update (libsandbox.1 extracted)
+## Update: libsandbox.1 extracted
 - Extracted `libsandbox.1.dylib` from the cache using `dyld-shared-cache-extractor` (cache path `/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld/dyld_shared_cache_arm64e`); placed at `book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib`.
 - `nm -gU libsandbox.1.dylib` shows `sandbox_apply`, `sandbox_apply_container`, `sandbox_compile_*`, `sandbox_create_params/set_param/free_params/free_profile` exported. Blob-mode wiring can target this dylib directly.
 
@@ -48,7 +49,7 @@ If blob mode remains unavailable, disassemble system blobs to SBPL (`sbdis`) and
 - Wired runtime harness to use compiled blobs for `sys:airlock`/`sys:bsd` via the wrapper’s `--blob` path. Probes now fail with `sandbox initialization failed: no version specified` when applying `.sb.bin` blobs via `sandbox_runner`/`sandbox_reader`. This indicates the blob mode is still going through SBPL init rather than `sandbox_apply`, or the wrapper is not invoked for these probes.
 - Next steps: ensure `run_probes.py` actually invokes the blob-aware wrapper for blob-mode entries, and that `sandbox_apply` is called instead of `sandbox_init`. If issues persist, check whether the compiled blobs need a version header or different apply flags.
 
-## Update (EPERM on platform blobs)
+## Update: EPERM on platform blobs
 
 - After wiring `run_probes.py` to route blob-mode profiles through `book/api/SBPL-wrapper/wrapper --blob`, system blobs (`airlock.sb.bin`, `bsd.sb.bin`) now fail at apply with `sandbox_apply: Operation not permitted` before exec. Custom blobs (e.g., `allow_all.sb.bin`) apply cleanly.
 - Likely cause: these are platform profile layers that the kernel only installs when handed down by secinit/sandboxd with platform credentials; ad hoc `sandbox_apply` from an unsigned/non-platform process is rejected.
@@ -80,3 +81,16 @@ If blob mode remains unavailable, disassemble system blobs to SBPL (`sbdis`) and
 - Direct `wrapper --blob` on shipped blobs:
   - `airlock` fails `sandbox_apply: Operation not permitted`.
   - `bsd` path failed earlier due to execvp permission when invoking the wrapped command; need a simpler noop exec to confirm apply status, but SBPL compiled/apply suggests base blob may be acceptable if exec hurdles are cleared.
+
+## Status
+
+- Status: **partial**.
+- On this host:
+  - blob-mode apply works for custom and recompiled SBPL profiles (e.g., `allow_all.sb.bin`, compiled `bsd`),
+  - shipped `airlock` profile remains gated by `EPERM` under both SBPL and blob apply.
+- Impact:
+  - runtime probes that need to observe the exact platform `airlock` policy via blob mode remain blocked,
+  - SBPL text imports are available as a fallback for most system profiles, with the caveat that compiler behavior may differ from the shipped blobs.
+- Further work should:
+  - clarify whether the `EPERM` gate is purely caller-credential based or tied to header flags like `maybe_flags=0x4000`,
+  - and document any additional provenance checks in the experiments that rely on platform blobs.

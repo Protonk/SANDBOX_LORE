@@ -1,7 +1,7 @@
-# Field2 ↔ Filter Mapping – Research Report (Sonoma baseline)
+# Field2 ↔ Filter Mapping – Research Report (Sonoma baseline) — **Status: complete (negative)**
 
 ## Purpose
-Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know yet.
+Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know yet. This experiment is now **closed**: we have exhausted SBPL probing and kernel struct hunting on this host without finding a kernel-side hi/lo split or a Blazakis-style `[tag, filter, u16 arg, u16 edge0, u16 edge1]` node array. `filter_arg_raw` is read as a plain u16 in the kernel VM; the remaining unknowns stay unmapped.
 
 ## Baseline & evidence backbone
 - Host: Sonoma baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
@@ -19,9 +19,10 @@ Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyG
   - New probe sentinel → `field2=0xffff` (hi=0xc000, lo=0x3fff) in `airlock_system_fcntl` probe on tag 1, no literals.
   - `sample` sentinel → 3584 (lo=0xe00) on tag 0, op-empty.
 - **Ghidra (arm64e sandbox kext `/tmp/sandbox_arm64e/com.apple.security.sandbox`)**
-  - Helper hunt now prefers `__read16` at `fffffe000b40fa1c`: bounds checks + `ldrh/strh`, no masking. `__read24` (halfword+byte) still used elsewhere.
+  - Helper hunt prefers `__read16` at `fffffe000b40fa1c`: bounds checks + `ldrh/strh`, no masking. `__read24` (halfword+byte) still used elsewhere.
   - `_eval` at `fffffe000b40d698` masks on 0x7f / 0xffffff / 0x7fffff and tests bit 0x17; no `0x3fff`/`0x4000` masks found. Dumped in `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
   - No hits for 0x3fff/0x4000 in evaluator path; earlier mask scans also negative.
+  - **Struct hunt outcome (definitive):** a dedicated headless scan (`book/api/ghidra/scripts/kernel_node_struct_scan.py`) over all functions reachable from `_eval` in the sandbox kext found **no** fixed-stride `[byte + ≥2×u16]` node layout. Outputs: `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/node_struct_scan.txt` and `.json` (0 candidates; only two noisy, non-sandboxy hits). Conclusion: on 14.4.1 the evaluator behaves as a bytecode VM over a profile blob, not a directly indexed node array.
 
 ## Recent probes & inventories
 - Added `sb/bsd_ops_default_file.sb` (ops 0,10,21–27) → only low path/socket IDs + 3584 sentinel; no bsd highs.
@@ -41,21 +42,21 @@ Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyG
 - Resolution: using `JAVA_TOOL_OPTIONS="-Dapplication.settingsdir=$PWD/.ghidra-user -Duser.home=$PWD/dumps/ghidra/user"` plus repo-local HOME/GHIDRA_USER_HOME, headless now runs and dumps caller disassembly to `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/read16_callers.txt`. Quick scan: callers mask the payload with `0xffff` in control flow but do not compare against the high field2 constants (0xa00/0x4114/0x2a00/0xffff/0xe00); paths mostly gate indices and bail to error stubs.
 
 ## Open questions
-- Where (if anywhere) are hi/lo bits of field2 interpreted? Current evaluator dump shows no 0x3fff/0x4000 masking.
+- Where (if anywhere) are hi/lo bits of field2 interpreted? Current evaluator dump shows no 0x3fff/0x4000 masking; any semantics must arise from raw-u16 compares/table lookups that we have not yet found.
 - What semantics drive the bsd tail high (16660) and the airlock highs (165/166/10752) and the new 0xffff sentinel?
 - Can flow-divert 2560 be tied to a specific filter or tag pattern beyond “triple socket predicates + literal”?
 
-## Next steps (handoff-ready)
-1) **Inspect `__read16` consumers**: In Ghidra, walk the caller list above and record how each uses `filter_arg_raw` (direct compares vs table indices). Note any constants or table shapes that could bind the known unknowns (16660/2560/10752/0xffff/3584). Add snippets/notes to the experiment before promoting any mapping.
-2) **Structural write-ups per cluster**: Using `unknown_nodes.json` + `tag_layouts.json`, document for bsd/airlock/flow-divert/sample the exact tag shapes, fan-in/out, successors, and op reach, so later helper findings can be slotted in without re-deriving structure.
-3) **One last guided probe pass (optional)**: If needed, craft minimal variants that preserve op reach for a target unknown (e.g., bsd ops 0–27, airlock op 162, flow-divert triple require-all) and tweak only default/metafilter wrapping. Record any collapse to low IDs as a negative; stop SBPL iteration thereafter.
-4) **Mapping hygiene**: Keep hi/lo split (`field2_hi = raw & 0xc000`, `field2_lo = raw & 0x3fff`) and op reach in outputs; do not add shared mappings until kernel + structural evidence line up.
+## Final status and follow-on (experiment closed)
+- SBPL probing and tag/layout census are complete for this host; unknowns remain unmapped but tightly bounded by `unknown_nodes.json`.
+- Kernel-side struct search is complete: no fixed node array is visible; `_eval` + helpers read `filter_arg_raw` as a raw u16 without hi/lo masking.
+- Further progress would require new work *outside* this experiment scope (e.g., targeted helper-level compares/table lookups or userland `libsandbox` compiler analysis). Record any such follow-ups as new experiments or troubles, not here.
 
 ## Artifacts index
 - Inventories: `book/experiments/field2-filters/out/field2_inventory.json`, `out/unknown_nodes.json`.
 - Probes: `sb/` sources and `sb/build/*.sb.bin` (including new `bsd_ops_default_file` and `airlock_system_fcntl`).
-- Ghidra: `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/` (`field2_evaluator.json`, `helper.txt`, `eval.txt`, `candidates.json`).
-- Scripts: `harvest_field2.py`, `unknown_focus.py`, `book/api/ghidra/scripts/find_field2_evaluator.py`.
+- Ghidra (evaluator/helper): `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/` (`field2_evaluator.json`, `helper.txt`, `eval.txt`, `candidates.json`).
+- Ghidra (struct hunt, negative): `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/node_struct_scan.txt` and `.json` (0 candidates).
+- Scripts: `harvest_field2.py`, `unknown_focus.py`, `book/api/ghidra/scripts/find_field2_evaluator.py`, `kernel_node_struct_scan.py`.
 
 ## Risks & constraints
 - High values remain sparse and op-empty (except bsd 16660); false positives from generic scaffolding are likely in tiny probes.

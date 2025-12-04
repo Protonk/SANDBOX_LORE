@@ -1,11 +1,19 @@
-## Narrative Summary
+# Profile ingestion – modern heuristic
 
-Modern profile ingestion was upgraded from “unknown-modern” to a cautious graph-aware heuristic. We now pull an `operation_count` from the preamble, slice the op-table, and split nodes vs literal/regex pools by scanning for printable tails. On `sample.sb.bin` this produces plausible sections (9 ops → 18-byte op table, ~395-byte node area, ~154-byte literals) and keeps legacy decision-tree handling intact. We cannot yet lift filter vocab or node counts because modern node encodings aren’t decoded; vocab generation will need either a richer node parser or an external name↔ID map keyed by OS/build.
+## Context
 
-## Traces
+- Host: Sonoma baseline (see `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`).
+- Script: `profile_ingestion.py`.
+- Goal: upgrade “unknown-modern” profile ingestion to a cautious graph-aware heuristic that can at least recover op-table and section boundaries for modern graph-based blobs.
 
-### Agent comment
-profile_ingestion.py needs to be enhanced to decode modern graph-based blobs sufficiently to extract operation/filter tables (IDs/names/arg schemas) from system and sample profiles, then normalize into graph/mappings/vocab/ keyed by OS/build/format.
+## Summary
+
+- Modern profile ingestion was upgraded from “unknown-modern” to a heuristic that:
+  - pulls an `operation_count` from the preamble,
+  - slices the op-table accordingly,
+  - and splits nodes vs literal/regex pools by scanning for printable tails.
+- On `sample.sb.bin` this produces plausible sections (9 ops → 18-byte op table, ~395-byte node area, ~154-byte literals) while keeping legacy decision-tree handling intact.
+- We still cannot lift filter vocab or node counts for modern blobs because node encodings are not fully decoded; vocab generation will require either a richer node parser or an external name↔ID map keyed by OS/build.
 
 ## Running notes
 
@@ -16,8 +24,8 @@ profile_ingestion.py needs to be enhanced to decode modern graph-based blobs suf
   - Legacy decision-tree path unchanged.
 - Result on `sample.sb.bin`: Header(format_variant='modern-heuristic', operation_count=9, raw_length=583); sections → op_table=18 bytes, nodes=395 bytes, regex_literals=154 bytes.
 - System profiles (`airlock.sb.bin`, `bsd.sb.bin`) now classify as modern-heuristic but still lack node/filter decoding.
-
-### What’s still needed for vocab tables
+ 
+## What’s still needed for vocab tables
 
 - Modern blobs do not embed operation/filter names; only IDs and indices. To emit vocab tables we need:
   - A decoder for modern node records (node tag, filter key codes, literal/regex indices) to at least extract filter key IDs.

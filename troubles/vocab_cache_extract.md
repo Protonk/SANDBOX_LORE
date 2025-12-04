@@ -1,4 +1,4 @@
-# Vocab Cache Extraction (Dec 02, 2025)
+# Vocab cache extraction
 
 ## Issue
 
