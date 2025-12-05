@@ -13,6 +13,7 @@ def load() -> dict:
 def test_coverage_metadata():
     data = load()
     meta = data.get("metadata") or {}
+    assert "generated_at" not in meta
     host = meta.get("host") or {}
     assert host.get("build") == "23E224"
     assert meta.get("source_jobs"), "source_jobs missing from coverage metadata"

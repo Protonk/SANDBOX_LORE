@@ -5,9 +5,13 @@
       "version": "14.4.1",
       "build": "23E224",
       "kernel": "23.4.0",
-      "machine": "arm64"
+      "machine": "arm64",
+      "sip": "enabled"
     },
-    "generated": "2025-12-04T22:40:56Z",
+    "inputs": [
+      "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
+      "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+    ],
     "source_jobs": [
       "experiment:system-profile-digest"
     ],

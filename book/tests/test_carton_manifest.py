@@ -19,6 +19,7 @@ def test_carton_manifest_hashes():
     data = json.loads(MANIFEST.read_text())
     files = data.get("files") or []
     assert files, "manifest contains no files"
+    assert "generated_at" not in data
     for entry in files:
         path = ROOT / entry["path"]
         assert path.exists(), f"manifest path missing: {path}"

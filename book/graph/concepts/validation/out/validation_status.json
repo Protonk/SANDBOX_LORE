@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-04T22:40:56Z",
+  "generated_at": "2025-12-05T04:31:15Z",
   "schema": {
     "job_id": "string",
     "status": "ok|partial|brittle|blocked|skipped",
@@ -31,7 +31,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json"
       ],
-      "timestamp": "2025-12-04T22:40:56Z",
+      "timestamp": "2025-12-05T04:31:15Z",
       "tags": [
         "vocab",
         "host:sonoma-14.4.1",
@@ -41,7 +41,7 @@
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/ops.json": "fcbd568760622b9cbe6d494a8293b4c006cb040aa9160b464bda46504be3e785",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json": "624cb590dc79558af4addd506b7f67878232e74c4d6946598873da2a1fedc23c",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json": "6fb77f2ae8e63c23423bc72c059cbe864f7a3927ee8ab55088dfee37215e0542"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json": "561fe52ff437950552bf0ed889d4c25425a38c2d4e069b580596293b3ad581a8"
       },
       "notes": "Verified libsandbox vocab against canonical mappings.",
       "metrics": {
@@ -67,7 +67,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json"
       ],
-      "timestamp": "2025-12-04T22:40:56Z",
+      "timestamp": "2025-12-05T04:31:15Z",
       "tags": [
         "experiment:field2",
         "experiment",
@@ -76,7 +76,7 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "9ccc9b696f24ae51310a87737c50ef63a274823fef6e6a65de9c080db9695aeb",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json": "8096c0f40fc2ac3392c1a2757e24e2aa738759e579ba7fe85b859059137699e0"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json": "15554d7b1d710dbde30b8b98438134ad147f599ad53613246edc57e49d2fe117"
       },
       "notes": "Normalized field2 inventory and unknown nodes into IR.",
       "metrics": {
@@ -101,7 +101,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json"
       ],
-      "timestamp": "2025-12-04T22:40:56Z",
+      "timestamp": "2025-12-05T04:31:15Z",
       "tags": [
         "experiment:runtime-checks",
         "experiment",
@@ -111,7 +111,7 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json": "9dd2c86352486766ee6c0210ac031bc60bfd7ab8dc3791dcc5654b253f3aaa3d",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "78786aadd4fc9d495762689e4f4eb4e5815a422a8f06e58e3ba11c122c1c3b95"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "ea1c47378cde830ec890246426015881253564e721b56e61ad00ec920c40338b"
       },
       "notes": "Normalized runtime_results into shared IR.",
       "metrics": {
@@ -135,7 +135,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
       ],
-      "timestamp": "2025-12-04T22:40:56Z",
+      "timestamp": "2025-12-05T04:31:15Z",
       "tags": [
         "experiment:system-profile-digest",
         "experiment",
@@ -144,7 +144,7 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "d1215374a853b0f7c10fbaae5a8f3195011bface9347593fc970b11474e207a0",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "b204ae6a87e7e733ba2cd96dcc7c1d7437816d9e70dfbeacc4d3847c7ffe4e2f"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "a5ddaa4a91b405d7a89fe99ec73c67f8ec890af3a5370af660af76ea889976f7"
       },
       "notes": "Normalized system profile digests into IR.",
       "metrics": {

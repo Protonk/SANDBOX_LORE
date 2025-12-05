@@ -16,7 +16,6 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import time
 from pathlib import Path
 from typing import Dict, Any
 
@@ -24,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[4]
 IR_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "system-profile-digest" / "digests_ir.json"
 STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "validation_status.json"
 OUT_PATH = ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json"
+BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 EXPECTED_JOB = "experiment:system-profile-digest"
 
 
@@ -49,18 +49,22 @@ def load_ir(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
+def load_baseline_host() -> Dict[str, Any]:
+    baseline = load_ir(BASELINE_PATH)
+    return baseline.get("host") or {}
+
+
 def main() -> None:
     run_validation()
     job = load_status(EXPECTED_JOB)
     ir = load_ir(IR_PATH)
 
-    host = ir.get("host") or {}
+    host = load_baseline_host()
     profiles = ir.get("profiles") or {}
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     mapping = {
         "metadata": {
             "host": host,
-            "generated": now,
+            "inputs": [str(IR_PATH.relative_to(ROOT)), str(BASELINE_PATH.relative_to(ROOT))],
             "source_jobs": ir.get("source_jobs") or [EXPECTED_JOB],
             "decoder": "book.api.decoder",
         },

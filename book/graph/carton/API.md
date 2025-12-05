@@ -7,11 +7,14 @@ Public interface (guarded by the manifest at `book/graph/carton/CARTON.json`):
 - `book/graph/mappings/runtime/runtime_signatures.json`
 - `book/graph/mappings/system_profiles/digests.json`
 - `book/graph/mappings/carton/operation_coverage.json`
+- `book/graph/mappings/carton/operation_index.json` (concept→artifact index for operations)
+- `book/graph/mappings/carton/profile_layer_index.json` (concept→artifact index for profile layers)
 - Helper module: `book/api/carton/carton_query.py` (public entrypoint; see `book/graph/carton/USAGE_examples.md`).
 
 Error and manifest handling:
 - `book.api.carton.carton_query` reads paths from `CARTON.json`, checks hashes, and raises `CartonDataError` when mappings are missing/malformed or do not match the manifest.
 - Unknown operations raise `UnknownOperationError`; helpers should be ready to handle that when probing for unlisted ops.
+- Host metadata in CARTON mappings is pulled from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`; mappings omit timestamps to stay stable across regenerations.
 - The public query functions otherwise return stable, typed dicts/lists anchored in the CARTON mappings.
 
 Internal plumbing (normally only needed when extending CARTON):

@@ -12,6 +12,7 @@
       "book/graph/mappings/vocab/ops.json",
       "book/graph/mappings/system_profiles/digests.json",
       "book/graph/mappings/runtime/runtime_signatures.json",
+      "book/graph/mappings/carton/operation_coverage.json",
       "book/graph/carton/CARTON.json",
       "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
     ],
@@ -22,218 +23,284 @@
       "vocab:sonoma-14.4.1"
     ],
     "status": "ok",
-    "notes": "Derived purely from CARTON mappings; no experiment out/ is read here."
+    "notes": "Derived from CARTON mappings; coverage drives counts and layer presence."
   },
-  "coverage": {
-    "appleevent-send": {
-      "op_id": 1,
+  "operations": {
+    "default": {
+      "name": "default",
+      "id": 0,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "appleevent-send": {
+      "name": "appleevent-send",
+      "id": 1,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "authorization-right-obtain": {
-      "op_id": 2,
+      "name": "authorization-right-obtain",
+      "id": 2,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "boot-arg-set": {
-      "op_id": 3,
+      "name": "boot-arg-set",
+      "id": 3,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
-    },
-    "darwin-notification-post": {
-      "op_id": 7,
-      "system_profiles": [
-        "sys:airlock",
-        "sys:sample"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 2,
-        "runtime_signatures": 0
-      }
-    },
-    "default": {
-      "op_id": 0,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "default-message-filter": {
-      "op_id": 190,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "device*": {
-      "op_id": 4,
+      "name": "device*",
+      "id": 4,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "device-camera": {
-      "op_id": 5,
+      "name": "device-camera",
+      "id": 5,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "device-microphone": {
-      "op_id": 6,
+      "name": "device-microphone",
+      "id": 6,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "darwin-notification-post": {
+      "name": "darwin-notification-post",
+      "id": 7,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock",
+        "sys:sample"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 2,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "distributed-notification-post": {
-      "op_id": 8,
+      "name": "distributed-notification-post",
+      "id": 8,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:sample"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "dynamic-code-generation": {
-      "op_id": 9,
+      "name": "dynamic-code-generation",
+      "id": 9,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file*": {
-      "op_id": 10,
+      "name": "file*",
+      "id": 10,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-chroot": {
-      "op_id": 11,
+      "name": "file-chroot",
+      "id": 11,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-clone": {
-      "op_id": 12,
+      "name": "file-clone",
+      "id": 12,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-ioctl": {
-      "op_id": 13,
+      "name": "file-ioctl",
+      "id": 13,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-issue-extension": {
-      "op_id": 14,
+      "name": "file-issue-extension",
+      "id": 14,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-link": {
-      "op_id": 15,
+      "name": "file-link",
+      "id": 15,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-lock": {
-      "op_id": 16,
+      "name": "file-lock",
+      "id": 16,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-map-executable": {
-      "op_id": 17,
+      "name": "file-map-executable",
+      "id": 17,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-mknod": {
-      "op_id": 18,
+      "name": "file-mknod",
+      "id": 18,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-mount": {
-      "op_id": 19,
+      "name": "file-mount",
+      "id": 19,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-mount-update": {
-      "op_id": 20,
+      "name": "file-mount-update",
+      "id": 20,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-read*": {
-      "op_id": 21,
+      "name": "file-read*",
+      "id": 21,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:bsd"
       ],
@@ -246,84 +313,116 @@
         "sys:airlock",
         "sys:bsd"
       ],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 7
-      }
+      },
+      "known": true
     },
     "file-read-data": {
-      "op_id": 22,
+      "name": "file-read-data",
+      "id": 22,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:bsd"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-read-metadata": {
-      "op_id": 23,
+      "name": "file-read-metadata",
+      "id": 23,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-read-xattr": {
-      "op_id": 24,
+      "name": "file-read-xattr",
+      "id": 24,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-revoke": {
-      "op_id": 25,
+      "name": "file-revoke",
+      "id": 25,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:bsd"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-search": {
-      "op_id": 26,
+      "name": "file-search",
+      "id": 26,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:bsd"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-test-existence": {
-      "op_id": 27,
+      "name": "file-test-existence",
+      "id": 27,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:bsd"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-unmount": {
-      "op_id": 28,
+      "name": "file-unmount",
+      "id": 28,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write*": {
-      "op_id": 29,
+      "name": "file-write*",
+      "id": 29,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [
         "bucket4:v1_read",
@@ -334,1548 +433,2095 @@
         "sys:airlock",
         "sys:bsd"
       ],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 7
-      }
+      },
+      "known": true
     },
     "file-write-acl": {
-      "op_id": 30,
+      "name": "file-write-acl",
+      "id": 30,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-create": {
-      "op_id": 31,
+      "name": "file-write-create",
+      "id": 31,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-data": {
-      "op_id": 32,
+      "name": "file-write-data",
+      "id": 32,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-finderinfo": {
-      "op_id": 33,
+      "name": "file-write-finderinfo",
+      "id": 33,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-flags": {
-      "op_id": 34,
+      "name": "file-write-flags",
+      "id": 34,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-mode": {
-      "op_id": 35,
+      "name": "file-write-mode",
+      "id": 35,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-owner": {
-      "op_id": 36,
+      "name": "file-write-owner",
+      "id": 36,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-setugid": {
-      "op_id": 37,
+      "name": "file-write-setugid",
+      "id": 37,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-times": {
-      "op_id": 38,
+      "name": "file-write-times",
+      "id": 38,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-unlink": {
-      "op_id": 39,
+      "name": "file-write-unlink",
+      "id": 39,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "file-write-xattr": {
-      "op_id": 40,
+      "name": "file-write-xattr",
+      "id": 40,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota*": {
-      "op_id": 41,
+      "name": "fs-quota*",
+      "id": 41,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-get": {
-      "op_id": 42,
+      "name": "fs-quota-get",
+      "id": 42,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
-    },
-    "fs-quota-off": {
-      "op_id": 44,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-on": {
-      "op_id": 43,
+      "name": "fs-quota-on",
+      "id": 43,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "fs-quota-off": {
+      "name": "fs-quota-off",
+      "id": 44,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "fs-quota-set*": {
-      "op_id": 45,
+      "name": "fs-quota-set*",
+      "id": 45,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-set-limits": {
-      "op_id": 46,
+      "name": "fs-quota-set-limits",
+      "id": 46,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-set-usage": {
-      "op_id": 47,
+      "name": "fs-quota-set-usage",
+      "id": 47,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-stat": {
-      "op_id": 48,
+      "name": "fs-quota-stat",
+      "id": 48,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-quota-sync": {
-      "op_id": 49,
+      "name": "fs-quota-sync",
+      "id": 49,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-rename": {
-      "op_id": 50,
+      "name": "fs-rename",
+      "id": 50,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-snapshot*": {
-      "op_id": 51,
+      "name": "fs-snapshot*",
+      "id": 51,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-snapshot-create": {
-      "op_id": 52,
+      "name": "fs-snapshot-create",
+      "id": 52,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-snapshot-delete": {
-      "op_id": 53,
+      "name": "fs-snapshot-delete",
+      "id": 53,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-snapshot-mount": {
-      "op_id": 54,
+      "name": "fs-snapshot-mount",
+      "id": 54,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "fs-snapshot-revert": {
-      "op_id": 55,
+      "name": "fs-snapshot-revert",
+      "id": 55,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "generic-issue-extension": {
-      "op_id": 56,
+      "name": "generic-issue-extension",
+      "id": 56,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
-    },
-    "hid-control": {
-      "op_id": 58,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit*": {
-      "op_id": 59,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-async-external-method": {
-      "op_id": 191,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-external-method": {
-      "op_id": 192,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-external-trap": {
-      "op_id": 193,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-get-properties": {
-      "op_id": 60,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-issue-extension": {
-      "op_id": 61,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-open*": {
-      "op_id": 62,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-open-service": {
-      "op_id": 64,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-open-user-client": {
-      "op_id": 63,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "iokit-set-properties": {
-      "op_id": 65,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc*": {
-      "op_id": 66,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix*": {
-      "op_id": 67,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-issue-extension": {
-      "op_id": 68,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem*": {
-      "op_id": 69,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem-create": {
-      "op_id": 70,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem-open": {
-      "op_id": 71,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem-post": {
-      "op_id": 72,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem-unlink": {
-      "op_id": 73,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-sem-wait": {
-      "op_id": 74,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm*": {
-      "op_id": 75,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm-read-data": {
-      "op_id": 76,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm-write*": {
-      "op_id": 77,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm-write-create": {
-      "op_id": 78,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm-write-data": {
-      "op_id": 79,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-posix-shm-write-unlink": {
-      "op_id": 80,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-sysv*": {
-      "op_id": 81,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-sysv-msg": {
-      "op_id": 82,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-sysv-sem": {
-      "op_id": 83,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "ipc-sysv-shm": {
-      "op_id": 84,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "job-creation": {
-      "op_id": 85,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "lsopen": {
-      "op_id": 86,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach*": {
-      "op_id": 87,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-bootstrap": {
-      "op_id": 88,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-cross-domain-lookup": {
-      "op_id": 89,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-derive-port": {
-      "op_id": 90,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-host*": {
-      "op_id": 91,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-host-exception-port-set": {
-      "op_id": 92,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-host-special-port-set": {
-      "op_id": 93,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-issue-extension": {
-      "op_id": 94,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-kernel-endpoint": {
-      "op_id": 95,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-lookup": {
-      "op_id": 96,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-message-send": {
-      "op_id": 194,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-priv*": {
-      "op_id": 97,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-priv-host-port": {
-      "op_id": 98,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-priv-task-port": {
-      "op_id": 99,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-register": {
-      "op_id": 100,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task*": {
-      "op_id": 101,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-inspect": {
-      "op_id": 102,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-name": {
-      "op_id": 103,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-read": {
-      "op_id": 104,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-special-port*": {
-      "op_id": 105,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-special-port-get": {
-      "op_id": 106,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "mach-task-special-port-set": {
-      "op_id": 107,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "managed-preference-read": {
-      "op_id": 186,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "necp-client-open": {
-      "op_id": 108,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "network*": {
-      "op_id": 109,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "network-bind": {
-      "op_id": 111,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "network-inbound": {
-      "op_id": 110,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "network-outbound": {
-      "op_id": 112,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "nvram*": {
-      "op_id": 113,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "nvram-delete": {
-      "op_id": 114,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "nvram-get": {
-      "op_id": 115,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "nvram-set": {
-      "op_id": 116,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "opendirectory-user-modify": {
-      "op_id": 117,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process*": {
-      "op_id": 118,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-codesigning": {
-      "op_id": 119,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
-    },
-    "process-exec*": {
-      "op_id": 120,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-exec-interpreter": {
-      "op_id": 121,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-exec-update-label": {
-      "op_id": 189,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-fork": {
-      "op_id": 122,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info*": {
-      "op_id": 123,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-codesignature": {
-      "op_id": 124,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-dirtycontrol": {
-      "op_id": 125,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-ledger": {
-      "op_id": 126,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-listpids": {
-      "op_id": 127,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-pidfdinfo": {
-      "op_id": 130,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-pidfileportinfo": {
-      "op_id": 131,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-pidinfo": {
-      "op_id": 129,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-rusage": {
-      "op_id": 128,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-info-setcontrol": {
-      "op_id": 132,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning*": {
-      "op_id": 133,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-blob-get": {
-      "op_id": 134,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-cdhash-get": {
-      "op_id": 135,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-entitlements-blob-get": {
-      "op_id": 136,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-entitlements-der-blob-get": {
-      "op_id": 137,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-identity-get": {
-      "op_id": 138,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-status*": {
-      "op_id": 139,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-status-get": {
-      "op_id": 140,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-status-set": {
-      "op_id": 141,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-teamid-get": {
-      "op_id": 142,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "process-legacy-codesigning-text-offset-get": {
-      "op_id": 143,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "pseudo-tty": {
-      "op_id": 144,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "qtn-user": {
-      "op_id": 57,
+      "name": "qtn-user",
+      "id": 57,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "hid-control": {
+      "name": "hid-control",
+      "id": 58,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit*": {
+      "name": "iokit*",
+      "id": 59,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-get-properties": {
+      "name": "iokit-get-properties",
+      "id": 60,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-issue-extension": {
+      "name": "iokit-issue-extension",
+      "id": 61,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-open*": {
+      "name": "iokit-open*",
+      "id": 62,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-open-user-client": {
+      "name": "iokit-open-user-client",
+      "id": 63,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-open-service": {
+      "name": "iokit-open-service",
+      "id": 64,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-set-properties": {
+      "name": "iokit-set-properties",
+      "id": 65,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc*": {
+      "name": "ipc*",
+      "id": 66,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix*": {
+      "name": "ipc-posix*",
+      "id": 67,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-issue-extension": {
+      "name": "ipc-posix-issue-extension",
+      "id": 68,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem*": {
+      "name": "ipc-posix-sem*",
+      "id": 69,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem-create": {
+      "name": "ipc-posix-sem-create",
+      "id": 70,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem-open": {
+      "name": "ipc-posix-sem-open",
+      "id": 71,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem-post": {
+      "name": "ipc-posix-sem-post",
+      "id": 72,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem-unlink": {
+      "name": "ipc-posix-sem-unlink",
+      "id": 73,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-sem-wait": {
+      "name": "ipc-posix-sem-wait",
+      "id": 74,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm*": {
+      "name": "ipc-posix-shm*",
+      "id": 75,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm-read-data": {
+      "name": "ipc-posix-shm-read-data",
+      "id": 76,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm-write*": {
+      "name": "ipc-posix-shm-write*",
+      "id": 77,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm-write-create": {
+      "name": "ipc-posix-shm-write-create",
+      "id": 78,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm-write-data": {
+      "name": "ipc-posix-shm-write-data",
+      "id": 79,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-posix-shm-write-unlink": {
+      "name": "ipc-posix-shm-write-unlink",
+      "id": 80,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-sysv*": {
+      "name": "ipc-sysv*",
+      "id": 81,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-sysv-msg": {
+      "name": "ipc-sysv-msg",
+      "id": 82,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-sysv-sem": {
+      "name": "ipc-sysv-sem",
+      "id": 83,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "ipc-sysv-shm": {
+      "name": "ipc-sysv-shm",
+      "id": 84,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "job-creation": {
+      "name": "job-creation",
+      "id": 85,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "lsopen": {
+      "name": "lsopen",
+      "id": 86,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach*": {
+      "name": "mach*",
+      "id": 87,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-bootstrap": {
+      "name": "mach-bootstrap",
+      "id": 88,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-cross-domain-lookup": {
+      "name": "mach-cross-domain-lookup",
+      "id": 89,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-derive-port": {
+      "name": "mach-derive-port",
+      "id": 90,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-host*": {
+      "name": "mach-host*",
+      "id": 91,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-host-exception-port-set": {
+      "name": "mach-host-exception-port-set",
+      "id": 92,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-host-special-port-set": {
+      "name": "mach-host-special-port-set",
+      "id": 93,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-issue-extension": {
+      "name": "mach-issue-extension",
+      "id": 94,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-kernel-endpoint": {
+      "name": "mach-kernel-endpoint",
+      "id": 95,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-lookup": {
+      "name": "mach-lookup",
+      "id": 96,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-priv*": {
+      "name": "mach-priv*",
+      "id": 97,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-priv-host-port": {
+      "name": "mach-priv-host-port",
+      "id": 98,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-priv-task-port": {
+      "name": "mach-priv-task-port",
+      "id": 99,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-register": {
+      "name": "mach-register",
+      "id": 100,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task*": {
+      "name": "mach-task*",
+      "id": 101,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-inspect": {
+      "name": "mach-task-inspect",
+      "id": 102,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-name": {
+      "name": "mach-task-name",
+      "id": 103,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-read": {
+      "name": "mach-task-read",
+      "id": 104,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-special-port*": {
+      "name": "mach-task-special-port*",
+      "id": 105,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-special-port-get": {
+      "name": "mach-task-special-port-get",
+      "id": 106,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-task-special-port-set": {
+      "name": "mach-task-special-port-set",
+      "id": 107,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "necp-client-open": {
+      "name": "necp-client-open",
+      "id": 108,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "network*": {
+      "name": "network*",
+      "id": 109,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "network-inbound": {
+      "name": "network-inbound",
+      "id": 110,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "network-bind": {
+      "name": "network-bind",
+      "id": 111,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "network-outbound": {
+      "name": "network-outbound",
+      "id": 112,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "nvram*": {
+      "name": "nvram*",
+      "id": 113,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "nvram-delete": {
+      "name": "nvram-delete",
+      "id": 114,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "nvram-get": {
+      "name": "nvram-get",
+      "id": 115,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "nvram-set": {
+      "name": "nvram-set",
+      "id": 116,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "opendirectory-user-modify": {
+      "name": "opendirectory-user-modify",
+      "id": 117,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process*": {
+      "name": "process*",
+      "id": 118,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-codesigning": {
+      "name": "process-codesigning",
+      "id": 119,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-exec*": {
+      "name": "process-exec*",
+      "id": 120,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-exec-interpreter": {
+      "name": "process-exec-interpreter",
+      "id": 121,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-fork": {
+      "name": "process-fork",
+      "id": 122,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info*": {
+      "name": "process-info*",
+      "id": 123,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-codesignature": {
+      "name": "process-info-codesignature",
+      "id": 124,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-dirtycontrol": {
+      "name": "process-info-dirtycontrol",
+      "id": 125,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-ledger": {
+      "name": "process-info-ledger",
+      "id": 126,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-listpids": {
+      "name": "process-info-listpids",
+      "id": 127,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-rusage": {
+      "name": "process-info-rusage",
+      "id": 128,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-pidinfo": {
+      "name": "process-info-pidinfo",
+      "id": 129,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-pidfdinfo": {
+      "name": "process-info-pidfdinfo",
+      "id": 130,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-pidfileportinfo": {
+      "name": "process-info-pidfileportinfo",
+      "id": 131,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-setcontrol": {
+      "name": "process-info-setcontrol",
+      "id": 132,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning*": {
+      "name": "process-legacy-codesigning*",
+      "id": 133,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-blob-get": {
+      "name": "process-legacy-codesigning-blob-get",
+      "id": 134,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-cdhash-get": {
+      "name": "process-legacy-codesigning-cdhash-get",
+      "id": 135,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-entitlements-blob-get": {
+      "name": "process-legacy-codesigning-entitlements-blob-get",
+      "id": 136,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-entitlements-der-blob-get": {
+      "name": "process-legacy-codesigning-entitlements-der-blob-get",
+      "id": 137,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-identity-get": {
+      "name": "process-legacy-codesigning-identity-get",
+      "id": 138,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-status*": {
+      "name": "process-legacy-codesigning-status*",
+      "id": 139,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-status-get": {
+      "name": "process-legacy-codesigning-status-get",
+      "id": 140,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-status-set": {
+      "name": "process-legacy-codesigning-status-set",
+      "id": 141,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-teamid-get": {
+      "name": "process-legacy-codesigning-teamid-get",
+      "id": 142,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-legacy-codesigning-text-offset-get": {
+      "name": "process-legacy-codesigning-text-offset-get",
+      "id": 143,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "pseudo-tty": {
+      "name": "pseudo-tty",
+      "id": 144,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "signal": {
-      "op_id": 145,
+      "name": "signal",
+      "id": 145,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "socket-ioctl": {
-      "op_id": 146,
+      "name": "socket-ioctl",
+      "id": 146,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "socket-option*": {
-      "op_id": 147,
+      "name": "socket-option*",
+      "id": 147,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "socket-option-get": {
-      "op_id": 148,
+      "name": "socket-option-get",
+      "id": 148,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "socket-option-set": {
-      "op_id": 149,
+      "name": "socket-option-set",
+      "id": 149,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
-    },
-    "storage-class-map": {
-      "op_id": 188,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "syscall*": {
-      "op_id": 150,
+      "name": "syscall*",
+      "id": 150,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
-    },
-    "syscall-mach": {
-      "op_id": 152,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
-    },
-    "syscall-mig": {
-      "op_id": 153,
-      "system_profiles": [
-        "sys:airlock"
-      ],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 1,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "syscall-unix": {
-      "op_id": 151,
+      "name": "syscall-unix",
+      "id": 151,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "syscall-mach": {
+      "name": "syscall-mach",
+      "id": 152,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "syscall-mig": {
+      "name": "syscall-mig",
+      "id": 153,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "sysctl*": {
-      "op_id": 154,
+      "name": "sysctl*",
+      "id": 154,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "sysctl-read": {
-      "op_id": 155,
+      "name": "sysctl-read",
+      "id": 155,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "sysctl-write": {
-      "op_id": 156,
+      "name": "sysctl-write",
+      "id": 156,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system*": {
-      "op_id": 157,
+      "name": "system*",
+      "id": 157,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-acct": {
-      "op_id": 158,
+      "name": "system-acct",
+      "id": 158,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-audit": {
-      "op_id": 159,
+      "name": "system-audit",
+      "id": 159,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-automount": {
-      "op_id": 160,
+      "name": "system-automount",
+      "id": 160,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-debug": {
-      "op_id": 161,
+      "name": "system-debug",
+      "id": 161,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-fcntl": {
-      "op_id": 162,
+      "name": "system-fcntl",
+      "id": 162,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-fsctl": {
-      "op_id": 163,
+      "name": "system-fsctl",
+      "id": 163,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-info": {
-      "op_id": 164,
+      "name": "system-info",
+      "id": 164,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-kas-info": {
-      "op_id": 165,
+      "name": "system-kas-info",
+      "id": 165,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-kext*": {
-      "op_id": 166,
+      "name": "system-kext*",
+      "id": 166,
+      "profile_layers": [
+        "system"
+      ],
       "system_profiles": [
         "sys:airlock"
       ],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 1,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-kext-load": {
-      "op_id": 167,
+      "name": "system-kext-load",
+      "id": 167,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
-    },
-    "system-kext-query": {
-      "op_id": 169,
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-kext-unload": {
-      "op_id": 168,
+      "name": "system-kext-unload",
+      "id": 168,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "system-kext-query": {
+      "name": "system-kext-query",
+      "id": 169,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "system-mac*": {
-      "op_id": 170,
+      "name": "system-mac*",
+      "id": 170,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-mac-label": {
-      "op_id": 171,
+      "name": "system-mac-label",
+      "id": 171,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-mac-syscall": {
-      "op_id": 172,
+      "name": "system-mac-syscall",
+      "id": 172,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-memorystatus-control": {
-      "op_id": 173,
+      "name": "system-memorystatus-control",
+      "id": 173,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-necp-client-action": {
-      "op_id": 174,
+      "name": "system-necp-client-action",
+      "id": 174,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-nfssvc": {
-      "op_id": 175,
+      "name": "system-nfssvc",
+      "id": 175,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-package-check": {
-      "op_id": 176,
+      "name": "system-package-check",
+      "id": 176,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-privilege": {
-      "op_id": 177,
+      "name": "system-privilege",
+      "id": 177,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-reboot": {
-      "op_id": 178,
+      "name": "system-reboot",
+      "id": 178,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-sched": {
-      "op_id": 179,
+      "name": "system-sched",
+      "id": 179,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-set-time": {
-      "op_id": 180,
+      "name": "system-set-time",
+      "id": 180,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-socket": {
-      "op_id": 181,
+      "name": "system-socket",
+      "id": 181,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-suspend-resume": {
-      "op_id": 182,
+      "name": "system-suspend-resume",
+      "id": 182,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "system-swap": {
-      "op_id": 183,
+      "name": "system-swap",
+      "id": 183,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "user-preference*": {
-      "op_id": 184,
+      "name": "user-preference*",
+      "id": 184,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     },
     "user-preference-read": {
-      "op_id": 185,
+      "name": "user-preference-read",
+      "id": 185,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "managed-preference-read": {
+      "name": "managed-preference-read",
+      "id": 186,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "user-preference-write": {
-      "op_id": 187,
+      "name": "user-preference-write",
+      "id": 187,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
+    },
+    "storage-class-map": {
+      "name": "storage-class-map",
+      "id": 188,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-exec-update-label": {
+      "name": "process-exec-update-label",
+      "id": 189,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "default-message-filter": {
+      "name": "default-message-filter",
+      "id": 190,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-async-external-method": {
+      "name": "iokit-async-external-method",
+      "id": 191,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-external-method": {
+      "name": "iokit-external-method",
+      "id": 192,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-external-trap": {
+      "name": "iokit-external-trap",
+      "id": 193,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "mach-message-send": {
+      "name": "mach-message-send",
+      "id": 194,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
     },
     "xpc-message-send": {
-      "op_id": 195,
+      "name": "xpc-message-send",
+      "id": 195,
+      "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
-      "counts": {
+      "coverage_counts": {
         "system_profiles": 0,
         "runtime_signatures": 0
-      }
+      },
+      "known": true
     }
-  },
-  "summary": {
-    "ops_total": 196,
-    "ops_with_system_profiles": 32,
-    "ops_with_runtime_signatures": 2,
-    "ops_with_no_coverage": 163,
-    "unknown_runtime_ops": []
   }
 }

@@ -1001,22 +1001,23 @@
     }
   },
   "metadata": {
-    "generated_at": "2025-12-04T22:40:56Z",
     "host": {
       "build": "23E224",
       "kernel": "23.4.0",
       "machine": "arm64",
       "product": "macOS",
+      "sip": "enabled",
       "version": "14.4.1"
     },
     "inputs": [
       "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
-      "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
+      "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
+      "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
     ],
     "notes": "Derived from validation IR (smoke tag).",
     "source_jobs": [
-      "experiment:field2",
-      "experiment:runtime-checks"
+      "experiment:runtime-checks",
+      "experiment:field2"
     ],
     "status": "ok"
   },

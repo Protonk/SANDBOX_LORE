@@ -17,7 +17,6 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import time
 from pathlib import Path
 from typing import Dict, Any
 
@@ -26,6 +25,7 @@ RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-chec
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
+BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 EXPECTED_JOBS = {"experiment:runtime-checks", "experiment:field2"}
 
 
@@ -51,6 +51,11 @@ def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"missing input: {path}")
     return json.loads(path.read_text())
+
+
+def load_baseline_host() -> Dict[str, Any]:
+    baseline = load_json(BASELINE_PATH)
+    return baseline.get("host") or {}
 
 
 def build_signatures(runtime_ir: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
@@ -92,13 +97,15 @@ def main() -> None:
     signatures, profiles_meta = build_signatures(runtime_ir)
     field2_summary = summarize_field2(field2_ir)
 
-    host = runtime_ir.get("host") or field2_ir.get("host") or {}
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    host = load_baseline_host()
     mapping = {
         "metadata": {
             "host": host,
-            "generated_at": now,
-            "inputs": [str(RUNTIME_IR.relative_to(ROOT)), str(FIELD2_IR.relative_to(ROOT))],
+            "inputs": [
+                str(RUNTIME_IR.relative_to(ROOT)),
+                str(FIELD2_IR.relative_to(ROOT)),
+                str(BASELINE_PATH.relative_to(ROOT)),
+            ],
             "source_jobs": list(EXPECTED_JOBS),
             "status": "ok",
             "notes": "Derived from validation IR (smoke tag).",

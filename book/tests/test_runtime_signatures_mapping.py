@@ -16,6 +16,7 @@ def test_signatures_present_and_host():
     data = load_signatures()
     meta = data.get("metadata") or {}
     assert meta.get("status") == "ok"
+    assert "generated_at" not in meta
     host = meta.get("host") or {}
     assert host.get("build") == "23E224"
     sigs = data.get("signatures") or {}

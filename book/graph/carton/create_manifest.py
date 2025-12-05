@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-import time
 from pathlib import Path
 from typing import List, Dict
 
 ROOT = Path(__file__).resolve().parents[3]
+BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 FILES = [
     "book/graph/mappings/vocab/ops.json",
@@ -22,6 +22,8 @@ FILES = [
     "book/graph/mappings/runtime/runtime_signatures.json",
     "book/graph/mappings/system_profiles/digests.json",
     "book/graph/mappings/carton/operation_coverage.json",
+    "book/graph/mappings/carton/operation_index.json",
+    "book/graph/mappings/carton/profile_layer_index.json",
     "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
     "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
     "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
@@ -46,14 +48,12 @@ def main() -> None:
         p = ROOT / rel
         rows.append({"path": rel, "sha256": sha256(p)})
 
-    meta_path = ROOT / "book/graph/concepts/validation/out/metadata.json"
     host = {}
-    if meta_path.exists():
-        host = json.loads(meta_path.read_text()).get("os", {})
+    if BASELINE.exists():
+        host = json.loads(BASELINE.read_text()).get("host", {})
 
     manifest = {
         "name": "CARTON",
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "host": host,
         "files": rows,
     }

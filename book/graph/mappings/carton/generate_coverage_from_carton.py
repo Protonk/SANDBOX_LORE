@@ -21,7 +21,6 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import time
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -30,6 +29,7 @@ OPS_PATH = ROOT / "book/graph/mappings/vocab/ops.json"
 DIGESTS_PATH = ROOT / "book/graph/mappings/system_profiles/digests.json"
 RUNTIME_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
 CARTON_PATH = ROOT / "book/graph/carton/CARTON.json"
+BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/carton/operation_coverage.json"
 EXPECTED_JOBS = {
@@ -65,6 +65,11 @@ def load_json(path: Path) -> Dict:
     if not path.exists():
         raise FileNotFoundError(f"missing input: {path}")
     return json.loads(path.read_text())
+
+
+def load_baseline_host() -> dict:
+    baseline = load_json(BASELINE_PATH)
+    return baseline.get("host") or {}
 
 
 def init_coverage(ops: List[Dict]) -> Dict[str, Dict]:
@@ -140,8 +145,6 @@ def main() -> None:
     ops = load_json(OPS_PATH).get("ops") or []
     digests = load_json(DIGESTS_PATH)
     runtime_mapping = load_json(RUNTIME_PATH)
-    manifest = load_json(CARTON_PATH)
-
     coverage = init_coverage(ops)
     id_to_name = {entry["id"]: entry["name"] for entry in ops if "id" in entry and "name" in entry}
     name_to_id = {entry["name"]: entry["id"] for entry in ops if "id" in entry and "name" in entry}
@@ -157,18 +160,17 @@ def main() -> None:
             "runtime_signatures": len(entry["runtime_signatures"]),
         }
 
-    host = manifest.get("host") or runtime_mapping.get("metadata", {}).get("host") or digests.get("metadata", {}).get("host") or {}
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    host = load_baseline_host()
     inputs = [
         str(OPS_PATH.relative_to(ROOT)),
         str(DIGESTS_PATH.relative_to(ROOT)),
         str(RUNTIME_PATH.relative_to(ROOT)),
         str(CARTON_PATH.relative_to(ROOT)),
+        str(BASELINE_PATH.relative_to(ROOT)),
     ]
     mapping = {
         "metadata": {
             "host": host,
-            "generated_at": now,
             "inputs": inputs,
             "source_jobs": sorted(EXPECTED_JOBS),
             "status": "ok",
