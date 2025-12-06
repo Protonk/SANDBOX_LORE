@@ -32,6 +32,12 @@ def load_baseline_host() -> dict:
     return baseline.get("host") or {}
 
 
+def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
+    for key, val in baseline.items():
+        if key in other and other[key] != val:
+            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other.get(key)}")
+
+
 def build_index() -> dict:
     digests = load_json(DIGESTS)
     vocab = load_json(VOCAB)
@@ -41,12 +47,14 @@ def build_index() -> dict:
     coverage_map: Dict[str, dict] = coverage.get("coverage") or {}
 
     host = load_baseline_host()
+    assert_host_compatible(host, (digests.get("metadata") or {}).get("host") or {}, "system_digests")
+    assert_host_compatible(host, (coverage.get("metadata") or {}).get("host") or {}, "coverage")
     source_jobs: List[str] = []
     inputs: List[str] = [
         "book/graph/mappings/system_profiles/digests.json",
         "book/graph/mappings/vocab/ops.json",
         "book/graph/mappings/carton/operation_coverage.json",
-        "book/graph/carton/CARTON.json",
+        "book/api/carton/CARTON.json",
         str(BASELINE.relative_to(ROOT)),
     ]
     meta = digests.get("metadata") or {}
@@ -81,10 +89,10 @@ def build_index() -> dict:
             "host": host,
             "inputs": inputs,
             "source_jobs": source_jobs,
-            "status": "ok",
-            "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries.",
-        },
-        "profiles": profiles,
+        "status": "ok",
+        "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries.",
+    },
+        "profiles": dict(sorted(profiles.items(), key=lambda kv: kv[0])),
     }
 
 

@@ -12,7 +12,7 @@
       "book/graph/mappings/vocab/ops.json",
       "book/graph/mappings/system_profiles/digests.json",
       "book/graph/mappings/runtime/runtime_signatures.json",
-      "book/graph/carton/CARTON.json",
+      "book/api/carton/CARTON.json",
       "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
     ],
     "source_jobs": [

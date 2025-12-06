@@ -25,9 +25,15 @@ When in doubt, start with the AGENTS/README in the relevant subdirectory.
 - Keep `Report.md`/`Notes.md` up to date when touching experiments; keep chapter text aligned with the current mappings and concept inventory.
 - For validations, prefer the driver: `python -m book.graph.concepts.validation --list|--all|--tag <tag>`. For vocab on this host, run `--tag vocab` (or `--id vocab:sonoma-14.4.1`) and consume `book/graph/mappings/vocab/*.json`. For field2 work, run `--experiment field2` to refresh/verify `book/experiments/field2-filters` outputs before promotion. For a quick pre-promotion sweep, run `--tag smoke` (vocab + field2 + runtime-checks).
 - Prefer `tag:golden` jobs when you need canonical IR; use `--describe <job_id>` if you’re unsure what a job does or which inputs/outputs it covers.
+- For sandbox concept questions (operations ↔ profiles ↔ runtime signatures), CARTON is the default IR: use `book/api/carton/carton_query.py` instead of re-parsing validation outputs. Be ready to handle `UnknownOperationError` for ops outside the vocab and `CartonDataError` for manifest/hash/mapping issues.
+- CARTON routing (preferred patterns): start with discovery (`list_operations`, `list_profiles`, `list_filters`). Then map intent to helper:
+  - “What do we know about op X?” → `operation_story(op_name)` / `profiles_and_signatures_for_operation(op_name)`.
+  - “What does profile P exercise?” → `profile_story(profile_id)` (filters block is conservative today).
+  - “What do we know about filter F?” → `filter_story(filter_name)` (usage_status marks current knowledge).
+  - Errors: `UnknownOperationError` = typo/unknown op; `CartonDataError` = manifest/hash/mapping drift.
 
-Routing cheat-sheet:
+ Routing cheat-sheet:
 - Runtime behavior: `python -m book.graph.concepts.validation --tag smoke` → consume `book/graph/mappings/runtime/runtime_signatures.json`.
 - Vocab: `python -m book.graph.concepts.validation --tag vocab` (or smoke) → consume `book/graph/mappings/vocab/{ops,filters}.json`.
 - System profiles: `python -m book.graph.concepts.validation --tag system-profiles` → consume `book/graph/mappings/system_profiles/digests.json`.
-- CARTON (frozen IR/mapping set): use `book/graph/carton/CARTON.json` for stable Sonoma 14.4.1 IR/mappings; do not mutate listed files—add new experiments/IR/mappings separately. Prefer `book/api/carton/carton_query.py` (backed by the CARTON coverage mapping) for lookups; see `book/graph/carton/API.md` + `USAGE_examples.md`.
+- CARTON (frozen IR/mapping set): use `book/api/carton/CARTON.json` for stable Sonoma 14.4.1 IR/mappings; do not mutate listed files—add new experiments/IR/mappings separately. Prefer `book/api/carton/carton_query.py` (backed by the CARTON coverage and index mappings) for lookups; see `book/api/carton/README.md`, `AGENTS.md`, and `API.md`.

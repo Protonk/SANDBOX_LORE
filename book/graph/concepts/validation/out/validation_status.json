@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-05T04:31:15Z",
+  "generated_at": "manual",
   "schema": {
     "job_id": "string",
     "status": "ok|partial|brittle|blocked|skipped",
@@ -15,7 +15,7 @@
   "jobs": [
     {
       "job_id": "vocab:sonoma-14.4.1",
-      "status": "ok",
+      "status": "ok-unchanged",
       "host": {
         "product": "macOS",
         "version": "14.4.1",
@@ -31,7 +31,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json"
       ],
-      "timestamp": "2025-12-05T04:31:15Z",
+      "timestamp": "2025-12-06T15:42:03Z",
       "tags": [
         "vocab",
         "host:sonoma-14.4.1",
@@ -41,17 +41,18 @@
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/ops.json": "fcbd568760622b9cbe6d494a8293b4c006cb040aa9160b464bda46504be3e785",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/mappings/vocab/filters.json": "624cb590dc79558af4addd506b7f67878232e74c4d6946598873da2a1fedc23c",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json": "561fe52ff437950552bf0ed889d4c25425a38c2d4e069b580596293b3ad581a8"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/vocab_status.json": "6332986474f1b0809cc69a95e6be3f5b353aed2a107a747f0fbf7c4a42f6bbf9"
       },
       "notes": "Verified libsandbox vocab against canonical mappings.",
       "metrics": {
         "ops": 196,
         "filters": 93
-      }
+      },
+      "change": "unchanged"
     },
     {
       "job_id": "experiment:field2",
-      "status": "ok",
+      "status": "ok-unchanged",
       "host": {
         "product": "macOS",
         "version": "14.4.1",
@@ -67,7 +68,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json"
       ],
-      "timestamp": "2025-12-05T04:31:15Z",
+      "timestamp": "manual",
       "tags": [
         "experiment:field2",
         "experiment",
@@ -76,17 +77,18 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "9ccc9b696f24ae51310a87737c50ef63a274823fef6e6a65de9c080db9695aeb",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json": "15554d7b1d710dbde30b8b98438134ad147f599ad53613246edc57e49d2fe117"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/field2/status.json": "f829cf415db2d4c7d9b2930fe1d08cc0f6e3716e51518e5cb13def0f4f3442ba"
       },
       "notes": "Normalized field2 inventory and unknown nodes into IR.",
       "metrics": {
         "profiles": 32,
         "unknown_nodes": 0
-      }
+      },
+      "change": "unchanged"
     },
     {
       "job_id": "experiment:runtime-checks",
-      "status": "ok",
+      "status": "ok-unchanged",
       "host": {
         "product": "macOS",
         "version": "14.4.1",
@@ -101,7 +103,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json"
       ],
-      "timestamp": "2025-12-05T04:31:15Z",
+      "timestamp": "manual",
       "tags": [
         "experiment:runtime-checks",
         "experiment",
@@ -111,12 +113,13 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json": "9dd2c86352486766ee6c0210ac031bc60bfd7ab8dc3791dcc5654b253f3aaa3d",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "ea1c47378cde830ec890246426015881253564e721b56e61ad00ec920c40338b"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "c79f16e4bca29477c920fe3982da32f326ac695b283e142251026c5ffd46457b"
       },
       "notes": "Normalized runtime_results into shared IR.",
       "metrics": {
         "entries": 1
-      }
+      },
+      "change": "unchanged"
     },
     {
       "job_id": "experiment:system-profile-digest",
@@ -135,7 +138,7 @@
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
       ],
-      "timestamp": "2025-12-05T04:31:15Z",
+      "timestamp": "manual",
       "tags": [
         "experiment:system-profile-digest",
         "experiment",
@@ -144,7 +147,7 @@
       ],
       "hashes": {
         "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "d1215374a853b0f7c10fbaae5a8f3195011bface9347593fc970b11474e207a0",
-        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "a5ddaa4a91b405d7a89fe99ec73c67f8ec890af3a5370af660af76ea889976f7"
+        "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "135ca577d561de6c3fdde12054a46fbe4d0b58cb7472b3beb8c2a349517071c5"
       },
       "notes": "Normalized system profile digests into IR.",
       "metrics": {

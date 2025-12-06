@@ -40,8 +40,8 @@ You are in `book/api/`, the API/tooling layer for the Seatbelt textbook. This fi
   - Notes: this is the canonical scaffold; `dumps/ghidra/` keeps the runtime workspace and a compatibility shim.
 
 - `carton/`
-  - Role: API surface for CARTON, the frozen IR/mapping set rooted at `book/graph/carton/CARTON.json`.
-  - Use when: you want stable information about operations, system profiles, or runtime signatures. Prefer `book.api.carton.carton_query` over reading mapping JSONs by hand. Be ready to handle `UnknownOperationError` and `CartonDataError` if you probe for unknown ops or if CARTON data is missing/out of sync.
+  - Role: API surface for CARTON, the frozen IR/mapping set rooted at `book/api/carton/CARTON.json`.
+  - Use when: you want stable information about operations, system profiles, or runtime signatures. Prefer `book.api.carton.carton_query` over reading mapping JSONs by hand. Higher-level helpers: `operation_story(op_name)` and `profile_story(profile_id)` return concept-shaped views. Be ready to handle `UnknownOperationError` for ops outside the vocab and `CartonDataError` for manifest/hash/mapping issues.
 
 For vocabulary, lifecycle, and concept discipline, step up to `substrate/AGENTS.md`. All new tooling here should:
 

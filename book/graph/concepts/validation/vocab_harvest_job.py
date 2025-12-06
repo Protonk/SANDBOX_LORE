@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
@@ -172,11 +171,9 @@ def run_vocab_harvest_job():
     ensure_mapping(filter_names, FILTERS_MAP, "filters")
 
     meta = load_json(META_PATH) if META_PATH.exists() else {}
-    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     payload = {
         "job_id": "vocab:sonoma-14.4.1",
-        "generated_at": now,
-        "timestamp": now,
+        "timestamp": "manual",
         "status": "ok",
         "host": meta.get("os", {}),
         "inputs": [str(LIB_PATH)],

@@ -3,7 +3,7 @@
 Create the CARTON manifest for Sonoma 14.4.1.
 
 Outputs:
-- book/graph/carton/CARTON.json
+- book/api/carton/CARTON.json
 """
 
 from __future__ import annotations
@@ -24,6 +24,8 @@ FILES = [
     "book/graph/mappings/carton/operation_coverage.json",
     "book/graph/mappings/carton/operation_index.json",
     "book/graph/mappings/carton/profile_layer_index.json",
+    "book/graph/mappings/carton/filter_index.json",
+    "book/graph/mappings/carton/concept_index.json",
     "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
     "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
     "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
@@ -31,7 +33,7 @@ FILES = [
     "book/graph/concepts/validation/out/validation_status.json",
 ]
 
-OUT_PATH = ROOT / "book/graph/carton/CARTON.json"
+OUT_PATH = ROOT / "book/api/carton/CARTON.json"
 
 
 def sha256(path: Path) -> str:

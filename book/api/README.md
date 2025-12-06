@@ -69,7 +69,7 @@ All code here assumes the fixed host baseline recorded in `book/world/sonoma-14.
   - Notes: canonical scaffold/CLI lives here; `dumps/ghidra/` remains the runtime workspace plus a compatibility shim.
 
 - `carton/`
-  - Role: Public query surface for CARTON – the frozen IR/mapping set rooted at `book/graph/carton/CARTON.json`.
+  - Role: Public query surface for CARTON – the frozen IR/mapping set rooted at `book/api/carton/CARTON.json`.
   - Surfaces:
     - Python: `book.api.carton.carton_query` helpers (`profiles_with_operation`, `runtime_signature_info`, `ops_with_low_coverage`, etc.).
   - Use when: you need stable facts about vocab, system profiles, or runtime signatures. Prefer this over reading mapping JSONs directly.

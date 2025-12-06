@@ -33,19 +33,27 @@ def load_baseline_host() -> dict:
     return baseline.get("host") or {}
 
 
+def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
+    for key, val in baseline.items():
+        if key in other and other[key] != val:
+            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other.get(key)}")
+
+
 def build_index() -> dict:
     vocab = load_json(VOCAB)
     coverage = load_json(COVERAGE)
     ops = vocab.get("ops") or []
     coverage_map: Dict[str, dict] = (coverage.get("coverage") or {})
     host = load_baseline_host()
+    coverage_host = (coverage.get("metadata") or {}).get("host") or {}
+    assert_host_compatible(host, coverage_host, "coverage")
     source_jobs: List[str] = []
     inputs: List[str] = [
         "book/graph/mappings/vocab/ops.json",
         "book/graph/mappings/system_profiles/digests.json",
         "book/graph/mappings/runtime/runtime_signatures.json",
         "book/graph/mappings/carton/operation_coverage.json",
-        "book/graph/carton/CARTON.json",
+        "book/api/carton/CARTON.json",
         str(BASELINE.relative_to(ROOT)),
     ]
     meta = coverage.get("metadata") or {}
@@ -80,10 +88,10 @@ def build_index() -> dict:
             "host": host,
             "inputs": inputs,
             "source_jobs": source_jobs,
-            "status": "ok",
-            "notes": "Derived from CARTON mappings; coverage drives counts and layer presence.",
-        },
-        "operations": operations,
+        "status": "ok",
+        "notes": "Derived from CARTON mappings; coverage drives counts and layer presence.",
+    },
+        "operations": dict(sorted(operations.items(), key=lambda kv: kv[0])),
     }
 
 

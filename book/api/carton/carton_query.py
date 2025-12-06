@@ -16,15 +16,19 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
-CARTON_MANIFEST = ROOT / "book/graph/carton/CARTON.json"
+CARTON_MANIFEST = ROOT / "book/api/carton/CARTON.json"
 
 _MANIFEST_CACHE: Optional[dict] = None
 
 LOGICAL_PATHS = {
     "vocab.ops": "book/graph/mappings/vocab/ops.json",
+    "vocab.filters": "book/graph/mappings/vocab/filters.json",
     "system.digests": "book/graph/mappings/system_profiles/digests.json",
     "runtime.signatures": "book/graph/mappings/runtime/runtime_signatures.json",
     "carton.coverage": "book/graph/mappings/carton/operation_coverage.json",
+    "carton.operation_index": "book/graph/mappings/carton/operation_index.json",
+    "carton.profile_layer_index": "book/graph/mappings/carton/profile_layer_index.json",
+    "carton.filter_index": "book/graph/mappings/carton/filter_index.json",
 }
 
 
@@ -188,24 +192,120 @@ def ops_with_low_coverage(threshold: int = 0) -> List[Dict[str, object]]:
     return low
 
 
+def _load_filter_index() -> dict:
+    return _load_json_from_manifest("carton.filter_index", required_keys=["filters"])
+
+
+def _load_operation_index() -> dict:
+    return _load_json_from_manifest("carton.operation_index", required_keys=["operations"])
+
+
+def _load_profile_layer_index() -> dict:
+    return _load_json_from_manifest("carton.profile_layer_index", required_keys=["profiles"])
+
+
+def list_operations() -> List[str]:
+    ops = _load_operation_index().get("operations") or {}
+    return sorted(ops.keys())
+
+
+def list_profiles() -> List[str]:
+    profiles = _load_profile_layer_index().get("profiles") or {}
+    return sorted(profiles.keys())
+
+
+def list_filters() -> List[str]:
+    filters = _load_filter_index().get("filters") or {}
+    return sorted(filters.keys())
+
+
+def filter_story(filter_name: str) -> Dict[str, Any]:
+    filters = _load_filter_index().get("filters") or {}
+    entry = filters.get(filter_name)
+    if entry is None:
+        raise CartonDataError(f"filter '{filter_name}' not found in CARTON filter index")
+    return {
+        "filter_name": filter_name,
+        "filter_id": entry.get("id"),
+        "known": entry.get("known", False),
+        "usage_status": entry.get("usage_status"),
+        "system_profiles": entry.get("system_profiles") or [],
+        "runtime_signatures": entry.get("runtime_signatures") or [],
+    }
+
+
 def list_carton_paths() -> Dict[str, str]:
     paths: Dict[str, str] = {}
     for logical, key in [
         ("vocab.ops", "vocab_ops"),
+        ("vocab.filters", "vocab_filters"),
         ("system.digests", "system_profiles"),
         ("runtime.signatures", "runtime_signatures"),
         ("carton.coverage", "coverage"),
+        ("carton.operation_index", "operation_index"),
+        ("carton.profile_layer_index", "profile_layer_index"),
+        ("carton.filter_index", "filter_index"),
     ]:
         path, _ = _manifest_entry(logical)
         paths[key] = str(path)
     return paths
 
 
+def operation_story(op_name: str) -> Dict[str, Any]:
+    op_info = profiles_and_signatures_for_operation(op_name)
+    coverage = _load_coverage()
+    entry = coverage.get(op_name, {})
+    return {
+        "op_name": op_name,
+        "op_id": op_info["op_id"],
+        "known": op_info["known"],
+        "system_profiles": op_info["system_profiles"],
+        "profile_layers": ["system"] if op_info["system_profiles"] else [],
+        "runtime_signatures": op_info["runtime_signatures"],
+        "coverage_counts": op_info["counts"],
+    }
+
+
+def profile_story(profile_id: str) -> Dict[str, Any]:
+    digests = _load_json_from_manifest("system.digests")
+    if profile_id not in digests:
+        raise CartonDataError(f"profile '{profile_id}' not found in system digests")
+    profile_body = digests[profile_id]
+    op_ids = profile_body.get("op_table") or []
+    _, id_to_name = _load_vocab()
+    ops = [{"name": id_to_name.get(op_id), "id": op_id} for op_id in op_ids if op_id in id_to_name]
+    layer_index = _load_json_from_manifest("carton.coverage", required_keys=["coverage"])  # reused coverage shape
+    coverage = layer_index.get("coverage") or {}
+    runtime_sigs = set()
+    for op in ops:
+        cov = coverage.get(op["name"]) or {}
+        for sig in cov.get("runtime_signatures") or []:
+            runtime_sigs.add(sig)
+    # Filter linkage is not yet mapped per profile; keep an explicit placeholder to avoid ad-hoc guesses.
+    filters_info = {
+        "known": False,
+        "filters": [],
+    }
+    return {
+        "profile_id": profile_id,
+        "layer": "system",
+        "ops": ops,
+        "runtime_signatures": sorted(runtime_sigs),
+        "filters": filters_info,
+    }
+
+
 __all__ = [
     "CartonDataError",
     "UnknownOperationError",
+    "filter_story",
+    "list_filters",
+    "list_operations",
+    "list_profiles",
     "list_carton_paths",
     "ops_with_low_coverage",
+    "operation_story",
+    "profile_story",
     "profiles_and_signatures_for_operation",
     "profiles_with_operation",
     "runtime_signature_info",

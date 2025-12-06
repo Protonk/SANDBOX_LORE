@@ -59,9 +59,62 @@ def test_ops_with_low_coverage_returns_sorted():
         )
 
 
+def test_operation_story_returns_combined_view():
+    story = carton_query.operation_story("file-read*")
+    assert story["op_name"] == "file-read*"
+    assert story["known"] is True
+    assert "sys:bsd" in story["system_profiles"]
+    assert "bucket4:v1_read" in story["runtime_signatures"]
+    assert story["coverage_counts"]["system_profiles"] >= 1
+    assert "system" in story["profile_layers"]
+
+
+def test_profile_story_returns_ops_and_signatures():
+    story = carton_query.profile_story("sys:bsd")
+    assert story["profile_id"] == "sys:bsd"
+    assert story["layer"] == "system"
+    assert story["ops"], "expected ops for sys:bsd"
+    assert any(op["name"] == "file-read*" for op in story["ops"])
+    assert "bucket4:v1_read" in story["runtime_signatures"]
+    assert story["filters"]["known"] is False
+
+
+def test_profile_story_unknown_profile_raises(monkeypatch):
+    with pytest.raises(carton_query.CartonDataError):
+        carton_query.profile_story("not-a-real-profile")
+    # Known profile should expose a conservative filters block
+    story = carton_query.profile_story("sys:bsd")
+    assert story["filters"]["known"] is False
+
+
 def test_unknown_operation_raises():
     with pytest.raises(carton_query.UnknownOperationError):
         carton_query.profiles_and_signatures_for_operation("not-a-real-op")
+    with pytest.raises(carton_query.UnknownOperationError):
+        carton_query.operation_story("not-a-real-op")
+
+
+def test_filter_story_and_discovery_helpers():
+    filters = carton_query.list_filters()
+    assert "path" in filters
+    story = carton_query.filter_story("path")
+    assert story["filter_name"] == "path"
+    assert story["known"] is True
+    assert story["usage_status"] in {
+        "present-in-vocab-only",
+        "referenced-in-profiles",
+        "referenced-in-runtime",
+        "unknown",
+    }
+    ops = carton_query.list_operations()
+    assert "file-read*" in ops
+    profiles = carton_query.list_profiles()
+    assert "sys:bsd" in profiles
+
+
+def test_filter_story_unknown_filter_raises():
+    with pytest.raises(carton_query.CartonDataError):
+        carton_query.filter_story("not-a-filter")
 
 
 def test_missing_mapping_yields_carton_error(monkeypatch, tmp_path):

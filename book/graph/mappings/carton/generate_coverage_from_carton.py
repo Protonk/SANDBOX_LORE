@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parents[4]
 OPS_PATH = ROOT / "book/graph/mappings/vocab/ops.json"
 DIGESTS_PATH = ROOT / "book/graph/mappings/system_profiles/digests.json"
 RUNTIME_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
-CARTON_PATH = ROOT / "book/graph/carton/CARTON.json"
+CARTON_PATH = ROOT / "book/api/carton/CARTON.json"
 BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/carton/operation_coverage.json"
@@ -70,6 +70,12 @@ def load_json(path: Path) -> Dict:
 def load_baseline_host() -> dict:
     baseline = load_json(BASELINE_PATH)
     return baseline.get("host") or {}
+
+
+def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
+    for key, val in baseline.items():
+        if key in other and other[key] != val:
+            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other[key]}")
 
 
 def init_coverage(ops: List[Dict]) -> Dict[str, Dict]:
@@ -161,6 +167,8 @@ def main() -> None:
         }
 
     host = load_baseline_host()
+    assert_host_compatible(host, runtime_mapping.get("metadata", {}).get("host") or {}, "runtime_signatures")
+    assert_host_compatible(host, digests.get("metadata", {}).get("host") or {}, "system_digests")
     inputs = [
         str(OPS_PATH.relative_to(ROOT)),
         str(DIGESTS_PATH.relative_to(ROOT)),

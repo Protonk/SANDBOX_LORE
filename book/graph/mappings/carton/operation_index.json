@@ -13,7 +13,7 @@
       "book/graph/mappings/system_profiles/digests.json",
       "book/graph/mappings/runtime/runtime_signatures.json",
       "book/graph/mappings/carton/operation_coverage.json",
-      "book/graph/carton/CARTON.json",
+      "book/api/carton/CARTON.json",
       "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
     ],
     "source_jobs": [
@@ -26,18 +26,6 @@
     "notes": "Derived from CARTON mappings; coverage drives counts and layer presence."
   },
   "operations": {
-    "default": {
-      "name": "default",
-      "id": 0,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
     "appleevent-send": {
       "name": "appleevent-send",
       "id": 1,
@@ -65,6 +53,47 @@
     "boot-arg-set": {
       "name": "boot-arg-set",
       "id": 3,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "darwin-notification-post": {
+      "name": "darwin-notification-post",
+      "id": 7,
+      "profile_layers": [
+        "system"
+      ],
+      "system_profiles": [
+        "sys:airlock",
+        "sys:sample"
+      ],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 2,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "default": {
+      "name": "default",
+      "id": 0,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "default-message-filter": {
+      "name": "default-message-filter",
+      "id": 190,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -110,23 +139,6 @@
       "runtime_signatures": [],
       "coverage_counts": {
         "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "darwin-notification-post": {
-      "name": "darwin-notification-post",
-      "id": 7,
-      "profile_layers": [
-        "system"
-      ],
-      "system_profiles": [
-        "sys:airlock",
-        "sys:sample"
-      ],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 2,
         "runtime_signatures": 0
       },
       "known": true
@@ -615,6 +627,18 @@
       },
       "known": true
     },
+    "fs-quota-off": {
+      "name": "fs-quota-off",
+      "id": 44,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "fs-quota-on": {
       "name": "fs-quota-on",
       "id": 43,
@@ -627,18 +651,6 @@
       "runtime_signatures": [],
       "coverage_counts": {
         "system_profiles": 1,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "fs-quota-off": {
-      "name": "fs-quota-off",
-      "id": 44,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -799,18 +811,6 @@
       },
       "known": true
     },
-    "qtn-user": {
-      "name": "qtn-user",
-      "id": 57,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
     "hid-control": {
       "name": "hid-control",
       "id": 58,
@@ -826,6 +826,42 @@
     "iokit*": {
       "name": "iokit*",
       "id": 59,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-async-external-method": {
+      "name": "iokit-async-external-method",
+      "id": 191,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-external-method": {
+      "name": "iokit-external-method",
+      "id": 192,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "iokit-external-trap": {
+      "name": "iokit-external-trap",
+      "id": 193,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -875,9 +911,9 @@
       },
       "known": true
     },
-    "iokit-open-user-client": {
-      "name": "iokit-open-user-client",
-      "id": 63,
+    "iokit-open-service": {
+      "name": "iokit-open-service",
+      "id": 64,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -887,9 +923,9 @@
       },
       "known": true
     },
-    "iokit-open-service": {
-      "name": "iokit-open-service",
-      "id": 64,
+    "iokit-open-user-client": {
+      "name": "iokit-open-user-client",
+      "id": 63,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -1299,6 +1335,18 @@
       },
       "known": true
     },
+    "mach-message-send": {
+      "name": "mach-message-send",
+      "id": 194,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "mach-priv*": {
       "name": "mach-priv*",
       "id": 97,
@@ -1435,6 +1483,18 @@
       },
       "known": true
     },
+    "managed-preference-read": {
+      "name": "managed-preference-read",
+      "id": 186,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "necp-client-open": {
       "name": "necp-client-open",
       "id": 108,
@@ -1459,9 +1519,9 @@
       },
       "known": true
     },
-    "network-inbound": {
-      "name": "network-inbound",
-      "id": 110,
+    "network-bind": {
+      "name": "network-bind",
+      "id": 111,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -1471,9 +1531,9 @@
       },
       "known": true
     },
-    "network-bind": {
-      "name": "network-bind",
-      "id": 111,
+    "network-inbound": {
+      "name": "network-inbound",
+      "id": 110,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -1607,6 +1667,18 @@
       },
       "known": true
     },
+    "process-exec-update-label": {
+      "name": "process-exec-update-label",
+      "id": 189,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "process-fork": {
       "name": "process-fork",
       "id": 122,
@@ -1679,9 +1751,21 @@
       },
       "known": true
     },
-    "process-info-rusage": {
-      "name": "process-info-rusage",
-      "id": 128,
+    "process-info-pidfdinfo": {
+      "name": "process-info-pidfdinfo",
+      "id": 130,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "process-info-pidfileportinfo": {
+      "name": "process-info-pidfileportinfo",
+      "id": 131,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -1703,21 +1787,9 @@
       },
       "known": true
     },
-    "process-info-pidfdinfo": {
-      "name": "process-info-pidfdinfo",
-      "id": 130,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "process-info-pidfileportinfo": {
-      "name": "process-info-pidfileportinfo",
-      "id": 131,
+    "process-info-rusage": {
+      "name": "process-info-rusage",
+      "id": 128,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -1883,6 +1955,18 @@
       },
       "known": true
     },
+    "qtn-user": {
+      "name": "qtn-user",
+      "id": 57,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "signal": {
       "name": "signal",
       "id": 145,
@@ -1947,6 +2031,18 @@
       },
       "known": true
     },
+    "storage-class-map": {
+      "name": "storage-class-map",
+      "id": 188,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
     "syscall*": {
       "name": "syscall*",
       "id": 150,
@@ -1959,18 +2055,6 @@
       "runtime_signatures": [],
       "coverage_counts": {
         "system_profiles": 1,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "syscall-unix": {
-      "name": "syscall-unix",
-      "id": 151,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1999,6 +2083,18 @@
       "runtime_signatures": [],
       "coverage_counts": {
         "system_profiles": 1,
+        "runtime_signatures": 0
+      },
+      "known": true
+    },
+    "syscall-unix": {
+      "name": "syscall-unix",
+      "id": 151,
+      "profile_layers": [],
+      "system_profiles": [],
+      "runtime_signatures": [],
+      "coverage_counts": {
+        "system_profiles": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2187,9 +2283,9 @@
       },
       "known": true
     },
-    "system-kext-unload": {
-      "name": "system-kext-unload",
-      "id": 168,
+    "system-kext-query": {
+      "name": "system-kext-query",
+      "id": 169,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -2199,9 +2295,9 @@
       },
       "known": true
     },
-    "system-kext-query": {
-      "name": "system-kext-query",
-      "id": 169,
+    "system-kext-unload": {
+      "name": "system-kext-unload",
+      "id": 168,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
@@ -2403,105 +2499,9 @@
       },
       "known": true
     },
-    "managed-preference-read": {
-      "name": "managed-preference-read",
-      "id": 186,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
     "user-preference-write": {
       "name": "user-preference-write",
       "id": 187,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "storage-class-map": {
-      "name": "storage-class-map",
-      "id": 188,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "process-exec-update-label": {
-      "name": "process-exec-update-label",
-      "id": 189,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "default-message-filter": {
-      "name": "default-message-filter",
-      "id": 190,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "iokit-async-external-method": {
-      "name": "iokit-async-external-method",
-      "id": 191,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "iokit-external-method": {
-      "name": "iokit-external-method",
-      "id": 192,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "iokit-external-trap": {
-      "name": "iokit-external-trap",
-      "id": 193,
-      "profile_layers": [],
-      "system_profiles": [],
-      "runtime_signatures": [],
-      "coverage_counts": {
-        "system_profiles": 0,
-        "runtime_signatures": 0
-      },
-      "known": true
-    },
-    "mach-message-send": {
-      "name": "mach-message-send",
-      "id": 194,
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],

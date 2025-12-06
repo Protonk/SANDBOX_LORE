@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 from pathlib import Path
 from typing import Dict, List
 
@@ -96,7 +95,8 @@ def select_jobs(
 
 
 def normalize_record(job: registry.ValidationJob, result: Dict, host_meta: Dict, prev_record: Dict | None) -> Dict:
-    ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    prev_ts = (prev_record or {}).get("timestamp")
+    ts = prev_ts or "manual"
     status = result.get("status", "ok")
     outputs = result.get("outputs", job.outputs)
     hashes = compute_hashes(outputs)
@@ -191,7 +191,7 @@ def main() -> None:
     results = [run_job(job, args.skip_missing_inputs, host_meta, prev_status.get(job.id)) for job in selected]
     STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     payload = {
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "generated_at": "manual",
         "schema": {
             "job_id": "string",
             "status": "ok|partial|brittle|blocked|skipped",

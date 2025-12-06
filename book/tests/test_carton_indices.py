@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OP_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "operation_index.json"
 PROFILE_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "profile_layer_index.json"
+FILTER_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "filter_index.json"
+CONCEPT_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "concept_index.json"
 
 
 def load(path: Path) -> dict:
@@ -40,3 +42,41 @@ def test_profile_layer_index_shape_and_sample():
     # Ensure ops are unique by id
     ids = [op["id"] for op in bsd["ops"]]
     assert len(ids) == len(set(ids))
+
+
+def test_filter_index_shape():
+    data = load(FILTER_INDEX)
+    meta = data.get("metadata") or {}
+    host = meta.get("host") or {}
+    assert host.get("build") == "23E224"
+    filters = data.get("filters") or {}
+    assert "path" in filters, "expected at least the path filter in filter index"
+    path_entry = filters["path"]
+    assert path_entry["known"] is True
+    assert path_entry["usage_status"] in {
+        "present-in-vocab-only",
+        "referenced-in-profiles",
+        "referenced-in-runtime",
+        "unknown",
+    }
+    assert path_entry["system_profiles"] == []
+    assert path_entry["runtime_signatures"] == []
+    # Ensure at least one filter is marked present-in-vocab-only (current conservative default).
+    assert any(entry.get("usage_status") == "present-in-vocab-only" for entry in filters.values())
+
+
+def test_concept_index_contains_expected_concepts():
+    data = load(CONCEPT_INDEX)
+    meta = data.get("metadata") or {}
+    host = meta.get("host") or {}
+    assert host.get("build") == "23E224"
+    concepts = data.get("concepts") or {}
+    expected = {"operation", "filter", "profile-layer"}
+    assert expected <= set(concepts.keys())
+    op_entries = concepts["operation"]
+    paths = {entry["path"] for entry in op_entries}
+    assert "book/graph/mappings/vocab/ops.json" in paths
+    assert "book/graph/mappings/carton/operation_index.json" in paths
+    filter_entries = concepts["filter"]
+    filter_paths = {entry["path"] for entry in filter_entries}
+    assert "book/graph/mappings/carton/filter_index.json" in filter_paths
