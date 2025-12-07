@@ -14,6 +14,7 @@ Outputs:
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
 
@@ -26,7 +27,8 @@ OUT_PATH = Path("book/experiments/op-table-vocab-alignment/out/op_table_vocab_al
 def main() -> None:
     summary = json.loads(SUMMARY_PATH.read_text())
     ops_vocab_json = json.loads(OPS_VOCAB_PATH.read_text())
-    vocab_version = ops_vocab_json.get("generated_at")
+    ops_entries = ops_vocab_json.get("ops", [])
+    vocab_version = hashlib.sha256(json.dumps(ops_entries, sort_keys=True).encode()).hexdigest() if ops_entries else None
     ops_map = {entry["name"]: entry["id"] for entry in ops_vocab_json.get("ops", [])}
     filters_map = {entry["name"]: entry["id"] for entry in json.loads(FILTERS_VOCAB_PATH.read_text()).get("filters", [])} if FILTERS_VOCAB_PATH.exists() else {}
 

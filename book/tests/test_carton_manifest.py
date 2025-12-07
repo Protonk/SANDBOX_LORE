@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "book" / "api" / "carton" / "CARTON.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 
 def sha256(path: Path) -> str:
@@ -47,5 +48,7 @@ def test_carton_manifest_hashes():
 
 def test_carton_manifest_host():
     data = json.loads(MANIFEST.read_text())
-    host = data.get("host") or {}
-    assert host.get("build") == "23E224"
+    host = data.get("host")
+    assert host == BASELINE_REF
+    baseline = json.loads((ROOT / BASELINE_REF).read_text()).get("host") or {}
+    assert baseline.get("build") == "23E224"

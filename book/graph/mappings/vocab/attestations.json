@@ -18,7 +18,7 @@
   ],
   "filters": {
     "count": 93,
-    "hash": "624cb590dc79558af4addd506b7f67878232e74c4d6946598873da2a1fedc23c",
+    "hash": "4db9229d28c0f649a4bf979cf54eccf48eb4a78618d8f14ec76a76229796eb3d",
     "source": "book/experiments/vocab-from-cache/extracted/usr/lib/libsandbox.1.dylib",
     "sources": [
       {
@@ -28,18 +28,11 @@
       }
     ]
   },
-  "generated_at": "2025-11-28T01:25:13Z",
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "notes": "Attestation links vocab tables to dyld slices and reference blobs for this host/build.",
   "ops": {
     "count": 196,
-    "hash": "fcbd568760622b9cbe6d494a8293b4c006cb040aa9160b464bda46504be3e785",
+    "hash": "e6cf55c650656ec1915b22bd76caeca913dbdc780cd733e13b3f9abd48ce34f2",
     "source": "book/experiments/vocab-from-cache/extracted/usr/lib/libsandbox.1.dylib",
     "sources": [
       {

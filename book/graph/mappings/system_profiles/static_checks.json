@@ -16,7 +16,7 @@
         "1": 1,
         "166": 5
       },
-      "tag_layout_hash": "782f92d2b2be0635a16c69c29d1a50b48553b560081e8c5f2549a64f161a1718"
+      "tag_layout_hash": "e745d81fcbade56bfcf37ee8e71e3947a42c8d1993c8990568e0269f7ded7d28"
     },
     {
       "format_variant": "modern-heuristic",
@@ -35,7 +35,7 @@
         "26": 18,
         "27": 14
       },
-      "tag_layout_hash": "782f92d2b2be0635a16c69c29d1a50b48553b560081e8c5f2549a64f161a1718"
+      "tag_layout_hash": "e745d81fcbade56bfcf37ee8e71e3947a42c8d1993c8990568e0269f7ded7d28"
     },
     {
       "format_variant": "modern-heuristic",
@@ -55,16 +55,9 @@
         "7": 12,
         "8": 16
       },
-      "tag_layout_hash": "782f92d2b2be0635a16c69c29d1a50b48553b560081e8c5f2549a64f161a1718"
+      "tag_layout_hash": "e745d81fcbade56bfcf37ee8e71e3947a42c8d1993c8990568e0269f7ded7d28"
     }
   ],
-  "generated_at": "manual",
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
-  "tag_layout_hash": "782f92d2b2be0635a16c69c29d1a50b48553b560081e8c5f2549a64f161a1718"
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+  "tag_layout_hash": "e745d81fcbade56bfcf37ee8e71e3947a42c8d1993c8990568e0269f7ded7d28"
 }

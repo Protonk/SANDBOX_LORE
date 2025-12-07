@@ -1,49 +1,42 @@
 {
   "name": "CARTON",
-  "host": {
-    "product": "macOS",
-    "version": "14.4.1",
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "sip": "enabled"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "files": [
     {
       "path": "book/graph/mappings/vocab/ops.json",
-      "sha256": "fcbd568760622b9cbe6d494a8293b4c006cb040aa9160b464bda46504be3e785"
+      "sha256": "e6cf55c650656ec1915b22bd76caeca913dbdc780cd733e13b3f9abd48ce34f2"
     },
     {
       "path": "book/graph/mappings/vocab/filters.json",
-      "sha256": "624cb590dc79558af4addd506b7f67878232e74c4d6946598873da2a1fedc23c"
+      "sha256": "4db9229d28c0f649a4bf979cf54eccf48eb4a78618d8f14ec76a76229796eb3d"
     },
     {
       "path": "book/graph/mappings/runtime/runtime_signatures.json",
-      "sha256": "074d002ae0cde146968066d5452392025474626298f81e799621035b5479ebc3"
+      "sha256": "298629ddea7c3a37d929e21d1393dbd4133ea750e09033c20a189b00cd418055"
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "3b91c7c18ae1e19f403d498c1ac1a06a1fed968d0c9f80126bffbe3a337e18d8"
+      "sha256": "b6a918e61e362154f0edb60861d85a7584c7db52604bcb748165c137e5a21054"
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
-      "sha256": "c5d332727a86e460dbf2bf74be46e436a6cb66b08ca63289eb9b6ccf80f5ff04"
+      "sha256": "4156d76cc3dc11f9beedc92044c5a3694b1f09ca6d025daab2f23f9eb9e6f72c"
     },
     {
       "path": "book/graph/mappings/carton/operation_index.json",
-      "sha256": "7beeb173da854d9e39ba31b300dec6599afd24353de29064b30b9352205ad3b3"
+      "sha256": "11e461dd81c5ced33548e8081b823e307a406b33de4dcfbcbe7d93b7fd3e6d04"
     },
     {
       "path": "book/graph/mappings/carton/profile_layer_index.json",
-      "sha256": "a476e211ce1f82ac60e0942baa412c25f46a2fc4fef6734c5375e58d911a46db"
+      "sha256": "3ea50ce1d627f1fffd9b2515013b97a0b6033fe6058318a62be389969b9e1302"
     },
     {
       "path": "book/graph/mappings/carton/filter_index.json",
-      "sha256": "a899de2e2a77b59393d6ab76de730b5ed90e334a45b3bd5a9db0cca9870ca666"
+      "sha256": "c88bbbf67f74384a0dd0d2f6fab76b2952cbe0b742f4edcca956898cf478943c"
     },
     {
       "path": "book/graph/mappings/carton/concept_index.json",
-      "sha256": "3ddee89ca6a074de6bf5f6da16c1017b1b1abe1fdd35d9b7c7203aa1a9352838"
+      "sha256": "046aeea7e729a356dbb24fc7372a991c99e05b4bc4db0a59536eb68b49457010"
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
@@ -63,7 +56,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "605cb0377546ed0659a9aa9a80a60c07053f7b72502f86d0fc786d9604fc2b14"
+      "sha256": "6c57badfbb811ea14cf11a0d427307b1497d9b7c92dc4b3319ae9c682201b8bd"
     }
   ]
 }

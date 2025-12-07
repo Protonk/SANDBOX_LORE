@@ -14,7 +14,8 @@ from pathlib import Path
 from typing import List, Dict
 
 ROOT = Path(__file__).resolve().parents[3]
-BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE = ROOT / BASELINE_REF
 
 FILES = [
     "book/graph/mappings/vocab/ops.json",
@@ -50,13 +51,9 @@ def main() -> None:
         p = ROOT / rel
         rows.append({"path": rel, "sha256": sha256(p)})
 
-    host = {}
-    if BASELINE.exists():
-        host = json.loads(BASELINE.read_text()).get("host", {})
-
     manifest = {
         "name": "CARTON",
-        "host": host,
+        "host": BASELINE_REF,
         "files": rows,
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

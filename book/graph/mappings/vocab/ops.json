@@ -1,12 +1,5 @@
 {
-  "generated_at": "2025-11-28T01:25:13Z",
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "notes": "Operation Vocabulary harvested from extracted libsandbox.1.dylib (_operation_names span).",
   "ops": [
     {

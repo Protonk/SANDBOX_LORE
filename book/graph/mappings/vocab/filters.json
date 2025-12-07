@@ -466,14 +466,7 @@
       "source": "book/experiments/vocab-from-cache/extracted/usr/lib/libsandbox.1.dylib"
     }
   ],
-  "generated_at": "2025-11-28T01:37:58Z",
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "notes": "Filter Vocabulary harvested from extracted libsandbox.1.dylib (_filter_info span).",
   "profile_format_variant": "unknown",
   "sources": [

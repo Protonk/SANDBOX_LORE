@@ -2,6 +2,10 @@ Stable graph-level mapping artifacts live here (versioned by host/build when app
 
 These files are the “shared IR” that tie together experiments, the decoder, and the textbook. They describe how **Operations**, **Filters**, **PolicyGraph** nodes, and concrete system profiles line up on this host, so other tools do not need to rediscover the same facts.
 
+Metadata conventions:
+- `host` fields reference the world baseline by path (`book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`) instead of inlining host traits.
+- Timestamps are intentionally omitted; provenance lives in `inputs` / `source_jobs` and content hashes.
+
 Subdirectories:
 - `vocab/` – Operation / Filter Vocabulary Maps harvested from `libsandbox` for this host. This is the canonical **Operation Vocabulary Map** and **Filter Vocabulary Map** the rest of the project uses when decoding profiles or building capability catalogs.
 - `op_table/` – Compiled-profile **Operation Pointer Table** view: bucket maps, structural signatures, and vocab alignment from the op-table experiments. These artifacts explain how op-table indices relate to SBPL operations at the structural level.

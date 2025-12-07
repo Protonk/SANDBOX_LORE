@@ -26,7 +26,8 @@ ROOT = Path(__file__).resolve().parents[4]
 FILTERS = ROOT / "book/graph/mappings/vocab/filters.json"
 DIGESTS = ROOT / "book/graph/mappings/system_profiles/digests.json"
 CARTON = ROOT / "book/api/carton/CARTON.json"
-BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE = ROOT / BASELINE_REF
 OUT = ROOT / "book/graph/mappings/carton/filter_index.json"
 
 
@@ -34,22 +35,22 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
-def load_baseline_host() -> dict:
-    baseline = load_json(BASELINE)
-    return baseline.get("host") or {}
+def baseline_ref() -> str:
+    if not BASELINE.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE}")
+    return str(BASELINE.relative_to(ROOT))
 
 
-def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
-    for key, val in baseline.items():
-        if key in other and other[key] != val:
-            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other.get(key)}")
+def assert_host_compatible(baseline: str, other: dict | str | None, label: str) -> None:
+    if other and other != baseline:
+        raise RuntimeError(f"host metadata mismatch for {label}: baseline {baseline} vs {other}")
 
 
 def build_index() -> dict:
     filters = load_json(FILTERS)
     digests = load_json(DIGESTS)
-    host = load_baseline_host()
-    assert_host_compatible(host, (digests.get("metadata") or {}).get("host") or {}, "system_digests")
+    host = baseline_ref()
+    assert_host_compatible(host, (digests.get("metadata") or {}).get("host"), "system_digests")
 
     allowed_status = {"unknown", "present-in-vocab-only", "referenced-in-profiles", "referenced-in-runtime"}
     entries: Dict[str, dict] = {}

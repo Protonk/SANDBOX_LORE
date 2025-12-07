@@ -29,7 +29,8 @@ OPS_PATH = ROOT / "book/graph/mappings/vocab/ops.json"
 DIGESTS_PATH = ROOT / "book/graph/mappings/system_profiles/digests.json"
 RUNTIME_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
 CARTON_PATH = ROOT / "book/api/carton/CARTON.json"
-BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = ROOT / BASELINE_REF
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/carton/operation_coverage.json"
 EXPECTED_JOBS = {
@@ -67,15 +68,15 @@ def load_json(path: Path) -> Dict:
     return json.loads(path.read_text())
 
 
-def load_baseline_host() -> dict:
-    baseline = load_json(BASELINE_PATH)
-    return baseline.get("host") or {}
+def baseline_ref() -> str:
+    if not BASELINE_PATH.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
+    return str(BASELINE_PATH.relative_to(ROOT))
 
 
-def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
-    for key, val in baseline.items():
-        if key in other and other[key] != val:
-            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other[key]}")
+def assert_host_compatible(baseline: str, other: dict | str | None, label: str) -> None:
+    if other and other != baseline:
+        raise RuntimeError(f"host metadata mismatch for {label}: baseline {baseline} vs {other}")
 
 
 def init_coverage(ops: List[Dict]) -> Dict[str, Dict]:
@@ -166,9 +167,9 @@ def main() -> None:
             "runtime_signatures": len(entry["runtime_signatures"]),
         }
 
-    host = load_baseline_host()
-    assert_host_compatible(host, runtime_mapping.get("metadata", {}).get("host") or {}, "runtime_signatures")
-    assert_host_compatible(host, digests.get("metadata", {}).get("host") or {}, "system_digests")
+    host = baseline_ref()
+    assert_host_compatible(host, runtime_mapping.get("metadata", {}).get("host"), "runtime_signatures")
+    assert_host_compatible(host, digests.get("metadata", {}).get("host"), "system_digests")
     inputs = [
         str(OPS_PATH.relative_to(ROOT)),
         str(DIGESTS_PATH.relative_to(ROOT)),

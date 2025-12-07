@@ -100,7 +100,7 @@ This experiment sits between the structural experiments and the validation tooli
   
   - Top-level keys:
     - `vocab_present`: whether any `out/vocab/ops.json` was found at alignment time.
-    - `vocab_version`: a timestamp or version string for the vocab file used.
+    - `vocab_version`: a stable hash of the ops vocab entries used for alignment.
     - `source_summary`: path to the op-table-operation `out/summary.json` used as input.
     - `records`: list of per-profile alignment records.
   
@@ -117,7 +117,7 @@ This experiment sits between the structural experiments and the validation tooli
   **Current status:**
   
   - The alignment file covers all profiles from `op-table-operation/out/summary.json`, now with `operation_ids`, `filters`, and `filter_ids` populated from the harvested vocab.
-  - `vocab_version` reflects the `generated_at` stamp in `ops.json`; `vocab_status: ok` and `filter_vocab_present: true` are recorded at the top level.
+  - `vocab_version` reflects the hash of the ops vocab entries (`1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e` on this baseline); `vocab_status: ok` and `filter_vocab_present: true` are recorded at the top level.
   - The file stays conservative: it captures SBPL ops/filters, op-table buckets, op_count, host baseline, and vocab provenance without inventing mappings beyond the vocab artifacts.
   
   ---
@@ -200,7 +200,7 @@ With the Sonoma vocab harvested (`ops.json`/`filters.json` status: ok), we can n
 - Filtered read variants (subpath/literal) elevate file-read* to bucket 5 in these synthetic profiles, indicating filter-driven bucket changes.
 - Filter IDs are available and recorded per profile; correlating bucket shifts with specific filter IDs remains open analysis work.
 
-Bucket→ID summary (from alignment artifact on this host, vocab `generated_at=2025-11-28T01:25:13Z`):
+Bucket→ID summary (from alignment artifact on this host, vocab version `1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e`):
 
 - `file-read*` (ID 21), `file-write*` (ID 29), and `network-outbound` (ID 112) appear in buckets {3,4} across the synthetic profiles (unfiltered vs filtered/mach mixes).
 - `mach-lookup` (ID 96) appears in buckets {5,6}, with bucket 6 showing up only in the complex mach+filtered-read mixes.

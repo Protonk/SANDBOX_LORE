@@ -25,7 +25,8 @@ RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-chec
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
-BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = ROOT / BASELINE_REF
 EXPECTED_JOBS = {"experiment:runtime-checks", "experiment:field2"}
 
 
@@ -53,9 +54,10 @@ def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def load_baseline_host() -> Dict[str, Any]:
-    baseline = load_json(BASELINE_PATH)
-    return baseline.get("host") or {}
+def baseline_ref() -> str:
+    if not BASELINE_PATH.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
+    return str(BASELINE_PATH.relative_to(ROOT))
 
 
 def build_signatures(runtime_ir: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
@@ -97,10 +99,9 @@ def main() -> None:
     signatures, profiles_meta = build_signatures(runtime_ir)
     field2_summary = summarize_field2(field2_ir)
 
-    host = load_baseline_host()
     mapping = {
         "metadata": {
-            "host": host,
+            "host": baseline_ref(),
             "inputs": [
                 str(RUNTIME_IR.relative_to(ROOT)),
                 str(FIELD2_IR.relative_to(ROOT)),

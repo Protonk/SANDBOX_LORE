@@ -1,13 +1,6 @@
 {
   "metadata": {
-    "host": {
-      "product": "macOS",
-      "version": "14.4.1",
-      "build": "23E224",
-      "kernel": "23.4.0",
-      "machine": "arm64",
-      "sip": "enabled"
-    },
+    "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
     "inputs": [
       "book/graph/mappings/system_profiles/digests.json",
       "book/graph/mappings/vocab/ops.json",

@@ -23,6 +23,8 @@ from typing import Any, Dict, List, Optional
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OUT_MANIFEST = REPO_ROOT / "book/graph/mappings/runtime/lifecycle.json"
 OUT_TRACES = REPO_ROOT / "book/graph/mappings/runtime/lifecycle_traces"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = REPO_ROOT / BASELINE_REF
 
 
 def load_json(path: Path) -> Dict[str, Any]:
@@ -88,10 +90,11 @@ def normalize_extensions(meta: Dict[str, Any]) -> (Dict[str, Any], List[Dict[str
 
 
 def main() -> None:
+    if not BASELINE_PATH.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
     meta = load_json(REPO_ROOT / "book/graph/concepts/validation/out/metadata.json")
     manifest = {
-        "generated_at": meta.get("captured_at") or "manual",
-        "host": meta.get("os", {}),
+        "host": BASELINE_REF,
         "sip_status": meta.get("sip_status"),
         "profile_format_variant": meta.get("profile_format_variant"),
         "scenarios": [],

@@ -5,23 +5,13 @@
     "op_table_signatures": "op_table_signatures.json",
     "op_table_vocab_alignment": "op_table_vocab_alignment.json"
   },
-  "generated_at": {
-    "op_table_catalog_v1": "refreshed_with_ops_ids (runtime harness refresh 2025-12-04)",
-    "op_table_operation_summary": "refreshed_with_196_ops_vocab (runtime harness refresh 2025-12-04)"
-  },
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "notes": "Metadata for op-table mapping artifacts on Sonoma 14.4.1 (23E224); vocab stamps match book/graph/mappings/vocab.",
   "vocab": {
     "filters_count": 93,
-    "filters_generated_at": "2025-11-28T01:37:58Z",
     "ops_count": 196,
-    "ops_generated_at": "2025-11-28T01:25:13Z",
-    "status": "ok"
+    "status": "ok",
+    "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e",
+    "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8"
   }
 }

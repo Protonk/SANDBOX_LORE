@@ -1001,14 +1001,7 @@
     }
   },
   "metadata": {
-    "host": {
-      "build": "23E224",
-      "kernel": "23.4.0",
-      "machine": "arm64",
-      "product": "macOS",
-      "sip": "enabled",
-      "version": "14.4.1"
-    },
+    "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
     "inputs": [
       "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
       "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",

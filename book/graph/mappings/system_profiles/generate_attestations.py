@@ -41,6 +41,7 @@ from book.graph.concepts.validation import profile_ingestion as pi
 
 OUT_JSON = REPO_ROOT / "book/graph/mappings/system_profiles/attestations.json"
 OUT_DIR = REPO_ROOT / "book/graph/mappings/system_profiles/attestations"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 
 def sha256(path: Path) -> str:
@@ -188,15 +189,24 @@ def make_attestation(
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    baseline_path = REPO_ROOT / BASELINE_REF
+    if not baseline_path.exists():
+        raise FileNotFoundError(f"missing baseline: {baseline_path}")
     anchor_map = load_json(REPO_ROOT / "book/graph/mappings/anchors/anchor_filter_map.json")
     tag_layout_hash = sha256(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
     vocab_ops = load_json(REPO_ROOT / "book/graph/mappings/vocab/ops.json")
     vocab_filters = load_json(REPO_ROOT / "book/graph/mappings/vocab/filters.json")
     runtime_manifest = load_json(REPO_ROOT / "book/graph/mappings/runtime/expectations.json")
 
+    def vocab_version(entries: Any) -> Optional[str]:
+        if not entries:
+            return None
+        payload = json.dumps(entries, sort_keys=True).encode()
+        return hashlib.sha256(payload).hexdigest()
+
     vocab_versions = {
-        "ops_generated_at": vocab_ops.get("generated_at"),
-        "filters_generated_at": vocab_filters.get("generated_at"),
+        "ops_version": vocab_version(vocab_ops.get("ops")),
+        "filters_version": vocab_version(vocab_filters.get("filters")),
     }
 
     attestations: List[Dict[str, Any]] = []
@@ -217,8 +227,7 @@ def main() -> None:
     OUT_JSON.write_text(
         json.dumps(
             {
-                "generated_at": vocab_ops.get("generated_at"),
-                "host": vocab_ops.get("host", {}),
+                "host": BASELINE_REF,
                 "attestation_count": len(attestations),
                 "tag_layout_hash": tag_layout_hash,
                 "vocab_versions": vocab_versions,

@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[4]
 DIGESTS = ROOT / "book/graph/mappings/system_profiles/digests.json"
 VOCAB = ROOT / "book/graph/mappings/vocab/ops.json"
 COVERAGE = ROOT / "book/graph/mappings/carton/operation_coverage.json"
-BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE = ROOT / BASELINE_REF
 OUT = ROOT / "book/graph/mappings/carton/profile_layer_index.json"
 
 
@@ -27,15 +28,15 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
-def load_baseline_host() -> dict:
-    baseline = load_json(BASELINE)
-    return baseline.get("host") or {}
+def baseline_ref() -> str:
+    if not BASELINE.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE}")
+    return str(BASELINE.relative_to(ROOT))
 
 
-def assert_host_compatible(baseline: dict, other: dict, label: str) -> None:
-    for key, val in baseline.items():
-        if key in other and other[key] != val:
-            raise RuntimeError(f"host metadata mismatch for {label}: baseline {key}={val} vs {other.get(key)}")
+def assert_host_compatible(baseline: str, other: dict | str | None, label: str) -> None:
+    if other and other != baseline:
+        raise RuntimeError(f"host metadata mismatch for {label}: baseline {baseline} vs {other}")
 
 
 def build_index() -> dict:
@@ -46,9 +47,9 @@ def build_index() -> dict:
     id_to_name = {entry["id"]: entry["name"] for entry in ops if "id" in entry and "name" in entry}
     coverage_map: Dict[str, dict] = coverage.get("coverage") or {}
 
-    host = load_baseline_host()
-    assert_host_compatible(host, (digests.get("metadata") or {}).get("host") or {}, "system_digests")
-    assert_host_compatible(host, (coverage.get("metadata") or {}).get("host") or {}, "coverage")
+    host = baseline_ref()
+    assert_host_compatible(host, (digests.get("metadata") or {}).get("host"), "system_digests")
+    assert_host_compatible(host, (coverage.get("metadata") or {}).get("host"), "coverage")
     source_jobs: List[str] = []
     inputs: List[str] = [
         "book/graph/mappings/system_profiles/digests.json",
@@ -89,9 +90,9 @@ def build_index() -> dict:
             "host": host,
             "inputs": inputs,
             "source_jobs": source_jobs,
-        "status": "ok",
-        "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries.",
-    },
+            "status": "ok",
+            "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries.",
+        },
         "profiles": dict(sorted(profiles.items(), key=lambda kv: kv[0])),
     }
 

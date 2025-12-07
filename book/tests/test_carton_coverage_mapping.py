@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 COVERAGE_PATH = ROOT / "book" / "graph" / "mappings" / "carton" / "operation_coverage.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 
 def load() -> dict:
@@ -10,12 +11,17 @@ def load() -> dict:
     return json.loads(COVERAGE_PATH.read_text())
 
 
+def baseline_host():
+    return json.loads((ROOT / BASELINE_REF).read_text()).get("host") or {}
+
+
 def test_coverage_metadata():
     data = load()
     meta = data.get("metadata") or {}
     assert "generated_at" not in meta
-    host = meta.get("host") or {}
-    assert host.get("build") == "23E224"
+    host = meta.get("host")
+    assert host == BASELINE_REF
+    assert baseline_host().get("build") == "23E224"
     assert meta.get("source_jobs"), "source_jobs missing from coverage metadata"
     assert meta.get("inputs"), "inputs missing from coverage metadata"
 

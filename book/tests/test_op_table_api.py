@@ -35,7 +35,7 @@ def test_op_table_cli_with_compile(tmp_path):
 
 
 def test_build_alignment_stub():
-    vocab_ops = {"ops": [{"name": "file-read*", "id": 10}], "generated_at": "test"}
+    vocab_ops = {"ops": [{"name": "file-read*", "id": 10}]}
     vocab_filters = {"filters": [{"name": "literal", "id": 1}]}
     summary = op_table.Summary(
         name="stub",

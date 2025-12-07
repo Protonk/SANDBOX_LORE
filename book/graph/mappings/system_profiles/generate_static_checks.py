@@ -27,6 +27,8 @@ if str(REPO_ROOT) not in sys.path:
 import book.api.decoder as decoder
 from book.graph.concepts.validation import profile_ingestion as pi
 OUT_PATH = REPO_ROOT / "book/graph/mappings/system_profiles/static_checks.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = REPO_ROOT / BASELINE_REF
 
 
 def sha256(path: Path) -> str:
@@ -66,6 +68,8 @@ def summarize(path: Path, tag_layout_hash: str) -> Dict[str, Any]:
 
 
 def main() -> None:
+    if not BASELINE_PATH.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
     tag_layout_hash = sha256(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
     profiles = [
         REPO_ROOT / "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
@@ -76,8 +80,7 @@ def main() -> None:
     OUT_PATH.write_text(
         json.dumps(
             {
-                "generated_at": "manual",
-                "host": load_json(REPO_ROOT / "book/graph/concepts/validation/out/metadata.json").get("os", {}),
+                "host": BASELINE_REF,
                 "tag_layout_hash": tag_layout_hash,
                 "entries": checks,
             },

@@ -9,6 +9,7 @@ Scope:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -199,7 +200,10 @@ def build_alignment(
 ) -> Dict[str, Any]:
     ops_map = {entry["name"]: entry["id"] for entry in ops_vocab.get("ops", [])}
     filters_map = {entry["name"]: entry["id"] for entry in filters_vocab.get("filters", [])}
-    vocab_version = ops_vocab.get("generated_at")
+    vocab_version = None
+    if ops_map:
+        payload = json.dumps(ops_vocab.get("ops", []), sort_keys=True).encode()
+        vocab_version = hashlib.sha256(payload).hexdigest()
     records = []
     for s in summaries:
         op_ids = [ops_map.get(op) for op in s.ops]

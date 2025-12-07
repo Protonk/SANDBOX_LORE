@@ -1,13 +1,6 @@
 {
   "baseline": "sonoma-14.4.1-23E224-arm64",
-  "generated_at": "2025-12-04T14:25:40.881964Z",
-  "host": {
-    "build": "23E224",
-    "kernel": "23.4.0",
-    "machine": "arm64",
-    "product": "macOS",
-    "version": "14.4.1"
-  },
+  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
   "profile_format_variant": "modern-heuristic",
   "profiles": [
     {

@@ -26,6 +26,8 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 OUT_PATH = REPO_ROOT / "book/graph/mappings/vocab/attestations.json"
 VALIDATION_STATUS = REPO_ROOT / "book/graph/concepts/validation/out/validation_status.json"
 VALIDATION_JOB_ID = "vocab:sonoma-14.4.1"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = REPO_ROOT / BASELINE_REF
 
 
 def sha256(path: Path) -> str:
@@ -73,6 +75,8 @@ def run_validation_job(job_id: str) -> None:
 
 def main() -> None:
     run_validation_job(VALIDATION_JOB_ID)
+    if not BASELINE_PATH.exists():
+        raise SystemExit(f"missing baseline: {BASELINE_PATH}")
     meta = load_json(REPO_ROOT / "book/graph/concepts/validation/out/metadata.json")
     ops = load_json(REPO_ROOT / "book/graph/mappings/vocab/ops.json")
     filters = load_json(REPO_ROOT / "book/graph/mappings/vocab/filters.json")
@@ -98,8 +102,7 @@ def main() -> None:
     )
 
     manifest = {
-        "generated_at": ops.get("generated_at") or filters.get("generated_at"),
-        "host": meta.get("os", {}),
+        "host": BASELINE_REF,
         "sip_status": meta.get("sip_status"),
         "ops": {
             "count": len(ops.get("ops", [])),

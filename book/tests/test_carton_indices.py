@@ -6,18 +6,24 @@ OP_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "operation_index.js
 PROFILE_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "profile_layer_index.json"
 FILTER_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "filter_index.json"
 CONCEPT_INDEX = ROOT / "book" / "graph" / "mappings" / "carton" / "concept_index.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 
 def load(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def baseline_host():
+    return json.loads((ROOT / BASELINE_REF).read_text()).get("host") or {}
+
+
 def test_operation_index_shape_and_sample():
     data = load(OP_INDEX)
     assert "metadata" in data and "operations" in data
-    host = data["metadata"].get("host") or {}
+    host = data["metadata"].get("host")
     assert "generated_at" not in data["metadata"]
-    assert host.get("build") == "23E224"
+    assert host == BASELINE_REF
+    assert baseline_host().get("build") == "23E224"
     op = data["operations"]["file-read*"]
     assert op["known"] is True
     assert isinstance(op["id"], int)
@@ -31,9 +37,10 @@ def test_operation_index_shape_and_sample():
 def test_profile_layer_index_shape_and_sample():
     data = load(PROFILE_INDEX)
     assert "metadata" in data and "profiles" in data
-    host = data["metadata"].get("host") or {}
+    host = data["metadata"].get("host")
     assert "generated_at" not in data["metadata"]
-    assert host.get("build") == "23E224"
+    assert host == BASELINE_REF
+    assert baseline_host().get("build") == "23E224"
     bsd = data["profiles"]["sys:bsd"]
     assert bsd["layer"] == "system"
     assert bsd["ops"], "expected ops for sys:bsd"
@@ -47,8 +54,9 @@ def test_profile_layer_index_shape_and_sample():
 def test_filter_index_shape():
     data = load(FILTER_INDEX)
     meta = data.get("metadata") or {}
-    host = meta.get("host") or {}
-    assert host.get("build") == "23E224"
+    host = meta.get("host")
+    assert host == BASELINE_REF
+    assert baseline_host().get("build") == "23E224"
     filters = data.get("filters") or {}
     assert "path" in filters, "expected at least the path filter in filter index"
     path_entry = filters["path"]
@@ -68,8 +76,9 @@ def test_filter_index_shape():
 def test_concept_index_contains_expected_concepts():
     data = load(CONCEPT_INDEX)
     meta = data.get("metadata") or {}
-    host = meta.get("host") or {}
-    assert host.get("build") == "23E224"
+    host = meta.get("host")
+    assert host == BASELINE_REF
+    assert baseline_host().get("build") == "23E224"
     concepts = data.get("concepts") or {}
     expected = {"operation", "filter", "profile-layer"}
     assert expected <= set(concepts.keys())

@@ -206,7 +206,7 @@
       "operation_ids": [],
       "ops": [],
       "profile": "v0_empty",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -423,7 +423,7 @@
         "network-outbound"
       ],
       "profile": "v10_mach_network",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -634,7 +634,7 @@
         "file-read*"
       ],
       "profile": "v11_read_subpath",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -851,7 +851,7 @@
         "mach-lookup"
       ],
       "profile": "v12_read_subpath_mach",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -1064,7 +1064,7 @@
         "file-write*"
       ],
       "profile": "v13_read_subpath_write",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -1277,7 +1277,7 @@
         "network-outbound"
       ],
       "profile": "v14_read_subpath_network",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -1494,7 +1494,7 @@
         "file-read*"
       ],
       "profile": "v15_mach_literal",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -1713,7 +1713,7 @@
         "file-read*"
       ],
       "profile": "v16_subpath_mach_literal",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -1924,7 +1924,7 @@
         "file-read*"
       ],
       "profile": "v1_read",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -2135,7 +2135,7 @@
         "file-write*"
       ],
       "profile": "v2_write",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -2350,7 +2350,7 @@
         "mach-lookup"
       ],
       "profile": "v3_mach",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -2561,7 +2561,7 @@
         "network-outbound"
       ],
       "profile": "v4_network",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -2774,7 +2774,7 @@
         "file-write*"
       ],
       "profile": "v5_read_write",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -2991,7 +2991,7 @@
         "mach-lookup"
       ],
       "profile": "v6_read_mach",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -3204,7 +3204,7 @@
         "network-outbound"
       ],
       "profile": "v7_read_network",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [
@@ -3421,7 +3421,7 @@
         "mach-lookup"
       ],
       "profile": "v8_write_mach",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     },
     {
       "filter_ids": [],
@@ -3634,11 +3634,11 @@
         "network-outbound"
       ],
       "profile": "v9_write_network",
-      "vocab_version": "2025-11-28T01:25:13Z"
+      "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     }
   ],
   "source_summary": "book/experiments/op-table-operation/out/summary.json",
   "vocab_present": true,
   "vocab_status": "ok",
-  "vocab_version": "2025-11-28T01:25:13Z"
+  "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
 }

@@ -23,7 +23,8 @@ ROOT = Path(__file__).resolve().parents[4]
 IR_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "system-profile-digest" / "digests_ir.json"
 STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "validation_status.json"
 OUT_PATH = ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json"
-BASELINE_PATH = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+BASELINE_PATH = ROOT / BASELINE_REF
 EXPECTED_JOB = "experiment:system-profile-digest"
 
 
@@ -49,9 +50,10 @@ def load_ir(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def load_baseline_host() -> Dict[str, Any]:
-    baseline = load_ir(BASELINE_PATH)
-    return baseline.get("host") or {}
+def baseline_ref() -> str:
+    if not BASELINE_PATH.exists():
+        raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
+    return str(BASELINE_PATH.relative_to(ROOT))
 
 
 def main() -> None:
@@ -59,11 +61,10 @@ def main() -> None:
     job = load_status(EXPECTED_JOB)
     ir = load_ir(IR_PATH)
 
-    host = load_baseline_host()
     profiles = ir.get("profiles") or {}
     mapping = {
         "metadata": {
-            "host": host,
+            "host": baseline_ref(),
             "inputs": [str(IR_PATH.relative_to(ROOT)), str(BASELINE_PATH.relative_to(ROOT))],
             "source_jobs": ir.get("source_jobs") or [EXPECTED_JOB],
             "decoder": "book.api.decoder",
