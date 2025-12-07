@@ -1,0 +1,31 @@
+{
+  "world": "sonoma-14.4.1-23E224-arm64",
+  "generated_by": "book/experiments/runtime-adversarial/run_adversarial.py",
+  "mismatches": [
+    {
+      "world": "sonoma-14.4.1-23E224-arm64",
+      "profile_id": "adv:path_edges",
+      "expectation_id": "adv:path_edges:allow-tmp",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/edges/a",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "path_normalization",
+      "notes": "open target: Operation not permitted\n"
+    },
+    {
+      "world": "sonoma-14.4.1-23E224-arm64",
+      "profile_id": "adv:path_edges",
+      "expectation_id": "adv:path_edges:allow-subpath",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/edges/okdir/item.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "path_normalization",
+      "notes": "open target: Operation not permitted\n"
+    }
+  ],
+  "counts": {
+    "path_normalization": 2
+  }
+}

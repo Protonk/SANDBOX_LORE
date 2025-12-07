@@ -1,0 +1,288 @@
+{
+  "adv:struct_flat": {
+    "status": "ok",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/struct_flat.sb",
+    "probes": [
+      {
+        "name": "allow-ok-root",
+        "expectation_id": "adv:struct_flat:allow-ok-root",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "/tmp/runtime-adv/struct/ok/allowed.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/allowed.txt\n",
+        "stderr": ""
+      },
+      {
+        "name": "allow-ok-deep",
+        "expectation_id": "adv:struct_flat:allow-ok-deep",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "/tmp/runtime-adv/struct/ok/deep/nested.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/deep/nested.txt\n",
+        "stderr": ""
+      },
+      {
+        "name": "deny-blocked",
+        "expectation_id": "adv:struct_flat:deny-blocked",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/blocked.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "/tmp/runtime-adv/struct/blocked.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "deny-outside",
+        "expectation_id": "adv:struct_flat:deny-outside",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/outside.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "/tmp/runtime-adv/struct/outside.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      }
+    ]
+  },
+  "adv:struct_nested": {
+    "status": "ok",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/struct_nested.sb",
+    "probes": [
+      {
+        "name": "allow-ok-root",
+        "expectation_id": "adv:struct_nested:allow-ok-root",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "/tmp/runtime-adv/struct/ok/allowed.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/allowed.txt\n",
+        "stderr": ""
+      },
+      {
+        "name": "allow-ok-deep",
+        "expectation_id": "adv:struct_nested:allow-ok-deep",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "/tmp/runtime-adv/struct/ok/deep/nested.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/deep/nested.txt\n",
+        "stderr": ""
+      },
+      {
+        "name": "deny-blocked",
+        "expectation_id": "adv:struct_nested:deny-blocked",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/blocked.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "/tmp/runtime-adv/struct/blocked.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "deny-outside",
+        "expectation_id": "adv:struct_nested:deny-outside",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/struct/outside.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "/tmp/runtime-adv/struct/outside.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      }
+    ]
+  },
+  "adv:path_edges": {
+    "status": "partial",
+    "profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+    "base_profile_path": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/path_edges.sb",
+    "probes": [
+      {
+        "name": "allow-tmp",
+        "expectation_id": "adv:path_edges:allow-tmp",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/edges/a",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "/tmp/runtime-adv/edges/a"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "deny-private",
+        "expectation_id": "adv:path_edges:deny-private",
+        "operation": "file-read*",
+        "path": "/private/tmp/runtime-adv/edges/a",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "/private/tmp/runtime-adv/edges/a"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "allow-subpath",
+        "expectation_id": "adv:path_edges:allow-subpath",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/edges/okdir/item.txt",
+        "expected": "allow",
+        "actual": "deny",
+        "match": false,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "/tmp/runtime-adv/edges/okdir/item.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "deny-dotdot",
+        "expectation_id": "adv:path_edges:deny-dotdot",
+        "operation": "file-read*",
+        "path": "/tmp/runtime-adv/edges/okdir/../blocked.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-checks/sandbox_reader",
+          "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "/tmp/runtime-adv/edges/okdir/../blocked.txt"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      }
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
+  }
+}

@@ -1,0 +1,8 @@
+(version 1)
+(deny default)
+
+;; Stress path/literal edge cases and /tmp ↔ /private/tmp normalization.
+(allow file-read* (literal "/tmp/runtime-adv/edges/a"))
+(deny file-read* (literal "/private/tmp/runtime-adv/edges/a"))
+(allow file-read* (subpath "/tmp/runtime-adv/edges/okdir"))
+(deny file-read* (literal "/tmp/runtime-adv/edges/okdir/../blocked.txt"))

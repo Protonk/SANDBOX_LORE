@@ -1,0 +1,18 @@
+{
+  "adv:path_edges:allow-tmp": {
+    "bedrock_refs": [
+      "filter:path-literal",
+      "paths:/tmp-vs-/private/tmp"
+    ],
+    "suggested_status": "partial",
+    "notes": "Allow on /tmp runtime-adv/edges/a denied at runtime; likely path canonicalization to /private/tmp before filter match."
+  },
+  "adv:path_edges:allow-subpath": {
+    "bedrock_refs": [
+      "filter:path-subpath",
+      "paths:/tmp-vs-/private/tmp"
+    ],
+    "suggested_status": "partial",
+    "notes": "Allow on /tmp runtime-adv/edges/okdir/item.txt denied at runtime; suggests /tmp → /private/tmp normalization dominates literal/subpath filters."
+  }
+}

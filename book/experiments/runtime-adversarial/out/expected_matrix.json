@@ -1,0 +1,116 @@
+{
+  "world": "sonoma-14.4.1-23E224-arm64",
+  "profiles": {
+    "adv:struct_flat": {
+      "mode": "sbpl",
+      "sbpl": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/struct_flat.sb",
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/build/struct_flat.sb.bin",
+      "family": "structural_variants",
+      "semantic_group": "structural:file-read-subpath",
+      "probes": [
+        {
+          "name": "allow-ok-root",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "expected": "allow",
+          "expectation_id": "adv:struct_flat:allow-ok-root"
+        },
+        {
+          "name": "allow-ok-deep",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "expected": "allow",
+          "expectation_id": "adv:struct_flat:allow-ok-deep"
+        },
+        {
+          "name": "deny-blocked",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/blocked.txt",
+          "expected": "deny",
+          "expectation_id": "adv:struct_flat:deny-blocked"
+        },
+        {
+          "name": "deny-outside",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/outside.txt",
+          "expected": "deny",
+          "expectation_id": "adv:struct_flat:deny-outside"
+        }
+      ]
+    },
+    "adv:struct_nested": {
+      "mode": "sbpl",
+      "sbpl": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/struct_nested.sb",
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/build/struct_nested.sb.bin",
+      "family": "structural_variants",
+      "semantic_group": "structural:file-read-subpath",
+      "probes": [
+        {
+          "name": "allow-ok-root",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "expected": "allow",
+          "expectation_id": "adv:struct_nested:allow-ok-root"
+        },
+        {
+          "name": "allow-ok-deep",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "expected": "allow",
+          "expectation_id": "adv:struct_nested:allow-ok-deep"
+        },
+        {
+          "name": "deny-blocked",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/blocked.txt",
+          "expected": "deny",
+          "expectation_id": "adv:struct_nested:deny-blocked"
+        },
+        {
+          "name": "deny-outside",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/struct/outside.txt",
+          "expected": "deny",
+          "expectation_id": "adv:struct_nested:deny-outside"
+        }
+      ]
+    },
+    "adv:path_edges": {
+      "mode": "sbpl",
+      "sbpl": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/path_edges.sb",
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/build/path_edges.sb.bin",
+      "family": "path_edges",
+      "semantic_group": "paths:literal-vs-normalized",
+      "probes": [
+        {
+          "name": "allow-tmp",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/edges/a",
+          "expected": "allow",
+          "expectation_id": "adv:path_edges:allow-tmp"
+        },
+        {
+          "name": "deny-private",
+          "operation": "file-read*",
+          "target": "/private/tmp/runtime-adv/edges/a",
+          "expected": "deny",
+          "expectation_id": "adv:path_edges:deny-private"
+        },
+        {
+          "name": "allow-subpath",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/edges/okdir/item.txt",
+          "expected": "allow",
+          "expectation_id": "adv:path_edges:allow-subpath"
+        },
+        {
+          "name": "deny-dotdot",
+          "operation": "file-read*",
+          "target": "/tmp/runtime-adv/edges/okdir/../blocked.txt",
+          "expected": "deny",
+          "expectation_id": "adv:path_edges:deny-dotdot"
+        }
+      ]
+    }
+  }
+}
