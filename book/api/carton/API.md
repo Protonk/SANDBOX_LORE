@@ -4,15 +4,6 @@ The CARTON API (`book.api.carton.carton_query`) is the public entrypoint for que
 
 For CARTON’s role in the project and how concepts map to artifacts, see `README.md`. For agent‑level routing guidance, see `AGENTS.md`.
 
-## Error types and manifest behavior
-
-- `CartonDataError`
-  - Raised when CARTON data is missing, malformed, or out of sync with the manifest (for example: missing file, JSON decode failure, required top‑level keys absent, SHA‑256 hash mismatch, or manifest drift).
-  - Signals that the local CARTON surface is not trustworthy; callers should not attempt to work around this and should instead rerun the validation/promotion pipeline.
-- `UnknownOperationError`
-  - Raised when a helper that expects a known operation name (for example, `operation_story` or `profiles_and_signatures_for_operation`) cannot find it in the CARTON vocab.
-  - Signals that the concept is unknown to CARTON on this host (typo, different host, or out‑of‑date CARTON), not that the data layer is corrupted.
-
 All loads go through `CARTON.json`: `carton_query` resolves logical names to paths via the manifest, recomputes SHA‑256 hashes when a manifest hash is present, and validates basic schema before returning data.
 
 ## Discovery helpers
@@ -92,6 +83,15 @@ These helpers answer “what do we know about operation X?” type questions. Al
     - `runtime_profile`: the runtime profile/blob associated with this signature, if recorded in `profiles_metadata`.
     - `expected`: any expected outcome entry from the runtime “expected matrix”, when present.
   - Does not currently raise a dedicated error for unknown IDs; absent entries will simply appear as `None`. Use this helper as a read‑only view into known signatures.
+
+## Error types and manifest behavior
+
+- `CartonDataError`
+  - Raised when CARTON data is missing, malformed, or out of sync with the manifest (for example: missing file, JSON decode failure, required top‑level keys absent, SHA‑256 hash mismatch, or manifest drift).
+  - Signals that the local CARTON surface is not trustworthy; callers should not attempt to work around this and should instead rerun the validation/promotion pipeline.
+- `UnknownOperationError`
+  - Raised when a helper that expects a known operation name (for example, `operation_story` or `profiles_and_signatures_for_operation`) cannot find it in the CARTON vocab.
+  - Signals that the concept is unknown to CARTON on this host (typo, different host, or out‑of‑date CARTON), not that the data layer is corrupted.
 
 ## Small examples
 

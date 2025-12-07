@@ -4,18 +4,6 @@ You are in `book/api/carton/`, the API and manifest layer for CARTON: the frozen
 
 Use this directory when you need stable, host‑specific facts about the sandbox on this machine, or when you are extending CARTON itself.
 
-## How to think about CARTON
-
-- CARTON is the **frozen IR surface** for the Sonoma world baseline described in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
-- It exposes a small set of concepts as first‑class IR:
-  - operations and op IDs,
-  - filters,
-  - system profiles and profile layers,
-  - runtime signatures/outcomes,
-  - an explicit binding from concept‑inventory names to CARTON artifacts.
-- All CARTON‑facing JSONs live under `book/graph/mappings/{vocab,runtime,system_profiles,carton}/` and are listed and hash‑checked in `CARTON.json`.
-- The only supported path from validation IR → mappings → CARTON is via the validation driver and `book/graph/mappings/run_promotion.py`. Do not write ad‑hoc scripts that bypass this flow.
-
 When you want to **read facts**, start from the API. When you want to **change what CARTON knows**, start from validation and mappings, then refresh the manifest.
 
 ## First moves for agents (reading CARTON)

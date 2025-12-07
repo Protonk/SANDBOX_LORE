@@ -1,133 +1,149 @@
-# API Tooling (Sonoma baseline)
+# API tooling (Sonoma baseline)
 
-This directory is the shared toolbox for the sandbox textbook. It collects small, composable helpers for:
+This directory collects host-specific helpers for working with Seatbelt on the fixed baseline in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`. Use the sections below as a router; each module has a focused role, a short definition, and a minimal usage example. If a module has its own README, follow that link for deeper guidance.
 
-- compiling SBPL into compiled profiles,
-- decoding and inspecting compiled blobs,
-- analysing op-tables and node structure,
-- driving selected runtime experiments,
-- querying the frozen CARTON IR/mappings, and
-- exporting artifacts for external tools (e.g. Ghidra, Graphviz).
+### decoder
 
-All code here assumes the fixed host baseline recorded in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` and the vocab/format mappings under `book/graph/mappings/`.
+Definition: Structured decoder for compiled sandbox blobs.
 
-## Modules and when to use them
+Role: Turn a compiled profile into Python dictionaries (format variant, op_table, nodes, literal pool, tag counts) using the vocab/tag-layout mappings.
 
-- `decoder/`
-  - Role: Turn compiled sandbox blobs into structured dictionaries (format variant, op_table, nodes, literal pool, tag counts, etc.).
-  - Use when: you need a programmatic view of a profile’s PolicyGraph for analysis or experiments.
-  - Notes: honours the Operation/Filter vocabularies and tag-layout mappings; see `decoder/README.md` for field names.
+Example:
+```sh
+python - <<'PY'
+from pathlib import Path
+from book.api import decoder
+blob = Path("book/examples/sb/sample.sb.bin").read_bytes()
+decoded = decoder.decode_profile_dict(blob)
+print(decoded["format_variant"], decoded["op_count"])
+PY
+```
+See `book/api/decoder/README.md` for field details and CLI usage.
 
-- `sbpl_compile/`
-  - Role: Wrap private `libsandbox` compile entry points.
-  - Surfaces:
-    - Python: `compile_sbpl_file(Path, Path|None)` and `compile_sbpl_string(str)`.
-    - CLI: `python -m book.api.sbpl_compile.cli input.sb --out output.sb.bin`.
-    - C: `c/compile_profile.c` as a minimal parity check.
-  - Use when: you need ground-truth compiled blobs from SBPL for experiments or decoder tests.
+### sbpl_compile
 
-- `inspect_profile/`
-  - Role: Provide a quick, read-only snapshot of a compiled blob.
-  - Output (see `Summary` dataclass): format variant, op_count, section lengths, op_entries, stride/tag stats, literal string runs, and a decoder echo.
-  - Surfaces:
-    - Python: `summarize_blob(bytes)` for direct integration.
-    - CLI: `python -m book.api.inspect_profile.cli <blob|sb> [--compile] [--json OUT]`.
-  - Use when: you want to understand a single blob’s shape before doing deeper graph or tag-layout work.
+Definition: Thin wrapper over private `libsandbox` compile entry points.
 
-- `op_table/`
-  - Role: Focused analysis of the op-table and per-entry structure.
-  - Capabilities:
-    - Parse `(allow ...)` ops and filter symbols from SBPL.
-    - Compute op-table entries, per-entry signatures (tags + field2-like literals), tag counts, literal previews.
-    - Optionally align entries to the Operation/Filter vocabularies (`ops.json`, `filters.json`).
-  - Surfaces:
-    - Python: `parse_ops`, `parse_filters`, `summarize_profile`, `entry_signature`, `build_alignment`.
-    - CLI: `python -m book.api.op_table.cli <sb|blob> [--compile] [--op-count N] [--vocab ops.json --filters filters.json] [--json OUT]`.
-  - Use when: extending or consuming the `op-table-operation` / `op-table-vocab-alignment` experiments, or when you need bucket-level fingerprints for profiles.
+Role: Compile SBPL text into a compiled blob for use in decoding or experiments.
 
-- `regex_tools/`
-  - Role: Deal with legacy AppleMatch regex blobs from early decision-tree profile formats.
-  - Surfaces:
-    - `extract_legacy.py`: extract `.re` blobs from legacy `.sb.bin` files.
-    - `re_to_dot.py`: convert compiled `.re` into Graphviz `.dot`.
-  - Use when: working with historical Blazakis-era profiles or legacy tooling; modern graph-based profiles should go through `decoder` instead.
+Example:
+```sh
+python -m book.api.sbpl_compile.cli book/examples/sb/sample.sb --out /tmp/sample.sb.bin
+```
 
-- `SBPL-wrapper/`
-  - Role: Apply SBPL or compiled blobs to a process (e.g., for runtime-checks, sbpl-graph-runtime).
-  - Notes:
-    - Wraps `sandbox_init` / `sandbox_apply` and related plumbing.
-    - On this host, apply gates and missing entitlements often surface as `EPERM`; experiments must treat those as `blocked`, not silently ignore them.
-  - Use when: you need a controlled runtime harness rather than bare `sandbox-exec`.
+### inspect_profile
 
-- `file_probe/`
-  - Role: Minimal JSON-emitting read/write probe binary to pair with `SBPL-wrapper`.
-  - Use when: you want a deterministic file access target for sandbox allow/deny checks.
+Definition: Quick, read-only summary of a compiled blob.
 
-- `ghidra/`
-  - Role: Provide hooks for Seatbelt-focused Ghidra analysis (kernel/op-table symbol work).
-  - Use when: driving reverse-engineering tasks under `dumps/` or the kernel/entitlement experiments.
-  - Notes: canonical scaffold/CLI lives here; `dumps/ghidra/` remains the runtime workspace plus a compatibility shim.
+Role: Produce a structural snapshot (format variant, op_count, section sizes, op entries, tag stats, literal runs) before deeper analysis.
 
-- `carton/`
-  - Role: Public query surface for CARTON – the frozen IR/mapping set rooted at `book/api/carton/CARTON.json`.
-  - Surfaces:
-    - Python: `book.api.carton.carton_query` helpers (`profiles_with_operation`, `runtime_signature_info`, `ops_with_low_coverage`, etc.).
-  - Use when: you need stable facts about vocab, system profiles, or runtime signatures. Prefer this over reading mapping JSONs directly.
+Example:
+```sh
+python -m book.api.inspect_profile.cli /tmp/sample.sb.bin --json /tmp/summary.json
+```
 
-See `AGENTS.md` for a concise router view.
+### op_table
 
-## Quick usage (CLI examples)
+Definition: Op-table–centric parser and analyzer.
 
-Run these from the repo root so relative paths and imports resolve correctly.
+Role: Parse `(allow ...)` ops and filters from SBPL, compute op-table entries and per-entry signatures, and optionally align them to the vocab (`ops.json`, `filters.json`).
 
-- Compile SBPL to a blob:
+Example:
+```sh
+python -m book.api.op_table.cli book/experiments/op-table-operation/sb/v1_read.sb \
+  --compile --op-count 196 \
+  --vocab book/graph/mappings/vocab/ops.json \
+  --filters book/graph/mappings/vocab/filters.json \
+  --json /tmp/op_summary.json
+```
 
-  ```sh
-  python -m book.api.sbpl_compile.cli book/examples/sb/sample.sb --out /tmp/sample.sb.bin
-  ```
+### regex_tools
 
-- Inspect a blob (or SBPL with `--compile`):
+Definition: Helpers for legacy AppleMatch regex blobs from early decision-tree profiles.
 
-  ```sh
-  python -m book.api.inspect_profile.cli /tmp/sample.sb.bin --json /tmp/summary.json
-  python -m book.api.inspect_profile.cli book/examples/sb/sample.sb --compile
-  ```
+Role: Extract compiled `.re` blobs and convert them to Graphviz for inspection; modern graph-based profiles should use `decoder` instead.
 
-- Op-table summary with vocab alignment:
+Example:
+```sh
+python -m book.api.regex_tools.extract_legacy legacy.sb.bin out/
+python -m book.api.regex_tools.re_to_dot out/legacy.sb.bin.000.re -o out/re.dot
+```
 
-  ```sh
-  python -m book.api.op_table.cli book/experiments/op-table-operation/sb/v1_read.sb \
-    --compile --op-count 196 \
-    --vocab book/graph/mappings/vocab/ops.json \
-    --filters book/graph/mappings/vocab/filters.json \
-    --json /tmp/op_summary.json
-  ```
+### SBPL-wrapper
 
-- Legacy regex extraction/visualization:
+Definition: Runtime harness for applying SBPL or compiled blobs to processes.
 
-  ```sh
-  python -m book.api.regex_tools.extract_legacy legacy.sb.bin out/
-  python -m book.api.regex_tools.re_to_dot out/legacy.sb.bin.000.re -o out/re.dot
-  ```
+Role: Wrap `sandbox_init` / `sandbox_apply` to drive runtime probes; on this host, `EPERM` apply gates should be treated as `blocked`.
 
-## Host assumptions and invariants
+Example:
+```sh
+# build the wrapper per book/api/SBPL-wrapper/README
+book/api/SBPL-wrapper/wrapper --blob /tmp/sample.sb.bin -- /bin/true
+```
 
-- Baseline: see `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`.
-- `libsandbox.dylib` is present and usable on this host (for `sbpl_compile` and runtime helpers).
-- Operation/Filter vocabularies come from `book/graph/mappings/vocab/{ops,filters}.json` with `status: ok`.
-- Tools here are **static-first**: they lean on decoded headers, op-tables, and vocab mappings; anything about runtime behaviour must flow through experiments and carry validation status (`ok`, `partial`, `brittle`, `blocked`).
+### file_probe
 
-## Tests and guardrails
+Definition: Minimal JSON-emitting read/write probe binary.
 
-- System-marked tests (require this host’s libsandbox and filesystem layout):
-  - `book/tests/test_sbpl_compile_api.py` – sbpl_compile API/CLI smoke.
-  - `book/tests/test_op_table_api.py` – op_table CLI smoke and alignment builder check.
-- Pure-Python helpers:
-  - `book/tests/test_regex_tools.py` – legacy regex parsing and `.re` → `.dot` behavior.
-  - Decoder-focused tests under `book/tests/test_decoder_*` and `test_validation.py`.
+Role: Provide a deterministic target for runtime allow/deny checks when paired with SBPL-wrapper.
 
-When adding new API modules here, mirror this pattern:
+Example:
+```sh
+gcc book/api/file_probe/file_probe.c -o /tmp/file_probe
+/tmp/file_probe /etc/hosts
+```
 
-- keep them small and host-specific,
-- wire them to existing mappings/validation where possible,
-- and add at least a minimal guard exercised via `make -C book test`.
+### ghidra
+
+Definition: Seatbelt-focused Ghidra scaffold and CLI.
+
+Role: Provide connectors for reverse-engineering tasks (kernel/op-table symbol work) and manage the runtime workspace under `dumps/ghidra/`.
+
+Example:
+```sh
+python -m book.api.ghidra.cli --help
+```
+See `book/api/ghidra/README.md` for setup and workflow.
+
+### carton
+
+Definition: Public query surface for CARTON, the frozen IR/mapping set rooted at `book/api/carton/CARTON.json`.
+
+Role: Answer concept-shaped questions about operations, filters, system profiles/profile layers, and runtime signatures without touching raw experiment outputs.
+
+Example:
+```sh
+python - <<'PY'
+from book.api.carton import carton_query
+print(carton_query.operation_story("file-read*"))
+PY
+```
+See `book/api/carton/README.md`, `AGENTS.md`, and `API.md` for design, routing, and function contracts.
+
+### runtime_golden
+
+Definition: Helpers for the runtime-checks “golden” profile set.
+
+Role: Compile and decode the golden runtime profiles, summarize decodes, and normalize runtime_results.json into mapping-friendly traces.
+
+Example:
+```sh
+python -m book.api.runtime_golden.generate
+```
+
+### golden_runner
+
+Definition: Harness for running the “golden triple” runtime probes.
+
+Role: Execute expectation-driven probes described in `expected_matrix.json` and emit `runtime_results.json` aligned with the provisional schema.
+
+Example:
+```sh
+python -m book.api.golden_runner.cli --matrix book/profiles/golden-triple/expected_matrix.json --out book/profiles/golden-triple/
+```
+
+## CARTON conversion assessment
+
+- **op_table**: could gain a CARTON-backed query layer if op-table fingerprints/alignments are ever promoted to CARTON mappings; today it is generator/inspection tooling, not CARTON IR.
+- **runtime_golden**: could be query-able if golden traces/expectations become CARTON mappings with a defined concept; currently generation-only.
+- **Others (decoder, sbpl_compile, inspect_profile, regex_tools, SBPL-wrapper, file_probe, golden_runner, ghidra)**: generation/inspection/harness tools, not CARTON concepts; poor fits for the CARTON query surface in their current form.

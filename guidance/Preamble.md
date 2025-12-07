@@ -1,4 +1,4 @@
-SANDBOX_LORE is a work-in-progress, host-specific textbook about the macOS Seatbelt sandbox on a single Sonoma-era Mac (14.4.1, Apple Silicon, SIP enabled). The substrate fixes the “world” you are allowed to talk about; your job is to stay inside that world and treat compiled profiles, Operation/Filter vocabularies, PolicyGraphs, node tags, and mapping datasets as primary evidence, not decoration. The concept inventory and validation harness sit between substrate theory and these concrete artifacts: they tell you which concepts are currently backed by solid static evidence, which are only partially supported, and which are still speculative in terms of runtime behavior and lifecycle.
+SANDBOX_LORE is a work-in-progress, host-specific textbook about the macOS Seatbelt sandbox on a single Mac described in `book/world/sonoma-14.4.1-23E224-arm64/` (14.4.1, Apple Silicon, SIP enabled). The substrate fixes the “world” you are allowed to talk about; your job is to stay inside that world and treat compiled profiles, Operation/Filter vocabularies, PolicyGraphs, node tags, and mapping datasets as primary evidence, not decoration. The concept inventory and validation harness sit between substrate theory and these concrete artifacts: they tell you which concepts are currently backed by solid static evidence, which are only partially supported, and which are still speculative in terms of runtime behavior and lifecycle.
 
 Static understanding is strong and should be treated as the backbone. Profile format, op-table structure, tag layouts (where known), and Operation/Filter vocabularies have been decoded for this host, wired into `book/graph/mappings/*`, and marked `status: ok` in the validation outputs. You can rely on these mappings as the canonical account of “what the sandbox looks like” here. By contrast, dynamic behavior is still fragile. Runtime harnesses exist (SBPL wrapper, file probes, bucket and microprofile experiments), but apply gates (`sandbox_init` / `sandbox_apply` returning EPERM on platform blobs) and mismatches between expected and observed allow/deny behavior mean that many semantic and lifecycle claims must be treated as hypotheses. Validation marks these areas as `blocked`, `partial`, or “brittle”; you should propagate that caution rather than silently upgrading them to fact.
 
@@ -71,6 +71,12 @@ What this document gives you:
 - A modern view of the sign→secinit→container→Seatbelt→TCC→SIP pipeline for sandboxed processes.
 - Evidence-backed distinctions between structural facts (e.g., presence of containers, role of entitlements) and volatile details (exact profiles and entitlements).
 - A high-level threat and practice model for how Seatbelt, entitlements, TCC, and hardened runtime are used, misused, and occasionally bypassed.
+
+# Tooling
+
+The repo ships a set of host-bound tools aligned to this world: decoders for compiled profiles, SBPL compilers, op-table analyzers, and CARTON—the manifest-backed IR that serves facts about operations, filters, profiles, and runtime signatures. These tools lean on the mappings under `book/graph/mappings/` and the world baseline, keeping the code and data grounded in the same vocabulary and host assumptions.
+
+Runtime probes and small labs are included too: SBPL wrapper and file probes for exercising allow/deny paths, golden runtime harnesses, and example programs that poke containers, Mach services, network filters, entitlements, and extensions. Together they provide a minimal but coherent kit for turning substrate concepts into runnable checks and reproducible evidence on this baseline.
 
 # Compact Concept Map
 

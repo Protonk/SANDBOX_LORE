@@ -6,11 +6,24 @@ CARTON is the frozen, host-bound IR layer for this project. It records what is c
 - **Manifest-driven** – `book/api/carton/CARTON.json` lists the CARTON-facing JSON files and their SHA-256 hashes. Callers reach the data only through this manifest; the API verifies paths and hashes before answering queries.
 - **Frozen surface** – Files listed in the manifest do not change except via the validation → mapping → promotion pipeline. CARTON JSONs and the manifest contain no timestamps so they can be regenerated bit-for-bit.
 
-The goal is to give a single, stable IR surface that agents and humans can stand on when asking “what does this sandbox look like on this host?”, without re-parsing experiments or reverse‑engineering the dataflow each time.
+## Dataflow and provenance
+
+At a high level, CARTON sits at the end of a single pipeline:
+
+1. **Validation IR** – Experiments and decoders write JSON under `book/graph/concepts/validation/out/…`. The validation driver runs these jobs and records their status.
+2. **Host mappings** – Mapping generators under `book/graph/mappings/*/generate_*.py` turn validation IR into host‑specific mappings, including:
+   - Runtime signatures (`runtime/runtime_signatures.json`),
+   - System profile digests (`system_profiles/digests.json`),
+   - CARTON‑derived views (coverage and concept indices under `mappings/carton/`).
+3. **Promotion** – `book/graph/mappings/run_promotion.py` is the entry point from validation IR to mappings. It runs the relevant validation jobs, checks their status, regenerates the mappings above, and then calls the CARTON manifest builder.
+4. **Manifest** – `book/api/carton/create_manifest.py` hashes the CARTON‑facing mappings and selected provenance files into `CARTON.json`, using host metadata from the world baseline.
+5. **API** – `book/api/carton/carton_query.py` loads `CARTON.json`, verifies hashes, and serves concept‑shaped answers backed by the mappings and indices.
+
+Only the promotion pipeline updates CARTON. Hand‑editing JSON under these paths will be treated as corruption by the manifest and API.
 
 ## Concepts realized in CARTON
 
-Concepts are defined in the substrate’s concept inventory; CARTON provides concrete, host-specific representations for a subset of them:
+Concepts are defined in the substrate’s concept inventory; CARTON provides concrete, host-specific representations for a subset of them:\
 
 - **Operation**
   - Vocab: `book/graph/mappings/vocab/ops.json` (operation names and IDs).
@@ -27,31 +40,3 @@ Concepts are defined in the substrate’s concept inventory; CARTON provides con
   - Coverage and indices: the coverage and index mappings above refer back to these signatures.
 - **Concept bindings**
   - `book/graph/mappings/carton/concept_index.json` ties concept‑inventory names (for example, `operation`, `filter`, `profile-layer`, `runtime-signature`) to the specific CARTON mappings and top‑level keys that represent them.
-
-Everything listed above is included in the CARTON manifest. The API does not reach into validation scratch or experiment output; those layers feed CARTON but are not part of its public surface.
-
-## Dataflow and provenance
-
-At a high level, CARTON sits at the end of a single pipeline:
-
-1. **Validation IR** – Experiments and decoders write JSON under `book/graph/concepts/validation/out/…`. The validation driver runs these jobs and records their status.
-2. **Host mappings** – Mapping generators under `book/graph/mappings/*/generate_*.py` turn validation IR into host‑specific mappings, including:
-   - Runtime signatures (`runtime/runtime_signatures.json`),
-   - System profile digests (`system_profiles/digests.json`),
-   - CARTON‑derived views (coverage and concept indices under `mappings/carton/`).
-3. **Promotion** – `book/graph/mappings/run_promotion.py` is the entry point from validation IR to mappings. It runs the relevant validation jobs, checks their status, regenerates the mappings above, and then calls the CARTON manifest builder.
-4. **Manifest** – `book/api/carton/create_manifest.py` hashes the CARTON‑facing mappings and selected provenance files into `CARTON.json`, using host metadata from the world baseline.
-5. **API** – `book/api/carton/carton_query.py` loads `CARTON.json`, verifies hashes, and serves concept‑shaped answers backed by the mappings and indices.
-
-Only the promotion pipeline updates CARTON. Hand‑editing JSON under these paths will be treated as corruption by the manifest and API.
-
-## Behavioral contract and scope
-
-For CARTON as it exists today:
-
-- It is **single‑host, single‑snapshot**: all facts are about the Sonoma baseline described in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`, and there is exactly one CARTON manifest.
-- It is **manifest‑gated**: the API and helper code resolve all paths through `CARTON.json` and raise a `CartonDataError` if a file is missing, malformed, or has a mismatched hash.
-- It is **timestamp‑free and deterministic**: generators avoid embedding timestamps so that a clean rebuild of CARTON from the same inputs yields the same on‑disk JSON and manifest hashes.
-- It is **concept‑aligned but partial**: operations, filters, system profiles/profile‑layers, runtime signatures, and host metadata all have explicit CARTON representations. Other concepts in the inventory are still realized through validation IR or separate mappings and are outside CARTON’s surface.
-
-For API functions, parameter shapes, return types, and error contracts, see `API.md`. For guidance on how agents should route through CARTON and how to work on its internals, see `AGENTS.md`.

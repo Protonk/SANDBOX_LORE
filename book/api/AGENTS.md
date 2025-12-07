@@ -1,50 +1,28 @@
-# AGENTS.md — book/api router
+# Agents in `book/api/`
 
-You are in `book/api/`, the API/tooling layer for the Seatbelt textbook. This file is a map, not a workflow script: it tells you **where** to look for a given job.
+This directory is the API/tooling layer for the Seatbelt textbook. All tools assume the fixed host baseline in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json` and the vocab/format mappings under `book/graph/mappings/`.
 
-- `README.md`
-  - Summary of current API surfaces, host assumptions, and quick commands.
-  - Read this first if you are new to `book/api/`.
+## How to route here
 
-- `decoder/`
-  - Role: decode compiled sandbox blobs into structured Python objects (headers, op_table, nodes, literal pool).
-  - Use when: you need to reason about PolicyGraphs or build higher-level analyses without re-parsing headers.
+- `carton/` – Public CARTON query surface and manifest (`book/api/carton/CARTON.json`).
+  - Read `book/api/carton/README.md` for CARTON’s role and concepts, `AGENTS.md` for routing/working rules, and `API.md` for function contracts.
+  - Use `book.api.carton.carton_query` for stable facts about operations, filters, system profiles/profile layers, and runtime signatures. Handle `UnknownOperationError` (unknown op) vs `CartonDataError` (manifest/hash/mapping drift).
+  - First moves: `list_operations`, `list_profiles`, `list_filters`, then `operation_story`, `profile_story`, `filter_story`, `runtime_signature_info`, `ops_with_low_coverage`.
 
-- `sbpl_compile/`
-  - Role: compile SBPL into compiled profile blobs using `libsandbox` (Python API + CLI + small C demo).
-  - Use when: you need `.sb.bin` inputs for decoder/experiments or want to regenerate example/experiment blobs.
+- `decoder/` – Decode compiled sandbox blobs into structured Python dicts (format variant, op_table, nodes, literals, tag counts). See `decoder/README.md`.
+- `sbpl_compile/` – Compile SBPL to compiled blobs (Python/CLI/C parity). See `sbpl_compile/README.md`.
+- `inspect_profile/` – Quick structural snapshot of a compiled blob (format, counts, tag stats, literals). See `inspect_profile/README.md`.
+- `op_table/` – Op-table parsing and vocab alignment helpers for `(allow ...)` ops and filter symbols. See `op_table/README.md`.
+- `regex_tools/` – Legacy AppleMatch helpers for historical decision-tree profiles (`extract_legacy.py`, `re_to_dot.py`).
+- `SBPL-wrapper/` – Runtime harness for applying SBPL/compiled blobs; treats `EPERM` apply gates as `blocked` on this host.
+- `file_probe/` – Minimal JSON-emitting read/write probe to pair with SBPL-wrapper.
+- `runtime_golden/` – Helpers for runtime-checks “golden” profiles (compile/decode, normalize runtime_results).
+- `golden_runner/` – Harness for running expectation-driven “golden triple” probes (emits runtime_results.json).
+- `ghidra/` – Seatbelt-focused Ghidra scaffold/CLI for kernel/op-table symbol work; see `ghidra/README.md` for workspace norms.
 
-- `inspect_profile/`
-  - Role: quick, read-only inspection of a single compiled blob (section sizes, op-table entries, stride/tag stats, literals, decoder echo).
-  - Use when: you want a structural snapshot of a profile before diving into tag layouts or op-table details.
+## Expectations
 
-- `op_table/`
-  - Role: op-table–centric analysis (SBPL ops/filters parsing, entry signatures, vocab alignment).
-  - Use when: extending or consuming `op-table-operation` / `op-table-vocab-alignment`, or when you need bucket-level fingerprints tied to vocab IDs.
-
-- `regex_tools/`
-  - Role: legacy AppleMatch helpers for decision-tree profile formats (`extract_legacy.py`, `re_to_dot.py`).
-  - Use when: working with early-format profiles; modern graph-based profiles should go through `decoder`.
-
-- `SBPL-wrapper/`
-  - Role: apply SBPL or compiled blobs to a process for runtime experiments.
-  - Use when: you need a controlled harness for `sandbox_init`/`sandbox_apply` (platform blobs may hit `EPERM` apply gates; treat those as `blocked`).
-
-- `file_probe/`
-  - Role: tiny read/write probe binary that emits JSON with `errno`.
-  - Use when: you need a low-noise target process for runtime experiments driven by `SBPL-wrapper`.
-
-- `ghidra/`
-  - Role: connectors and scaffolding for Seatbelt-related Ghidra tasks (kernel/op-table symbol work).
-  - Use when: driving reverse-engineering workflows under `dumps/` and kernel/entitlement experiments.
-  - Notes: this is the canonical scaffold; `dumps/ghidra/` keeps the runtime workspace and a compatibility shim.
-
-- `carton/`
-  - Role: API surface for CARTON, the frozen IR/mapping set rooted at `book/api/carton/CARTON.json`.
-  - Use when: you want stable information about operations, system profiles, or runtime signatures. Prefer `book.api.carton.carton_query` over reading mapping JSONs by hand. Higher-level helpers: `operation_story(op_name)` and `profile_story(profile_id)` return concept-shaped views. Be ready to handle `UnknownOperationError` for ops outside the vocab and `CartonDataError` for manifest/hash/mapping issues.
-
-For vocabulary, lifecycle, and concept discipline, step up to `substrate/AGENTS.md`. All new tooling here should:
-
-- target the fixed baseline from `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`,
-- consume existing mappings and validation artifacts where possible,
-- and publish enough structure that tests under `book/tests/` can keep it honest.
+- Stay within the host baseline and substrate vocabulary; lean on `book/graph/mappings/` for vocab and format truths.
+- Prefer CARTON for concept-level questions (ops ↔ profiles ↔ runtime signatures); do not re-parse validation outputs when CARTON already exposes the concept.
+- Use the validation driver and promotion pipeline when changing mappings that feed CARTON; do not hand-edit files listed in `book/api/carton/CARTON.json`.
+- Keep tools small, host-specific, and backed by minimal guards run via `make -C book test`.
