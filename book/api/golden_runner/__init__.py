@@ -21,6 +21,7 @@ RUNNER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" 
 READER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_reader"
 WRITER = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "sandbox_writer"
 WRAPPER = Path(__file__).resolve().parents[2] / "api" / "SBPL-wrapper" / "wrapper"
+MACH_PROBE = Path(__file__).resolve().parents[2] / "experiments" / "runtime-checks" / "mach_probe"
 
 CAT = "/bin/cat"
 SH = "/bin/sh"
@@ -117,6 +118,11 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
             writer_mode = True
         else:
             cmd = [SH, "-c", f"echo runtime-check >> '{target}'"]
+    elif op == "mach-lookup":
+        if MACH_PROBE.exists():
+            cmd = [str(MACH_PROBE), target]
+        else:
+            cmd = ["true"]
     elif op == "process-exec":
         cmd = ["true"]
     else:

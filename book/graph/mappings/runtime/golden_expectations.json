@@ -1,4 +1,7 @@
 {
+  "metadata": {
+    "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+  },
   "profiles": {
     "bucket4:v1_read": {
       "blob": "book/experiments/op-table-operation/sb/v1_read.sb",

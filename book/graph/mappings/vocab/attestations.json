@@ -1,4 +1,9 @@
 {
+  "metadata": {
+    "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+    "notes": "Attestation links vocab tables to dyld slices and reference blobs for this host/build.",
+    "sip_status": "enabled"
+  },
   "compiled_reference_blobs": [
     {
       "path": "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
@@ -16,20 +21,6 @@
       "size": 583
     }
   ],
-  "filters": {
-    "count": 93,
-    "hash": "4db9229d28c0f649a4bf979cf54eccf48eb4a78618d8f14ec76a76229796eb3d",
-    "source": "book/experiments/vocab-from-cache/extracted/usr/lib/libsandbox.1.dylib",
-    "sources": [
-      {
-        "path": "book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib",
-        "sha256": "1c6ac62eebffc84416f889caf2205dded41e783635b3e02b0b7f09cc6becfa2b",
-        "size": 524288
-      }
-    ]
-  },
-  "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
-  "notes": "Attestation links vocab tables to dyld slices and reference blobs for this host/build.",
   "ops": {
     "count": 196,
     "hash": "e6cf55c650656ec1915b22bd76caeca913dbdc780cd733e13b3f9abd48ce34f2",
@@ -42,5 +33,16 @@
       }
     ]
   },
-  "sip_status": "enabled"
+  "filters": {
+    "count": 93,
+    "hash": "4db9229d28c0f649a4bf979cf54eccf48eb4a78618d8f14ec76a76229796eb3d",
+    "source": "book/experiments/vocab-from-cache/extracted/usr/lib/libsandbox.1.dylib",
+    "sources": [
+      {
+        "path": "book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib",
+        "sha256": "1c6ac62eebffc84416f889caf2205dded41e783635b3e02b0b7f09cc6becfa2b",
+        "size": 524288
+      }
+    ]
+  }
 }

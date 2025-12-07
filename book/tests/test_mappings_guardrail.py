@@ -17,8 +17,9 @@ def load_json(path: Path):
 
 def test_system_profile_digests_present():
     digests = load_json(ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json")
+    profiles = digests.get("profiles") or {}
     for key in ["sys:airlock", "sys:bsd", "sys:sample"]:
-        assert key in digests, f"missing digest for {key}"
+        assert key in profiles, f"missing digest for {key}"
     meta = digests.get("metadata", {})
     assert meta.get("host") == BASELINE_REF
     assert baseline_host().get("build") == "23E224"
@@ -69,13 +70,13 @@ def test_op_table_mappings_and_metadata():
 
     base = meta_path.parent
     op_summary = load_json(base / artifacts["op_table_operation_summary"])
-    assert isinstance(op_summary, list) and op_summary, "op_table_operation_summary should be a non-empty list"
+    assert (op_summary.get("records") or []), "op_table_operation_summary should contain records"
 
     op_map = load_json(base / artifacts["op_table_map"])
     assert op_map, "op_table_map should not be empty"
 
     op_sigs = load_json(base / artifacts["op_table_signatures"])
-    assert isinstance(op_sigs, list) and op_sigs, "op_table_signatures should be a non-empty list"
+    assert (op_sigs.get("records") or []), "op_table_signatures should be a non-empty list"
 
     alignment = load_json(base / artifacts["op_table_vocab_alignment"])
     assert isinstance(alignment, dict) and alignment.get("records"), "op_table_vocab_alignment should contain records"

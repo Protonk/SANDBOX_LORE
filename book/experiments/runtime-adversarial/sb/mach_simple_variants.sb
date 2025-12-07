@@ -1,0 +1,9 @@
+(version 1)
+(allow default)
+
+;; Same intent as mach_simple_allow but with nested/regex structure.
+(allow mach-lookup
+  (require-any
+    (global-name "com.apple.cfprefsd.agent")
+    (require-all (global-name-regex #"^com\\.apple\\.cfprefsd\\.agent$"))))
+(deny mach-lookup (global-name "com.apple.sandboxadversarial.fake"))

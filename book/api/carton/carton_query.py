@@ -132,8 +132,9 @@ def profiles_with_operation(op_name: str) -> List[str]:
         return profiles
     # If the coverage entry is missing system profile data, fall back to digests.
     digests = _load_json_from_manifest("system.digests")
+    profile_map = digests.get("profiles") or digests
     profiles = []
-    for key, val in digests.items():
+    for key, val in profile_map.items():
         if key == "metadata":
             continue
         op_table = val.get("op_table") or []
@@ -268,9 +269,10 @@ def operation_story(op_name: str) -> Dict[str, Any]:
 
 def profile_story(profile_id: str) -> Dict[str, Any]:
     digests = _load_json_from_manifest("system.digests")
-    if profile_id not in digests:
+    profiles = digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}
+    if profile_id not in profiles:
         raise CartonDataError(f"profile '{profile_id}' not found in system digests")
-    profile_body = digests[profile_id]
+    profile_body = profiles[profile_id]
     op_ids = profile_body.get("op_table") or []
     _, id_to_name = _load_vocab()
     ops = [{"name": id_to_name.get(op_id), "id": op_id} for op_id in op_ids if op_id in id_to_name]

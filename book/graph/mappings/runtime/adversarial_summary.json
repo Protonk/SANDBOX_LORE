@@ -1,7 +1,7 @@
 {
   "world": "sonoma-14.4.1-23E224-arm64",
-  "profiles": 3,
-  "expectations": 12,
+  "profiles": 5,
+  "expectations": 16,
   "mismatch_counts": {
     "path_normalization": 2
   }

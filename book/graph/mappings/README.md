@@ -3,6 +3,7 @@ Stable graph-level mapping artifacts live here (versioned by host/build when app
 These files are the “shared IR” that tie together experiments, the decoder, and the textbook. They describe how **Operations**, **Filters**, **PolicyGraph** nodes, and concrete system profiles line up on this host, so other tools do not need to rediscover the same facts.
 
 Metadata conventions:
+- Top-level shape is `{"metadata": {...}, <payload_key>: ...}`. Payload keys name the data (`ops`, `filters`, `profiles`, `records`, `tags`, `entries`, etc.) and avoid mixing metadata with data rows.
 - `host` fields reference the world baseline by path (`book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`) instead of inlining host traits.
 - Timestamps are intentionally omitted; provenance lives in `inputs` / `source_jobs` and content hashes.
 

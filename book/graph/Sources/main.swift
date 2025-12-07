@@ -82,7 +82,15 @@ public struct RuntimeProfile: Codable {
     public let trace_path: String?
 }
 
+public struct RuntimeMetadata: Codable {
+    public let host: String?
+    public let baseline: String?
+    public let profile_format_variant: String?
+    public let sip_status: String?
+}
+
 public struct RuntimeExpectations: Codable {
+    public let metadata: RuntimeMetadata?
     public let profiles: [RuntimeProfile]
 }
 

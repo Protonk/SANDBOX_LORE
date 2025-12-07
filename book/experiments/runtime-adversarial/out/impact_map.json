@@ -1,18 +1,32 @@
 {
   "adv:path_edges:allow-tmp": {
     "bedrock_refs": [
-      "filter:path-literal",
-      "paths:/tmp-vs-/private/tmp"
+      "out_of_scope:VFS_canonicalization"
     ],
-    "suggested_status": "partial",
-    "notes": "Allow on /tmp runtime-adv/edges/a denied at runtime; likely path canonicalization to /private/tmp before filter match."
+    "suggested_status": "ok",
+    "notes": "Runtime deny likely due to /tmp → /private/tmp canonicalization before PolicyGraph; not modeling VFS symlink resolution in static IR."
   },
   "adv:path_edges:allow-subpath": {
     "bedrock_refs": [
-      "filter:path-subpath",
-      "paths:/tmp-vs-/private/tmp"
+      "out_of_scope:VFS_canonicalization"
     ],
-    "suggested_status": "partial",
-    "notes": "Allow on /tmp runtime-adv/edges/okdir/item.txt denied at runtime; suggests /tmp → /private/tmp normalization dominates literal/subpath filters."
+    "suggested_status": "ok",
+    "notes": "Runtime deny likely due to /tmp → /private/tmp canonicalization dominating subpath match; treated as VFS behavior outside PolicyGraph modeling."
+  },
+  "adv:mach_simple_allow:allow-cfprefsd": {
+    "bedrock_refs": [
+      "vocab:mach-lookup",
+      "op_table:mach-lookup-id-96"
+    ],
+    "suggested_status": "ok",
+    "notes": "mach-lookup for com.apple.cfprefsd.agent now matches runtime; supports mach vocab/op-table alignment for op ID 96."
+  },
+  "adv:mach_simple_variants:allow-cfprefsd": {
+    "bedrock_refs": [
+      "vocab:mach-lookup",
+      "op_table:mach-lookup-id-96"
+    ],
+    "suggested_status": "ok",
+    "notes": "Regex/nested variant also matches runtime; reinforces mach-lookup allow/deny semantics."
   }
 }

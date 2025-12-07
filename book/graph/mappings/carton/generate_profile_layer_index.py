@@ -62,9 +62,7 @@ def build_index() -> dict:
     source_jobs = meta.get("source_jobs") or source_jobs
 
     profiles: Dict[str, dict] = {}
-    for profile_id, val in digests.items():
-        if profile_id == "metadata":
-            continue
+    for profile_id, val in (digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}).items():
         op_ids = sorted(set(val.get("op_table") or []))
         ops_list = []
         for op_id in op_ids:

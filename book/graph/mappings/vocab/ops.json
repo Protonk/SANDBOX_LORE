@@ -1,5 +1,8 @@
 {
   "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+  "metadata": {
+    "status": "ok"
+  },
   "notes": "Operation Vocabulary harvested from extracted libsandbox.1.dylib (_operation_names span).",
   "ops": [
     {

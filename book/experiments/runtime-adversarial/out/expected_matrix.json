@@ -111,6 +111,52 @@
           "expectation_id": "adv:path_edges:deny-dotdot"
         }
       ]
+    },
+    "adv:mach_simple_allow": {
+      "mode": "sbpl",
+      "sbpl": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/mach_simple_allow.sb",
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/build/mach_simple_allow.sb.bin",
+      "family": "mach_variants",
+      "semantic_group": "mach:global-name-allow",
+      "probes": [
+        {
+          "name": "allow-cfprefsd",
+          "operation": "mach-lookup",
+          "target": "com.apple.cfprefsd.agent",
+          "expected": "allow",
+          "expectation_id": "adv:mach_simple_allow:allow-cfprefsd"
+        },
+        {
+          "name": "deny-bogus",
+          "operation": "mach-lookup",
+          "target": "com.apple.sandboxadversarial.fake",
+          "expected": "deny",
+          "expectation_id": "adv:mach_simple_allow:deny-bogus"
+        }
+      ]
+    },
+    "adv:mach_simple_variants": {
+      "mode": "sbpl",
+      "sbpl": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/mach_simple_variants.sb",
+      "blob": "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/runtime-adversarial/sb/build/mach_simple_variants.sb.bin",
+      "family": "mach_variants",
+      "semantic_group": "mach:global-name-allow",
+      "probes": [
+        {
+          "name": "allow-cfprefsd",
+          "operation": "mach-lookup",
+          "target": "com.apple.cfprefsd.agent",
+          "expected": "allow",
+          "expectation_id": "adv:mach_simple_variants:allow-cfprefsd"
+        },
+        {
+          "name": "deny-bogus",
+          "operation": "mach-lookup",
+          "target": "com.apple.sandboxadversarial.fake",
+          "expected": "deny",
+          "expectation_id": "adv:mach_simple_variants:deny-bogus"
+        }
+      ]
     }
   }
 }

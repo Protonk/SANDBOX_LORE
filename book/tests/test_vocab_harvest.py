@@ -20,7 +20,7 @@ def test_operation_vocab_harvest_matches_validation():
     assert harvested["names"][0] == "default"
     assert harvested["names"][-1] == "xpc-message-send"
 
-    assert ops_vocab["status"] == "ok"
+    assert (ops_vocab.get("metadata") or {}).get("status") == "ok"
     harvested_names = harvested["names"]
     ops_entries = ops_vocab["ops"]
     assert len(ops_entries) == len(harvested_names)
@@ -36,7 +36,7 @@ def test_filter_vocab_harvest_matches_validation():
     assert harvested["names"][0] == "path"
     assert harvested["names"][-1] == "kas-info-selector"
 
-    assert filters_vocab["status"] == "ok"
+    assert (filters_vocab.get("metadata") or {}).get("status") == "ok"
     harvested_names = harvested["names"]
     filt_entries = filters_vocab["filters"]
     assert len(filt_entries) == len(harvested_names)

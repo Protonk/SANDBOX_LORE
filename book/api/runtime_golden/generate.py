@@ -35,6 +35,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXP = ROOT / "experiments" / "runtime-checks"
 MATRIX = EXP / "out" / "expected_matrix.json"
 RUNTIME_RESULTS = EXP / "out" / "runtime_results.json"
+BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 
 MAP_ROOT = ROOT / "graph" / "mappings" / "runtime"
 DECODED_BLOBS = MAP_ROOT / "decoded_blobs"
@@ -53,10 +54,11 @@ def main() -> int:
         out_blob.write_bytes(blob)
         decoded = decode_profile(blob)
         decodes.append(summarize_decode(key, prof.path, blob, decoded))
-    write_json(DECODE_SUMMARY, decodes)
+    write_json(DECODE_SUMMARY, {"metadata": {"host": BASELINE_REF}, "decodes": decodes})
 
     # expectations manifest
     expectations_payload = {
+        "metadata": {"host": BASELINE_REF},
         "profiles": {
             key: {
                 "blob": str(prof.path),

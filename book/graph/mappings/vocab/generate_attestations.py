@@ -102,8 +102,11 @@ def main() -> None:
     )
 
     manifest = {
-        "host": BASELINE_REF,
-        "sip_status": meta.get("sip_status"),
+        "metadata": {
+            "host": BASELINE_REF,
+            "sip_status": meta.get("sip_status"),
+            "notes": "Attestation links vocab tables to dyld slices and reference blobs for this host/build.",
+        },
         "ops": {
             "count": len(ops.get("ops", [])),
             "source": ops.get("ops", [{}])[0].get("source"),
@@ -117,7 +120,6 @@ def main() -> None:
             "sources": filt_src,
         },
         "compiled_reference_blobs": compiled_refs,
-        "notes": "Attestation links vocab tables to dyld slices and reference blobs for this host/build.",
     }
 
     OUT_PATH.write_text(json.dumps(manifest, indent=2, sort_keys=True))

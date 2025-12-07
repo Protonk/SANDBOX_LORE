@@ -127,9 +127,31 @@ def build_expected_matrix(world_id: str, specs: List[ProfileSpec], blobs: Dict[s
         },
     ]
 
+    probes_mach = [
+        {
+            "name": "allow-cfprefsd",
+            "operation": "mach-lookup",
+            "target": "com.apple.cfprefsd.agent",
+            "expected": "allow",
+        },
+        {
+            "name": "deny-bogus",
+            "operation": "mach-lookup",
+            "target": "com.apple.sandboxadversarial.fake",
+            "expected": "deny",
+        },
+    ]
+
     matrix: Dict[str, Any] = {"world": world_id, "profiles": {}}
     for spec in specs:
-        probes = probes_common if spec.family == "structural_variants" else probes_edges
+        if spec.family == "structural_variants":
+            probes = probes_common
+        elif spec.family == "path_edges":
+            probes = probes_edges
+        elif spec.family == "mach_variants":
+            probes = probes_mach
+        else:
+            probes = []
         profile_entry = {
             "mode": "sbpl",
             "sbpl": str(spec.sbpl),
@@ -152,18 +174,48 @@ def write_json(path: Path, payload: Any) -> None:
 
 
 def classify_mismatch(expected: str | None, actual: str | None, probe: Dict[str, Any]) -> str:
+    op = probe.get("operation")
     if expected == "allow" and actual == "deny":
         path = probe.get("path") or ""
-        if ".." in path or path.startswith("/tmp/runtime-adv/edges"):
+        if op == "file-read*" and (".." in path or path.startswith("/tmp/runtime-adv/edges")):
             return "path_normalization"
         return "unexpected_deny"
     if expected == "deny" and actual == "allow":
-        if ".." in (probe.get("path") or ""):
+        if op == "file-read*" and ".." in (probe.get("path") or ""):
             return "path_normalization"
         return "unexpected_allow"
     if probe.get("violation_summary") == "EPERM":
         return "apply_gate"
     return "filter_diff"
+
+
+def static_prediction_for(profile_id: str, expected_probe: Dict[str, Any]) -> Dict[str, Any]:
+    """Manual static expectations for mismatches to record which filters were intended to fire."""
+    path = expected_probe.get("target")
+    name = expected_probe.get("name")
+    if profile_id == "adv:path_edges":
+        if name == "allow-tmp":
+            return {
+                "static_filters": ["literal:/tmp/runtime-adv/edges/a"],
+                "static_reason": "literal allow on /tmp path; separate deny literal on /private/tmp expected to distinguish canonical paths",
+            }
+        if name == "allow-subpath":
+            return {
+                "static_filters": ["subpath:/tmp/runtime-adv/edges/okdir"],
+                "static_reason": "subpath allow under /tmp/.../okdir; deny literal on .. sibling intended to catch traversal",
+            }
+    if profile_id.startswith("adv:mach_simple"):
+        if name == "allow-cfprefsd":
+            return {
+                "static_filters": ["mach-lookup:global-name com.apple.cfprefsd.agent"],
+                "static_reason": "allow specific mach global-name, default deny others",
+            }
+        if name == "deny-bogus":
+            return {
+                "static_filters": ["mach-lookup default deny"],
+                "static_reason": "bogus service should be denied by default",
+            }
+    return {}
 
 
 def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str) -> Dict[str, Any]:
@@ -185,6 +237,7 @@ def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str)
                 continue
             mismatch_type = classify_mismatch(expected_decision, actual_decision, probe)
             counts[mismatch_type] = counts.get(mismatch_type, 0) + 1
+            static_view = static_prediction_for(profile_id, expected_probe)
             mismatches.append(
                 {
                     "world": world_id,
@@ -196,6 +249,7 @@ def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str)
                     "actual": actual_decision,
                     "mismatch_type": mismatch_type,
                     "notes": probe.get("stderr"),
+                    **static_view,
                 }
             )
 
@@ -240,6 +294,18 @@ def main() -> int:
             sbpl=SB_DIR / "path_edges.sb",
             family="path_edges",
             semantic_group="paths:literal-vs-normalized",
+        ),
+        ProfileSpec(
+            key="adv:mach_simple_allow",
+            sbpl=SB_DIR / "mach_simple_allow.sb",
+            family="mach_variants",
+            semantic_group="mach:global-name-allow",
+        ),
+        ProfileSpec(
+            key="adv:mach_simple_variants",
+            sbpl=SB_DIR / "mach_simple_variants.sb",
+            family="mach_variants",
+            semantic_group="mach:global-name-allow",
         ),
     ]
 

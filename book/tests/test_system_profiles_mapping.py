@@ -19,5 +19,6 @@ def test_digests_mapping_shape():
     assert baseline_host().get("build") == "23E224"
     assert "source_jobs" in meta
     # Basic profiles present
+    profiles = data.get("profiles") or {}
     for key in ["sys:airlock", "sys:bsd", "sys:sample"]:
-        assert key in data, f"missing digest for {key}"
+        assert key in profiles, f"missing digest for {key}"

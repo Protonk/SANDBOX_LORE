@@ -4,11 +4,11 @@
   "files": [
     {
       "path": "book/graph/mappings/vocab/ops.json",
-      "sha256": "e6cf55c650656ec1915b22bd76caeca913dbdc780cd733e13b3f9abd48ce34f2"
+      "sha256": "33d0d934564daf65d2e1b279970f2e20cb5c269852b8012eddc2c8c1b583386d"
     },
     {
       "path": "book/graph/mappings/vocab/filters.json",
-      "sha256": "4db9229d28c0f649a4bf979cf54eccf48eb4a78618d8f14ec76a76229796eb3d"
+      "sha256": "46beb871ecc844d9608f0b3ff306f3211acbfe505959424b36e727c0abe55357"
     },
     {
       "path": "book/graph/mappings/runtime/runtime_signatures.json",
@@ -16,7 +16,7 @@
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "b6a918e61e362154f0edb60861d85a7584c7db52604bcb748165c137e5a21054"
+      "sha256": "fcd48d21ddd13c930e9a34adb5de761fce0713e78298fc21055009ca50bd1e12"
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
@@ -56,7 +56,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "6c57badfbb811ea14cf11a0d427307b1497d9b7c92dc4b3319ae9c682201b8bd"
+      "sha256": "0d5de80b63320d315b8307118e26adc92e6675b7ed5549cdbd0b304acd3aa4db"
     }
   ]
 }

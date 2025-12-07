@@ -26,11 +26,12 @@ def test_adversarial_artifacts_present_and_annotated():
         "adv:struct_flat",
         "adv:struct_nested",
         "adv:path_edges",
+        "adv:mach_simple_allow",
+        "adv:mach_simple_variants",
     }
+    # Shapes must stay aligned.
+    assert set(runtime_results.keys()) == set(expected_matrix.get("profiles", {}).keys())
     # Every mismatch must be annotated in impact_map to force deliberate triage.
     for mismatch in mismatch_summary.get("mismatches") or []:
         eid = mismatch.get("expectation_id")
         assert eid in impact_map, f"unannotated mismatch for {eid}"
-
-    # Ensure runtime_results shape still aligned with profiles in expected_matrix.
-    assert set(runtime_results.keys()) == set(expected_matrix.get("profiles", {}).keys())

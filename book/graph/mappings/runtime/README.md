@@ -3,12 +3,12 @@
 Runtime probe outputs that are stable enough to reuse live here. These are versioned to the Sonoma baseline (23E224) and come from the same harness used by `book/graph/concepts/validation/out/semantic/runtime_results.json`.
 
 Current artifacts:
-- `expectations.json` — manifest keyed by `profile_id` with host/build/SIP metadata, blob path + SHA256, status (`ok`/`partial`/`blocked`), probe count, and the trace file path.
+- `expectations.json` — manifest keyed by `profile_id` (plus `metadata`) with host/build/SIP metadata, blob path + SHA256, status (`ok`/`partial`/`blocked`), probe count, and the trace file path.
 - `traces/*.jsonl` — normalized per-profile probe rows (`profile_id`, `probe_name`, operation name/id, inputs, expected vs actual, match/status, command, exit code) with vocab IDs attached. Sources point back to the validation log for provenance.
 - `lifecycle.json` + `lifecycle_traces/*.jsonl` — normalized lifecycle probes (entitlements, extensions) with status per scenario, host/build metadata, and source log pointers.
-- `golden_expectations.json` — golden runtime profile manifest (bucket4, bucket5, metafilter_any, strict_1, sys:bsd deny-only, sys:airlock EPERM) with blob hashes and modes.
+- `golden_expectations.json` — golden runtime profile manifest (bucket4, bucket5, metafilter_any, strict_1, sys:bsd deny-only, sys:airlock EPERM) with blob hashes and modes; includes `metadata`.
 - `traces/golden_traces.jsonl` — normalized probe rows for the golden set from runtime-checks.
-- `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set.
+- `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set; includes `metadata`.
 - `runtime_signatures.json` — small IR derived from validation outputs (`field2_ir.json` + normalized runtime results) summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/generate_runtime_signatures.py` (which runs the validation driver `--tag smoke`) and folded into CARTON.
 - CARTON: see `book/api/carton/CARTON.json` for frozen hashes/paths of the runtime mappings/IR that are included in CARTON for Sonoma 14.4.1.
 

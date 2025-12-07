@@ -1,5 +1,18 @@
 {
-  "filter_vocab_present": true,
+  "metadata": {
+    "host": "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+    "vocab_versions": {
+      "filters_count": 93,
+      "ops_count": 196,
+      "status": "ok",
+      "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e",
+      "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8"
+    },
+    "status": "ok",
+    "filter_vocab_present": true,
+    "vocab_present": true,
+    "source_summary": "book/experiments/op-table-operation/out/summary.json"
+  },
   "records": [
     {
       "filter_ids": [],
@@ -3636,9 +3649,5 @@
       "profile": "v9_write_network",
       "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
     }
-  ],
-  "source_summary": "book/experiments/op-table-operation/out/summary.json",
-  "vocab_present": true,
-  "vocab_status": "ok",
-  "vocab_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
+  ]
 }

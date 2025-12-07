@@ -3,8 +3,9 @@
 Canonical system-profile digests live here.
 
 Current artifacts:
-- `digests.json` – Per-profile digest (op-table buckets, tag counts, literal sample, sections, validation) for curated system blobs (`airlock`, `bsd`, `sample`) on this host/build.
-- `attestations.json` + `attestations/*.jsonl` – Cross-linked attestations for system and golden profiles (blob sha256, op-table entries, tag counts, literal/anchor hits, tag-layout hash, vocab versions, runtime links when available).
+- `digests.json` – Per-profile digest (op-table buckets, tag counts, literal sample, sections, validation) for curated system blobs (`airlock`, `bsd`, `sample`) on this host/build; includes `metadata`.
+- `static_checks.json` – Decoder-backed invariants (header op_count, section sizes, tag_counts, tag_layout hash) for the same curated blobs; includes `metadata`.
+- `attestations.json` + `attestations/*.jsonl` – Cross-linked attestations for system and golden profiles (blob sha256, op-table entries, tag counts, literal/anchor hits, tag-layout hash, vocab versions, runtime links when available); includes `metadata`.
 
 Role in the substrate and CARTON:
 - These digests are compact, decoder-backed views of real platform **Profile layers** and their compiled **PolicyGraphs**. They provide stable examples of op-table shapes, tag distributions, and literal content for system Seatbelt profiles.

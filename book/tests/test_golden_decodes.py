@@ -9,7 +9,8 @@ DECODE = ROOT / "book" / "graph" / "mappings" / "runtime" / "golden_decodes.json
 def _load():
     assert DECODE.exists(), "missing golden_decodes.json; run decode_golden.py"
     data = json.loads(DECODE.read_text())
-    return {entry["key"]: entry for entry in data}
+    decodes = data.get("decodes") or []
+    return {entry["key"]: entry for entry in decodes}
 
 
 def test_golden_decodes_present():

@@ -90,9 +90,8 @@ def init_coverage(ops: List[Dict]) -> Dict[str, Dict]:
 
 
 def apply_system_profiles(coverage: Dict[str, Dict], digests: Dict, id_to_name: Dict[int, str]) -> None:
-    for profile, body in digests.items():
-        if profile == "metadata":
-            continue
+    profiles = digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}
+    for profile, body in profiles.items():
         op_ids = set(body.get("op_table") or [])
         for op_id in op_ids:
             name = id_to_name.get(op_id)

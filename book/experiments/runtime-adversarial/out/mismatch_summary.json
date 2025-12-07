@@ -11,7 +11,11 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "path_normalization",
-      "notes": "open target: Operation not permitted\n"
+      "notes": "open target: Operation not permitted\n",
+      "static_filters": [
+        "literal:/tmp/runtime-adv/edges/a"
+      ],
+      "static_reason": "literal allow on /tmp path; separate deny literal on /private/tmp expected to distinguish canonical paths"
     },
     {
       "world": "sonoma-14.4.1-23E224-arm64",
@@ -22,7 +26,11 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "path_normalization",
-      "notes": "open target: Operation not permitted\n"
+      "notes": "open target: Operation not permitted\n",
+      "static_filters": [
+        "subpath:/tmp/runtime-adv/edges/okdir"
+      ],
+      "static_reason": "subpath allow under /tmp/.../okdir; deny literal on .. sibling intended to catch traversal"
     }
   ],
   "counts": {
