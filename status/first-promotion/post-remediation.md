@@ -1,50 +1,189 @@
 # Post-remediation promotion proposal
 
-World: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`. Bedrock here means “safe to treat as fixed inputs for this world, with explicit status/demotion paths if evidence drifts.”
+> world_id: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`
 
-## Operation vocabulary (196 ops / 93 filters)
-**Claim / representation / use**
-- Canonical Operation/Filter vocab tables live in `book/graph/mappings/vocab/ops.json` and `filters.json` (`status: ok`, world-pinned). IDs are ordered as harvested from `libsandbox` and are the only allowed op/filter names for this world; this is a freeze to the host’s own published tables, not to the current profile corpus.
-- Downstream: op-table alignment (`book/graph/mappings/op_table/op_table_vocab_alignment.json`), system-profile digests (`system_profiles/digests.json` op_table_len/hash), ops coverage (`vocab/ops_coverage.json` marks runtime_evidence vs structural-only), CARTON manifest entries, and API helpers (`book/api/carton/carton_query.py`) assume these IDs are stable.
+This document makes a scoped, post-remediation argument that three specific structures in the SANDBOX_LORE world can now be treated as “bedrock” for this host:
 
-**Evidence**
-- **Validation**: `validation_status.json` records `vocab:sonoma-14.4.1` as `ok-unchanged` with counts 196/93, input `book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib`, outputs `ops.json`/`filters.json`. Guardrails `book/tests/test_vocab_harvest.py` assert harvested name lists (`book/experiments/vocab-from-cache/out/*`) exactly match `ops.json`/`filters.json`, including ordering and sequential IDs. `book/tests/test_dyld_libs_manifest.py` covers the trimmed dyld slices. This means “only allowed names” is keyed to the host’s dyld-derived tables; if Apple ships additional ops/filters, the harvest/manifest checks will surface and force a status change.
-- **Cross-check**: Op IDs appear consistently in op-table alignment (`op_table_vocab_alignment.json` carries `vocab_versions` with `status: ok`) and in system-profile digests (op_table_len/op_table_hash fields) derived from independent compiled blobs. Ops coverage flags runtime-backed ops (`file-read*`, `file-write*`, `mach-lookup`) in `ops_coverage.json` and CARTON coverage (`carton/operation_coverage.json`), confirming IDs line up with runtime probes.
-- **Independence**: Vocab harvest comes directly from dyld cache strings (`vocab-from-cache`), independent of the decoder/ingestion path used by op-table/system-profile work. Alignment and digests consume SBPL→blob→decoder pipelines; shared failure would require both the dyld slice and decoder to fail in the same way. Manifest + harvest guardrails catch drift in the slice; alignment/digest guardrails catch decoder/plumbing errors.
+1. The Operation and Filter vocabularies (196 Operations, 93 Filters) harvested from this host’s `libsandbox`.
+2. The “modern-heuristic” compiled profile format, together with per-tag layouts for the literal/regex-bearing tags we currently cover.
+3. The decoded structure of three curated system profiles: `sys:airlock`, `sys:bsd`, and `sys:sample`.
 
-**Boundaries / failure modes**
-- Scope is this world only; cross-version reuse is unsupported. If dyld slices or harvested name order drift, `test_vocab_harvest`/manifest checks will fail and `vocab` validation will demote. If op-table or digest consumers stop agreeing on ID counts/hashes, op-table and system-profile guardrails will trip. Runtime evidence exists for only a subset of ops; `ops_coverage.json` marks the rest as structural-only. The freeze does not claim “no other ops exist in the universe,” only “for this world the exported vocab tables enumerate all ops/filters the compiler knows about.”
+Earlier, these were already important ingredients in the project’s story, but the supporting machinery around them was thinner and more informal. Since then, the repo has gained dyld slice manifests, adversarial runtime experiments, per-op coverage tracking, canonical contract generation with tested demotion, and explicit “Claims and limits” texts tying all of this together. The question here is not whether these concepts are “true for all time,” but whether, for this specific world, they can safely be treated as fixed inputs to downstream tools and explanations, with clear evidence and a path for demotion if the world shifts.
 
-## Modern compiled profile format and tag layouts
-**Claim / representation / use**
-- Modern profiles on this host follow the `modern-heuristic` layout (16-byte preamble, op-table, node region, literal/regex pool). Literal/regex-bearing tags use the per-tag layouts in `book/graph/mappings/tag_layouts/tag_layouts.json` (`status: ok`, world-pinned, canonical_profile status imported). Covered tags: `[0,1,3,5,7,8,17,26,27,166]`. “Bedrock” applies to this covered subset because both decoder-side inference and compiler-side emission agree on field placement and we have guardrails/demotion wired to canonical profiles.
-- Downstream: decoder (`book/api/decoder`) and inspection tools prefer these layouts to interpret payload fields; static checks (`system_profiles/static_checks.json`) record the `tag_layout_hash`; system-profile digests and tag-layout metadata propagate canonical status for demotion; anchor/filter mapping and runtime signature decoding depend on these layouts.
+The sections that follow describe, for each concept, what the claim actually is, how it is represented and used, what now backs it, and where its boundaries lie. The aim is to surface the reasoning and the operational story, not only the file paths.
 
-**Evidence**
-- **Validation**: Decoder health is exercised in `book/tests/test_decoder_headers.py` and `test_decoder_validation.py` (sections, validation fields). Tag-layout mapping presence/shape is guarded in `book/tests/test_mappings_guardrail.py`; `book/tests/test_tag_layout_hash.py` enforces that the contract hash ignores metadata-only edits and flips on tag changes. `tag_layouts.json` metadata mirrors canonical profile status via `tag_layouts/annotate_metadata.py` so demotion propagates automatically.
-- **Cross-check**: Tag layouts are inferred from decoded canonical profiles in `book/experiments/tag-layout-decode/out/` and promoted to `tag_layouts.json`; `book/experiments/libsandbox-encoder/out/tag_layout_overrides.json` confirms payload field placement (e.g., tag10 filter_id/payload) at the byte level from the compiler side. Static checks (`system_profiles/static_checks.json`) carry `tag_layout_hash`, and `test_canonical_drift_scenario.py` shows demotion propagation into tag layouts and CARTON coverage if canonical profiles drift.
-- **Independence**: Decoder-side inference (tag-layout-decode using canonical blobs) is independent of compiler-side emission (libsandbox-encoder matrices and raw node dumps). Both routes share SBPL→libsandbox compilation but differ in parsing vs emission, reducing common-mode risk. Validation tests exercise decoder output separately from mapping generation.
+---
 
-**Boundaries / failure modes**
-- Coverage is limited to the literal/regex-bearing tags listed above; unknown tags still fall back to stride-12 decoding. Format is still marked “heuristic” in `validation/out/metadata.json`; tail layouts beyond literal-bearing tags remain partially characterized. A decoder bug could affect both tag-layout-decode and static checks, but compiler-side evidence (libsandbox-encoder) would disagree. Canonical-profile drift will demote tag-layout status automatically; metadata/tags hash separation prevents silent metadata churn. If new tags show up, the current mapping is explicitly incomplete rather than silently wrong.
+## What “bedrock” means in this world
 
-## Canonical system profiles (`sys:airlock`, `sys:bsd`, `sys:sample`)
-**Claim / representation / use**
-- `book/graph/mappings/system_profiles/digests.json` publishes canonical structural digests for the three curated profiles with contracts (blob sha/size, op_table hash/len, tag_counts, tag_layout_hash, world pointer) and `status: ok`. Canonical set is fixed and tied to world_id; the bedrock claim is that these are the exact blobs the kernel would consume on this host, frozen by hash and contract.
-- Downstream: tag-layout metadata imports canonical status; CARTON coverage and indices (`carton/operation_coverage.json`, `operation_index.json`, `profile_layer_index.json`) mirror canonical status; runtime expectations (`runtime/golden_expectations.json`) and attestations (`system_profiles/attestations/*.jsonl`) link SHAs to runtime signatures where applicable.
+Within this project, declaring something “bedrock” is a decision about how much you are willing to lean on it, not a metaphysical guarantee about the macOS sandbox forever.
 
-**Evidence**
-- **Validation**: `validation_status.json` records `experiment:system-profile-digest` as `ok-unchanged`; inputs are `book/experiments/system-profile-digest/out/digests.json`. Generator `generate_digests_from_ir.py` enforces contract fields, uses `generate_static_checks.py`, and requires validation `ok`. Guardrails `book/tests/test_mappings_guardrail.py` and `test_system_profiles_mapping.py` assert presence, world pointer, contract fields, and `status: ok`.
-- **Cross-check**: Static checks (`system_profiles/static_checks.json`) confirm header op_count, section sizes, tag counts, tag_layout_hash and blob SHA/size. Attestations (`system_profiles/attestations/*.jsonl`) enumerate literals/anchors, vocab versions, and runtime links. CARTON manifest includes `system_profiles/digests.json`, and demotion propagation is exercised in `book/tests/test_canonical_drift_scenario.py` (drift → brittle in digests → tag layouts → coverage/indices).
-- **Independence**: Digests are derived from compiled blobs via decoder; static checks recompute sizes/hashes independently of the digest generator; attestations re-walk blobs for literals/anchors; CARTON hash verification adds an external check. Runtime probes cannot apply platform profiles on this host (apply gate) but SHAs are wired into `runtime/golden_expectations.json` to keep runtime linkage explicit when possible.
+For this world, “bedrock” now means:
 
-**Boundaries / failure modes**
-- Contracts are strict snapshots of the current blobs; drift in any contract field demotes status to `brittle` with recorded `drift_fields` and propagates downstream (tag layouts, coverage, CARTON indices). Apply gates remain an environmental limitation, not evidence against the blobs; the kernel still consumes these compiled profiles, and we treat the hashed, cross-checked structure as the ground truth for that kernel input. Decoder/shared ingestion bugs could affect digests and static checks together; attestations and CARTON hash checks provide an independent pass over the same blobs.
+* You are willing to treat a mapping as a fixed input when building other tools, CARTON queries, and chapter-level explanations. That is, you will not second-guess it in every downstream use.
+* That willingness is backed by multiple kinds of evidence: static analysis, decoding, adversarial runtime checks where possible, and consistency across different mapping layers, not just a single experiment that once passed.
+* There are explicit guardrails and contracts. If the upstream binaries, profiles, or decoder behavior drift, status flips away from `ok`, guardrail tests go red, and downstream mappings inherit the degraded status rather than silently continuing to treat old assumptions as true.
+
+The rest of this proposal should be read with that meaning in mind. “Bedrock” here is scoped to one named baseline (`sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`), and it comes with a falsification story: manifests, contracts, status flags, and demotion tests are the mechanisms by which it can be revoked.
+
+## 1. Operation vocabulary (196 ops / 93 filters)
+
+### What is being claimed
+
+For this Sonoma world, the Operation and Filter vocabularies are defined by two JSON tables:
+
+* `book/graph/mappings/vocab/ops.json`
+* `book/graph/mappings/vocab/filters.json`
+
+These tables are pinned to this world via metadata (explicit `world_id` and `status: ok`) and are ordered exactly as harvested from this host’s `libsandbox` within the dyld shared cache. When you say “operation 96 is `mach-lookup`” or “these are the operations this host knows about,” you are referring to entries in these two files.
+
+The crucial point is that these vocabularies are frozen to the host’s own published tables, not to the subset of operations you have happened to exercise in SBPL or runtime probes. In practice, “only allowed op/filter names” for this world means “the only names we recognize are those exported by this host’s libsandbox; if Apple adds names to that table, they will appear in a fresh harvest and force a change in status.”
+
+### How the vocabularies are used downstream
+
+These vocab files sit at the base of much of the graph:
+
+* Op-table alignment work uses them to attach human-readable operation and filter names to op-table slots. When a synthetic profile is compiled and its op-table decoded, alignment data structures assume that the mapping from slot index to operation ID, and from operation ID to name, is given by `ops.json`.
+* System-profile digests use them whenever they talk about the number of operations a canonical profile exposes, or when they validate that op-table lengths and hashes make sense for this world’s vocabulary.
+* Per-operation coverage (`ops_coverage.json`) is built on top of `ops.json`: each operation gets a record stating whether it has structural evidence (it appears in decoded profiles or alignment experiments), runtime evidence (it is exercised in runtime-checks and runtime-adversarial), or both.
+* CARTON’s operation coverage and index mappings downstream of these vocab files expose the same information to clients. When a CARTON query asks for “everything known about `mach-lookup` on this host,” it is the chain `ops.json` → coverage mappings → CARTON indices that ultimately answers.
+* API helpers in `book/api/carton/carton_query.py` all assume that these vocab tables are definitive. They do not attempt to infer names or IDs from profiles; they read them from these mappings.
+
+In other words, the vocab tables are not just one artifact among many; they are the canonical dictionary that every other layer consults when it wants to talk about operations and filters in this world.
+
+### How the claim is supported
+
+On the validation side, the pipeline is now quite strict:
+
+* A dedicated validation job (`vocab:sonoma-14.4.1`) is recorded in `validation_status.json` as `ok-unchanged`, pointing to the trimmed `libsandbox.1.dylib` slice as input and to the vocab mappings as outputs. The job’s metrics explicitly record “196 Operations, 93 Filters,” so a change there is visible at the validation layer.
+* A test (`test_vocab_harvest.py`) compares the raw harvested name lists from the dyld-driven `vocab-from-cache` experiment to the contents of `ops.json` and `filters.json`. It asserts that the names match, the counts match, the order matches, and that IDs are exactly `0..N-1` for the recovered lists. This guards against both accidental hand edits and subtle off-by-one errors in harvest.
+* Another test (`test_dyld_libs_manifest.py`) checks that the trimmed dyld slices under `book/graph/mappings/dyld-libs/` still have the expected path, size, and SHA-256. This pins the binary source of the vocab tables themselves; if you silently swap in a different libsandbox slice, the manifest check will fail.
+
+Cross-checks then make sure that this vocabulary is actually coherent with the rest of the world:
+
+* Op-table alignment mappings re-use the same IDs and record which slots in the op-table “light up” when you compile profiles that exercise individual operations. These mappings carry their own metadata and status, and tests check that the vocab IDs they reference are consistent.
+* System-profile digests record op-table lengths and hashes for canonical profiles, and those values are expected to be consistent with a 196-entry vocabulary. If a canonical profile suddenly had an op_table_len that did not match the vocab size, static checks would catch it.
+* The per-operation coverage mapping (`ops_coverage.json`) and the CARTON coverage derived from it act as a reality check for the subset of operations you have actually run through the kernel. For operations like file-read*, file-write*, and mach-lookup, these artifacts assert that both structural and runtime evidence exist; for the rest, they mark the lack of runtime data explicitly.
+
+There is also a genuine independence story. The vocab harvest route reads from the dyld cache using only symbols and raw string tables, with no reference to profile decoding or runtime behavior. The profile/decoder route goes through SBPL, libsandbox compilation, and the shared decoder, and then interprets op-tables using the vocab. A serious error in the vocab would require both the harvest and the decoding direction to be wrong in a perfectly compatible way. The manifest and harvest tests are there to make that kind of common-mode error less plausible.
+
+### Where the claim stops
+
+This vocabulary is explicitly bound to a single host and world. It does not say “there are exactly 196 operations in some abstract macOS sense”; it says “this host’s libsandbox exposes a 196-entry operation table, and that is the table we will use as the universe of Operations here.”
+
+The claim also does not assert that every operation is well understood in terms of semantics. Many entries are still “name + ID only” with little or no runtime exploration behind them. That is why `ops_coverage.json` exists: it distinguishes the few operations for which you have both static and adversarial runtime evidence from the long tail that is only structurally present. Bedrock, in this section, is about the vocabulary itself—names, IDs, ordering, and completeness for this world—not about the semantic behavior of each entry.
+
+If libsandbox on this host ever changes—new strings, reordering, or a different binary slice—the manifest and vocab tests will fail. Regenerating vocab will either produce changed tables (forcing you to confront the difference) or make it obvious that you are no longer talking about the same world. That is the demotion path: the system is not designed to “auto-heal” such a change in the background.
+
+---
+
+## 2. Modern compiled profile format and tag layouts
+
+### What is being claimed
+
+SANDBOX_LORE’s world model assumes that, on this host, the system and synthetic profiles it cares about are all instances of a single “modern-heuristic” profile format. This format consists of a small header, an op-table, a node region, and a literal/regex pool. The bedrock claim is not that every last byte of that format is exhaustively understood; it is that for a carefully chosen subset of tags—the literal/regex-bearing tags that carry most of the interesting structural information—you now know exactly how their 12-byte node records are laid out and can treat that layout as fixed.
+
+That layout information lives in `book/graph/mappings/tag_layouts/tag_layouts.json`. For each of the covered tags (currently 0, 1, 3, 5, 7, 8, 17, 26, 27, 166), this mapping records the record size and which halfwords are edges versus payload. The decoder for this world uses these layouts directly when it turns raw node bytes into structured PolicyGraph information.
+
+The important shift after remediation is that “heuristic” is now confined to the parts of the format you have not yet nailed down, rather than being a blanket disclaimer. For the tags in `tag_layouts.json`, you no longer think of the layouts as a clever guess; you treat them as a contract, with supporting evidence.
+
+### How these layouts are used
+
+These tag layouts are threaded through several layers of the project:
+
+* The decoder consults `tag_layouts.json` whenever it encounters one of the covered tags. Instead of assuming that node records are uniform and hoping the fields line up, it dereferences the mapping and interprets each halfword appropriately. This is what allows it to reconstruct which literal pool entries a node references, or how filter IDs and field2 values are encoded for those tags.
+* Static checks for canonical system profiles compute a `tag_layout_hash` that depends on the set of tags and their layout structure as understood by the decoder. That hash is stored alongside other structural metadata (tag counts, section sizes) and acts as a fingerprint of “the tag-layout story” for a given blob.
+* The digests for canonical system profiles import this `tag_layout_hash` and treat it as part of each profile’s contract. In effect, the canonical profile contracts assert: “these blobs are not only this large and have this op-table hash; they also agree on the tag layouts being used to interpret them.”
+* A small annotator script reads canonical profile status and world pointers and writes that information into `tag_layouts.json` as metadata. This ensures that when canonical profiles are demoted, the tag layouts inferred from them are demoted as well. Tag layouts do not “float free” of their evidence.
+* Later mapping and runtime work—such as relating anchors to filters, or decoding runtime signatures—leans on these layouts whenever it needs to talk about “the node that carries this literal” or “the tag that encodes this set of filters.”
+
+In short, these layouts are how PolicyGraphs get their semantic teeth. Without them, the node region is just a stream of 12-byte records with opaque integers.
+
+### How the claim is supported
+
+The evidence for treating these layouts as bedrock rather than mere heuristics comes from two complementary directions.
+
+From the decoder side, you have an experiment that starts with compiled blobs—canonical profiles and synthetic probes—and works its way up. It groups nodes by tag, looks at their observed patterns, and infers which fields are edges, which are payloads, what the record sizes are, and how literal pool indices are distributed. It then promotes this inferred structure into `tag_layouts.json`. Validation tests make sure that this file exists, that the tags it claims to cover are present, and that any structural change to the layouts will flip the computed hash. This route treats the compiled blob as ground truth and asks, “What layout would explain the bytes we see?”
+
+From the compiler side, you have a different experiment that starts with `libsandbox`’s emit paths. It uses SBPL matrices and low-level node dumps to see exactly which halfwords the encoder writes when constructing nodes for particular tags. For example, it can observe that for a certain tag, one halfword is always the tag number, another is consistently a filter ID, and the third varies in ways that correspond to field2 or literal indices. It records those observations in its own outputs. This route treats the encoder’s logic as ground truth and asks, “What layout must these nodes have, given how `libsandbox` writes them?”
+
+After remediation, these two views have been made to meet: for the tags in the covered subset, the inferred layouts from blob decoding match the layouts reconstructed from the encoder’s behavior. Static checks tie both right back to the canonical blobs by recording a single `tag_layout_hash`. Tests ensure that this hash only changes when the tag set or their layouts change, not when you merely adjust comments or metadata.
+
+This is what lifts the covered tag layouts from “strong but fragile educated guess” to “contracted structure.” Both the compiled output and the emitting code agree on the layout, and the mapping is wired into canonical profiles and tests.
+
+### Where the claim stops
+
+The project is deliberately honest about the limits here:
+
+* Only the listed tags are treated as bedrock. Unknown tags still go through a generic 12-byte interpretation that might be good enough for some analyses but is not claimed as a fixed contract.
+* The format is still labeled `modern-heuristic` in validation metadata. This acknowledges that there may be other profile formats on the system that you are not modeling, and that even within this format you have not validated every corner of the node region (for example, exotic tags or mixed-stride structures).
+* The layouts are tied to canonical profiles. If those profiles change—because Apple updates a shipped profile or you discover you were decoding the wrong blob—the canonical profile contracts will detect drift, change status, and cause the tag-layout metadata to be updated accordingly. In that situation, the correct response is to re-infer or re-confirm the layouts, not to keep treating old assumptions as bedrock.
+
+The “bedrock” stance here is therefore precise: for this world, as long as the canonical profile contracts remain undrifted and the decoder/encoder cross-checks continue to agree, the layouts recorded in `tag_layouts.json` for the covered tags can be treated as fixed structure. Beyond that, the model remains openly heuristic.
+
+---
+
+## 3. Canonical system profiles (`sys:airlock`, `sys:bsd`, `sys:sample`)
+
+### What is being claimed
+
+For this baseline, there are three system profiles that the project elevates to a special role:
+
+* `sys:airlock`
+* `sys:bsd`
+* `sys:sample`
+
+They are treated as the canonical examples of platform policy for this host. The claim is not just that they exist or that they are important, but that their compiled blobs, as seen by the kernel, are described accurately and stably by the IR captured in `book/graph/mappings/system_profiles/digests.json`. When you say “this is what `sys:bsd` looks like on this world,” you are really pointing to the digest and contract for that profile.
+
+Those digests serve as both a structural summary and a binding contract. For each canonical profile, they record the path to the compiled blob, the blob’s hash and size, high-level structural properties (op_count, op_table hash, tag counts, tag_layout_hash, section sizes), and a `world_id` that ties the profile back to this baseline. They also record a `status`, which is currently `ok` for all three, and a list of `drift_fields` that will be populated if any of the contract fields change.
+
+### How these profiles are used downstream
+
+These canonical profiles are threaded into many parts of the repo:
+
+* Tag-layout work uses them as the source corpus from which to infer layouts. The tag layouts discussed above are ultimately grounded in the structure observed in these canonical blobs, and their metadata explicitly acknowledges this dependency.
+* CARTON’s coverage and index mappings treat these profiles as the backbone of their view of the world. When CARTON answers questions like “which operations are used in real system policy?” or “which profiles cover which parts of the operation vocabulary?”, it reads from coverage and index mappings that are in turn built on these digests.
+* Runtime expectations and attestations tie the canonical profiles to runtime experiments where possible. Although apply gates mean you cannot always run `sys:airlock` directly through `sandbox_apply` on this host, golden expectations and runtime manifests link SHAs and IDs so that you can see, in a unified way, how canonical profiles and runtime probes relate.
+* The human-facing textbook narrative also leans on these profiles. They are the concrete examples you point to when you explain, for instance, how a system profile combines a base policy with app-specific behavior.
+
+In effect, these three profiles anchor the project’s picture of “what the OS actually ships” for this world. That is why their integrity and status matter so much.
+
+### How the claim is supported
+
+The process for generating and maintaining these digests is now more disciplined and more explicit than in the initial promotion draft.
+
+On the generation side, a single script, `generate_digests_from_ir.py`, is responsible for turning decoded IR into the canonical mapping. It insists that the upstream validation job for system-profile decoding is in good standing; if the decoding experiment is not `ok`, the generator refuses to proceed. It then calls a separate static-checks generator, reads the relevant metrics from both the decoded IR and the static checks, and assembles a contract for each profile. That contract contains a fixed list of fields—blob hash and size, op_table hash and length, tag counts, tag_layout_hash, world pointer—and a version number for the contract schema itself.
+
+On the guardrail side, several tests keep this process honest:
+
+* One test asserts that the canonical set is exactly the three profiles listed above, that each one carries the correct world pointer, and that each one has an `ok` status with no recorded drift. This guards against both accidental addition/removal of canonical profiles and unexamined contract changes.
+* Another test ensures that the mapping itself is present and has the expected shape, so a missing or malformed digests file is immediately visible.
+* A “drift scenario” test deliberately simulates a change in one of the canonical blobs (for example, by altering a recorded SHA) and checks that the system behaves as intended: the affected profile is demoted to `brittle`, its drift fields record the changed contract fields, and the overall mapping status reflects that something significant has changed.
+
+In addition, static checks and attestations provide independent views over the same blobs. Static checks recompute section sizes, op counts, tag counts, and layout hashes directly from the binary, without relying on the digest structure. Attestations re-walk the logical content of the profiles—literals, anchors, op_table entries—and record them, along with references to vocab and tag layouts. CARTON’s manifest, finally, hashes the digests mapping itself to ensure that a client cannot silently pick up a partially updated file.
+
+This structure means that the digests are not just a convenient summary; they are a checked contract tied both to the underlying blobs and to other mapping layers. If you change a blob or change your understanding of its shape, that will show up somewhere in this chain.
+
+### Where the claim stops
+
+There are clear limits to what is being claimed here.
+
+First, these profiles are a narrow canonical set. The mapping does not claim to describe every system profile on the host; it deliberately focuses on three that the project has chosen as anchors. That choice is part of the world’s definition.
+
+Second, the “bedrock” claim is about the compiled blobs and their decoded structure, not about fully tested runtime behavior. Apply gates on this host mean that you cannot always run these exact profiles end-to-end through the kernel. Where you can run related or recompiled versions (for example, a recompiled `bsd` or microprofiles inspired by these policies), runtime experiments are used and linked. Where you cannot, you treat the static IR as an accurate snapshot of what the kernel sees on disk, backed by hashes and structural checks, but you are explicit that this is not a runtime theorem.
+
+Third, the contract is temporal and world-specific. If Apple ships a new `bsd` profile with a different op_table_hash or tag layout, the contract will detect that drift and demote status. At that point, older chapter-level claims about “what `sys:bsd` looks like” are no longer current; you will need to treat the profile as degraded until you have re-established evidence for the new version. The system is engineered to make that visible rather than to silently reinterpret “bedrock” to mean “whatever the current blob happens to be.”
+
+---
 
 ## Recommendation
-All three concepts meet the bedrock bar for this world:
-- Validation jobs are `ok`, guardrails exist, and demotion paths are explicit.
-- Independent routes agree (dyld harvest vs op-table/system profiles for vocab; decoder vs compiler-side for tag layouts; digests vs static checks vs attestations for canonical profiles).
-- Boundaries are documented (runtime coverage limits, tag coverage scope, apply gates).
 
-Treat them as bedrock, with the demotion story above as the falsification path if future evidence drifts.
+With all of this in place, it is reasonable to promote the three concepts to bedrock for this world.
+
+The operation vocabulary is now clearly identified as “what this host’s libsandbox exports,” backed by dyld manifests, a disciplined harvest pipeline, alignment and digest cross-checks, and per-op coverage that separates structurally present operations from those you have examined at runtime. The claim it makes is modest but firm: for this world, these are the operations and filters that exist, and these are their numeric IDs.
+
+The modern profile format and tag layouts have moved from “strongly suspected” to “contracted” for a particular subset of tags. Decoder-side inference from canonical blobs and compiler-side analysis of `libsandbox`’s emit paths tell the same story for those tags, and that story is now wired into canonical profile contracts and tag-layout metadata. Unknown tags and unmodeled format corners are left openly heuristic; the bedrock claim is about the covered layouts, not about everything.
+
+The canonical system profiles are now treated as compiled objects with explicit contracts, rather than as vaguely understood exemplars. Their blobs are hash-checked, their structure is summarized in digests that are tightly constrained by tests and generators, and their status is allowed to degrade in a controlled way when contract fields change. Those digests feed directly into tag layouts, coverage mappings, CARTON indices, and attestations, which gives you a coherent picture of “what the OS ships” for this world.
+
+Given that bedrock is defined here as “safe to treat as fixed inputs for this world, with explicit demotion paths if evidence drifts,” these three concepts now meet that bar. Downstream tools, CARTON clients, and written chapters can rely on them as given, while the manifest, contract, and demotion machinery you have put in place remains the route by which future changes or discoveries will be handled.
