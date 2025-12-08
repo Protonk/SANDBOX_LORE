@@ -1,5 +1,4 @@
 {
-  "id": "example-world",
   "world_id": "<compute-from-dyld-manifest-sha>",
   "capture_reason": "<manual|automated|rebaseline>",
   "host": {
