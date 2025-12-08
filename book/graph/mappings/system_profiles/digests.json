@@ -1,13 +1,50 @@
 {
   "metadata": {
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
     "inputs": [
-      "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json"
+      "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
+      "book/graph/mappings/system_profiles/static_checks.json"
     ],
     "source_jobs": [
-      "experiment:system-profile-digest"
+      "experiment:system-profile-digest",
+      "generator:system_profiles:static_checks"
     ],
     "decoder": "book.api.decoder",
-    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    "status": "ok",
+    "canonical_profiles": {
+      "sys:airlock": {
+        "status": "ok",
+        "role": "canonical-system-profile",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+        "drift_fields": [],
+        "downgrade_reason": null
+      },
+      "sys:bsd": {
+        "status": "ok",
+        "role": "canonical-system-profile",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+        "drift_fields": [],
+        "downgrade_reason": null
+      },
+      "sys:sample": {
+        "status": "ok",
+        "role": "canonical-system-profile",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+        "drift_fields": [],
+        "downgrade_reason": null
+      }
+    },
+    "contract_fields": [
+      "contract_version",
+      "sbpl_hash",
+      "blob_sha256",
+      "blob_size",
+      "op_table_hash",
+      "op_table_len",
+      "tag_counts",
+      "tag_layout_hash",
+      "world_id"
+    ]
   },
   "profiles": {
     "sys:airlock": {
@@ -1004,6 +1041,47 @@
         "nodes_start": 350,
         "literal_start": 442,
         "tag_validation": {}
+      },
+      "id": "sys:airlock",
+      "profile_id": "sys:airlock",
+      "role": "canonical-system-profile",
+      "description": "Platform airlock baseline",
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "status": "ok",
+      "contract": {
+        "contract_version": 1,
+        "sbpl_hash": null,
+        "blob_sha256": "33d1a72e709f86f7827cb6e5a919a30cc86a3d0ea6e048b2117d0240a923467e",
+        "blob_size": 4662,
+        "op_table_hash": "13e3fba47db79e535d2b9cab56cc7252f15ad32ef2d5b1977a4f1a2bbb5fa67e",
+        "op_table_len": 167,
+        "tag_counts": {
+          "0": 1,
+          "1": 1,
+          "166": 5
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "observed": {
+        "contract_version": 1,
+        "sbpl_hash": null,
+        "blob_sha256": "33d1a72e709f86f7827cb6e5a919a30cc86a3d0ea6e048b2117d0240a923467e",
+        "blob_size": 4662,
+        "op_table_hash": "13e3fba47db79e535d2b9cab56cc7252f15ad32ef2d5b1977a4f1a2bbb5fa67e",
+        "op_table_len": 167,
+        "tag_counts": {
+          "0": 1,
+          "1": 1,
+          "166": 5
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "drift": [],
+      "downgrade": {
+        "fields": [],
+        "reason": null
       }
     },
     "sys:bsd": {
@@ -2225,6 +2303,49 @@
             "record_size": 12
           }
         }
+      },
+      "id": "sys:bsd",
+      "profile_id": "sys:bsd",
+      "role": "canonical-system-profile",
+      "description": "Platform bsd baseline",
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "status": "ok",
+      "contract": {
+        "contract_version": 1,
+        "sbpl_hash": null,
+        "blob_sha256": "c6fe205fe002bcb0e094419e149d5f1a8a49517d034033fe5bec52ef8e75a179",
+        "blob_size": 2140,
+        "op_table_hash": "b1348042b3647334ee961a645d358116d81340488c0088aaac3742c5d06799e6",
+        "op_table_len": 28,
+        "tag_counts": {
+          "0": 8,
+          "17": 1,
+          "26": 18,
+          "27": 14
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "observed": {
+        "contract_version": 1,
+        "sbpl_hash": null,
+        "blob_sha256": "c6fe205fe002bcb0e094419e149d5f1a8a49517d034033fe5bec52ef8e75a179",
+        "blob_size": 2140,
+        "op_table_hash": "b1348042b3647334ee961a645d358116d81340488c0088aaac3742c5d06799e6",
+        "op_table_len": 28,
+        "tag_counts": {
+          "0": 8,
+          "17": 1,
+          "26": 18,
+          "27": 14
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "drift": [],
+      "downgrade": {
+        "fields": [],
+        "reason": null
       }
     },
     "sys:sample": {
@@ -2780,6 +2901,51 @@
             "record_size": 12
           }
         }
+      },
+      "id": "sys:sample",
+      "profile_id": "sys:sample",
+      "role": "canonical-system-profile",
+      "description": "Book sample profile",
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "status": "ok",
+      "contract": {
+        "contract_version": 1,
+        "sbpl_hash": "86fb8d953a38c083f3e390f591545f4b24fcda6cf98e7715b34e83faa835a383",
+        "blob_sha256": "a82e5aa81c57e46988a3bbf96880e9131e01f9e0ac19939b6ea7b645753fbaac",
+        "blob_size": 583,
+        "op_table_hash": "46b9f3b2eb4844d11f521683ea5450bb32a9685c344ce6550b50959946d434dd",
+        "op_table_len": 9,
+        "tag_counts": {
+          "0": 1,
+          "3": 2,
+          "5": 1,
+          "7": 12,
+          "8": 16
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "observed": {
+        "contract_version": 1,
+        "sbpl_hash": "86fb8d953a38c083f3e390f591545f4b24fcda6cf98e7715b34e83faa835a383",
+        "blob_sha256": "a82e5aa81c57e46988a3bbf96880e9131e01f9e0ac19939b6ea7b645753fbaac",
+        "blob_size": 583,
+        "op_table_hash": "46b9f3b2eb4844d11f521683ea5450bb32a9685c344ce6550b50959946d434dd",
+        "op_table_len": 9,
+        "tag_counts": {
+          "0": 1,
+          "3": 2,
+          "5": 1,
+          "7": 12,
+          "8": 16
+        },
+        "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "drift": [],
+      "downgrade": {
+        "fields": [],
+        "reason": null
       }
     }
   }

@@ -16,23 +16,23 @@
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "986d88ecd2474379d1557028f201c5785e54041d4b11b75361c6474a16f573e1"
+      "sha256": "7faaf3643018b598baec6ca5f6374921afa663165457386abd3bd01f8d3e1774"
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
-      "sha256": "0a708e9f6b91b5439e886e9db4289b41b2850fbc065ddf54fe0616bc78a6a201"
+      "sha256": "2efb2fc90f24fcc12918ce2c865cd5a4e88c15c18f6b7f5d66169bc16e30ace0"
     },
     {
       "path": "book/graph/mappings/carton/operation_index.json",
-      "sha256": "af00659b11655ddabea1ac590a952c7b3879f7e26204464b8fed728b038e6635"
+      "sha256": "84458ad297c7913676b265fe00f662038bcda6d8dbe3540c7a95c25723b301bf"
     },
     {
       "path": "book/graph/mappings/carton/profile_layer_index.json",
-      "sha256": "0ad26d70b0020071b94da1aa28e06cf9d40c2cdf3a1c9bbc1b656712f5f74299"
+      "sha256": "7a1dcd2dd4d883dc02e30298ebed0a7b28741ae7da81f31933318785d21c265e"
     },
     {
       "path": "book/graph/mappings/carton/filter_index.json",
-      "sha256": "3434a2c36505fcd3969a541247699455fd42bbd2bb49a8e3e572470f56dd4268"
+      "sha256": "d3d26300b82cc8c34a92fc7f6ca312e42f038081a0f089706570bf9c9c3442e6"
     },
     {
       "path": "book/graph/mappings/carton/concept_index.json",
@@ -56,7 +56,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "d90574b33ab08da27adaaafa27119c0afe43b915f2d0934dea23277fa3cd3ea8"
+      "sha256": "218eb393a5663b9645145960783271b40bfd3459982ca8a55bb98bcfc2ac2c96"
     }
   ]
 }

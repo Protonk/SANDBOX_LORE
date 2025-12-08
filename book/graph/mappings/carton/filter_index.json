@@ -7,10 +7,11 @@
       "book/api/carton/CARTON.json"
     ],
     "source_jobs": [
-      "experiment:system-profile-digest"
+      "experiment:system-profile-digest",
+      "generator:system_profiles:static_checks"
     ],
     "status": "ok",
-    "notes": "Filter vocab promoted into CARTON with explicit usage_status; usage wiring is intentionally conservative."
+    "notes": "Filter vocab promoted into CARTON with explicit usage_status; usage wiring is intentionally conservative and inherits canonical system profile status."
   },
   "filters": {
     "%entitlement-boolean": {

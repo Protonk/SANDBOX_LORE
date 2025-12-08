@@ -113,6 +113,12 @@
     }
   ],
   "metadata": {
-    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+    "status": "ok",
+    "canonical_profiles": {
+      "sys:airlock": "ok",
+      "sys:bsd": "ok",
+      "sys:sample": "ok"
+    }
   }
 }

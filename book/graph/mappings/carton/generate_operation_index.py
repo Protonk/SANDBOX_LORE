@@ -50,11 +50,13 @@ def assert_world_compatible(baseline_world: str, other: dict | str | None, label
 def build_index() -> dict:
     vocab = load_json(VOCAB)
     coverage = load_json(COVERAGE)
+    digests = load_json(DIGESTS)
     ops = vocab.get("ops") or []
     coverage_map: Dict[str, dict] = (coverage.get("coverage") or {})
     baseline = baseline_ref()
     world_id = baseline["world_id"]
     assert_world_compatible(world_id, coverage.get("metadata"), "coverage")
+    assert_world_compatible(world_id, digests.get("metadata"), "system_digests")
     source_jobs: List[str] = []
     inputs: List[str] = [
         "book/graph/mappings/vocab/ops.json",
@@ -64,7 +66,15 @@ def build_index() -> dict:
         "book/api/carton/CARTON.json",
     ]
     meta = coverage.get("metadata") or {}
+    coverage_status = meta.get("status") or "unknown"
     source_jobs = meta.get("source_jobs") or source_jobs
+    raw_canonical = meta.get("canonical_profile_status") or (digests.get("metadata") or {}).get("canonical_profiles") or {}
+    # The operation index mirrors canonical system-profile health so callers
+    # reading counts know whether “ok” coverage is still backed by bedrock
+    # profiles or already degraded.
+    canonical_status = {
+        pid: (info.get("status") if isinstance(info, dict) else info) for pid, info in raw_canonical.items()
+    }
 
     operations: Dict[str, dict] = {}
     for entry in ops:
@@ -83,8 +93,10 @@ def build_index() -> dict:
             "profile_layers": profile_layers,
             "system_profiles": system_profiles,
             "runtime_signatures": runtime_sigs,
+            "system_profile_status": cov.get("system_profile_status") or {},
             "coverage_counts": {
                 "system_profiles": counts.get("system_profiles", 0),
+                "system_profiles_ok": counts.get("system_profiles_ok", 0),
                 "runtime_signatures": counts.get("runtime_signatures", 0),
             },
             "known": True,
@@ -95,8 +107,9 @@ def build_index() -> dict:
             "world_id": world_id,
             "inputs": inputs,
             "source_jobs": source_jobs,
-            "status": "ok",
-            "notes": "Derived from CARTON mappings; coverage drives counts and layer presence.",
+            "status": coverage_status,
+            "canonical_profile_status": canonical_status,
+            "notes": "Derived from CARTON mappings; coverage drives counts and layer presence and inherits canonical profile status.",
         },
         "operations": dict(sorted(operations.items(), key=lambda kv: kv[0])),
     }

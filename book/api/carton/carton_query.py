@@ -5,7 +5,9 @@ Implements simple lookups over CARTON mappings (vocab, system profile digests,
 runtime signatures, coverage) without touching experiment out/ directly.
 
 This module enforces a small error contract so helpers get predictable failures
-when CARTON data is missing or out of date.
+when CARTON data is missing or out of date. Coverage and index helpers surface
+canonical system-profile status so callers can see when “known” data is sitting
+on top of a degraded bedrock contract.
 """
 
 from __future__ import annotations
@@ -113,6 +115,10 @@ def _load_coverage() -> dict:
     return cov
 
 
+def _load_coverage_full() -> dict:
+    return _load_json_from_manifest("carton.coverage", required_keys=["coverage"])
+
+
 def _lookup_op_id(op_name: str) -> int:
     name_to_id, _ = _load_vocab()
     op_id = name_to_id.get(op_name)
@@ -145,20 +151,28 @@ def profiles_with_operation(op_name: str) -> List[str]:
 
 def profiles_and_signatures_for_operation(op_name: str) -> Dict[str, Any]:
     op_id = _lookup_op_id(op_name)
-    coverage = _load_coverage()
+    coverage_full = _load_coverage_full()
+    coverage = coverage_full.get("coverage") or {}
     if op_name not in coverage:
         raise CartonDataError(f"CARTON coverage mapping does not include operation '{op_name}'")
     entry = coverage.get(op_name) or {}
     counts = entry.get("counts") or {}
+    # coverage_status and canonical_profile_status report whether the coverage
+    # data is still backed by canonical contracts; callers should treat non-ok
+    # states as “known but degraded,” not business-as-usual.
     return {
         "op_name": op_name,
         "op_id": op_id,
         "system_profiles": entry.get("system_profiles") or [],
+        "system_profile_status": entry.get("system_profile_status") or {},
         "runtime_signatures": entry.get("runtime_signatures") or [],
         "counts": {
             "system_profiles": counts.get("system_profiles", 0),
+            "system_profiles_ok": counts.get("system_profiles_ok", 0),
             "runtime_signatures": counts.get("runtime_signatures", 0),
         },
+        "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
+        "canonical_profile_status": (coverage_full.get("metadata") or {}).get("canonical_profile_status") or {},
         "known": True,
     }
 
@@ -254,21 +268,28 @@ def list_carton_paths() -> Dict[str, str]:
 
 def operation_story(op_name: str) -> Dict[str, Any]:
     op_info = profiles_and_signatures_for_operation(op_name)
-    coverage = _load_coverage()
+    coverage_full = _load_coverage_full()
+    coverage = coverage_full.get("coverage") or {}
     entry = coverage.get(op_name, {})
+    # Keep canonical/cov status visible so the mini-story reads as “this is what
+    # we know, and here is the health of the canonical evidence it rests on.”
     return {
         "op_name": op_name,
         "op_id": op_info["op_id"],
         "known": op_info["known"],
         "system_profiles": op_info["system_profiles"],
+        "system_profile_status": op_info.get("system_profile_status") or entry.get("system_profile_status") or {},
         "profile_layers": ["system"] if op_info["system_profiles"] else [],
         "runtime_signatures": op_info["runtime_signatures"],
         "coverage_counts": op_info["counts"],
+        "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
+        "canonical_profile_status": (coverage_full.get("metadata") or {}).get("canonical_profile_status") or {},
     }
 
 
 def profile_story(profile_id: str) -> Dict[str, Any]:
     digests = _load_json_from_manifest("system.digests")
+    meta = digests.get("metadata") or {}
     profiles = digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}
     if profile_id not in profiles:
         raise CartonDataError(f"profile '{profile_id}' not found in system digests")
@@ -276,8 +297,8 @@ def profile_story(profile_id: str) -> Dict[str, Any]:
     op_ids = profile_body.get("op_table") or []
     _, id_to_name = _load_vocab()
     ops = [{"name": id_to_name.get(op_id), "id": op_id} for op_id in op_ids if op_id in id_to_name]
-    layer_index = _load_json_from_manifest("carton.coverage", required_keys=["coverage"])  # reused coverage shape
-    coverage = layer_index.get("coverage") or {}
+    coverage_full = _load_json_from_manifest("carton.coverage", required_keys=["coverage"])  # reused coverage shape
+    coverage = coverage_full.get("coverage") or {}
     runtime_sigs = set()
     for op in ops:
         cov = coverage.get(op["name"]) or {}
@@ -288,12 +309,21 @@ def profile_story(profile_id: str) -> Dict[str, Any]:
         "known": False,
         "filters": [],
     }
+    canonical_profiles_meta = meta.get("canonical_profiles") or {}
+    canonical_profile_status = {
+        pid: (info.get("status") if isinstance(info, dict) else info) for pid, info in canonical_profiles_meta.items()
+    }
+    # Coverage status here mirrors the canonical profile health to keep profile
+    # stories consistent with the generator guardrails.
     return {
         "profile_id": profile_id,
         "layer": "system",
+        "status": profile_body.get("status") or meta.get("status"),
         "ops": ops,
         "runtime_signatures": sorted(runtime_sigs),
         "filters": filters_info,
+        "canonical_profile_status": canonical_profile_status,
+        "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
     }
 
 

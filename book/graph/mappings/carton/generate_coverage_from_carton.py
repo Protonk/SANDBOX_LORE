@@ -22,7 +22,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 ROOT = Path(__file__).resolve().parents[4]
 OPS_PATH = ROOT / "book/graph/mappings/vocab/ops.json"
@@ -86,6 +86,19 @@ def assert_world_compatible(baseline_world: str, other: dict | str | None, label
         raise RuntimeError(f"world_id mismatch for {label}: baseline {baseline_world} vs {other_world}")
 
 
+def canonical_status(digests: Dict[str, Any]) -> Tuple[str, Dict[str, str]]:
+    meta = digests.get("metadata") or {}
+    profiles_meta = meta.get("canonical_profiles") or {}
+    # Coverage inherits canonical health: if any canonical profile is degraded,
+    # the aggregate coverage status drops so downstream callers cannot treat
+    # coverage as “ok” while the bedrock profiles are drifting.
+    per_profile = {pid: info.get("status", "unknown") for pid, info in profiles_meta.items()}
+    status = meta.get("status") or "unknown"
+    if status == "ok" and any(val != "ok" for val in per_profile.values()):
+        status = "brittle"
+    return status, per_profile
+
+
 def init_coverage(ops: List[Dict]) -> Dict[str, Dict]:
     coverage: Dict[str, Dict] = {}
     for entry in ops:
@@ -100,13 +113,18 @@ def apply_system_profiles(coverage: Dict[str, Dict], digests: Dict, id_to_name: 
     profiles = digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}
     for profile, body in profiles.items():
         op_ids = set(body.get("op_table") or [])
+        profile_status = body.get("status") or "unknown"
         for op_id in op_ids:
             name = id_to_name.get(op_id)
             if not name:
                 continue
-            bucket = coverage.setdefault(name, {"op_id": op_id, "system_profiles": [], "runtime_signatures": []})
+            bucket = coverage.setdefault(
+                name,
+                {"op_id": op_id, "system_profiles": [], "runtime_signatures": [], "system_profile_status": {}},
+            )
             if profile not in bucket["system_profiles"]:
                 bucket["system_profiles"].append(profile)
+            bucket.setdefault("system_profile_status", {})[profile] = profile_status
 
 
 def apply_runtime(
@@ -155,6 +173,12 @@ def main() -> None:
     status = load_status()
     require_jobs(status)
 
+    def rel(path: Path) -> str:
+        try:
+            return str(path.relative_to(ROOT))
+        except ValueError:
+            return str(path)
+
     ops = load_json(OPS_PATH).get("ops") or []
     digests = load_json(DIGESTS_PATH)
     runtime_mapping = load_json(RUNTIME_PATH)
@@ -162,14 +186,18 @@ def main() -> None:
     id_to_name = {entry["id"]: entry["name"] for entry in ops if "id" in entry and "name" in entry}
     name_to_id = {entry["name"]: entry["id"] for entry in ops if "id" in entry and "name" in entry}
 
+    canonical_overall_status, canonical_per_profile = canonical_status(digests)
     apply_system_profiles(coverage, digests, id_to_name)
     unknown_ops, signatures_seen = apply_runtime(coverage, runtime_mapping, name_to_id)
 
     for entry in coverage.values():
         entry["system_profiles"] = sorted(entry.get("system_profiles") or [])
         entry["runtime_signatures"] = sorted(entry.get("runtime_signatures") or [])
+        profile_status = entry.get("system_profile_status") or {}
+        ok_profiles = [pid for pid in entry["system_profiles"] if profile_status.get(pid) == "ok"]
         entry["counts"] = {
             "system_profiles": len(entry["system_profiles"]),
+            "system_profiles_ok": len(ok_profiles),
             "runtime_signatures": len(entry["runtime_signatures"]),
         }
 
@@ -177,21 +205,28 @@ def main() -> None:
     assert_world_compatible(world_id, runtime_mapping.get("metadata"), "runtime_signatures")
     assert_world_compatible(world_id, digests.get("metadata"), "system_digests")
     inputs = [
-        str(OPS_PATH.relative_to(ROOT)),
-        str(DIGESTS_PATH.relative_to(ROOT)),
-        str(RUNTIME_PATH.relative_to(ROOT)),
-        str(CARTON_PATH.relative_to(ROOT)),
+        rel(OPS_PATH),
+        rel(DIGESTS_PATH),
+        rel(RUNTIME_PATH),
+        rel(CARTON_PATH),
     ]
+    # Downstream consumers see coverage status as a proxy for canonical health;
+    # do not upgrade to ok if canonical profiles have been demoted.
+    coverage_status = canonical_overall_status if canonical_overall_status != "ok" else "ok"
+    summary = summarize(coverage, unknown_ops)
+    summary["canonical_profile_status"] = canonical_per_profile
+    summary["canonical_overall_status"] = canonical_overall_status
     mapping = {
         "metadata": {
             "world_id": world_id,
             "inputs": inputs,
             "source_jobs": sorted(EXPECTED_JOBS),
-            "status": "ok",
-            "notes": "Derived purely from CARTON mappings; no experiment out/ is read here.",
+            "status": coverage_status,
+            "canonical_profile_status": canonical_per_profile,
+            "notes": "Derived purely from CARTON mappings; locked to canonical system profile contract status.",
         },
         "coverage": dict(sorted(coverage.items(), key=lambda kv: kv[0])),
-        "summary": summarize(coverage, unknown_ops),
+        "summary": summary,
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(mapping, indent=2))

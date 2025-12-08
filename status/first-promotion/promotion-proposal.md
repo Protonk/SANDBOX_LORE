@@ -1,6 +1,6 @@
-# Promotion proposal: bedrock mappings for the Sonoma world
+# Promotion proposal: bedrock mappings for the current world
 
-This note proposes promoting a small set of graph-level facts to “bedrock” status for the fixed world baseline in [`book/world/sonoma-14.4.1-23E224-arm64/`](book/world/sonoma-14.4.1-23E224-arm64/). The aim is to identify a few structural assumptions that agents can treat as given for this host, while keeping evidence trails clear enough that disagreements can still be surfaced and investigated.
+This note proposes promoting a small set of graph-level facts to “bedrock” status, whereby we can treat the mappings below as implicitly true for this `world_id` while keeping evidence trails clear enough that disagreements can still be surfaced and investigated.
 
 The three candidates are:
 - Operation vocabulary (196 operations) on this host.

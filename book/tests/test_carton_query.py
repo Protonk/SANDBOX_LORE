@@ -39,6 +39,7 @@ def test_runtime_signature_info():
 
 
 def test_profiles_and_signatures_for_operation():
+    """Coverage helper should surface canonical status alongside counts."""
     info = carton_query.profiles_and_signatures_for_operation("file-read*")
     assert info["op_name"] == "file-read*"
     assert isinstance(info["op_id"], int)
@@ -47,6 +48,9 @@ def test_profiles_and_signatures_for_operation():
     assert "bucket4:v1_read" in info["runtime_signatures"]
     counts = info.get("counts") or {}
     assert counts.get("system_profiles", 0) > 0
+    assert counts.get("system_profiles_ok", 0) > 0
+    assert info.get("coverage_status") == "ok"
+    assert info.get("canonical_profile_status")
 
 
 def test_ops_with_low_coverage_returns_sorted():
@@ -67,16 +71,22 @@ def test_operation_story_returns_combined_view():
     assert "bucket4:v1_read" in story["runtime_signatures"]
     assert story["coverage_counts"]["system_profiles"] >= 1
     assert "system" in story["profile_layers"]
+    assert story.get("coverage_status") == "ok"
+    assert story.get("system_profile_status")
 
 
 def test_profile_story_returns_ops_and_signatures():
+    """Profile story should expose ops + runtime signatures while reporting canonical health."""
     story = carton_query.profile_story("sys:bsd")
     assert story["profile_id"] == "sys:bsd"
     assert story["layer"] == "system"
+    assert story.get("status") == "ok"
     assert story["ops"], "expected ops for sys:bsd"
     assert any(op["name"] == "file-read*" for op in story["ops"])
     assert "bucket4:v1_read" in story["runtime_signatures"]
     assert story["filters"]["known"] is False
+    assert story.get("canonical_profile_status")
+    assert story.get("coverage_status") == "ok"
 
 
 def test_profile_story_unknown_profile_raises(monkeypatch):

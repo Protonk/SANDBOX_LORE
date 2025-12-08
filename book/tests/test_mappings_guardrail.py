@@ -16,15 +16,32 @@ def load_json(path: Path):
 
 
 def test_system_profile_digests_present():
+    """Root guardrail: canonical digests exist and are pinned to the baseline world."""
     digests = load_json(ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json")
     profiles = digests.get("profiles") or {}
     for key in ["sys:airlock", "sys:bsd", "sys:sample"]:
         assert key in profiles, f"missing digest for {key}"
     meta = digests.get("metadata", {})
     assert meta.get("world_id") == baseline_world()
+    assert meta.get("status") == "ok"
+
+
+def test_canonical_status_propagates_downstream():
+    """Propagation guardrail: degraded canonical status must bubble into coverage + tag layouts."""
+    digests = load_json(ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json")
+    canonical_status = (digests.get("metadata") or {}).get("status")
+    canonical_profiles = (digests.get("metadata") or {}).get("canonical_profiles") or {}
+    coverage = load_json(ROOT / "book" / "graph" / "mappings" / "carton" / "operation_coverage.json")
+    tag_layouts = load_json(ROOT / "book" / "graph" / "mappings" / "tag_layouts" / "tag_layouts.json")
+    assert coverage.get("metadata", {}).get("status") == canonical_status
+    assert tag_layouts.get("metadata", {}).get("status") == canonical_status
+    for key in ["sys:airlock", "sys:bsd", "sys:sample"]:
+        assert key in canonical_profiles, f"canonical status missing for {key}"
+        assert canonical_profiles[key].get("status") == "ok"
 
 
 def test_anchor_filter_map_present():
+    """Sanity: anchor → filter mapping exists and is non-empty."""
     amap = load_json(ROOT / "book" / "graph" / "mappings" / "anchors" / "anchor_filter_map.json")
     # Ensure known anchors are present and at least one has a resolved filter_id.
     assert "/var/log" in amap
@@ -33,6 +50,7 @@ def test_anchor_filter_map_present():
 
 
 def test_tag_layouts_present():
+    """Tag layouts exist with expected structural keys."""
     layouts = load_json(ROOT / "book" / "graph" / "mappings" / "tag_layouts" / "tag_layouts.json")
     tags = layouts.get("tags") or []
     assert tags, "expected non-empty tag layouts"
@@ -42,6 +60,7 @@ def test_tag_layouts_present():
 
 
 def test_field2_inventory_present():
+    """Ensure field2 IR is present for canonical profiles."""
     inv_path = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "field2" / "field2_ir.json"
     inv = load_json(inv_path)
     profiles = inv.get("profiles") or {}
@@ -49,6 +68,7 @@ def test_field2_inventory_present():
 
 
 def test_op_table_mappings_and_metadata():
+    """Guardrail: op_table mappings are present, world-pinned, and populated."""
     meta_path = ROOT / "book" / "graph" / "mappings" / "op_table" / "metadata.json"
     meta = load_json(meta_path)
     world_id = (meta.get("metadata") or {}).get("world_id") or meta.get("world_id")

@@ -15,7 +15,12 @@
       "vocab:sonoma-14.4.1"
     ],
     "status": "ok",
-    "notes": "Derived from CARTON mappings; coverage drives counts and layer presence."
+    "canonical_profile_status": {
+      "sys:airlock": "ok",
+      "sys:bsd": "ok",
+      "sys:sample": "ok"
+    },
+    "notes": "Derived from CARTON mappings; coverage drives counts and layer presence and inherits canonical profile status."
   },
   "operations": {
     "appleevent-send": {
@@ -24,8 +29,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -36,8 +43,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -48,8 +57,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -65,8 +76,13 @@
         "sys:sample"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok",
+        "sys:sample": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 2,
+        "system_profiles_ok": 2,
         "runtime_signatures": 0
       },
       "known": true
@@ -77,8 +93,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -89,8 +107,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -101,8 +121,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -117,8 +139,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -129,8 +155,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -145,8 +173,12 @@
         "sys:sample"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:sample": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -157,8 +189,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -169,8 +203,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -181,8 +217,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -193,8 +231,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -205,8 +245,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -217,8 +259,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -229,8 +273,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -241,8 +287,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -257,8 +305,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -269,8 +321,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -281,8 +335,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -293,8 +349,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -317,8 +375,12 @@
         "sys:airlock",
         "sys:bsd"
       ],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 7
       },
       "known": true
@@ -333,8 +395,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -345,8 +411,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -357,8 +425,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -373,8 +443,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -389,8 +463,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -405,8 +483,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -417,8 +499,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -437,8 +521,10 @@
         "sys:airlock",
         "sys:bsd"
       ],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 7
       },
       "known": true
@@ -449,8 +535,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -461,8 +549,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -473,8 +563,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -485,8 +577,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -497,8 +591,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -509,8 +605,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -525,8 +623,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -537,8 +639,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -549,8 +653,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -565,8 +671,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -581,8 +691,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -597,8 +711,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -613,8 +731,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -625,8 +747,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -641,8 +765,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -653,8 +781,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -665,8 +795,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -681,8 +813,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -693,8 +829,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -709,8 +847,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -721,8 +863,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -733,8 +877,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -745,8 +891,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -757,8 +905,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -769,8 +919,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -781,8 +933,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -797,8 +951,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -809,8 +967,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -821,8 +981,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -833,8 +995,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -845,8 +1009,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -857,8 +1023,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -873,8 +1041,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -885,8 +1057,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -897,8 +1071,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -909,8 +1085,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -921,8 +1099,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -933,8 +1113,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -945,8 +1127,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -961,8 +1145,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -973,8 +1161,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -985,8 +1175,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -997,8 +1189,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1009,8 +1203,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1021,8 +1217,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1033,8 +1231,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1045,8 +1245,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1057,8 +1259,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1069,8 +1273,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1081,8 +1287,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1097,8 +1305,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -1109,8 +1321,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1125,8 +1339,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -1137,8 +1355,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1149,8 +1369,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1161,8 +1383,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1173,8 +1397,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1185,8 +1411,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1197,8 +1425,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1209,8 +1439,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1221,8 +1453,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1233,8 +1467,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1249,8 +1485,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -1261,8 +1501,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1273,8 +1515,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1285,8 +1529,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1297,8 +1543,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1309,8 +1557,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1321,8 +1571,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1333,8 +1585,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1345,8 +1599,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1357,8 +1613,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1369,8 +1627,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1385,8 +1645,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -1397,8 +1661,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1409,8 +1675,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1421,8 +1689,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1433,8 +1703,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1445,8 +1717,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1457,8 +1731,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1469,8 +1745,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1481,8 +1759,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1493,8 +1773,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1505,8 +1787,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1517,8 +1801,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1529,8 +1815,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1541,8 +1829,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1553,8 +1843,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1565,8 +1857,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1577,8 +1871,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1589,8 +1885,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1601,8 +1899,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1613,8 +1913,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1629,8 +1931,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -1641,8 +1947,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1653,8 +1961,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1665,8 +1975,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1677,8 +1989,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1689,8 +2003,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1701,8 +2017,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1713,8 +2031,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1725,8 +2045,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1737,8 +2059,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1749,8 +2073,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1761,8 +2087,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1773,8 +2101,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1785,8 +2115,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1797,8 +2129,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1809,8 +2143,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1821,8 +2157,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1833,8 +2171,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1845,8 +2185,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1857,8 +2199,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1869,8 +2213,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1881,8 +2227,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1893,8 +2241,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1905,8 +2255,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1917,8 +2269,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1929,8 +2283,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1941,8 +2297,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1953,8 +2311,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1965,8 +2325,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1977,8 +2339,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -1993,8 +2357,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2005,8 +2373,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2017,8 +2387,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2029,8 +2401,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2045,8 +2419,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2057,8 +2435,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2073,8 +2453,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2085,8 +2469,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2097,8 +2483,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2109,8 +2497,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2121,8 +2511,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2133,8 +2525,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2145,8 +2539,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2157,8 +2553,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2169,8 +2567,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2185,8 +2585,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2197,8 +2601,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2213,8 +2619,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2225,8 +2635,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2241,8 +2653,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2257,8 +2673,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "coverage_counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       },
       "known": true
@@ -2269,8 +2689,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2281,8 +2703,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2293,8 +2717,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2305,8 +2731,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2317,8 +2745,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2329,8 +2759,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2341,8 +2773,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2353,8 +2787,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2365,8 +2801,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2377,8 +2815,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2389,8 +2829,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2401,8 +2843,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2413,8 +2857,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2425,8 +2871,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2437,8 +2885,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2449,8 +2899,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2461,8 +2913,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2473,8 +2927,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2485,8 +2941,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2497,8 +2955,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true
@@ -2509,8 +2969,10 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [],
+      "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       },
       "known": true

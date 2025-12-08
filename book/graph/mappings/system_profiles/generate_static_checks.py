@@ -45,6 +45,15 @@ def baseline_world_id() -> str:
     return world_id
 
 
+def tag_layout_hash(path: Path) -> str:
+    payload = json.loads(path.read_text())
+    tags = {"tags": payload.get("tags")}
+    # Hash only the tag set/order so harmless edits (doc strings, metadata
+    # notes, etc.) do not trigger contract drift. Changing the tags themselves
+    # will change the hash and force a new contract.
+    return hashlib.sha256(json.dumps(tags, sort_keys=True).encode()).hexdigest()
+
+
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -83,18 +92,18 @@ def summarize(path: Path, tag_layout_hash: str) -> Dict[str, Any]:
 
 def main() -> None:
     world_id = baseline_world_id()
-    tag_layout_hash = sha256(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
+    tag_layout_hash_value = tag_layout_hash(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
     profiles = [
         REPO_ROOT / "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
         REPO_ROOT / "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
         REPO_ROOT / "book/examples/sb/build/sample.sb.bin",
     ]
-    checks = [summarize(p, tag_layout_hash) for p in profiles if p.exists()]
+    checks = [summarize(p, tag_layout_hash_value) for p in profiles if p.exists()]
     OUT_PATH.write_text(
         json.dumps(
             {
                 "world_id": world_id,
-                "tag_layout_hash": tag_layout_hash,
+                "tag_layout_hash": tag_layout_hash_value,
                 "entries": checks,
             },
             indent=2,

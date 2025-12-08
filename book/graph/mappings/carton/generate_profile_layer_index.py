@@ -67,6 +67,13 @@ def build_index() -> dict:
     ]
     meta = digests.get("metadata") or {}
     source_jobs = meta.get("source_jobs") or source_jobs
+    coverage_status = (coverage.get("metadata") or {}).get("status") or "unknown"
+    raw_canonical = (digests.get("metadata") or {}).get("canonical_profiles") or {}
+    # Profile layer status is keyed to the canonical contracts; do not silently
+    # promote degraded profiles back to ok when wiring runtime signatures.
+    canonical_status = {
+        pid: (info.get("status") if isinstance(info, dict) else info) for pid, info in raw_canonical.items()
+    }
 
     profiles: Dict[str, dict] = {}
     for profile_id, val in (digests.get("profiles") or {k: v for k, v in digests.items() if k != "metadata"}).items():
@@ -86,6 +93,7 @@ def build_index() -> dict:
         profiles[profile_id] = {
             "id": profile_id,
             "layer": "system",
+            "status": val.get("status") or "unknown",
             "ops": ops_list,
             "runtime_signatures": sorted(runtime_sigs),
         }
@@ -95,8 +103,9 @@ def build_index() -> dict:
             "world_id": world_id,
             "inputs": inputs,
             "source_jobs": source_jobs,
-            "status": "ok",
-            "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries.",
+            "status": coverage_status,
+            "canonical_profile_status": canonical_status,
+            "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries and inherit canonical profile status.",
         },
         "profiles": dict(sorted(profiles.items(), key=lambda kv: kv[0])),
     }

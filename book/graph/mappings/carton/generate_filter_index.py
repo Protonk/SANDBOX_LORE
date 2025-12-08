@@ -59,6 +59,9 @@ def build_index() -> dict:
     baseline = baseline_ref()
     world_id = baseline["world_id"]
     assert_world_compatible(world_id, digests.get("metadata"), "system_digests")
+    # Filters inherit canonical system-profile status so CARTON callers see the
+    # same degraded/ok signal even though filter usage is conservative today.
+    canonical_status = (digests.get("metadata") or {}).get("status") or "unknown"
 
     allowed_status = {"unknown", "present-in-vocab-only", "referenced-in-profiles", "referenced-in-runtime"}
     entries: Dict[str, dict] = {}
@@ -87,8 +90,8 @@ def build_index() -> dict:
             "world_id": world_id,
             "inputs": inputs,
             "source_jobs": digests.get("metadata", {}).get("source_jobs") or [],
-            "status": "ok",
-            "notes": "Filter vocab promoted into CARTON with explicit usage_status; usage wiring is intentionally conservative.",
+            "status": canonical_status,
+            "notes": "Filter vocab promoted into CARTON with explicit usage_status; usage wiring is intentionally conservative and inherits canonical system profile status.",
         },
         "filters": entries,
     }

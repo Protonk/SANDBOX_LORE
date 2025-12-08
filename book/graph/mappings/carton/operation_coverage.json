@@ -14,7 +14,12 @@
       "vocab:sonoma-14.4.1"
     ],
     "status": "ok",
-    "notes": "Derived purely from CARTON mappings; no experiment out/ is read here."
+    "canonical_profile_status": {
+      "sys:airlock": "ok",
+      "sys:bsd": "ok",
+      "sys:sample": "ok"
+    },
+    "notes": "Derived purely from CARTON mappings; locked to canonical system profile contract status."
   },
   "coverage": {
     "appleevent-send": {
@@ -23,6 +28,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -32,6 +38,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -41,6 +48,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -51,8 +59,13 @@
         "sys:sample"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok",
+        "sys:sample": "ok"
+      },
       "counts": {
         "system_profiles": 2,
+        "system_profiles_ok": 2,
         "runtime_signatures": 0
       }
     },
@@ -62,6 +75,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -71,6 +85,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -80,6 +95,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -89,8 +105,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -100,6 +120,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -109,8 +130,12 @@
         "sys:sample"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:sample": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -120,6 +145,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -129,6 +155,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -138,6 +165,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -147,6 +175,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -156,6 +185,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -165,6 +195,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -174,6 +205,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -183,6 +215,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -192,8 +225,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -203,6 +240,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -212,6 +250,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -221,6 +260,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -238,8 +278,12 @@
         "sys:airlock",
         "sys:bsd"
       ],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 7
       }
     },
@@ -249,8 +293,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -260,6 +308,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -269,6 +318,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -278,8 +328,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -289,8 +343,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -300,8 +358,12 @@
         "sys:bsd"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:bsd": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -311,6 +373,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -328,6 +391,7 @@
       ],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 7
       }
     },
@@ -337,6 +401,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -346,6 +411,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -355,6 +421,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -364,6 +431,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -373,6 +441,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -382,6 +451,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -391,8 +461,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -402,6 +476,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -411,6 +486,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -420,8 +496,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -431,8 +511,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -442,8 +526,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -453,8 +541,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -464,6 +556,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -473,8 +566,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -484,6 +581,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -493,6 +591,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -502,8 +601,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -513,6 +616,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -522,8 +626,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -533,6 +641,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -542,6 +651,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -551,6 +661,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -560,6 +671,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -569,6 +681,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -578,6 +691,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -587,8 +701,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -598,6 +716,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -607,6 +726,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -616,6 +736,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -625,6 +746,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -634,6 +756,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -643,8 +766,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -654,6 +781,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -663,6 +791,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -672,6 +801,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -681,6 +811,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -690,6 +821,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -699,6 +831,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -708,8 +841,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -719,6 +856,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -728,6 +866,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -737,6 +876,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -746,6 +886,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -755,6 +896,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -764,6 +906,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -773,6 +916,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -782,6 +926,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -791,6 +936,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -800,6 +946,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -809,8 +956,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -820,6 +971,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -829,8 +981,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -840,6 +996,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -849,6 +1006,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -858,6 +1016,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -867,6 +1026,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -876,6 +1036,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -885,6 +1046,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -894,6 +1056,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -903,6 +1066,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -912,6 +1076,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -921,8 +1086,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -932,6 +1101,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -941,6 +1111,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -950,6 +1121,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -959,6 +1131,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -968,6 +1141,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -977,6 +1151,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -986,6 +1161,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -995,6 +1171,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1004,6 +1181,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1013,6 +1191,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1022,8 +1201,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1033,6 +1216,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1042,6 +1226,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1051,6 +1236,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1060,6 +1246,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1069,6 +1256,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1078,6 +1266,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1087,6 +1276,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1096,6 +1286,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1105,6 +1296,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1114,6 +1306,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1123,6 +1316,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1132,6 +1326,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1141,6 +1336,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1150,6 +1346,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1159,6 +1356,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1168,6 +1366,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1177,6 +1376,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1186,6 +1386,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1195,6 +1396,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1204,8 +1406,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1215,6 +1421,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1224,6 +1431,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1233,6 +1441,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1242,6 +1451,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1251,6 +1461,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1260,6 +1471,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1269,6 +1481,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1278,6 +1491,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1287,6 +1501,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1296,6 +1511,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1305,6 +1521,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1314,6 +1531,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1323,6 +1541,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1332,6 +1551,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1341,6 +1561,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1350,6 +1571,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1359,6 +1581,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1368,6 +1591,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1377,6 +1601,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1386,6 +1611,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1395,6 +1621,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1404,6 +1631,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1413,6 +1641,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1422,6 +1651,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1431,6 +1661,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1440,6 +1671,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1449,6 +1681,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1458,6 +1691,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1467,6 +1701,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1476,8 +1711,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1487,6 +1726,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1496,6 +1736,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1505,6 +1746,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1514,8 +1756,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1525,6 +1771,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1534,8 +1781,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1545,6 +1796,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1554,6 +1806,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1563,6 +1816,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1572,6 +1826,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1581,6 +1836,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1590,6 +1846,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1599,6 +1856,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1608,6 +1866,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1617,8 +1876,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1628,6 +1891,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1637,8 +1901,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1648,6 +1916,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1657,8 +1926,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1668,8 +1941,12 @@
         "sys:airlock"
       ],
       "runtime_signatures": [],
+      "system_profile_status": {
+        "sys:airlock": "ok"
+      },
       "counts": {
         "system_profiles": 1,
+        "system_profiles_ok": 1,
         "runtime_signatures": 0
       }
     },
@@ -1679,6 +1956,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1688,6 +1966,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1697,6 +1976,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1706,6 +1986,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1715,6 +1996,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1724,6 +2006,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1733,6 +2016,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1742,6 +2026,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1751,6 +2036,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1760,6 +2046,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1769,6 +2056,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1778,6 +2066,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1787,6 +2076,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1796,6 +2086,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1805,6 +2096,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1814,6 +2106,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1823,6 +2116,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1832,6 +2126,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1841,6 +2136,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1850,6 +2146,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     },
@@ -1859,6 +2156,7 @@
       "runtime_signatures": [],
       "counts": {
         "system_profiles": 0,
+        "system_profiles_ok": 0,
         "runtime_signatures": 0
       }
     }
@@ -1868,6 +2166,12 @@
     "ops_with_system_profiles": 32,
     "ops_with_runtime_signatures": 2,
     "ops_with_no_coverage": 163,
-    "unknown_runtime_ops": []
+    "unknown_runtime_ops": [],
+    "canonical_profile_status": {
+      "sys:airlock": "ok",
+      "sys:bsd": "ok",
+      "sys:sample": "ok"
+    },
+    "canonical_overall_status": "ok"
   }
 }
