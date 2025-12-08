@@ -39,7 +39,7 @@ class ProfileSpec:
 
 def load_world_id() -> str:
     data = json.loads(WORLD_PATH.read_text())
-    return data.get("id", "unknown-world")
+    return data.get("world_id") or data.get("id", "unknown-world")
 
 
 def ensure_fixture_files() -> None:
@@ -158,7 +158,7 @@ def build_expected_matrix(world_id: str, specs: List[ProfileSpec], blobs: Dict[s
         },
     ]
 
-    matrix: Dict[str, Any] = {"world": world_id, "profiles": {}}
+    matrix: Dict[str, Any] = {"world_id": world_id, "profiles": {}}
     for spec in specs:
         if spec.family == "structural_variants":
             probes = probes_common
@@ -269,7 +269,7 @@ def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str)
             static_view = static_prediction_for(profile_id, expected_probe)
             mismatches.append(
                 {
-                    "world": world_id,
+                    "world_id": world_id,
                     "profile_id": profile_id,
                     "expectation_id": eid,
                     "operation": probe.get("operation"),
@@ -283,7 +283,7 @@ def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str)
             )
 
     summary = {
-        "world": world_id,
+        "world_id": world_id,
         "generated_by": "book/experiments/runtime-adversarial/run_adversarial.py",
         "mismatches": mismatches,
         "counts": counts,
@@ -294,7 +294,7 @@ def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str)
 
 def update_adversarial_summary(world_id: str, matrix: Dict[str, Any], summary: Dict[str, Any]) -> None:
     rows = {
-        "world": world_id,
+        "world_id": world_id,
         "profiles": len(matrix.get("profiles") or {}),
         "expectations": sum(len(p.get("probes") or []) for p in (matrix.get("profiles") or {}).values()),
         "mismatch_counts": summary.get("counts") or {},

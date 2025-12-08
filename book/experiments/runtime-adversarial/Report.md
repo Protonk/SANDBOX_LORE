@@ -4,7 +4,7 @@
 Deliberately stress static↔runtime alignment for this host using adversarial SBPL profiles. Phase 1 covers structural variants and path/literal edges; mach-lookup variants extend coverage to a non-filesystem op. Outputs: expected/runtime matrices, mismatch summaries, and impact hooks to downgrade bedrock claims if mismatches appear.
 
 ## Baseline & scope
-- World: `sonoma-14.4.1-23E224-arm64` (`book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`).
+- World: `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` (`book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`).
 - Harness: `book.api.golden_runner.run_expected_matrix` + runtime-checks shims; compile/decode via `book.api.sbpl_compile` and `book.api.decoder`.
 - Profiles: `struct_flat`, `struct_nested` (structural variants); `path_edges` (path/literal edge stress); `mach_simple_allow`, `mach_simple_variants` (mach-lookup variants). Custom SBPL only; no platform blobs.
 - Outputs live in `sb/`, `sb/build/`, and `out/`.

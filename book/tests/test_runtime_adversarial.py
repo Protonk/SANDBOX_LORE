@@ -14,14 +14,15 @@ def load_json(path: Path):
 
 
 def test_adversarial_artifacts_present_and_annotated():
-    world = load_json(WORLD_PATH)["id"]
+    world = load_json(WORLD_PATH)
+    world_id = world.get("world_id") or world.get("id")
     expected_matrix = load_json(OUT_DIR / "expected_matrix.json")
     runtime_results = load_json(OUT_DIR / "runtime_results.json")
     mismatch_summary = load_json(OUT_DIR / "mismatch_summary.json")
     impact_map = load_json(OUT_DIR / "impact_map.json")
 
-    assert expected_matrix.get("world") == world
-    assert mismatch_summary.get("world") == world
+    assert expected_matrix.get("world_id") == world_id
+    assert mismatch_summary.get("world_id") == world_id
     assert set(expected_matrix.get("profiles", {})) == {
         "adv:struct_flat",
         "adv:struct_nested",

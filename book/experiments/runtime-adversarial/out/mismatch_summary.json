@@ -1,9 +1,9 @@
 {
-  "world": "sonoma-14.4.1-23E224-arm64",
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
   "generated_by": "book/experiments/runtime-adversarial/run_adversarial.py",
   "mismatches": [
     {
-      "world": "sonoma-14.4.1-23E224-arm64",
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
       "profile_id": "adv:path_edges",
       "expectation_id": "adv:path_edges:allow-tmp",
       "operation": "file-read*",
@@ -18,7 +18,7 @@
       "static_reason": "literal allow on /tmp path; separate deny literal on /private/tmp expected to distinguish canonical paths"
     },
     {
-      "world": "sonoma-14.4.1-23E224-arm64",
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
       "profile_id": "adv:path_edges",
       "expectation_id": "adv:path_edges:allow-subpath",
       "operation": "file-read*",

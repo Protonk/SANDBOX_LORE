@@ -10,7 +10,7 @@ Probe for static↔runtime divergences by running deliberately adversarial SBPL 
 - Comparison and summaries live in this experiment’s `out/`.
 
 ## Deliverables (Phase 1)
-- `out/expected_matrix.json`, `out/runtime_results.json`, `out/mismatch_summary.json`, `out/impact_map.json` (world-stamped).
+- `out/expected_matrix.json`, `out/runtime_results.json`, `out/mismatch_summary.json`, `out/impact_map.json` (world_id-stamped).
 - SBPL + blobs under `sb/` and `sb/build/`.
 - Guardrail test ensuring mismatches are either absent or annotated.
 
@@ -29,6 +29,6 @@ Probe for static↔runtime divergences by running deliberately adversarial SBPL 
 4. Iterate by adding more families (header/format toggles, field2/tag ambiguity) after Phase 1 lands.
 
 ## Constraints / status markers
-- Host: `sonoma-14.4.1-23E224-arm64` (from `book/world/.../world-baseline.json`).
+- Host: `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` (from `book/world/.../world-baseline.json`).
 - Platform blobs remain apply-gated; Phase 1 sticks to custom SBPL.
 - No new vocab/format assumptions; uses existing decoder and harness only.
