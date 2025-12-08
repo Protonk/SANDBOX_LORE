@@ -4,7 +4,7 @@
 Trace how selected entitlements alter compiled sandbox profiles and the resulting allow/deny behavior. Ground the entitlement concept in concrete profile/filter/parameter changes and, where possible, runtime probes.
 
 ## Baseline & scope
-- Host: TDB (record OS/build/SIP when runs are performed).
+- World: TDB (record OS/build/SIP when runs are performed).
 - Tooling: small C sample, signing via `codesign`, profile decoding via `profile_ingestion.py`.
 - Entitlements: to be selected (network server/client, mach-lookup exceptions, file access candidates).
 
@@ -75,7 +75,7 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
 Compare entitlements, derived App Sandbox SBPL, compiled profiles, and (eventually) runtime behavior for matched binaries on this host. The goal is to turn specific entitlement changes into observable differences in compiled policy and, where possible, runtime allow/deny behavior.
 
 ## Baseline & scope
-- Host: Sonoma baseline from `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5 (baseline: book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json)`.
+- World: Sonoma baseline from `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`.
 - Inputs: signed binaries with and without specific entitlements, their extracted entitlements plists, and any derived SBPL/profiles.
 - Tooling: codesign/entitlement extraction helpers, `book.api.sbpl_compile`, and decoder tooling where profile blobs are available.
 
