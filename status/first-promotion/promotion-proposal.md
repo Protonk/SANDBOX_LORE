@@ -3,7 +3,7 @@
 This note proposes promoting a small set of graph-level facts to “bedrock” status, whereby we can treat the mappings below as implicitly true for this `world_id` while keeping evidence trails clear enough that disagreements can still be surfaced and investigated.
 
 The three candidates are:
-- Operation vocabulary (196 operations) on this host.
+- Operation vocabulary (196 operations).
 - Modern compiled profile format and tag layout.
 - Canonical decoded system profiles: `sys:airlock`, `sys:bsd`, and `sys:sample`.
 
