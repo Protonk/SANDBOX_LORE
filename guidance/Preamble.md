@@ -1,6 +1,18 @@
-SANDBOX_LORE is a host-specific, local-only universe for the macOS Seatbelt sandbox on a single baseline associated with the `world_id` `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`. The substrate under substrate/ defines the world and vocabulary you are allowed to use; validated mappings, CARTON, and experiments/validation IR extend that world with host-specific facts that you may treat as true at their recorded status. Your job as an embedded agent is to stay inside that world and treat compiled profiles, Operation/Filter vocabularies, PolicyGraphs, node tags, and repository mappings as primary evidence, not decoration.
+SANDBOX_LORE is a host-specific, local-only universe for the macOS Seatbelt sandbox on a single baseline associated with the `world_id` `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`. The substrate under `substrate/` defines the world and vocabulary you are allowed to use; validated mappings, CARTON, and experiments/validation IR extend that world with host-specific facts that you may treat as true at their recorded status. Your job as an embedded agent is to stay inside that world and treat compiled profiles, Operation/Filter vocabularies, PolicyGraphs, node tags, and repository mappings as primary evidence, not decoration.
 
 This document is a compact context bundle, not a router or API manual. It is meant to give you immediate traction on three things: (1) what this project believes about Seatbelt on this host, (2) how that belief is encoded in IR and mappings, and (3) how experiments, validation, and tools hang off that IR. When you need detailed workflow or path-level instructions, defer to the layered `AGENTS.md` files and module READMEs; when you need high-level bearings and invariants, start here and in the substrate.
+
+
+# Operating contract
+
+Before you start reasoning in this world, keep these constraints in mind:
+
+- The world is fixed to the single host baseline identified by `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`; do not generalize across OS versions.
+- Static structure and vocab (profile formats, op-table shape, tag layouts where known, Operation/Filter tables) are reliable; semantics and lifecycle are status-tagged (`ok/partial/brittle/blocked`) and must not be silently upgraded to `ok`.
+- Use the substrate vocabulary and the vocab mappings under `book/graph/mappings/vocab/`; do not invent new operations, filters, or core concept names.
+- When substrate, mappings, validation IR, or CARTON disagree with your pretraining or generic macOS knowledge, treat pretraining as wrong for this world and trust the repo and host baseline instead.
+- Only make claims that could, in principle, be regenerated from the repo plus this host baseline; opaque prior knowledge is not authoritative here.
+- When the simplest honest answer is “we don’t know yet” or “current evidence is inconsistent,” say so and, where possible, point to the experiments, validation artifacts, or mappings that bound that ignorance.
 
 
 # World and evidence model
@@ -9,6 +21,7 @@ The project deliberately fixes a narrow but detailed world:
 
 - A host baseline captured in `book/world/*` and identified by the the unique `world_id` carried into mappings and CARTON.
 - Static artifacts: compiled profiles, trimmed dyld slices, decoded PolicyGraphs, vocab tables, and mapping JSONs under `book/graph/mappings/`—are the primary external reality. Explanations should lean on them, not on generic macOS lore.
+- If your pretraining or external knowledge conflicts with the substrate, mappings, validation IR, or CARTON for this host, treat pretraining as wrong for this world and prefer the repo and host baseline.
 - The substrate (`Orientation`, `Concepts`, `Appendix`, `Environment`, `State`, `Canon`) is the project’s normative theory for this host. The concept inventory and validation harness turn that theory into explicit concepts, evidence types, and checks against real artifacts.
 
 Static structure is the backbone. Profile formats, op-table shape, tag layouts where known, and Operation/Filter vocabularies have been decoded for this host, wired into `book/graph/mappings/*`, and guarded by tests and validation status. These give you a stable view of “what the sandbox looks like” in binary form. By contrast, semantic and lifecycle claims (runtime allow/deny behavior, entitlement-driven differences, extensions, kernel dispatch) are still being nailed down; validation and experiments mark them with `status: ok/partial/brittle/blocked`. When you rely on those areas, carry the status into your reasoning instead of silently upgrading provisional evidence to fact.
@@ -120,4 +133,3 @@ For deeper detail:
 - For API surfaces and CARTON, see `book/api/README.md`, `book/api/carton/README.md`, `book/api/carton/API.md`, and `book/api/carton/AGENTS.md`.
 
 Use this Preamble and the substrate as your conceptual anchor; use the layered AGENTS/README files and CARTON as your operational and data anchors. Together they define the world you are allowed to talk about and the evidence you are allowed to claim.
-
