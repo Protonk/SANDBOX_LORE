@@ -47,7 +47,7 @@
     "bedrock_refs": [
       "probe:network-outbound"
     ],
-    "suggested_status": "partial",
-    "notes": "TCP loopback connect denied even in allow profile; stderr shows xcode-select path denial (Operation not permitted), suggesting harness/client constraint rather than a clean network EPERM. Network-outbound remains partial until a clearer allow-path probe succeeds."
+    "suggested_status": "ok",
+    "notes": "TCP loopback connect succeeds under allow profile after switching to /usr/bin/nc client with startup shims; deny profile still denies. Network-outbound probe now isolates PolicyGraph decision."
   }
 }

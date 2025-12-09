@@ -674,7 +674,7 @@
   "network-outbound": {
     "id": 112,
     "structural_evidence": true,
-    "runtime_evidence": false,
+    "runtime_evidence": true,
     "notes": ""
   },
   "nvram*": {

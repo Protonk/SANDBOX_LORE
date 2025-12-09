@@ -95,7 +95,7 @@ def compile_profiles(specs: List[ProfileSpec]) -> Dict[str, Path]:
 
 
 def build_expected_matrix(
-    world_id: str, specs: List[ProfileSpec], blobs: Dict[str, Path], network_target: str | None = None
+    world_id: str, specs: List[ProfileSpec], blobs: Dict[str, Path], network_targets: List[str] | None = None
 ) -> Dict[str, Any]:
     """Construct expected_matrix.json payload."""
     probes_common_read = [
@@ -246,14 +246,16 @@ def build_expected_matrix(
             probes = probes_mach_local
         elif spec.family == "network":
             allow_expected = "allow" if "allow" in spec.key else "deny"
-            probes = [
-                {
-                    "name": "tcp-loopback",
-                    "operation": "network-outbound",
-                    "target": network_target or "127.0.0.1",
-                    "expected": allow_expected,
-                }
-            ]
+            probes = []
+            for idx, target in enumerate(network_targets or ["127.0.0.1"]):
+                probes.append(
+                    {
+                        "name": "tcp-loopback" if idx == 0 else f"tcp-loopback-{idx+1}",
+                        "operation": "network-outbound",
+                        "target": target,
+                        "expected": allow_expected,
+                    }
+                )
         else:
             probes = []
         profile_entry = {
@@ -391,14 +393,18 @@ def update_adversarial_summary(world_id: str, matrix: Dict[str, Any], summary: D
 def main() -> int:
     world_id = load_world_id()
     ensure_fixture_files()
-    loopback_srv = None
-    loopback_target = None
+    loopback_srvs: List[socketserver.TCPServer] = []
+    loopback_targets: List[str] = []
     try:
-        loopback_srv, loopback_port = start_loopback_server()
-        loopback_target = f"127.0.0.1:{loopback_port}"
+        srv1, port1 = start_loopback_server()
+        loopback_srvs.append(srv1)
+        loopback_targets.append(f"127.0.0.1:{port1}")
+        srv2, port2 = start_loopback_server()
+        loopback_srvs.append(srv2)
+        loopback_targets.append(f"127.0.0.1:{port2}")
     except Exception:
-        loopback_srv = None
-        loopback_target = None
+        loopback_srvs = []
+        loopback_targets = []
     specs = [
         ProfileSpec(
             key="adv:struct_flat",
@@ -457,7 +463,7 @@ def main() -> int:
     ]
 
     blobs = compile_profiles(specs)
-    matrix = build_expected_matrix(world_id, specs, blobs, network_target=loopback_target)
+    matrix = build_expected_matrix(world_id, specs, blobs, network_targets=loopback_targets)
     matrix_path = OUT_DIR / "expected_matrix.json"
     write_json(matrix_path, matrix)
 
@@ -471,9 +477,12 @@ def main() -> int:
         write_json(impact_map, {})
 
     update_adversarial_summary(world_id, matrix, summary)
-    if loopback_srv:
-        loopback_srv.shutdown()
-        loopback_srv.server_close()
+    for srv in loopback_srvs:
+        try:
+            srv.shutdown()
+            srv.server_close()
+        except Exception:
+            pass
     return 0
 
 

@@ -367,6 +367,9 @@
         "sys:bsd"
       ],
       "runtime_signatures": [
+        "adv:path_edges",
+        "adv:struct_flat",
+        "adv:struct_nested",
         "bucket4:v1_read",
         "bucket5:v11_read_subpath",
         "runtime:allow_all",
@@ -381,7 +384,7 @@
       "coverage_counts": {
         "system_profiles": 1,
         "system_profiles_ok": 1,
-        "runtime_signatures": 7
+        "runtime_signatures": 10
       },
       "known": true
     },
@@ -513,6 +516,9 @@
       "profile_layers": [],
       "system_profiles": [],
       "runtime_signatures": [
+        "adv:path_edges",
+        "adv:struct_flat",
+        "adv:struct_nested",
         "bucket4:v1_read",
         "bucket5:v11_read_subpath",
         "runtime:allow_all",
@@ -525,7 +531,7 @@
       "coverage_counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 7
+        "runtime_signatures": 10
       },
       "known": true
     },
@@ -1570,12 +1576,17 @@
       "id": 96,
       "profile_layers": [],
       "system_profiles": [],
-      "runtime_signatures": [],
+      "runtime_signatures": [
+        "adv:mach_local_literal",
+        "adv:mach_local_regex",
+        "adv:mach_simple_allow",
+        "adv:mach_simple_variants"
+      ],
       "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 0
+        "runtime_signatures": 4
       },
       "known": true
     },
@@ -1828,12 +1839,15 @@
       "id": 112,
       "profile_layers": [],
       "system_profiles": [],
-      "runtime_signatures": [],
+      "runtime_signatures": [
+        "adv:net_outbound_allow",
+        "adv:net_outbound_deny"
+      ],
       "system_profile_status": {},
       "coverage_counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 0
+        "runtime_signatures": 2
       },
       "known": true
     },

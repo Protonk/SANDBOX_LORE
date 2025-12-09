@@ -53,21 +53,10 @@
       "actual": "deny",
       "mismatch_type": "unexpected_deny",
       "notes": "open target: Operation not permitted\n"
-    },
-    {
-      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-      "profile_id": "adv:net_outbound_allow",
-      "expectation_id": "adv:net_outbound_allow:tcp-loopback",
-      "operation": "network-outbound",
-      "path": "127.0.0.1:63251",
-      "expected": "allow",
-      "actual": "deny",
-      "mismatch_type": "unexpected_deny",
-      "notes": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"<frozen importlib._bootstrap>\", line 1007, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 982, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 925, in _find_spec\n  File \"<frozen importlib._bootstrap_external>\", line 1414, in find_spec\n  File \"<frozen importlib._bootstrap_external>\", line 1383, in _get_spec\n  File \"<frozen importlib._bootstrap_external>\", line 1347, in _path_importer_cache\nPermissionError: [Errno 1] Operation not permitted\n"
     }
   ],
   "counts": {
     "path_normalization": 2,
-    "unexpected_deny": 3
+    "unexpected_deny": 2
   }
 }

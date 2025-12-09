@@ -124,22 +124,14 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
         else:
             cmd = ["true"]
     elif op == "network-outbound":
-        host = target or "127.0.0.1"
-        if ":" in host:
-            host, port = host.split(":", 1)
+        hostport = target or "127.0.0.1"
+        if ":" in hostport:
+            host, port = hostport.split(":", 1)
         else:
-            port = "80"
-        # Use Python stdlib to perform a TCP connect; avoids raw-socket constraints of ping.
-        py = Path("/usr/bin/python3")
-        if not py.exists():
-            py = Path("/usr/bin/python")
-        cmd = [
-            str(py),
-            "-c",
-            "import socket,sys; host=sys.argv[1]; port=int(sys.argv[2]); s=socket.create_connection((host,port),2); s.close()",
-            host,
-            port,
-        ]
+            host, port = hostport, "80"
+        nc = Path("/usr/bin/nc")
+        # -z: just probe, -w 2: timeout
+        cmd = [str(nc), "-z", "-w", "2", host, port]
     elif op == "process-exec":
         cmd = ["true"]
     else:

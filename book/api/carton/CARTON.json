@@ -12,7 +12,7 @@
     },
     {
       "path": "book/graph/mappings/runtime/runtime_signatures.json",
-      "sha256": "325e9b6e35ddde4c40a495bc93e52e3e636094a78e1130ebbf6a09f9aa176a2a"
+      "sha256": "59cc40c8ec820e68e23b438fbe36c3b18de71b61ce228461d782e03f3cf0f784"
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
@@ -20,15 +20,15 @@
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
-      "sha256": "2efb2fc90f24fcc12918ce2c865cd5a4e88c15c18f6b7f5d66169bc16e30ace0"
+      "sha256": "14e93ea985140b0750f702f62b30b09d5d8fde30bdd82ca59895d53dffdb4fc2"
     },
     {
       "path": "book/graph/mappings/carton/operation_index.json",
-      "sha256": "84458ad297c7913676b265fe00f662038bcda6d8dbe3540c7a95c25723b301bf"
+      "sha256": "68ab6ea655c7cefadde2cdbfe6f4ff009f5ba1dc98b67ddd23fcade69050fef1"
     },
     {
       "path": "book/graph/mappings/carton/profile_layer_index.json",
-      "sha256": "7a1dcd2dd4d883dc02e30298ebed0a7b28741ae7da81f31933318785d21c265e"
+      "sha256": "55634023d25d810f2e0077eae600e924489794385d123045fa304a9d2ff0ce02"
     },
     {
       "path": "book/graph/mappings/carton/filter_index.json",

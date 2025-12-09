@@ -270,6 +270,9 @@
         "sys:bsd"
       ],
       "runtime_signatures": [
+        "adv:path_edges",
+        "adv:struct_flat",
+        "adv:struct_nested",
         "bucket4:v1_read",
         "bucket5:v11_read_subpath",
         "runtime:allow_all",
@@ -284,7 +287,7 @@
       "counts": {
         "system_profiles": 1,
         "system_profiles_ok": 1,
-        "runtime_signatures": 7
+        "runtime_signatures": 10
       }
     },
     "file-read-data": {
@@ -381,6 +384,9 @@
       "op_id": 29,
       "system_profiles": [],
       "runtime_signatures": [
+        "adv:path_edges",
+        "adv:struct_flat",
+        "adv:struct_nested",
         "bucket4:v1_read",
         "bucket5:v11_read_subpath",
         "runtime:allow_all",
@@ -392,7 +398,7 @@
       "counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 7
+        "runtime_signatures": 10
       }
     },
     "file-write-acl": {
@@ -1148,11 +1154,16 @@
     "mach-lookup": {
       "op_id": 96,
       "system_profiles": [],
-      "runtime_signatures": [],
+      "runtime_signatures": [
+        "adv:mach_local_literal",
+        "adv:mach_local_regex",
+        "adv:mach_simple_allow",
+        "adv:mach_simple_variants"
+      ],
       "counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 0
+        "runtime_signatures": 4
       }
     },
     "mach-message-send": {
@@ -1333,11 +1344,14 @@
     "network-outbound": {
       "op_id": 112,
       "system_profiles": [],
-      "runtime_signatures": [],
+      "runtime_signatures": [
+        "adv:net_outbound_allow",
+        "adv:net_outbound_deny"
+      ],
       "counts": {
         "system_profiles": 0,
         "system_profiles_ok": 0,
-        "runtime_signatures": 0
+        "runtime_signatures": 2
       }
     },
     "nvram*": {
@@ -2164,8 +2178,8 @@
   "summary": {
     "ops_total": 196,
     "ops_with_system_profiles": 32,
-    "ops_with_runtime_signatures": 2,
-    "ops_with_no_coverage": 163,
+    "ops_with_runtime_signatures": 4,
+    "ops_with_no_coverage": 161,
     "unknown_runtime_ops": [],
     "canonical_profile_status": {
       "sys:airlock": "ok",

@@ -302,9 +302,16 @@
         {
           "name": "tcp-loopback",
           "operation": "network-outbound",
-          "target": "127.0.0.1:63251",
+          "target": "127.0.0.1:64671",
           "expected": "allow",
           "expectation_id": "adv:net_outbound_allow:tcp-loopback"
+        },
+        {
+          "name": "tcp-loopback-2",
+          "operation": "network-outbound",
+          "target": "127.0.0.1:64672",
+          "expected": "allow",
+          "expectation_id": "adv:net_outbound_allow:tcp-loopback-2"
         }
       ]
     },
@@ -318,9 +325,16 @@
         {
           "name": "tcp-loopback",
           "operation": "network-outbound",
-          "target": "127.0.0.1:63251",
+          "target": "127.0.0.1:64671",
           "expected": "deny",
           "expectation_id": "adv:net_outbound_deny:tcp-loopback"
+        },
+        {
+          "name": "tcp-loopback-2",
+          "operation": "network-outbound",
+          "target": "127.0.0.1:64672",
+          "expected": "deny",
+          "expectation_id": "adv:net_outbound_deny:tcp-loopback-2"
         }
       ]
     }

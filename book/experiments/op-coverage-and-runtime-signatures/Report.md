@@ -68,10 +68,10 @@ From the latest run described in `Notes.md`:
     - consistent for both literal and regex encodings and for structural variants.
 
 - `network-outbound`
-  - 2 probes (one per network profile).
-  - `adv:net_outbound_allow`: expected allow, observed deny on TCP connect to a harness-started loopback listener (mismatch; stderr now shows xcode-select path denial, suggesting harness/client constraints).
-  - `adv:net_outbound_deny`: expected deny, observed deny (match).
-  - Interpretation: even the TCP probe denies under the allow profile, suggesting harness/client constraints rather than a clear PolicyGraph deny. Network-outbound remains `partial` until a clearer allow-path probe (e.g., dedicated client binary or adjusted shims) is added.
+  - 4 probes (two per network profile, two loopback targets).
+  - `adv:net_outbound_allow`: expected allow, observed allow on both TCP connects to harness-started loopback listeners using `/usr/bin/nc` (no Python in the sandbox).
+  - `adv:net_outbound_deny`: expected deny, observed deny for both targets.
+  - Interpretation: with the sandboxed client switched to `nc` and startup shims, the network allow/deny split matches expectations. Network-outbound is now runtime-backed in this harness; `ops_coverage.json` and carton coverage have been regenerated to reflect runtime evidence.
 
 These counts and examples are reflected directly in `out/op_runtime_summary.json`.
 

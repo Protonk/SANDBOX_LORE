@@ -158,16 +158,23 @@
     ]
   },
   "network-outbound": {
-    "probes": 2,
-    "matches": 1,
-    "mismatches": 1,
+    "probes": 4,
+    "matches": 4,
+    "mismatches": 0,
     "examples": [
       {
         "profile": "adv:net_outbound_allow",
         "expectation_id": "adv:net_outbound_allow:tcp-loopback",
         "expected": "allow",
-        "actual": "deny",
-        "match": false
+        "actual": "allow",
+        "match": true
+      },
+      {
+        "profile": "adv:net_outbound_allow",
+        "expectation_id": "adv:net_outbound_allow:tcp-loopback-2",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true
       },
       {
         "profile": "adv:net_outbound_deny",
@@ -175,15 +182,13 @@
         "expected": "deny",
         "actual": "deny",
         "match": true
-      }
-    ],
-    "mismatch_details": [
+      },
       {
-        "profile": "adv:net_outbound_allow",
-        "expectation_id": "adv:net_outbound_allow:tcp-loopback",
-        "expected": "allow",
+        "profile": "adv:net_outbound_deny",
+        "expectation_id": "adv:net_outbound_deny:tcp-loopback-2",
+        "expected": "deny",
         "actual": "deny",
-        "path": "127.0.0.1:62510"
+        "match": true
       }
     ]
   }

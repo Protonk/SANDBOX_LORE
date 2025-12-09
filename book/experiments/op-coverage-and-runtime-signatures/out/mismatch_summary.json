@@ -53,21 +53,10 @@
       "actual": "deny",
       "mismatch_type": "unexpected_deny",
       "notes": "open target: Operation not permitted\n"
-    },
-    {
-      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-      "profile_id": "adv:net_outbound_allow",
-      "expectation_id": "adv:net_outbound_allow:tcp-loopback",
-      "operation": "network-outbound",
-      "path": "127.0.0.1:62510",
-      "expected": "allow",
-      "actual": "deny",
-      "mismatch_type": "unexpected_deny",
-      "notes": "xcode-select: error: unable to read data link at '/var/select/developer_dir', expected symbolic link (Operation not permitted)\nxcode-select: error: No developer tools were found and no install could be requested (possibly because there is no active GUI session).\nIf developer tools are located at a non-default location on disk, use `sudo xcode-select --switch path/to/Xcode.app` to specify the Xcode that you wish to use for command line developer tools.\nUse `xcode-select --install` to install the standalone command line developer tools, or visit http://adc.apple.com to download Xcode or the standalone command line tools installation package.\nSee `man xcode-select` for more details.\n"
     }
   ],
   "counts": {
     "path_normalization": 2,
-    "unexpected_deny": 3
+    "unexpected_deny": 2
   }
 }

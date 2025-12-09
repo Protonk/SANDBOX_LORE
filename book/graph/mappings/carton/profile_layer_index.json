@@ -159,6 +159,9 @@
         }
       ],
       "runtime_signatures": [
+        "adv:path_edges",
+        "adv:struct_flat",
+        "adv:struct_nested",
         "bucket4:v1_read",
         "bucket5:v11_read_subpath",
         "runtime:allow_all",

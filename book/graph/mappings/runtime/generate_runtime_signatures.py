@@ -28,6 +28,8 @@ OUT_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
 BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 BASELINE_PATH = ROOT / BASELINE_REF
 EXPECTED_JOBS = {"experiment:runtime-checks", "experiment:field2"}
+ADV_EXPECTED = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "expected_matrix.json"
+ADV_RESULTS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_results.json"
 
 
 def run_smoke_validation():
@@ -101,6 +103,16 @@ def main() -> None:
     field2_ir = load_json(FIELD2_IR)
     world_id = load_baseline_world()
 
+    # Merge in runtime-adversarial expected/results for additional runtime-backed ops (e.g., network-outbound).
+    if ADV_EXPECTED.exists():
+        adv_expected = load_json(ADV_EXPECTED)
+        runtime_ir.setdefault("expected_matrix", {}).setdefault("profiles", {}).update(
+            (adv_expected.get("profiles") or {})
+        )
+    if ADV_RESULTS.exists():
+        adv_results = load_json(ADV_RESULTS)
+        runtime_ir.setdefault("results", {}).update(adv_results)
+
     signatures, profiles_meta = build_signatures(runtime_ir)
     field2_summary = summarize_field2(field2_ir)
 
@@ -110,6 +122,8 @@ def main() -> None:
             "inputs": [
                 str(RUNTIME_IR.relative_to(ROOT)),
                 str(FIELD2_IR.relative_to(ROOT)),
+                str(ADV_EXPECTED.relative_to(ROOT)),
+                str(ADV_RESULTS.relative_to(ROOT)),
             ],
             "source_jobs": list(EXPECTED_JOBS),
             "status": "ok",

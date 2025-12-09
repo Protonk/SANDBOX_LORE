@@ -47,11 +47,12 @@ Deliberately stress static↔runtime alignment for this host using adversarial S
 
 ### Network-outbound (new family)
 - Profiles: `adv:net_outbound_allow` (deny default + allow network-outbound) and `adv:net_outbound_deny` (deny default).
-- Probe: TCP loopback connect to a harness-started listener on 127.0.0.1 (replaced earlier ping probe to avoid raw-socket requirements).
+- Probe: TCP loopback connect to a harness-started listener on 127.0.0.1 using `/usr/bin/nc` inside the sandbox (no Python in the sandboxed process; startup shims added for nc).
+- Control sanity check: outside the harness, `sandbox-exec -f tcp_loopback.sb /usr/bin/nc 127.0.0.1 5555` succeeds when the profile includes iokit/mach/sysctl/file-read-metadata, file-read-data over system trees, process-exec for `/usr/bin/nc`, `system-socket`, and `network-outbound` to localhost. The harness profiles mirror this pattern.
 - Results:
-  - `adv:net_outbound_allow`: expected `allow`, observed `deny` (unexpected_deny) on TCP connect.
+  - `adv:net_outbound_allow`: expected `allow`, observed `allow` (match).
   - `adv:net_outbound_deny`: expected `deny`, observed `deny` (match).
-- Interpretation: even with a TCP probe the allow profile denies; likely due to sandboxed client lacking ancillary allows rather than a decoded-policy deny. Network-outbound remains `partial`; needs a clearer allow-path probe (e.g., dedicated client binary or adjusted harness shims) before treating this op as runtime-backed.
+- Interpretation: with nc as the sandboxed client and startup shims, the network allow/deny split now reflects `network-outbound` rather than harness noise. Network-outbound probes are now a clean allow/deny pair.
 
 ## Next steps
 - Run `run_adversarial.py` to regenerate artifacts; inspect `mismatch_summary.json` and annotate `impact_map.json` for any mismatches.
