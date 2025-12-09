@@ -59,6 +59,7 @@ JOB_MODULES = [
     "book.graph.concepts.validation.system_profile_experiment_job",
     "book.graph.concepts.validation.fixtures_job",
     "book.graph.concepts.validation.schema_meta_job",
+    "book.graph.concepts.validation.golden_corpus_job",
 ]
 
 

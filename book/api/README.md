@@ -35,18 +35,6 @@ See `book/api/decoder/README.md` for field details and CLI usage.
 
 The legacy `sbpl_compile`, `inspect_profile`, and `op_table` modules remain as shims to `profile_tools`; prefer the unified package above.
 
-### regex_tools
-
-Definition: Helpers for legacy AppleMatch regex blobs from early decision-tree profiles.
-
-Role: Extract compiled `.re` blobs and convert them to Graphviz for inspection; modern graph-based profiles should use `decoder` instead.
-
-Example:
-```sh
-python -m book.api.regex_tools.extract_legacy legacy.sb.bin out/
-python -m book.api.regex_tools.re_to_dot out/legacy.sb.bin.000.re -o out/re.dot
-```
-
 ### SBPL-wrapper
 
 Definition: Runtime harness for applying SBPL or compiled blobs to processes.

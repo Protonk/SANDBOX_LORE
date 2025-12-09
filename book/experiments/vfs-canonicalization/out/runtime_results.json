@@ -26,6 +26,396 @@
     }
   },
   {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
     "profile_id": "vfs_private_tmp_only",
     "operation": "file-read*",
     "requested_path": "/tmp/foo",
@@ -52,6 +442,396 @@
     }
   },
   {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "runtime-checks bar\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "runtime-checks bar\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization child\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization child\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization canon\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_private_tmp_only",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
     "profile_id": "vfs_both_paths",
     "operation": "file-read*",
     "requested_path": "/tmp/foo",
@@ -60,7 +840,7 @@
     "errno": null,
     "raw_log": {
       "exit_code": 0,
-      "stdout": "runtime-checks foo\n",
+      "stdout": "runtime-checks foo\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
   },
@@ -73,7 +853,397 @@
     "errno": null,
     "raw_log": {
       "exit_code": 0,
-      "stdout": "runtime-checks foo\n",
+      "stdout": "runtime-checks foo\nruntime-check\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/foo",
+    "observed_path": "/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/foo",
+    "observed_path": "/private/tmp/foo",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "runtime-checks bar\nruntime-check\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "runtime-checks bar\nruntime-check\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/bar",
+    "observed_path": "/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/bar",
+    "observed_path": "/private/tmp/bar",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization child\nruntime-check\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization child\nruntime-check\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/tmp/nested/child",
+    "observed_path": "/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/tmp/nested/child",
+    "observed_path": "/private/tmp/nested/child",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "vfs-canonicalization canon\nruntime-check\n",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": 2,
+    "raw_log": {
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "open target: Operation not permitted\n"
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write*",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "allow",
+    "errno": null,
+    "raw_log": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-read-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/var/tmp/canon",
+    "observed_path": "/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "profile_id": "vfs_both_paths",
+    "operation": "file-write-metadata",
+    "requested_path": "/private/var/tmp/canon",
+    "observed_path": "/private/var/tmp/canon",
+    "decision": "deny",
+    "errno": -6,
+    "raw_log": {
+      "exit_code": -6,
+      "stdout": "",
       "stderr": ""
     }
   }

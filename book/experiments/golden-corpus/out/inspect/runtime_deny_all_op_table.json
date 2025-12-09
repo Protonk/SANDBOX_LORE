@@ -1,0 +1,73 @@
+{
+  "name": "runtime_deny_all",
+  "ops": [],
+  "filters": [],
+  "filter_ids": [],
+  "length": 493,
+  "format_variant": "modern-heuristic",
+  "op_count": 4,
+  "op_count_source": "header",
+  "op_entries": [
+    3,
+    3,
+    3,
+    3
+  ],
+  "section_lengths": {
+    "op_table": 8,
+    "nodes": 353,
+    "literals": 116
+  },
+  "tag_counts_stride12": {
+    "3": 26,
+    "1": 1,
+    "0": 2
+  },
+  "remainder_stride12_hex": "0300030003",
+  "literal_strings": [
+    {
+      "offset": 57,
+      "string": "T/tmp/sbpl_rt/read.txt"
+    },
+    {
+      "offset": 89,
+      "string": "U/tmp/sbpl_rt/write.txt"
+    }
+  ],
+  "decoder": {
+    "format_variant": "modern-heuristic",
+    "op_count": 4,
+    "op_table_offset": 16,
+    "node_count": 29,
+    "tag_counts": {
+      "3": 26,
+      "1": 1,
+      "0": 2
+    },
+    "literal_strings": [
+      "T/tmp/sbpl_rt/read.txt",
+      "U/tmp/sbpl_rt/write.txt"
+    ],
+    "sections": {
+      "op_table": 8,
+      "nodes": 353,
+      "literal_pool": 116,
+      "nodes_start": 24,
+      "literal_start": 377
+    }
+  },
+  "entry_signatures": {
+    "3": {
+      "entry": 3,
+      "reachable": 2,
+      "tags": [
+        1,
+        3
+      ],
+      "literals": [
+        3
+      ],
+      "truncated": false
+    }
+  }
+}

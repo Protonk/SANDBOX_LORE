@@ -1,0 +1,23 @@
+{
+  "job_id": "experiment:golden-corpus",
+  "status": "ok",
+  "inputs": [
+    "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/golden-corpus/out/corpus_manifest.json",
+    "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/golden-corpus/out/corpus_summary.json"
+  ],
+  "outputs": [
+    "/Users/achyland/Desktop/SANDBOX_LORE/book/graph/concepts/validation/out/experiments/golden-corpus/rerun_summary.json"
+  ],
+  "metrics": {
+    "entries": 8,
+    "mismatches": 0
+  },
+  "notes": "Replayed decoder/profile_tools against golden-corpus manifest; mismatches mark brittleness.",
+  "tags": [
+    "experiment:golden-corpus",
+    "experiment",
+    "static-format",
+    "golden"
+  ],
+  "mismatches": []
+}

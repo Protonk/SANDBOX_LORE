@@ -1,0 +1,786 @@
+{
+  "format_variant": "modern-heuristic",
+  "preamble_words": [
+    0,
+    2,
+    190,
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
+  "preamble_words_full": [
+    0,
+    2,
+    190,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "header_bytes": "00000200be000000000000000000010001000100010001000100010001000100010001000100010001000100010001000100010001000100010001000100010001000100010001000100010001000100010001000100010000000100010001000100010001000100010001000100010001000100010001000100010001000100",
+  "op_count": 2,
+  "op_table_offset": 16,
+  "op_table": [
+    1,
+    1
+  ],
+  "nodes": [
+    {
+      "offset": 0,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 12,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 24,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 36,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 48,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 60,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010000000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 72,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 84,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 96,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 108,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 120,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 132,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 144,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 156,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010000000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 168,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 180,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 192,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 204,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 216,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 228,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 240,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 252,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 264,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 276,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 288,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 300,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 312,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 324,
+      "tag": 0,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "000001000100010001000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 336,
+      "tag": 1,
+      "fields": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "record_size": 12,
+      "hex": "010001000100010001000100",
+      "literal_refs": []
+    }
+  ],
+  "node_count": 29,
+  "tag_counts": {
+    "1": 28,
+    "0": 1
+  },
+  "literal_strings": [],
+  "literal_strings_with_offsets": [],
+  "sections": {
+    "op_table": 4,
+    "nodes": 349,
+    "literal_pool": 47,
+    "nodes_start": 20,
+    "literal_start": 369
+  },
+  "validation": {
+    "node_remainder_bytes": 1,
+    "edge_fields_in_bounds": 58,
+    "edge_fields_total": 58,
+    "nodes_start": 20,
+    "literal_start": 369,
+    "tag_validation": {
+      "1": {
+        "edge_in_bounds": 56,
+        "edge_total": 56,
+        "payloads": {
+          "1": 28
+        },
+        "record_size": 12
+      },
+      "0": {
+        "edge_in_bounds": 2,
+        "edge_total": 2,
+        "payloads": {
+          "1": 1
+        },
+        "record_size": 12
+      }
+    }
+  },
+  "header_fields": {
+    "magic": 190,
+    "op_count_word": 2,
+    "maybe_flags": 0,
+    "unknown_words": [
+      {
+        "index": 3,
+        "value": 0
+      },
+      {
+        "index": 4,
+        "value": 0
+      },
+      {
+        "index": 5,
+        "value": 0
+      },
+      {
+        "index": 6,
+        "value": 0
+      },
+      {
+        "index": 7,
+        "value": 1
+      },
+      {
+        "index": 8,
+        "value": 1
+      },
+      {
+        "index": 9,
+        "value": 1
+      },
+      {
+        "index": 10,
+        "value": 1
+      },
+      {
+        "index": 11,
+        "value": 1
+      },
+      {
+        "index": 12,
+        "value": 1
+      },
+      {
+        "index": 13,
+        "value": 1
+      },
+      {
+        "index": 14,
+        "value": 1
+      },
+      {
+        "index": 15,
+        "value": 1
+      },
+      {
+        "index": 16,
+        "value": 1
+      },
+      {
+        "index": 17,
+        "value": 1
+      },
+      {
+        "index": 18,
+        "value": 1
+      },
+      {
+        "index": 19,
+        "value": 1
+      },
+      {
+        "index": 20,
+        "value": 1
+      },
+      {
+        "index": 21,
+        "value": 1
+      },
+      {
+        "index": 22,
+        "value": 1
+      },
+      {
+        "index": 23,
+        "value": 1
+      },
+      {
+        "index": 24,
+        "value": 1
+      },
+      {
+        "index": 25,
+        "value": 1
+      },
+      {
+        "index": 26,
+        "value": 1
+      },
+      {
+        "index": 27,
+        "value": 1
+      },
+      {
+        "index": 28,
+        "value": 1
+      },
+      {
+        "index": 29,
+        "value": 1
+      },
+      {
+        "index": 30,
+        "value": 1
+      },
+      {
+        "index": 31,
+        "value": 1
+      },
+      {
+        "index": 32,
+        "value": 1
+      },
+      {
+        "index": 33,
+        "value": 1
+      },
+      {
+        "index": 34,
+        "value": 1
+      },
+      {
+        "index": 35,
+        "value": 1
+      },
+      {
+        "index": 36,
+        "value": 1
+      },
+      {
+        "index": 37,
+        "value": 1
+      },
+      {
+        "index": 38,
+        "value": 1
+      },
+      {
+        "index": 39,
+        "value": 1
+      },
+      {
+        "index": 40,
+        "value": 1
+      },
+      {
+        "index": 41,
+        "value": 1
+      },
+      {
+        "index": 42,
+        "value": 1
+      },
+      {
+        "index": 43,
+        "value": 1
+      },
+      {
+        "index": 44,
+        "value": 0
+      },
+      {
+        "index": 45,
+        "value": 1
+      },
+      {
+        "index": 46,
+        "value": 1
+      },
+      {
+        "index": 47,
+        "value": 1
+      },
+      {
+        "index": 48,
+        "value": 1
+      },
+      {
+        "index": 49,
+        "value": 1
+      },
+      {
+        "index": 50,
+        "value": 1
+      },
+      {
+        "index": 51,
+        "value": 1
+      },
+      {
+        "index": 52,
+        "value": 1
+      },
+      {
+        "index": 53,
+        "value": 1
+      },
+      {
+        "index": 54,
+        "value": 1
+      },
+      {
+        "index": 55,
+        "value": 1
+      },
+      {
+        "index": 56,
+        "value": 1
+      },
+      {
+        "index": 57,
+        "value": 1
+      },
+      {
+        "index": 58,
+        "value": 1
+      },
+      {
+        "index": 59,
+        "value": 1
+      },
+      {
+        "index": 60,
+        "value": 1
+      },
+      {
+        "index": 61,
+        "value": 1
+      },
+      {
+        "index": 62,
+        "value": 1
+      },
+      {
+        "index": 63,
+        "value": 1
+      }
+    ],
+    "profile_class_word_index": 0,
+    "profile_class": 0
+  }
+}

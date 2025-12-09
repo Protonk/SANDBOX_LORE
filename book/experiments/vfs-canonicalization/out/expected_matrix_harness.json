@@ -12,7 +12,7 @@
           "name": "/tmp/foo",
           "operation": "file-read*",
           "target": "/tmp/foo",
-          "expected": "allow",
+          "expected": "deny",
           "expectation_id": "vfs_tmp_only:/tmp/foo"
         },
         {
@@ -21,6 +21,216 @@
           "target": "/private/tmp/foo",
           "expected": "deny",
           "expectation_id": "vfs_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write*",
+          "target": "/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write*",
+          "target": "/private/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read*",
+          "target": "/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read*",
+          "target": "/private/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write*",
+          "target": "/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write*",
+          "target": "/private/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/private/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/private/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/private/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/private/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_tmp_only:/private/var/tmp/canon"
         }
       ]
     },
@@ -35,7 +245,7 @@
           "name": "/tmp/foo",
           "operation": "file-read*",
           "target": "/tmp/foo",
-          "expected": "deny",
+          "expected": "allow",
           "expectation_id": "vfs_private_tmp_only:/tmp/foo"
         },
         {
@@ -44,6 +254,216 @@
           "target": "/private/tmp/foo",
           "expected": "allow",
           "expectation_id": "vfs_private_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write*",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write*",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read*",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read*",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write*",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write*",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/tmp/nested/child"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_private_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_private_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_private_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_private_tmp_only:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_private_tmp_only:/private/var/tmp/canon"
         }
       ]
     },
@@ -67,6 +487,216 @@
           "target": "/private/tmp/foo",
           "expected": "allow",
           "expectation_id": "vfs_both_paths:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write*",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write*",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/foo"
+        },
+        {
+          "name": "/private/tmp/foo",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/foo",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/foo"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read*",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read*",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write*",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write*",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/bar"
+        },
+        {
+          "name": "/private/tmp/bar",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/bar",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/bar"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read*",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write*",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-read-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/nested/child"
+        },
+        {
+          "name": "/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/tmp/nested/child"
+        },
+        {
+          "name": "/private/tmp/nested/child",
+          "operation": "file-write-metadata",
+          "target": "/private/tmp/nested/child",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/tmp/nested/child"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_both_paths:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read*",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_both_paths:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write*",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_both_paths:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-read-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/var/tmp/canon"
+        },
+        {
+          "name": "/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/var/tmp/canon",
+          "expected": "deny",
+          "expectation_id": "vfs_both_paths:/var/tmp/canon"
+        },
+        {
+          "name": "/private/var/tmp/canon",
+          "operation": "file-write-metadata",
+          "target": "/private/var/tmp/canon",
+          "expected": "allow",
+          "expectation_id": "vfs_both_paths:/private/var/tmp/canon"
         }
       ]
     }

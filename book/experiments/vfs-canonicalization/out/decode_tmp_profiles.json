@@ -2,88 +2,216 @@
   "vfs_tmp_only": {
     "anchors": [
       {
-        "path": "/tmp/foo",
-        "present": true,
-        "tags": [
-          0,
-          1
-        ],
-        "field2_values": [
-          4
-        ]
+        "path": "/private/tmp/bar",
+        "present": false,
+        "tags": [],
+        "field2_values": []
       },
       {
         "path": "/private/tmp/foo",
         "present": false,
         "tags": [],
         "field2_values": []
+      },
+      {
+        "path": "/private/tmp/nested/child",
+        "present": false,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/private/var/tmp/canon",
+        "present": false,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/bar",
+        "present": true,
+        "tags": [
+          6
+        ],
+        "field2_values": [
+          6
+        ]
+      },
+      {
+        "path": "/tmp/foo",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/nested/child",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/var/tmp/canon",
+        "present": true,
+        "tags": [
+          0,
+          6
+        ],
+        "field2_values": [
+          0,
+          5,
+          6
+        ]
       }
     ],
-    "node_count": 30,
+    "node_count": 31,
     "tag_counts": {
-      "4": 6,
-      "5": 22,
-      "1": 1,
+      "6": 23,
+      "4": 2,
+      "5": 5,
       "0": 1
     }
   },
   "vfs_private_tmp_only": {
     "anchors": [
       {
-        "path": "/tmp/foo",
+        "path": "/private/tmp/bar",
         "present": true,
-        "tags": [
-          0,
-          1
-        ],
-        "field2_values": [
-          4
-        ]
+        "tags": [],
+        "field2_values": []
       },
       {
         "path": "/private/tmp/foo",
         "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/private/tmp/nested/child",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/private/var/tmp/canon",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/bar",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/foo",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/nested/child",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/var/tmp/canon",
+        "present": true,
         "tags": [
-          0,
-          1
+          6
         ],
         "field2_values": [
-          4
+          6
         ]
       }
     ],
-    "node_count": 30,
+    "node_count": 31,
     "tag_counts": {
-      "4": 6,
-      "5": 22,
-      "1": 1,
+      "6": 23,
+      "4": 2,
+      "5": 5,
       "0": 1
     }
   },
   "vfs_both_paths": {
     "anchors": [
       {
-        "path": "/tmp/foo",
+        "path": "/private/tmp/bar",
         "present": true,
-        "tags": [
-          1
-        ],
-        "field2_values": [
-          4
-        ]
+        "tags": [],
+        "field2_values": []
       },
       {
         "path": "/private/tmp/foo",
-        "present": false,
+        "present": true,
         "tags": [],
         "field2_values": []
+      },
+      {
+        "path": "/private/tmp/nested/child",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/private/var/tmp/canon",
+        "present": true,
+        "tags": [
+          0,
+          5,
+          6
+        ],
+        "field2_values": [
+          0,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "path": "/tmp/bar",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/tmp/foo",
+        "present": true,
+        "tags": [
+          6
+        ],
+        "field2_values": [
+          6
+        ]
+      },
+      {
+        "path": "/tmp/nested/child",
+        "present": true,
+        "tags": [],
+        "field2_values": []
+      },
+      {
+        "path": "/var/tmp/canon",
+        "present": true,
+        "tags": [
+          0,
+          4,
+          5,
+          6
+        ],
+        "field2_values": [
+          0,
+          3,
+          4,
+          5,
+          6
+        ]
       }
     ],
-    "node_count": 30,
+    "node_count": 31,
     "tag_counts": {
-      "4": 6,
-      "5": 22,
-      "1": 1,
+      "6": 23,
+      "4": 2,
+      "5": 5,
       "0": 1
     }
   }

@@ -23,7 +23,7 @@ Python validation driver (single entrypoint):
 - Run everything: `python -m book.graph.concepts.validation --all`
 - Run by tag/experiment: `python -m book.graph.concepts.validation --tag vocab` or `--experiment field2`
 - Describe a job: `python -m book.graph.concepts.validation --describe <job_id>`
-Jobs are registered in `registry.py`; add new ones next to the decode/ingestion logic they exercise.
+Jobs are registered in `registry.py`; add new ones next to the decode/ingestion logic they exercise. Notable jobs include vocab extraction, runtime-checks normalization, system-profile digests, field2 probes, fixtures/meta, and `experiment:golden-corpus` (replays decoder/profile_tools against the golden-corpus manifest, including static-only platform profiles such as `platform_airlock`, to keep structural signals aligned with on-disk blobs).
 
 Status schema (applies to `validation_status.json` and per-experiment status files):
 - `job_id` (string), `status` (`ok[-unchanged|-changed]|partial|brittle|blocked|skipped`), `host` (object), `inputs` (list of paths), `outputs` (list of paths), `tags` (list of strings), optional `notes`, `metrics`, `hashes`, `change`.

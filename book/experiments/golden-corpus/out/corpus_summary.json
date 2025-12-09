@@ -1,0 +1,242 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "tag_layouts_sha256": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
+  "records": [
+    {
+      "id": "golden_allow_all",
+      "category": "golden-triple",
+      "source_path": "book/profiles/golden-triple/allow_all.sb.bin",
+      "compiled_path": "book/profiles/golden-triple/allow_all.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "19832eb9716a32459bee8398c8977fd1dfd575fa26606928f95728462a833c92",
+      "size_bytes": 416,
+      "decoder": {
+        "op_count": 2,
+        "node_bytes": 349,
+        "literal_start": 369,
+        "tag_counts": {
+          "1": 28,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 2,
+        "node_bytes": 349,
+        "literal_bytes": 47,
+        "tag_counts_stride12": {
+          "1": 28,
+          "0": 1
+        }
+      }
+    },
+    {
+      "id": "golden_strict_1",
+      "category": "golden-triple",
+      "source_path": "book/profiles/golden-triple/strict_1.sb.bin",
+      "compiled_path": "book/profiles/golden-triple/strict_1.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "1ceec65ff661d5d1050cf14dddb3b6607006a04f57086f1887520615ec094873",
+      "size_bytes": 513,
+      "decoder": {
+        "op_count": 7,
+        "node_bytes": 381,
+        "literal_start": 411,
+        "tag_counts": {
+          "6": 23,
+          "3": 2,
+          "5": 5,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 7,
+        "node_bytes": 383,
+        "literal_bytes": 100,
+        "tag_counts_stride12": {
+          "6": 23,
+          "3": 2,
+          "5": 5,
+          "0": 1
+        }
+      }
+    },
+    {
+      "id": "golden_bucket4_v1_read",
+      "category": "golden-triple",
+      "source_path": "book/profiles/golden-triple/bucket4_v1_read.sb.bin",
+      "compiled_path": "book/profiles/golden-triple/bucket4_v1_read.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "6a939e69b3b90635a853f9a20e09abe5ec4ee4e3c1d7cd5fde8868524e4e0ec6",
+      "size_bytes": 440,
+      "decoder": {
+        "op_count": 5,
+        "node_bytes": 387,
+        "literal_start": 413,
+        "tag_counts": {
+          "4": 17,
+          "3": 13,
+          "2": 1,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 5,
+        "node_bytes": 384,
+        "literal_bytes": 27,
+        "tag_counts_stride12": {
+          "4": 17,
+          "3": 13,
+          "2": 1,
+          "0": 1
+        }
+      }
+    },
+    {
+      "id": "golden_bucket5_v11_subpath",
+      "category": "golden-triple",
+      "source_path": "book/profiles/golden-triple/bucket5_v11_read_subpath.sb.bin",
+      "compiled_path": "book/profiles/golden-triple/bucket5_v11_read_subpath.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "ea3245fcf2b24e051fcab08027f7196880a51bbc20b16ed3ce0720fa7b9e7273",
+      "size_bytes": 467,
+      "decoder": {
+        "op_count": 6,
+        "node_bytes": 365,
+        "literal_start": 393,
+        "tag_counts": {
+          "4": 6,
+          "5": 22,
+          "1": 1,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 6,
+        "node_bytes": 365,
+        "literal_bytes": 74,
+        "tag_counts_stride12": {
+          "4": 6,
+          "5": 22,
+          "1": 1,
+          "0": 1
+        }
+      }
+    },
+    {
+      "id": "runtime_deny_all",
+      "category": "sbpl-graph-runtime",
+      "source_path": "book/experiments/sbpl-graph-runtime/out/deny_all.sb.bin",
+      "compiled_path": "book/experiments/sbpl-graph-runtime/out/deny_all.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "8d616ac17fc5a17cfd9fa203114120e9648c418e30abdc0f885cedcb577537c1",
+      "size_bytes": 493,
+      "decoder": {
+        "op_count": 4,
+        "node_bytes": 353,
+        "literal_start": 377,
+        "tag_counts": {
+          "3": 26,
+          "1": 1,
+          "0": 2
+        }
+      },
+      "inspect": {
+        "op_count": 4,
+        "node_bytes": 353,
+        "literal_bytes": 116,
+        "tag_counts_stride12": {
+          "3": 26,
+          "1": 1,
+          "0": 2
+        }
+      }
+    },
+    {
+      "id": "runtime_param_path_concrete",
+      "category": "sbpl-graph-runtime",
+      "source_path": "book/experiments/sbpl-graph-runtime/out/param_path_concrete.sb.bin",
+      "compiled_path": "book/experiments/sbpl-graph-runtime/out/param_path_concrete.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "f25524646856cfa7a5c74613b841ec89adb57525bd03f9c615a99b33a9010e0d",
+      "size_bytes": 571,
+      "decoder": {
+        "op_count": 7,
+        "node_bytes": 375,
+        "literal_start": 405,
+        "tag_counts": {
+          "6": 25,
+          "5": 5,
+          "1": 1
+        }
+      },
+      "inspect": {
+        "op_count": 7,
+        "node_bytes": 372,
+        "literal_bytes": 166,
+        "tag_counts_stride12": {
+          "6": 25,
+          "5": 5,
+          "1": 1
+        }
+      }
+    },
+    {
+      "id": "encoder_single_file_subpath",
+      "category": "libsandbox-encoder",
+      "source_path": "book/experiments/libsandbox-encoder/out/single_file_subpath.sb.bin",
+      "compiled_path": "book/experiments/libsandbox-encoder/out/single_file_subpath.sb.bin",
+      "mode": "runtime-capable",
+      "sha256": "d6a95f0e6da8012553f7317512b85ffc2439203c0712fc2a7b5ebe925fb7b1e7",
+      "size_bytes": 456,
+      "decoder": {
+        "op_count": 3,
+        "node_bytes": 347,
+        "literal_start": 369,
+        "tag_counts": {
+          "2": 27,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 3,
+        "node_bytes": 347,
+        "literal_bytes": 87,
+        "tag_counts_stride12": {
+          "2": 27,
+          "0": 1
+        }
+      }
+    },
+    {
+      "id": "platform_airlock",
+      "category": "platform",
+      "source_path": "/System/Library/Sandbox/Profiles/airlock.sb",
+      "compiled_path": "book/experiments/golden-corpus/out/blobs/platform_airlock.sb.bin",
+      "mode": "static-only",
+      "sha256": "33d1a72e709f86f7827cb6e5a919a30cc86a3d0ea6e048b2117d0240a923467e",
+      "size_bytes": 4662,
+      "decoder": {
+        "op_count": 167,
+        "node_bytes": 92,
+        "literal_start": 442,
+        "tag_counts": {
+          "166": 5,
+          "1": 1,
+          "0": 1
+        }
+      },
+      "inspect": {
+        "op_count": 167,
+        "node_bytes": 167,
+        "literal_bytes": 4145,
+        "tag_counts_stride12": {
+          "166": 6,
+          "1": 1,
+          "0": 4,
+          "74": 1,
+          "10": 1
+        }
+      }
+    }
+  ]
+}

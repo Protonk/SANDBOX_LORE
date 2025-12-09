@@ -11,7 +11,6 @@ This directory is the API/tooling layer for the Seatbelt textbook. All tools ass
 
 - `decoder/` – Decode compiled sandbox blobs into structured Python dicts (format variant, op_table, nodes, literals, tag counts). See `decoder/README.md`.
 - `profile_tools/` – Unified surface for SBPL compilation, blob inspection, and op-table summaries (replaces `sbpl_compile`, `inspect_profile`, `op_table` shims).
-- `regex_tools/` – Legacy AppleMatch helpers for historical decision-tree profiles (`extract_legacy.py`, `re_to_dot.py`).
 - `SBPL-wrapper/` – Runtime harness for applying SBPL/compiled blobs; treats `EPERM` apply gates as `blocked` on this host.
 - `file_probe/` – Minimal JSON-emitting read/write probe to pair with SBPL-wrapper.
 - `runtime_harness/` – Unified runtime generation + probe runner (replaces `runtime_golden` and `golden_runner` shims).

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from book.api.regex_tools import extract_legacy, re_to_dot
+from book.examples.regex_tools import extract_legacy, re_to_dot
 
 
 def _make_legacy_profile(path: Path, regex_blob: bytes) -> None:

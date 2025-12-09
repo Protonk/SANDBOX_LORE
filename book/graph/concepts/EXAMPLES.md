@@ -77,7 +77,7 @@ Static-format examples produce compiled blobs and structural views that feed dec
   - **S:** Vocabulary and Mapping (linking regexes back to filters/operations).
 - **Feeds:**
   - Legacy static ingestion outputs under `validation/out/static/`.  
-  - Tag-layout and regex tooling under `book/api/regex_tools/` (visualization, shape confirmation).
+  - Tag-layout work under `book/graph/mappings/tag_layouts/`; legacy regex tooling now lives in `book/examples/regex_tools/`.
 
 ---
 

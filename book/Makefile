@@ -1,10 +1,17 @@
 .DEFAULT_GOAL := test
 
-PYTHON ?= python3
 SWIFT ?= swift
 REPO_ROOT := $(abspath $(CURDIR)/..)
 
-.PHONY: test ci validate swift
+# Prefer the repo venv python if it exists; allow override via `make PYTHON=...`
+VENV_PY := $(REPO_ROOT)/.venv/bin/python
+ifeq ($(wildcard $(VENV_PY)),)
+PYTHON ?= python3
+else
+PYTHON ?= $(VENV_PY)
+endif
+
+.PHONY: test ci validate swift clean build venv-check
 
 test: ci
 

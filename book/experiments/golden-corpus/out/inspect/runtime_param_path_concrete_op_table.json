@@ -1,0 +1,88 @@
+{
+  "name": "runtime_param_path_concrete",
+  "ops": [],
+  "filters": [],
+  "filter_ids": [],
+  "length": 571,
+  "format_variant": "modern-heuristic",
+  "op_count": 7,
+  "op_count_source": "header",
+  "op_entries": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    5
+  ],
+  "section_lengths": {
+    "op_table": 14,
+    "nodes": 375,
+    "literals": 166
+  },
+  "tag_counts_stride12": {
+    "6": 25,
+    "5": 5,
+    "1": 1
+  },
+  "remainder_stride12_hex": "050005",
+  "literal_strings": [
+    {
+      "offset": 53,
+      "string": "V/tmp/sbpl_rt/param_root"
+    },
+    {
+      "offset": 95,
+      "string": "/users/achyland/desktop/sandbox_lore/book/api/file_probe/file_probe"
+    }
+  ],
+  "decoder": {
+    "format_variant": "modern-heuristic",
+    "op_count": 7,
+    "op_table_offset": 16,
+    "node_count": 31,
+    "tag_counts": {
+      "6": 25,
+      "5": 5,
+      "1": 1
+    },
+    "literal_strings": [
+      "V/tmp/sbpl_rt/param_root",
+      "/users/achyland/desktop/sandbox_lore/book/api/file_probe/file_probe"
+    ],
+    "sections": {
+      "op_table": 14,
+      "nodes": 375,
+      "literal_pool": 166,
+      "nodes_start": 30,
+      "literal_start": 405
+    }
+  },
+  "entry_signatures": {
+    "5": {
+      "entry": 5,
+      "reachable": 2,
+      "tags": [
+        5,
+        6
+      ],
+      "literals": [
+        5
+      ],
+      "truncated": false
+    },
+    "6": {
+      "entry": 6,
+      "reachable": 2,
+      "tags": [
+        5,
+        6
+      ],
+      "literals": [
+        5
+      ],
+      "truncated": false
+    }
+  }
+}

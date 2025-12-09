@@ -285,5 +285,5 @@ If you are an agent deciding where to work:
 Treat these examples as **reference labs**:
 
 * Prefer to extend them with new probes and tests rather than rewriting core behavior.
-* Canonical SBPL compilation and legacy regex helpers now live under `book/api/sbpl_compile` and `book/api/regex_tools`; these example scripts are shims to those APIs.
+* Canonical SBPL compilation lives under `book/api/profile_tools` (compile subcommand). Legacy regex helpers have moved here under `book/examples/regex_tools`.
 * When in doubt about formats or semantics, cross-check with `substrate/Orientation.md`, `substrate/Appendix.md`, and `substrate/Concepts.md`.

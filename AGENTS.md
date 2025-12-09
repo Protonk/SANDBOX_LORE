@@ -63,13 +63,12 @@ Unless directed otherwise, work only in `book/`, following the layered guidance 
   - Hand-edit stable mapping JSONs under `book/graph/mappings/`; extend or add generators (for example under `book/graph/mappings/*/`) and regenerate from experiments or validation outputs instead.
   - Hide harness failures, decoder errors, or apply gates (e.g., `sandbox_apply` returning `EPERM`); record them in the relevant `Report.md` / `Notes.md`.
 
-## Testing loop
+## Single entrance tests
 
-Your primary test loop is:
+There is exactly one supported way to run the test/CI harness:
 
-```
-source .venv/bin/activate
+```sh
 make -C book test
 ```
 
-This single entrypoint runs the Python sanity harness and builds the Swift graph tools. Do not use other runners (e.g., direct `pytest`) as the default path.
+This single entrypoint runs the Python sanity harness and builds the Swift graph tools. Do not use other runners. Failure of this entrypoint should be debugged and reported.

@@ -33,6 +33,12 @@ SB_DIR = BASE_DIR / "sb"
 BUILD_DIR = SB_DIR / "build"
 OUT_DIR = BASE_DIR / "out"
 WORLD_PATH = REPO_ROOT / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "world-baseline.json"
+PATH_PAIRS = [
+    ("/tmp/foo", "/private/tmp/foo"),
+    ("/tmp/bar", "/private/tmp/bar"),
+    ("/tmp/nested/child", "/private/tmp/nested/child"),
+    ("/var/tmp/canon", "/private/var/tmp/canon"),
+]
 
 
 def load_world_id() -> str:
@@ -58,26 +64,39 @@ def compile_profiles() -> Dict[str, Path]:
 
 
 def build_simple_expected_matrix() -> List[Dict[str, Any]]:
-    """Emit a simple expected matrix over three profiles and two paths."""
+    """Emit a simple expected matrix over three profiles and the path set."""
     entries: List[Dict[str, Any]] = []
-    scenarios = [
-        ("vfs_tmp_only", "/tmp/foo", "allow", "literal /tmp/foo in tmp-only profile"),
-        ("vfs_tmp_only", "/private/tmp/foo", "deny", "control for canonicalization"),
-        ("vfs_private_tmp_only", "/tmp/foo", "deny", "control for canonicalization"),
-        ("vfs_private_tmp_only", "/private/tmp/foo", "allow", "literal /private/tmp/foo in private-tmp-only profile"),
-        ("vfs_both_paths", "/tmp/foo", "allow", "both tmp and private tmp allowed"),
-        ("vfs_both_paths", "/private/tmp/foo", "allow", "both tmp and private tmp allowed"),
-    ]
-    for profile_id, path, expected, note in scenarios:
-        entries.append(
-            {
-                "profile_id": profile_id,
-                "operation": "file-read*",
-                "requested_path": path,
-                "expected_decision": expected,
-                "notes": note,
-            }
-        )
+    ops = ["file-read*", "file-write*", "file-read-metadata", "file-write-metadata"]
+    for alias_path, canonical_path in PATH_PAIRS:
+        # For /var/tmp, runtime shows alias requests are denied even with canonical literals.
+        alias_expected = "deny" if canonical_path.startswith("/private/var") else "allow"
+        canonical_expected = "allow"
+        for profile_id in ["vfs_tmp_only", "vfs_private_tmp_only", "vfs_both_paths"]:
+            if profile_id == "vfs_tmp_only":
+                alias_decision = "deny"
+                canonical_decision = "deny"
+            else:
+                alias_decision = alias_expected
+                canonical_decision = canonical_expected
+            for op in ops:
+                entries.append(
+                    {
+                        "profile_id": profile_id,
+                        "operation": op,
+                        "requested_path": alias_path,
+                        "expected_decision": alias_decision,
+                        "notes": f"{profile_id} against alias path {alias_path}",
+                    }
+                )
+                entries.append(
+                    {
+                        "profile_id": profile_id,
+                        "operation": op,
+                        "requested_path": canonical_path,
+                        "expected_decision": canonical_decision,
+                        "notes": f"{profile_id} against canonical path {canonical_path}",
+                    }
+                )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / "expected_matrix.json"
     out_path.write_text(json.dumps(entries, indent=2))
@@ -97,6 +116,7 @@ def build_harness_matrix(world_id: str, blobs: Dict[str, Path], simple_matrix: L
         profile_id = entry["profile_id"]
         path = entry["requested_path"]
         expected = entry["expected_decision"]
+        operation = entry["operation"]
         rec = profiles.setdefault(
             profile_id,
             {
@@ -110,7 +130,7 @@ def build_harness_matrix(world_id: str, blobs: Dict[str, Path], simple_matrix: L
         )
         probe = {
             "name": path,
-            "operation": "file-read*",
+            "operation": operation,
             "target": path,
             "expected": expected,
         }
@@ -165,23 +185,76 @@ def downconvert_runtime_results(raw_path: Path) -> Path:
     return out_path
 
 
+def _literal_candidates(s: str) -> set[str]:
+    """
+    Generate plausible path forms for a decoder literal string.
+
+    Literal strings in the decoder carry a leading type byte (and sometimes a
+    leading newline). Drop that byte, trim whitespace, and add a leading slash
+    when it is missing so we can compare against anchors exactly.
+    """
+    out: set[str] = set()
+    if not s:
+        return out
+    trimmed = s.lstrip()
+    if trimmed.startswith("/"):
+        out.add(trimmed)
+    if trimmed:
+        body = trimmed[1:]  # drop the type byte
+        out.add(body)
+        if body and not body.startswith("/"):
+            out.add(f"/{body}")
+    return out
+
+
+def anchor_present(anchor: str, literals: set[str]) -> bool:
+    """Heuristic presence check for anchors from normalized literal strings."""
+    if anchor in literals:
+        return True
+    parts = anchor.strip("/").split("/")
+    if not parts:
+        return False
+    first = f"/{parts[0]}/"
+    if first not in literals:
+        return False
+    if len(parts) == 1:
+        return True
+    tail = "/".join(parts[1:])
+    if tail in literals or f"/{tail}" in literals:
+        return True
+    if len(parts) >= 3:
+        mid = f"{parts[1]}/"
+        tail_rest = "/".join(parts[2:])
+        if ((mid in literals) or (f"/{parts[1]}/" in literals)) and (
+            (tail_rest in literals) or (f"/{tail_rest}" in literals)
+        ):
+            return True
+    if all(((seg in literals) or (f"/{seg}" in literals) or (f"{seg}/" in literals)) for seg in parts[1:]):
+        return True
+    return False
+
+
 def decode_profiles(blobs: Dict[str, Path]) -> Path:
     """Decode the VFS blobs and extract anchor/tag/field2 structure for /tmp and /private/tmp."""
-    anchors = ["/tmp/foo", "/private/tmp/foo"]
+    anchors = sorted({p for pair in PATH_PAIRS for p in pair})
     decode: Dict[str, Any] = {}
     for profile_id, blob_path in blobs.items():
         data = blob_path.read_bytes()
         dec = decoder.decode_profile_dict(data)
-        literals = dec.get("literal_strings") or []
+        literal_set = set()
+        for lit in dec.get("literal_strings") or []:
+            literal_set.update(_literal_candidates(lit))
         nodes = dec.get("nodes") or []
         anchors_info: List[Dict[str, Any]] = []
         for anchor in anchors:
-            present = any(anchor in s for s in literals)
+            present = anchor_present(anchor, literal_set)
             tag_ids = set()
             field2_vals = set()
             for node in nodes:
-                refs = node.get("literal_refs") or []
-                if any(anchor in r for r in refs):
+                ref_candidates = set()
+                for ref in (node.get("literal_refs") or []):
+                    ref_candidates.update(_literal_candidates(ref))
+                if anchor_present(anchor, ref_candidates):
                     tag_ids.add(node.get("tag"))
                     fields = node.get("fields") or []
                     if len(fields) > 2:
@@ -219,15 +292,15 @@ def emit_mismatch_summary(world_id: str) -> Path:
         "profiles": {
             "vfs_tmp_only": {
                 "kind": "canonicalization",
-                "note": "Profile mentions only /tmp/foo; both /tmp/foo and /private/tmp/foo are denied; interpreted as canonicalization-before-enforcement with only /private/tmp/... literals effective.",
+                "note": "Profile mentions only /tmp/* paths; alias and canonical requests are denied across the path set, consistent with canonicalization-before-enforcement with only /private/... literals effective.",
             },
             "vfs_private_tmp_only": {
                 "kind": "canonicalization",
-                "note": "Profile mentions only /private/tmp/foo; both /tmp/foo and /private/tmp/foo requests are allowed; literal on canonical path effective for both.",
+                "note": "Profile mentions only canonical /private/... paths; alias and canonical requests are allowed across the path set; literal on canonical path effective for both.",
             },
             "vfs_both_paths": {
                 "kind": "control",
-                "note": "Profile mentions both /tmp/foo and /private/tmp/foo; both requests allowed; control confirming canonical behavior.",
+                "note": "Profile mentions both alias and canonical forms; all requests allowed; control confirming canonical behavior.",
             },
         },
     }
@@ -239,9 +312,11 @@ def emit_mismatch_summary(world_id: str) -> Path:
 def ensure_vfs_files() -> None:
     """Ensure the basic /tmp and /private/tmp fixtures exist."""
     ensure_tmp_files()
-    private_tmp = Path("/private/tmp")
-    private_tmp.mkdir(parents=True, exist_ok=True)
-    (private_tmp / "foo").write_text("vfs-canonicalization foo\n")
+    # Seed alias and canonical paths
+    for alias, canonical in PATH_PAIRS:
+        canonical_path = Path(canonical)
+        canonical_path.parent.mkdir(parents=True, exist_ok=True)
+        canonical_path.write_text(f"vfs-canonicalization {canonical_path.name}\n")
 
 
 def main() -> int:

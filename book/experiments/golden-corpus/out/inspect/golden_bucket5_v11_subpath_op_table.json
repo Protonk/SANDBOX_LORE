@@ -1,0 +1,71 @@
+{
+  "name": "golden_bucket5_v11_subpath",
+  "ops": [],
+  "filters": [],
+  "filter_ids": [],
+  "length": 467,
+  "format_variant": "modern-heuristic",
+  "op_count": 6,
+  "op_count_source": "header",
+  "op_entries": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+  ],
+  "section_lengths": {
+    "op_table": 12,
+    "nodes": 365,
+    "literals": 74
+  },
+  "tag_counts_stride12": {
+    "4": 6,
+    "5": 22,
+    "1": 1,
+    "0": 1
+  },
+  "remainder_stride12_hex": "0500050004",
+  "literal_strings": [
+    {
+      "offset": 57,
+      "string": "G/tmp/foo"
+    }
+  ],
+  "decoder": {
+    "format_variant": "modern-heuristic",
+    "op_count": 6,
+    "op_table_offset": 16,
+    "node_count": 30,
+    "tag_counts": {
+      "4": 6,
+      "5": 22,
+      "1": 1,
+      "0": 1
+    },
+    "literal_strings": [
+      "G/tmp/foo"
+    ],
+    "sections": {
+      "op_table": 12,
+      "nodes": 365,
+      "literal_pool": 74,
+      "nodes_start": 28,
+      "literal_start": 393
+    }
+  },
+  "entry_signatures": {
+    "5": {
+      "entry": 5,
+      "reachable": 1,
+      "tags": [
+        5
+      ],
+      "literals": [
+        5
+      ],
+      "truncated": false
+    }
+  }
+}

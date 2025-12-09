@@ -3,15 +3,15 @@
   "profiles": {
     "vfs_tmp_only": {
       "kind": "canonicalization",
-      "note": "Profile mentions only /tmp/foo; both /tmp/foo and /private/tmp/foo are denied; interpreted as canonicalization-before-enforcement with only /private/tmp/... literals effective."
+      "note": "Profile mentions only /tmp/* paths; alias and canonical requests are denied across the path set, consistent with canonicalization-before-enforcement with only /private/... literals effective."
     },
     "vfs_private_tmp_only": {
       "kind": "canonicalization",
-      "note": "Profile mentions only /private/tmp/foo; both /tmp/foo and /private/tmp/foo requests are allowed; literal on canonical path effective for both."
+      "note": "Profile mentions only canonical /private/... paths; alias and canonical requests are allowed across the path set; literal on canonical path effective for both."
     },
     "vfs_both_paths": {
       "kind": "control",
-      "note": "Profile mentions both /tmp/foo and /private/tmp/foo; both requests allowed; control confirming canonical behavior."
+      "note": "Profile mentions both alias and canonical forms; all requests allowed; control confirming canonical behavior."
     }
   }
 }

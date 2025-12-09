@@ -1,0 +1,1103 @@
+{
+  "format_variant": "modern-heuristic",
+  "op_count": 167,
+  "length": 4662,
+  "op_entries": [
+    100,
+    90,
+    80,
+    78,
+    67,
+    60,
+    56,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    163,
+    166,
+    166,
+    165,
+    161,
+    166,
+    166,
+    166,
+    153,
+    153,
+    165,
+    153,
+    166,
+    166,
+    165,
+    166,
+    150,
+    150,
+    150,
+    147,
+    150,
+    150,
+    150,
+    150,
+    166,
+    150,
+    150,
+    150,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    119,
+    166,
+    166,
+    49,
+    47,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    165,
+    166,
+    165,
+    166,
+    166,
+    166,
+    166,
+    165,
+    43,
+    166,
+    166,
+    166,
+    166,
+    166,
+    42,
+    41,
+    40,
+    165,
+    165,
+    165,
+    165,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    165,
+    166,
+    166,
+    166,
+    166,
+    39,
+    40,
+    166,
+    166,
+    166,
+    40,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    165,
+    165,
+    166,
+    166,
+    165,
+    166,
+    166,
+    166,
+    166,
+    40,
+    166,
+    166,
+    166,
+    166,
+    166,
+    36,
+    17,
+    7,
+    166,
+    5,
+    166,
+    166,
+    166,
+    166
+  ],
+  "section_lengths": {
+    "op_table": 334,
+    "nodes": 167,
+    "literals": 4145
+  },
+  "stride_stats": [
+    {
+      "stride": 8,
+      "records": 20,
+      "remainder": 7,
+      "tags": [
+        0,
+        1,
+        2,
+        6,
+        8,
+        10,
+        11,
+        15,
+        104,
+        166
+      ],
+      "edges_in_bounds": 7,
+      "edges_total": 40
+    },
+    {
+      "stride": 12,
+      "records": 13,
+      "remainder": 11,
+      "tags": [
+        0,
+        1,
+        10,
+        74,
+        166
+      ],
+      "edges_in_bounds": 8,
+      "edges_total": 26
+    },
+    {
+      "stride": 16,
+      "records": 10,
+      "remainder": 7,
+      "tags": [
+        0,
+        2,
+        6,
+        8,
+        10,
+        166
+      ],
+      "edges_in_bounds": 6,
+      "edges_total": 20
+    }
+  ],
+  "tag_counts_stride12": {
+    "166": 6,
+    "1": 1,
+    "0": 4,
+    "74": 1,
+    "10": 1
+  },
+  "remainder_stride12_hex": "9d00a5000c00004c3c01a5",
+  "literal_strings": [
+    {
+      "offset": 1245,
+      "string": "P/dev/dtracehelper"
+    },
+    {
+      "offset": 1272,
+      "string": "Msystem/library"
+    },
+    {
+      "offset": 1295,
+      "string": "Fusr/lib"
+    },
+    {
+      "offset": 1317,
+      "string": "G/system/"
+    },
+    {
+      "offset": 1327,
+      "string": "Icryptexes/"
+    },
+    {
+      "offset": 1339,
+      "string": "Bapp"
+    },
+    {
+      "offset": 1362,
+      "string": "Yvolumes/preboot/cryptexes/"
+    },
+    {
+      "offset": 1401,
+      "string": "Iapp/system"
+    },
+    {
+      "offset": 1429,
+      "string": "com.apple.app-sandbox.read"
+    },
+    {
+      "offset": 1461,
+      "string": "com.apple.app-sandbox.read-write"
+    },
+    {
+      "offset": 1504,
+      "string": "Esystem"
+    },
+    {
+      "offset": 1519,
+      "string": "Cusr/"
+    },
+    {
+      "offset": 1525,
+      "string": "Dshare"
+    },
+    {
+      "offset": 1539,
+      "string": "Blib"
+    },
+    {
+      "offset": 1551,
+      "string": "Rprivate/var/db/dyld"
+    },
+    {
+      "offset": 1581,
+      "string": "D/dev/"
+    },
+    {
+      "offset": 1588,
+      "string": "Czero"
+    },
+    {
+      "offset": 1597,
+      "string": "Cnull"
+    },
+    {
+      "offset": 1606,
+      "string": "Erandom"
+    },
+    {
+      "offset": 1617,
+      "string": "Furandom"
+    },
+    {
+      "offset": 1643,
+      "string": "Esystem"
+    },
+    {
+      "offset": 1657,
+      "string": "Hcryptexes"
+    },
+    {
+      "offset": 1671,
+      "string": "Fvolumes"
+    },
+    {
+      "offset": 1683,
+      "string": "G/preboot"
+    },
+    {
+      "offset": 1696,
+      "string": "I/cryptexes"
+    },
+    {
+      "offset": 1711,
+      "string": "C/app"
+    },
+    {
+      "offset": 1725,
+      "string": "F/cores/"
+    },
+    {
+      "offset": 1741,
+      "string": "D/dev/"
+    },
+    {
+      "offset": 1748,
+      "string": "Cnull"
+    },
+    {
+      "offset": 1757,
+      "string": "Czero"
+    },
+    {
+      "offset": 1773,
+      "string": "Gboard-id"
+    },
+    {
+      "offset": 1786,
+      "string": "RIOClassNameOverride"
+    },
+    {
+      "offset": 1813,
+      "string": "PIOThunderboltPort"
+    },
+    {
+      "offset": 1840,
+      "string": "Gocket ID"
+    },
+    {
+      "offset": 1853,
+      "string": "Mupported Link "
+    },
+    {
+      "offset": 1869,
+      "string": "DWidth"
+    },
+    {
+      "offset": 1879,
+      "string": "DSpeed"
+    },
+    {
+      "offset": 1893,
+      "string": "VIOSCSIProtocolInterface"
+    },
+    {
+      "offset": 1925,
+      "string": "JIOMediaIcon"
+    },
+    {
+      "offset": 1941,
+      "string": "UProduct Identification"
+    },
+    {
+      "offset": 1973,
+      "string": "Msoc-generation"
+    },
+    {
+      "offset": 1997,
+      "string": "OIOPlatformDevice"
+    },
+    {
+      "offset": 2021,
+      "string": "75105696-iokit-properties"
+    },
+    {
+      "offset": 2053,
+      "string": "FIOMedia"
+    },
+    {
+      "offset": 2069,
+      "string": "HRemovable"
+    },
+    {
+      "offset": 2083,
+      "string": "HEjectable"
+    },
+    {
+      "offset": 2101,
+      "string": "JIOPCIDevice"
+    },
+    {
+      "offset": 2125,
+      "string": "Gbuilt-in"
+    },
+    {
+      "offset": 2138,
+      "string": "OThunderbolt Path"
+    },
+    {
+      "offset": 2159,
+      "string": "UIOPCIExpressLinkStatus"
+    },
+    {
+      "offset": 2189,
+      "string": "BTY,"
+    },
+    {
+      "offset": 2194,
+      "string": "IDeviceName"
+    },
+    {
+      "offset": 2209,
+      "string": "IFamilyName"
+    },
+    {
+      "offset": 2224,
+      "string": "LAPL,slot-name"
+    },
+    {
+      "offset": 2245,
+      "string": "Iimage-path"
+    },
+    {
+      "offset": 2269,
+      "string": "LIOHDIXHDDrive"
+    },
+    {
+      "offset": 2297,
+      "string": "FStorage"
+    },
+    {
+      "offset": 2309,
+      "string": "QBlockStorageDevice"
+    },
+    {
+      "offset": 2341,
+      "string": "JIOMediaIcon"
+    },
+    {
+      "offset": 2357,
+      "string": "WProtocol Characteristics"
+    },
+    {
+      "offset": 2389,
+      "string": "UIOGraphicsAccelerator2"
+    },
+    {
+      "offset": 2421,
+      "string": "MAAPL,slot-name"
+    },
+    {
+      "offset": 2440,
+      "string": "QSafeEjectRequested"
+    },
+    {
+      "offset": 2463,
+      "string": "JMetalPlugin"
+    },
+    {
+      "offset": 2476,
+      "string": "CName"
+    },
+    {
+      "offset": 2485,
+      "string": "HClassName"
+    },
+    {
+      "offset": 2503,
+      "string": "KVARendererID"
+    },
+    {
+      "offset": 2520,
+      "string": "LDVDBundleName"
+    },
+    {
+      "offset": 2538,
+      "string": "SPCIExpressLinkStatus"
+    },
+    {
+      "offset": 2563,
+      "string": "BGVA"
+    },
+    {
+      "offset": 2568,
+      "string": "DCodec"
+    },
+    {
+      "offset": 2578,
+      "string": "IHEVCDecode"
+    },
+    {
+      "offset": 2593,
+      "string": "XAVDHEVCDecodeCapabilities"
+    },
+    {
+      "offset": 2629,
+      "string": "cIOSurfaceAcceleratorCapabilitiesDict"
+    },
+    {
+      "offset": 2677,
+      "string": "UAppleM2ScalerCSCDriver"
+    },
+    {
+      "offset": 2709,
+      "string": "KDiskImageURL"
+    },
+    {
+      "offset": 2733,
+      "string": "SAppleDiskImageDevice"
+    },
+    {
+      "offset": 2769,
+      "string": "LGVAHEVCDecode"
+    },
+    {
+      "offset": 2787,
+      "string": "XAVDHEVCDecodeCapabilities"
+    },
+    {
+      "offset": 2821,
+      "string": "GAppleAVD"
+    },
+    {
+      "offset": 2837,
+      "string": "SAGXFamilyAccelerator"
+    },
+    {
+      "offset": 2869,
+      "string": "MAAPL,slot-name"
+    },
+    {
+      "offset": 2888,
+      "string": "QSafeEjectRequested"
+    },
+    {
+      "offset": 2911,
+      "string": "JMetalPlugin"
+    },
+    {
+      "offset": 2924,
+      "string": "CName"
+    },
+    {
+      "offset": 2933,
+      "string": "HClassName"
+    },
+    {
+      "offset": 2951,
+      "string": "LGVAHEVCDecode"
+    },
+    {
+      "offset": 2969,
+      "string": "XAVDHEVCDecodeCapabilities"
+    },
+    {
+      "offset": 3009,
+      "string": "BGVA"
+    },
+    {
+      "offset": 3014,
+      "string": "DCodec"
+    },
+    {
+      "offset": 3024,
+      "string": "IHEVCDecode"
+    },
+    {
+      "offset": 3039,
+      "string": "XAVDHEVCDecodeCapabilities"
+    },
+    {
+      "offset": 3077,
+      "string": "QIOBufferCopyEngine"
+    },
+    {
+      "offset": 3109,
+      "string": "VIOSurfaceRootUserClient"
+    },
+    {
+      "offset": 3141,
+      "string": "VIGAccelSharedUserClient"
+    },
+    {
+      "offset": 3173,
+      "string": "LIGAccelDevice"
+    },
+    {
+      "offset": 3197,
+      "string": "RIGAccelCommandQueue"
+    },
+    {
+      "offset": 3229,
+      "string": "WIOAccelSharedUserClient2"
+    },
+    {
+      "offset": 3261,
+      "string": "MIOAccelDevice2"
+    },
+    {
+      "offset": 3285,
+      "string": "RIOAccelCommandQueue"
+    },
+    {
+      "offset": 3317,
+      "string": "NAGXAcceleratorG"
+    },
+    {
+      "offset": 3338,
+      "string": "KOSurfaceRoot"
+    },
+    {
+      "offset": 3355,
+      "string": "NntelAccelerator"
+    },
+    {
+      "offset": 3381,
+      "string": "88289132-iokit-open-service"
+    },
+    {
+      "offset": 3413,
+      "string": "Icom.apple."
+    },
+    {
+      "offset": 3425,
+      "string": "Ktrustd.agent"
+    },
+    {
+      "offset": 3442,
+      "string": "Eaudio."
+    },
+    {
+      "offset": 3450,
+      "string": "LSandboxHelper"
+    },
+    {
+      "offset": 3468,
+      "string": "VAudioComponentRegistrar"
+    },
+    {
+      "offset": 3525,
+      "string": "Tcom.apple.diagnosticd"
+    },
+    {
+      "offset": 3557,
+      "string": "Icom.apple."
+    },
+    {
+      "offset": 3569,
+      "string": "Clogd"
+    },
+    {
+      "offset": 3578,
+      "string": "Fsystem."
+    },
+    {
+      "offset": 3587,
+      "string": "Elogger"
+    },
+    {
+      "offset": 3598,
+      "string": "Rnotification_center"
+    },
+    {
+      "offset": 3709,
+      "string": "73669976"
+    },
+    {
+      "offset": 3749,
+      "string": "blastdoor-messages-reduction"
+    },
+    {
+      "offset": 3781,
+      "string": "syscall-mach-denied"
+    },
+    {
+      "offset": 3853,
+      "string": "88289132-syscall-mig"
+    },
+    {
+      "offset": 3877,
+      "string": "Tkern.osproductversion"
+    },
+    {
+      "offset": 3903,
+      "string": "Bhw."
+    },
+    {
+      "offset": 3908,
+      "string": "Ivectorunit"
+    },
+    {
+      "offset": 3923,
+      "string": "Lcachelinesize"
+    },
+    {
+      "offset": 3941,
+      "string": "Poptional.avx512bw"
+    },
+    {
+      "offset": 3963,
+      "string": "Ilogicalcpu"
+    },
+    {
+      "offset": 3978,
+      "string": "C_max"
+    },
+    {
+      "offset": 3990,
+      "string": "Eroduct"
+    },
+    {
+      "offset": 4001,
+      "string": "Ihysicalcpu"
+    },
+    {
+      "offset": 4016,
+      "string": "C_max"
+    },
+    {
+      "offset": 4025,
+      "string": "Magesize_compat"
+    },
+    {
+      "offset": 4077,
+      "string": "CAMFI"
+    },
+    {
+      "offset": 4086,
+      "string": "FSandbox"
+    },
+    {
+      "offset": 4098,
+      "string": "IQuarantine"
+    },
+    {
+      "offset": 4117,
+      "string": "88289132-system-mac-syscall"
+    }
+  ],
+  "decoder": {
+    "format_variant": "modern-heuristic",
+    "op_count": 167,
+    "op_table_offset": 16,
+    "node_count": 7,
+    "tag_counts": {
+      "166": 5,
+      "1": 1,
+      "0": 1
+    },
+    "literal_strings": [
+      "P/dev/dtracehelper",
+      "Msystem/library",
+      "\nFusr/lib",
+      "G/system/",
+      "Icryptexes/",
+      "Bapp",
+      "\nAos",
+      "\nYvolumes/preboot/cryptexes/",
+      "\nIapp/system",
+      "com.apple.app-sandbox.read",
+      "com.apple.app-sandbox.read-write",
+      "Esystem",
+      "\nCusr/",
+      "Dshare",
+      "\nBlib",
+      "\nRprivate/var/db/dyld",
+      "D/dev/",
+      "Czero",
+      "\nCnull",
+      "\nErandom",
+      "\nFurandom",
+      "\nEsystem",
+      "Hcryptexes",
+      "\nFvolumes",
+      "\nG/preboot",
+      "\nI/cryptexes",
+      "\nC/app",
+      "F/cores/",
+      "D/dev/",
+      "Cnull",
+      "\nCzero",
+      "Gboard-id",
+      "\nRIOClassNameOverride",
+      "PIOThunderboltPort",
+      "Gocket ID",
+      "\nMupported Link ",
+      "DWidth",
+      "\nDSpeed",
+      "VIOSCSIProtocolInterface",
+      "JIOMediaIcon",
+      "\nUProduct Identification",
+      "Msoc-generation",
+      "OIOPlatformDevice",
+      "75105696-iokit-properties",
+      "FIOMedia",
+      "HRemovable",
+      "\nHEjectable",
+      "JIOPCIDevice",
+      "Gbuilt-in",
+      "\nOThunderbolt Path",
+      "\nUIOPCIExpressLinkStatus",
+      "BTY,",
+      "IDeviceName",
+      "\nIFamilyName",
+      "\nLAPL,slot-name",
+      "Iimage-path",
+      "LIOHDIXHDDrive",
+      "FStorage",
+      "\nQBlockStorageDevice",
+      "JIOMediaIcon",
+      "\nWProtocol Characteristics",
+      "UIOGraphicsAccelerator2",
+      "MAAPL,slot-name",
+      "\nQSafeEjectRequested",
+      "\nJMetalPlugin",
+      "CName",
+      "\nHClassName",
+      "\nAIO",
+      "KVARendererID",
+      "\nLDVDBundleName",
+      "\nSPCIExpressLinkStatus",
+      "\nBGVA",
+      "DCodec",
+      "\nIHEVCDecode",
+      "\nXAVDHEVCDecodeCapabilities",
+      "cIOSurfaceAcceleratorCapabilitiesDict",
+      "UAppleM2ScalerCSCDriver",
+      "KDiskImageURL",
+      "SAppleDiskImageDevice",
+      "LGVAHEVCDecode",
+      "\nXAVDHEVCDecodeCapabilities",
+      "GAppleAVD",
+      "SAGXFamilyAccelerator",
+      "MAAPL,slot-name",
+      "\nQSafeEjectRequested",
+      "\nJMetalPlugin",
+      "CName",
+      "\nHClassName",
+      "\nAIO",
+      "LGVAHEVCDecode",
+      "\nXAVDHEVCDecodeCapabilities",
+      "BGVA",
+      "DCodec",
+      "\nIHEVCDecode",
+      "\nXAVDHEVCDecodeCapabilities",
+      "QIOBufferCopyEngine",
+      "VIOSurfaceRootUserClient",
+      "VIGAccelSharedUserClient",
+      "LIGAccelDevice",
+      "RIGAccelCommandQueue",
+      "WIOAccelSharedUserClient2",
+      "MIOAccelDevice2",
+      "RIOAccelCommandQueue",
+      "NAGXAcceleratorG",
+      "KOSurfaceRoot",
+      "\nNntelAccelerator",
+      "88289132-iokit-open-service",
+      "Icom.apple.",
+      "Ktrustd.agent",
+      "\nEaudio.",
+      "LSandboxHelper",
+      "\nVAudioComponentRegistrar",
+      "Tcom.apple.diagnosticd",
+      "Icom.apple.",
+      "Clogd",
+      "\nFsystem.",
+      "Elogger",
+      "\nRnotification_center",
+      "73669976",
+      "blastdoor-messages-reduction",
+      "syscall-mach-denied",
+      "88289132-syscall-mig",
+      "Tkern.osproductversion",
+      "\nBhw.",
+      "Ivectorunit",
+      "\nLcachelinesize",
+      "\nPoptional.avx512bw",
+      "\nIlogicalcpu",
+      "\nC_max",
+      "Eroduct",
+      "\nIhysicalcpu",
+      "\nC_max",
+      "\nMagesize_compat",
+      "CAMFI",
+      "\nFSandbox",
+      "\nIQuarantine",
+      "88289132-system-mac-syscall"
+    ],
+    "sections": {
+      "op_table": 334,
+      "nodes": 92,
+      "literal_pool": 4220,
+      "nodes_start": 350,
+      "literal_start": 442
+    }
+  },
+  "nodes_raw": [
+    {
+      "offset": 0,
+      "tag": 166,
+      "bytes": "a600a6000300a600a600a600",
+      "halfwords": [
+        166,
+        166,
+        3,
+        166,
+        166,
+        166
+      ]
+    },
+    {
+      "offset": 12,
+      "tag": 166,
+      "bytes": "a600a600a600a600a600a600",
+      "halfwords": [
+        166,
+        166,
+        166,
+        166,
+        166,
+        166
+      ]
+    },
+    {
+      "offset": 24,
+      "tag": 1,
+      "bytes": "0100a500a500a600a6000000",
+      "halfwords": [
+        1,
+        165,
+        165,
+        166,
+        166,
+        0
+      ]
+    },
+    {
+      "offset": 36,
+      "tag": 166,
+      "bytes": "a600a600a600a600a600a600",
+      "halfwords": [
+        166,
+        166,
+        166,
+        166,
+        166,
+        166
+      ]
+    },
+    {
+      "offset": 48,
+      "tag": 166,
+      "bytes": "a600a600a600a600a600a500",
+      "halfwords": [
+        166,
+        166,
+        166,
+        166,
+        166,
+        165
+      ]
+    },
+    {
+      "offset": 60,
+      "tag": 0,
+      "bytes": "000000000000002aea032700",
+      "halfwords": [
+        0,
+        0,
+        0,
+        10752,
+        1002,
+        39
+      ]
+    },
+    {
+      "offset": 72,
+      "tag": 166,
+      "bytes": "a60000516301a50002000180",
+      "halfwords": [
+        166,
+        20736,
+        355,
+        165,
+        2,
+        32769
+      ]
+    },
+    {
+      "offset": 84,
+      "tag": 0,
+      "bytes": "00800a00680100ce60010400",
+      "halfwords": [
+        32768,
+        10,
+        360,
+        52736,
+        352,
+        4
+      ]
+    },
+    {
+      "offset": 96,
+      "tag": 166,
+      "bytes": "a60001000000000000000026",
+      "halfwords": [
+        166,
+        1,
+        0,
+        0,
+        0,
+        9728
+      ]
+    },
+    {
+      "offset": 108,
+      "tag": 74,
+      "bytes": "4a01a5000600018000000000",
+      "halfwords": [
+        330,
+        165,
+        6,
+        32769,
+        0,
+        0
+      ]
+    },
+    {
+      "offset": 120,
+      "tag": 0,
+      "bytes": "000000cc410110000800001a",
+      "halfwords": [
+        0,
+        52224,
+        321,
+        16,
+        8,
+        6656
+      ]
+    },
+    {
+      "offset": 132,
+      "tag": 0,
+      "bytes": "000009000f00004cc200a500",
+      "halfwords": [
+        0,
+        9,
+        15,
+        19456,
+        194,
+        165
+      ]
+    },
+    {
+      "offset": 144,
+      "tag": 10,
+      "bytes": "0a00004cf800a5000b00004c",
+      "halfwords": [
+        10,
+        19456,
+        248,
+        165,
+        11,
+        19456
+      ]
+    }
+  ]
+}

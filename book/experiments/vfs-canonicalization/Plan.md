@@ -9,7 +9,7 @@ Core questions:
 - For simple, controlled SBPL profiles, how does PolicyGraph structure and runtime behavior differ when rules mention only `/tmp/foo` vs only `/private/tmp/foo` vs both?
 - Where do we see differences between what the SBPL “says” and what the runtime does that can be fairly attributed to VFS canonicalization (e.g., `/tmp` → `/private/tmp`), rather than to decoder bugs or policy differences?
 
-Scope: file-read semantics only, for the specific paths `/tmp/foo` and `/private/tmp/foo`, on this host.
+Scope: file-read semantics only, for the path pairs `/tmp/foo` ↔ `/private/tmp/foo`, `/tmp/bar` ↔ `/private/tmp/bar`, `/tmp/nested/child` ↔ `/private/tmp/nested/child`, and a control `/var/tmp/canon` ↔ `/private/var/tmp/canon` on this host.
 
 ## Relationship to existing work
 
@@ -41,7 +41,7 @@ Compiled blobs will be written to `sb/build/<stem>.sb.bin` using `book.api.sbpl_
 
 Scenarios:
 
-- For each profile, attempt `file-read*` on both `/tmp/foo` and `/private/tmp/foo`.
+- For each profile, attempt `file-read*` on all alias/canonical pairs listed above.
 - Observe:
   - Structural placement of the anchors and field2 values in the compiled graphs.
   - Runtime allow/deny behavior under an SBPL/ blob harness.
@@ -93,15 +93,15 @@ These sketches are informal; tests will check that the actual JSONs obey the sam
       "profile_id": "vfs_tmp_only",
       "operation": "file-read*",
       "requested_path": "/tmp/foo",
-      "expected_decision": "allow",
-      "notes": "literal /tmp/foo, tmp-only profile"
+      "expected_decision": "deny",
+      "notes": "canonicalization makes /tmp literal ineffective"
     },
     {
       "profile_id": "vfs_tmp_only",
       "operation": "file-read*",
       "requested_path": "/private/tmp/foo",
       "expected_decision": "deny",
-      "notes": "control for canonicalization"
+      "notes": "canonicalization makes /tmp literal ineffective"
     }
     // ...
   ]

@@ -14,11 +14,20 @@ def test_vfs_decode_tmp_profiles_shape():
     """Structural guardrail: decode_tmp_profiles.json exists and has expected anchor entries."""
     path = ROOT / "book" / "experiments" / "vfs-canonicalization" / "out" / "decode_tmp_profiles.json"
     data = load_json(path)
+    expected_anchors = {
+        "/tmp/foo",
+        "/private/tmp/foo",
+        "/tmp/bar",
+        "/private/tmp/bar",
+        "/tmp/nested/child",
+        "/private/tmp/nested/child",
+        "/var/tmp/canon",
+        "/private/var/tmp/canon",
+    }
     for profile_id in ["vfs_tmp_only", "vfs_private_tmp_only", "vfs_both_paths"]:
         assert profile_id in data, f"missing profile {profile_id} in decode_tmp_profiles.json"
         anchors = data[profile_id].get("anchors") or []
         anchor_paths = {a.get("path") for a in anchors}
-        # Expect both /tmp/foo and /private/tmp/foo entries for each profile.
-        assert "/tmp/foo" in anchor_paths, f"missing /tmp/foo anchor entry for {profile_id}"
-        assert "/private/tmp/foo" in anchor_paths, f"missing /private/tmp/foo anchor entry for {profile_id}"
-
+        # Expect all alias and canonical anchors for each profile.
+        for ap in expected_anchors:
+            assert ap in anchor_paths, f"missing {ap} anchor entry for {profile_id}"

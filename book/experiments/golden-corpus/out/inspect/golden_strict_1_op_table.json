@@ -1,0 +1,94 @@
+{
+  "name": "golden_strict_1",
+  "ops": [],
+  "filters": [],
+  "filter_ids": [],
+  "length": 513,
+  "format_variant": "modern-heuristic",
+  "op_count": 7,
+  "op_count_source": "header",
+  "op_entries": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    5
+  ],
+  "section_lengths": {
+    "op_table": 14,
+    "nodes": 383,
+    "literals": 100
+  },
+  "tag_counts_stride12": {
+    "6": 23,
+    "3": 2,
+    "5": 5,
+    "0": 1
+  },
+  "remainder_stride12_hex": "010005000600000e010005",
+  "literal_strings": [
+    {
+      "offset": 45,
+      "string": "I/etc/hosts"
+    },
+    {
+      "offset": 69,
+      "string": "U/private/tmp/strict_ok"
+    }
+  ],
+  "decoder": {
+    "format_variant": "modern-heuristic",
+    "op_count": 7,
+    "op_table_offset": 16,
+    "node_count": 31,
+    "tag_counts": {
+      "6": 23,
+      "3": 2,
+      "5": 5,
+      "0": 1
+    },
+    "literal_strings": [
+      "I/etc/hosts",
+      "U/private/tmp/strict_ok"
+    ],
+    "sections": {
+      "op_table": 14,
+      "nodes": 381,
+      "literal_pool": 102,
+      "nodes_start": 30,
+      "literal_start": 411
+    }
+  },
+  "entry_signatures": {
+    "5": {
+      "entry": 5,
+      "reachable": 3,
+      "tags": [
+        3,
+        5,
+        6
+      ],
+      "literals": [
+        3,
+        5
+      ],
+      "truncated": false
+    },
+    "6": {
+      "entry": 6,
+      "reachable": 3,
+      "tags": [
+        3,
+        5,
+        6
+      ],
+      "literals": [
+        3,
+        5
+      ],
+      "truncated": false
+    }
+  }
+}

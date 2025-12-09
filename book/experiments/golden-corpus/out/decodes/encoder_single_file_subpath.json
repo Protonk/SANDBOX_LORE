@@ -1,0 +1,776 @@
+{
+  "format_variant": "modern-heuristic",
+  "preamble_words": [
+    0,
+    3,
+    190,
+    0,
+    0,
+    0,
+    0,
+    2
+  ],
+  "preamble_words_full": [
+    0,
+    3,
+    190,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "header_bytes": "00000300be000000000000000000020002000200020002000200020002000200020002000200020002000200020002000200020002000200000000000000000002000200020002000200020002000200020002000200020001000200020002000200020002000200020002000200020002000200020002000200020002000200",
+  "op_count": 3,
+  "op_table_offset": 16,
+  "op_table": [
+    2,
+    2,
+    2
+  ],
+  "nodes": [
+    {
+      "offset": 0,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 12,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 24,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        0
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000000",
+      "literal_refs": [
+        "T/tmp/encoder/sub_only"
+      ]
+    },
+    {
+      "offset": 36,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "000000000000020002000200",
+      "literal_refs": [
+        "T/tmp/encoder/sub_only"
+      ]
+    },
+    {
+      "offset": 48,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 60,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200010002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 72,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 84,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 96,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 108,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 120,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 132,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 144,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 156,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200010002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 168,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 180,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 192,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 204,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 216,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 228,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 240,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 252,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 264,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 276,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 288,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 300,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    },
+    {
+      "offset": 312,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        1
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000100",
+      "literal_refs": []
+    },
+    {
+      "offset": 324,
+      "tag": 2,
+      "fields": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "record_size": 12,
+      "hex": "020002000200020002000200",
+      "literal_refs": []
+    }
+  ],
+  "node_count": 28,
+  "tag_counts": {
+    "2": 27,
+    "0": 1
+  },
+  "literal_strings": [
+    "T/tmp/encoder/sub_only"
+  ],
+  "literal_strings_with_offsets": [
+    [
+      57,
+      "T/tmp/encoder/sub_only"
+    ]
+  ],
+  "sections": {
+    "op_table": 6,
+    "nodes": 347,
+    "literal_pool": 87,
+    "nodes_start": 22,
+    "literal_start": 369
+  },
+  "validation": {
+    "node_remainder_bytes": 11,
+    "edge_fields_in_bounds": 56,
+    "edge_fields_total": 56,
+    "nodes_start": 22,
+    "literal_start": 369,
+    "tag_validation": {
+      "0": {
+        "edge_in_bounds": 2,
+        "edge_total": 2,
+        "payloads": {
+          "2": 1
+        },
+        "record_size": 12
+      }
+    }
+  },
+  "header_fields": {
+    "magic": 190,
+    "op_count_word": 3,
+    "maybe_flags": 0,
+    "unknown_words": [
+      {
+        "index": 3,
+        "value": 0
+      },
+      {
+        "index": 4,
+        "value": 0
+      },
+      {
+        "index": 5,
+        "value": 0
+      },
+      {
+        "index": 6,
+        "value": 0
+      },
+      {
+        "index": 7,
+        "value": 2
+      },
+      {
+        "index": 8,
+        "value": 2
+      },
+      {
+        "index": 9,
+        "value": 2
+      },
+      {
+        "index": 10,
+        "value": 2
+      },
+      {
+        "index": 11,
+        "value": 2
+      },
+      {
+        "index": 12,
+        "value": 2
+      },
+      {
+        "index": 13,
+        "value": 2
+      },
+      {
+        "index": 14,
+        "value": 2
+      },
+      {
+        "index": 15,
+        "value": 2
+      },
+      {
+        "index": 16,
+        "value": 2
+      },
+      {
+        "index": 17,
+        "value": 2
+      },
+      {
+        "index": 18,
+        "value": 2
+      },
+      {
+        "index": 19,
+        "value": 2
+      },
+      {
+        "index": 20,
+        "value": 2
+      },
+      {
+        "index": 21,
+        "value": 2
+      },
+      {
+        "index": 22,
+        "value": 2
+      },
+      {
+        "index": 23,
+        "value": 2
+      },
+      {
+        "index": 24,
+        "value": 2
+      },
+      {
+        "index": 25,
+        "value": 2
+      },
+      {
+        "index": 26,
+        "value": 2
+      },
+      {
+        "index": 27,
+        "value": 2
+      },
+      {
+        "index": 28,
+        "value": 0
+      },
+      {
+        "index": 29,
+        "value": 0
+      },
+      {
+        "index": 30,
+        "value": 0
+      },
+      {
+        "index": 31,
+        "value": 0
+      },
+      {
+        "index": 32,
+        "value": 2
+      },
+      {
+        "index": 33,
+        "value": 2
+      },
+      {
+        "index": 34,
+        "value": 2
+      },
+      {
+        "index": 35,
+        "value": 2
+      },
+      {
+        "index": 36,
+        "value": 2
+      },
+      {
+        "index": 37,
+        "value": 2
+      },
+      {
+        "index": 38,
+        "value": 2
+      },
+      {
+        "index": 39,
+        "value": 2
+      },
+      {
+        "index": 40,
+        "value": 2
+      },
+      {
+        "index": 41,
+        "value": 2
+      },
+      {
+        "index": 42,
+        "value": 2
+      },
+      {
+        "index": 43,
+        "value": 2
+      },
+      {
+        "index": 44,
+        "value": 1
+      },
+      {
+        "index": 45,
+        "value": 2
+      },
+      {
+        "index": 46,
+        "value": 2
+      },
+      {
+        "index": 47,
+        "value": 2
+      },
+      {
+        "index": 48,
+        "value": 2
+      },
+      {
+        "index": 49,
+        "value": 2
+      },
+      {
+        "index": 50,
+        "value": 2
+      },
+      {
+        "index": 51,
+        "value": 2
+      },
+      {
+        "index": 52,
+        "value": 2
+      },
+      {
+        "index": 53,
+        "value": 2
+      },
+      {
+        "index": 54,
+        "value": 2
+      },
+      {
+        "index": 55,
+        "value": 2
+      },
+      {
+        "index": 56,
+        "value": 2
+      },
+      {
+        "index": 57,
+        "value": 2
+      },
+      {
+        "index": 58,
+        "value": 2
+      },
+      {
+        "index": 59,
+        "value": 2
+      },
+      {
+        "index": 60,
+        "value": 2
+      },
+      {
+        "index": 61,
+        "value": 2
+      },
+      {
+        "index": 62,
+        "value": 2
+      },
+      {
+        "index": 63,
+        "value": 2
+      }
+    ],
+    "profile_class_word_index": 0,
+    "profile_class": 0
+  }
+}

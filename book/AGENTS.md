@@ -14,6 +14,7 @@ This is the textbook workspace. Use it with the substrate vocabulary (`substrate
 - `profiles/` – SBPL/profile sources shared across the book.
 - `api/` – shared tooling (decoder, SBPL/blob wrapper, Ghidra helpers); see `book/api/AGENTS.md`.
 - `tests/` – guardrails for book artifacts and experiment outputs (run via `make -C book test`).
+- Platform/system sandbox profiles (e.g., `airlock.sb`) are included only as static decoder inputs via `book/experiments/golden-corpus/`; see its Report for the static-only stance.
 
 When in doubt, start with the AGENTS/README in the relevant subdirectory.
 
