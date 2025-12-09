@@ -75,6 +75,38 @@ From the latest run described in `Notes.md`:
 
 These counts and examples are reflected directly in `out/op_runtime_summary.json`.
 
+## Network-outbound runtime confirmation
+
+- **Operation/goal**: `network-outbound`; confirm mapped behavior on this host via a clean runtime allow/deny scenario, avoiding earlier sandboxed-Python startup noise.
+
+### Canonical scenario
+- **Host**: `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` (scoped to this world).
+- **Client**: `/usr/bin/nc -z -w 2`.
+- **Profiles**: deny default with startup shims (`iokit-open`, `mach* sysctl-read`, `file-ioctl`, `file-read-metadata`, `file-read-data` over `/`, `/System`, `/usr`, `/Library`, `/private`, `/dev`), `system-socket`, `process-exec` pinned to `/usr/bin/nc`; allow profile adds `allow network-outbound`, deny omits it. See `book/experiments/runtime-adversarial/sb/net_outbound_{allow,deny}.sb`.
+- **Topology**: two harness-started loopback listeners (targets recorded in `book/experiments/runtime-adversarial/out/expected_matrix.json`), `/usr/bin/nc` runs under each profile against both.
+
+### Manual control (sandbox-exec)
+Before harness changes, a bespoke SBPL under `sandbox-exec -f tcp_loopback.sb /usr/bin/nc 127.0.0.1 <port>` with the same shims showed: allow profile → successful TCP connect; deny profile → denied connect. The harness mirrors this control to keep Python out of the sandboxed path and isolate the `network-outbound` decision.
+
+### Results and propagation
+- Runtime: 4 loopback probes (two targets × allow/deny); all 4 match (allow allows both; deny denies both). See `book/experiments/runtime-adversarial/out/runtime_results.json`.
+- IR:
+  - `book/graph/mappings/runtime/runtime_signatures.json` includes `adv:net_outbound_{allow,deny}`.
+  - `book/graph/mappings/vocab/ops_coverage.json` marks `network-outbound` `runtime_evidence: true` (with file-read*, file-write*, mach-lookup).
+  - CARTON coverage/index (`book/graph/mappings/carton/operation_coverage.json`, `operation_index.json`, `profile_layer_index.json`) list the network runtime signatures.
+  - `out/op_runtime_summary.json` shows `network-outbound` 4/4 matches.
+
+### Guardrail test
+- `book/tests/test_network_outbound_guardrail.py` enforces:
+  - Structural: allow/deny SBPLs are identical except for the `network-outbound` rule.
+  - Behavioral: `adv:net_outbound_allow*` probes all allow; `adv:net_outbound_deny*` probes all deny in `runtime_results.json`.
+- Intent: prevent reintroducing sandboxed Python or profile drift that would muddle the `network-outbound` decision between harness noise and PolicyGraph behavior.
+
+### Status and adjacent work
+- `network-outbound` is confirmed on this world by runtime via the canonical scenario and marked runtime-backed in coverage and CARTON.
+- Planned but non-blocking: add a small variant (alternate port or IPv6 loopback) using the same client/profiles; add a “negative harness” profile (remove `system-socket`) expected to fail as a harness/startup error rather than a policy decision.
+- Remaining runtime divergences: `/tmp`→`/private/tmp` VFS canonicalization in filesystem probes; to be addressed via a focused runtime-adversarial family and guardrails.
+
 ## What system info and code we are using
 
 - **System behavior**
