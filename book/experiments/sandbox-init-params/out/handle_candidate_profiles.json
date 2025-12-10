@@ -1,0 +1,254 @@
+[
+  {
+    "source": "usr_share_sandbox",
+    "name": "airportd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "awdd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "bluetoothd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.CommCenter"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.FontValidator"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.USBAgent"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.atsd.internal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.atsd.support"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.bird"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.bootinstalld"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.ckdiscretionaryd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.cloudd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.corespotlightservice"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.fontd.internal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.fontd.support"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.genatsdb.internal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.mobileassetd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.msrpc.lsarpc"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.msrpc.mdssvc"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.msrpc.netlogon"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.msrpc.srvsvc"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.msrpc.wkssvc"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.netbiosd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.smbd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.softwareupdate_firstrun_tasks"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.softwareupdated"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.taskgated-helper"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.usbd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.xscertd-helper"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "com.apple.xscertd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "cvmsCompAgent"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "cvmsServer"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "fontmover"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "fontmoverinternal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "fontworkerinternal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "ftp-proxy"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "gss-acceptor"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "gss-initiator"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "kadmind"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "kcm"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "kdc"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mDNSResponder"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdflagwriter"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mds"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mds_stores"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdworker-bundle"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdworker-mail"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdworker-scan"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdworker-sizing"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "mdworker"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "natpmpd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "pfd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "qlmanage"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklook-satellite-general"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklook-satellite-legacy"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklook-satellite-personal"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklook-satellite"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklookd-job-creation"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "quicklookd"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "watool"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "webdav_agent"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "wfs"
+  },
+  {
+    "source": "usr_share_sandbox",
+    "name": "wifivelocityd"
+  }
+]

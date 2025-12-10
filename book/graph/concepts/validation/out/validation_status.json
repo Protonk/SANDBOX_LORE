@@ -13,7 +13,7 @@
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
   "jobs": [
     {
-      "job_id": "vocab:sonoma-14.4.1",
+      "job_id": "experiment:sandbox-init-params",
       "status": "ok-unchanged",
       "host": {
         "product": "macOS",
@@ -23,130 +23,22 @@
         "machine": "arm64"
       },
       "inputs": [
-        "book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib"
+        "book/experiments/sandbox-init-params/out/validation_summary.json"
       ],
       "outputs": [
-        "book/graph/mappings/vocab/ops.json",
-        "book/graph/mappings/vocab/filters.json",
-        "book/graph/concepts/validation/out/vocab_status.json"
+        "book/graph/concepts/validation/out/experiments/sandbox-init-params/status.json"
       ],
       "tags": [
-        "vocab",
-        "host:sonoma-14.4.1",
-        "smoke",
-        "golden"
-      ],
-      "hashes": {
-        "book/graph/mappings/vocab/ops.json": "e636078ca7efa92ae984e96d2514e9ff4f2d182e5e1da857baab9a15a4a4c4de",
-        "book/graph/mappings/vocab/filters.json": "9e9d6e6590267935ddb399f4009d02ea71eb99f570a78ff855e7d24e5474ca17",
-        "book/graph/concepts/validation/out/vocab_status.json": "91e0aee6a2f9e274fc23ed9a082a6691d42a1a6615d48a08d8da96cd4b9915a8"
-      },
-      "notes": "Verified libsandbox vocab against canonical mappings.",
-      "metrics": {
-        "ops": 196,
-        "filters": 93
-      },
-      "change": "unchanged"
-    },
-    {
-      "job_id": "experiment:field2",
-      "status": "ok-unchanged",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "book/experiments/field2-filters/out/field2_inventory.json",
-        "book/experiments/field2-filters/out/unknown_nodes.json"
-      ],
-      "outputs": [
-        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
-        "book/graph/concepts/validation/out/experiments/field2/status.json"
-      ],
-      "tags": [
-        "experiment:field2",
+        "experiment:sandbox-init-params",
         "experiment",
-        "field2",
-        "smoke"
+        "static-format"
       ],
       "hashes": {
-        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "9ccc9b696f24ae51310a87737c50ef63a274823fef6e6a65de9c080db9695aeb",
-        "book/graph/concepts/validation/out/experiments/field2/status.json": "622761259300da82b46b43c4990c20b97831d67186beb5e702c80efca502cdaa"
+        "book/graph/concepts/validation/out/experiments/sandbox-init-params/status.json": "9d5900d5a711e3266fa90483939479fc14d937cd7fb7e35e48ca81cb2c0a0ccc"
       },
-      "notes": "Normalized field2 inventory and unknown nodes into IR.",
       "metrics": {
-        "profiles": 32,
-        "unknown_nodes": 0
-      },
-      "change": "unchanged"
-    },
-    {
-      "job_id": "experiment:runtime-checks",
-      "status": "ok-unchanged",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "book/experiments/runtime-checks/out/runtime_results.json"
-      ],
-      "outputs": [
-        "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
-        "book/graph/concepts/validation/out/experiments/runtime-checks/status.json"
-      ],
-      "tags": [
-        "experiment:runtime-checks",
-        "experiment",
-        "runtime",
-        "smoke",
-        "golden"
-      ],
-      "hashes": {
-        "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json": "cb7444bb72e8d1147cbc5ed3d3bb18c170e51aa5e0f842004202cb65dca40f54",
-        "book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "0c93792fff2c0eba899edde1f1c2f4b59cbf0da3847e025aedcb98f4a6d2f028"
-      },
-      "notes": "Normalized runtime_results into shared IR.",
-      "metrics": {
-        "entries": 1
-      },
-      "change": "unchanged"
-    },
-    {
-      "job_id": "experiment:system-profile-digest",
-      "status": "ok-unchanged",
-      "host": {
-        "product": "macOS",
-        "version": "14.4.1",
-        "build": "23E224",
-        "kernel": "23.4.0",
-        "machine": "arm64"
-      },
-      "inputs": [
-        "book/experiments/system-profile-digest/out/digests.json"
-      ],
-      "outputs": [
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/status.json"
-      ],
-      "tags": [
-        "experiment:system-profile-digest",
-        "experiment",
-        "system-profiles",
-        "golden"
-      ],
-      "hashes": {
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "d1215374a853b0f7c10fbaae5a8f3195011bface9347593fc970b11474e207a0",
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "e1440a83c0f0c8a30d3694335cbba469d4c9974bb780452b5a68bd7fbd7ac65e"
-      },
-      "notes": "Normalized system profile digests into IR.",
-      "metrics": {
-        "profiles": 3
+        "runs_checked": 2,
+        "mismatches": 0
       },
       "change": "unchanged"
     }
