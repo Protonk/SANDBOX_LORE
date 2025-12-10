@@ -1,0 +1,53 @@
+{
+  "bootkc_hash": null,
+  "bootkc_uuid": null,
+  "events": [
+    {
+      "alignment_status": null,
+      "args": {
+        "handlep": "16e139cf8",
+        "mpc": "9",
+        "xd": "1000"
+      },
+      "caller_classification": null,
+      "caller_image": null,
+      "caller_pc": null,
+      "matched_indices": [],
+      "mpc_decoded": {
+        "extra": [],
+        "field_or_label_slot": null,
+        "fullname": null,
+        "labelname_count": null,
+        "labelnames": null,
+        "loadtime_flags": null,
+        "name": null,
+        "ops": null,
+        "runtime_flags": null
+      },
+      "mpc_fullname_str": null,
+      "mpc_name_str": null,
+      "mpc_ops_ptr": null,
+      "mpc_ops_sample": [],
+      "mpc_raw_slots": [],
+      "mpc_region": null,
+      "notes": null,
+      "target_addr": null,
+      "target_image": null,
+      "target_symbol": "read",
+      "timestamp_ns": null
+    }
+  ],
+  "kaslr_slide": null,
+  "kernel_version": null,
+  "os_build": null,
+  "runtime_world_id": "runtime-mac-policy-dev",
+  "sandbox_kext_hash": null,
+  "sandbox_kext_uuid": null,
+  "sip_config": null,
+  "static_reference": {
+    "op_table_hash": "ea427308ef5b71cf2a8e89de2244bcc8764d09218a9bf21387a0d0633fe98b60",
+    "vocab_filters_hash": "9e9d6e6590267935ddb399f4009d02ea71eb99f570a78ff855e7d24e5474ca17",
+    "vocab_ops_hash": "e636078ca7efa92ae984e96d2514e9ff4f2d182e5e1da857baab9a15a4a4c4de"
+  },
+  "tracing_config": null
+}

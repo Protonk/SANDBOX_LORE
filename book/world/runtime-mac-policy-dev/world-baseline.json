@@ -1,0 +1,17 @@
+{
+  "world_id": "runtime-mac-policy-dev",
+  "capture_reason": "runtime probe staging for mac_policy_register",
+  "host": {
+    "product": "macOS",
+    "version": null,
+    "build": null,
+    "kernel": null,
+    "machine": "arm64",
+    "sip": "enabled (runtime VM; csrutil status enabled)"
+  },
+  "dyld_manifest": "book/world/sonoma-14.4.1-23E224-arm64/dyld-manifest.json",
+  "tcc_state": "not_collected",
+  "profile_format_variant": "modern-heuristic",
+  "apply_gates": "runtime world stub; fbt blocked by SIP; no mac_policy_register visibility via DTrace",
+  "notes": "Placeholder runtime world for mac_policy_register tracing; csrutil status enabled, fbt blocked under SIP. Populate build/kernel/UUID/hashes when a capture is taken on a host with fbt access."
+}

@@ -43,8 +43,11 @@ Trace sandbox/mac_policy registration at runtime and capture live `mac_policy_co
    - Allow outcomes: shape-compatible (weak/strong alignment) or shape-incompatible (suggesting per-policy or alternative tables). No reconstruction or overwrite of static op-table mapping.
 
 ## Evidence & artifacts (to produce)
+- Schema: `runtime_mac_policy_registration.schema.json` (top-level runtime metadata + per-event fields for call info, struct snapshots, and ops samples).
+- Runtime world stub: `book/world/runtime-mac-policy-dev/world-baseline.json` (placeholder metadata pointing at this experiment’s outputs; populate after first capture).
 - Runtime trace/log of `mac_policy_register` calls in the runtime world (call targets, caller classification, argument registers).
-- Normalized JSON (e.g., `runtime_mac_policy_registration.json`) capturing call sites, struct snapshots, ops samples, and image/segment mappings.
+- Normalization toolchain: `normalize.py` converts raw DTrace-style logs into `out/runtime_mac_policy_registration.json` (schema-conformant).
+- Normalized JSON (`out/runtime_mac_policy_registration.json`) capturing call sites, struct snapshots, ops samples, and image/segment mappings.
 - Notes summarizing observed `mpc_ops` pointers and alignment outcomes (weak/strong/incompatible).
 
 ## Proposed JSON schema (`runtime_mac_policy_registration.json`)
@@ -71,3 +74,7 @@ Event object fields:
 
 ## Status
 - Skeleton only; no runtime evidence captured yet.
+- DTrace fbt is blocked by SIP: `dtrace -l -P fbt` yields “failed to match fbt:::: System Integrity Protection is on.” Even with passwordless sudo, fbt probes cannot be enabled.
+- Capture pipeline verified with `syscall` provider: `capture.py` (dynamic D script) against `syscall::read:entry` with `--exit-after-one` produced `out/raw/syscall_read.log` and normalized `out/syscall_read.json` (one EVENT line with args populated). Attempting `-c` command execution under DTrace was denied (`Operation not permitted`), so the pipeline uses exit-after-one with a high-frequency probe.
+- mac_policy_register remains unobservable via DTrace in this SIP-on VM; next step would require SIP/boot-arg changes or a kernel patch/kext path.
+- SIP state check: `sudo csrutil status` reports “enabled.” `sudo nvram csr-active-config` returned not found. Re-running `sudo dtrace -l -P fbt | head` still blocked by SIP.

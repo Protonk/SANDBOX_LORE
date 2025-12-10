@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "runtime_mac_policy_registration",
+  "type": "object",
+  "required": ["runtime_world_id", "events"],
+  "properties": {
+    "runtime_world_id": { "type": "string" },
+    "os_build": { "type": ["string", "null"] },
+    "kernel_version": { "type": ["string", "null"] },
+    "bootkc_uuid": { "type": ["string", "null"] },
+    "bootkc_hash": { "type": ["string", "null"] },
+    "sandbox_kext_uuid": { "type": ["string", "null"] },
+    "sandbox_kext_hash": { "type": ["string", "null"] },
+    "kaslr_slide": { "type": ["string", "null"] },
+    "sip_config": { "type": ["string", "null"] },
+    "tracing_config": { "type": ["string", "null"] },
+    "static_reference": {
+      "type": "object",
+      "properties": {
+        "op_table_hash": { "type": ["string", "null"] },
+        "vocab_ops_hash": { "type": ["string", "null"] },
+        "vocab_filters_hash": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["args"],
+        "properties": {
+          "target_addr": { "type": ["string", "null"] },
+          "target_image": { "type": ["string", "null"] },
+          "target_symbol": { "type": ["string", "null"] },
+          "caller_pc": { "type": ["string", "null"] },
+          "caller_image": { "type": ["string", "null"] },
+          "caller_classification": { "type": ["string", "null"] },
+          "args": {
+            "type": "object",
+            "properties": {
+              "mpc": { "type": ["string", "null"] },
+              "handlep": { "type": ["string", "null"] },
+              "xd": { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
+          },
+          "timestamp_ns": { "type": ["integer", "null"] },
+          "mpc_region": { "type": ["string", "null"] },
+          "mpc_raw_slots": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "mpc_decoded": {
+            "type": "object",
+            "properties": {
+              "name": { "type": ["string", "null"] },
+              "fullname": { "type": ["string", "null"] },
+              "labelnames": { "type": ["string", "null"] },
+              "labelname_count": { "type": ["integer", "null"] },
+              "ops": { "type": ["string", "null"] },
+              "loadtime_flags": { "type": ["string", "null"] },
+              "field_or_label_slot": { "type": ["string", "null"] },
+              "runtime_flags": { "type": ["string", "null"] },
+              "extra": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": false
+          },
+          "mpc_name_str": { "type": ["string", "null"] },
+          "mpc_fullname_str": { "type": ["string", "null"] },
+          "mpc_ops_ptr": { "type": ["string", "null"] },
+          "mpc_ops_sample": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": { "type": "integer" },
+                "addr": { "type": ["string", "null"] },
+                "image": { "type": ["string", "null"] },
+                "segment": { "type": ["string", "null"] },
+                "offset": { "type": ["string", "null"] }
+              },
+              "additionalProperties": false
+            }
+          },
+          "alignment_status": {
+            "type": ["string", "null"],
+            "enum": ["strong", "weak", "incompatible", "unknown", null]
+          },
+          "matched_indices": {
+            "type": "array",
+            "items": { "type": "integer" }
+          },
+          "notes": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

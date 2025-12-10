@@ -34,3 +34,9 @@ This file captures a kext-probe path to collect runtime evidence for `mac_policy
 - Minimize instruction patching; verify alignment and cache sync after writes.
 - PAC handling: strip PAC on code pointers before classification (`xpaclri`/`autia` as appropriate).
 - Keep hooks lightweight (no printf); defer formatting to userland; bound buffers to avoid overruns.
+
+### Current tooling
+- Capture wrapper (`capture.py`) generates a minimal DTrace script on the fly (provider + function) and normalizes output via `normalize.py` into `out/runtime_mac_policy_registration.json`.
+- Current blocker: fbt provider is denied under SIP (“failed to match fbt:::: System Integrity Protection is on”), so mac_policy_register is not observable via DTrace here. syscalls are observable with the `syscall` provider, and the pipeline has been proven against `syscall::read:entry`.
+- First end-to-end probe: `sudo env PYTHONPATH=. .venv/bin/python book/experiments/runtime-mac_policy/capture.py --runtime-world-id runtime-mac-policy-dev --provider syscall --target-func read --exit-after-one --raw-out .../out/raw/syscall_read.log --json-out .../out/syscall_read.json` → produced a single EVENT line and normalized JSON.
+- SIP check: `sudo csrutil status` → enabled. `sudo nvram csr-active-config` not found. Retrying `sudo dtrace -l -P fbt | head` remains blocked.
