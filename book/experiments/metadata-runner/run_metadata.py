@@ -51,6 +51,7 @@ PATH_PAIRS = [
 ]
 OPS = ["file-read-metadata", "file-write*"]
 READ_SYSCALLS = ["lstat", "getattrlist", "setattrlist", "fstat"]
+READ_ATTR_PAYLOADS = ["cmn", "cmn-name", "cmn-times", "file-size"]
 WRITE_SYSCALLS = ["chmod", "utimes", "fchmod", "futimes", "lchown", "fchown", "fchownat", "lutimes"]
 
 
@@ -160,7 +161,7 @@ def ensure_fixtures() -> None:
         p.chmod(0o640)
 
 
-def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, path: str) -> Dict[str, Any]:
+def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, attr_payload: str, path: str) -> Dict[str, Any]:
     """Run a single probe through the Swift runner and parse JSON output."""
     cmd = [
         str(binary),
@@ -170,6 +171,8 @@ def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, path: str) -> 
         op,
         "--syscall",
         syscall,
+        "--attr-payload",
+        attr_payload,
         "--path",
         path,
     ]
@@ -199,18 +202,21 @@ def run_matrix(binary: Path, blobs: Dict[str, Path]) -> Path:
             for alias, canonical in PATH_PAIRS:
                 for target in (alias, canonical):
                     for syscall in syscalls:
-                        rec = run_probe(binary, sb_path, op, syscall, target)
-                        rec.update(
-                            {
-                                "profile_id": profile_id,
-                                "operation": op,
-                                "syscall": syscall,
-                                "requested_path": target,
-                                "sbpl": str(sb_path),
-                                "blob": str(blob),
-                            }
-                        )
-                        results.append(rec)
+                        payloads = READ_ATTR_PAYLOADS if (op == "file-read-metadata" and syscall in ("getattrlist", "setattrlist")) else ["cmn"]
+                        for payload in payloads:
+                            rec = run_probe(binary, sb_path, op, syscall, payload, target)
+                            rec.update(
+                                {
+                                    "profile_id": profile_id,
+                                    "operation": op,
+                                    "syscall": syscall,
+                                    "attr_payload": payload,
+                                    "requested_path": target,
+                                    "sbpl": str(sb_path),
+                                    "blob": str(blob),
+                                }
+                            )
+                            results.append(rec)
     payload = {"world_id": load_world_id(), "results": results}
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / "runtime_results.json"

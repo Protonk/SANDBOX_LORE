@@ -1,4 +1,4 @@
-# Kernel Symbols – Research Report (Sonoma baseline)
+# Kernel Symbols – Research Report
 
 ## Purpose
 Track kernel symbol and string extraction runs for the 14.4.1-23E224 kernelcache and related builds, with a focus on sandbox/AppleMatch/mac_policy anchors that could support later PolicyGraph dispatcher searches. Keep outputs organized so other experiments can reuse them without re-running Ghidra.

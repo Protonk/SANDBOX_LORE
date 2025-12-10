@@ -1,4 +1,4 @@
-# Op-table vs Operation Mapping – Research Report (Sonoma baseline)
+# Op-table vs Operation Mapping – Research Report
 
 ## Purpose
 In the substrate:

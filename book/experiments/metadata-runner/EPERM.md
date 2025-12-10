@@ -24,7 +24,8 @@
 
 ## Interpretation and open questions
 - The persistent `EPERM` on alias paths suggests metadata ops are not benefiting from the alias → canonical rewriting seen for data read/write in `vfs-canonicalization`. This now holds across multiple syscalls (`lstat`, `getattrlist`, `chmod`, `utimes`).
-- Expanded coverage (`lstat`, `getattrlist`, `setattrlist`, `fstat`, `chmod`, `utimes`, `fchmod`, `futimes`, `lchown`, `fchown`, `fchownat`, `lutimes`) and anchor variants (literal, subpath, regex) continue to show alias-deny vs canonical-allow. `setattrlist` returns `EINVAL` on canonical paths and `EPERM` on aliases. Further coverage could include finer-grained attrlists, but for the tested set the pattern is stable.
+- Expanded coverage (`lstat`, `getattrlist`, `setattrlist`, `fstat`, `chmod`, `utimes`, `fchmod`, `futimes`, `lchown`, `fchown`, `fchownat`, `lutimes`) and anchor variants (literal, subpath, regex) shows anchor-sensitive alias handling: literal-both still denies aliases; subpath-both and regex-both allow aliases; alias-only profiles continue to deny all. `setattrlist` returns `EINVAL` on canonical paths and `EPERM` on aliases. Attrlist payload choices (cmn, cmn-name, cmn-times, file-size) did not change these patterns.
+- Structural check: only `/tmp/foo` appears in `anchor_filter_map.json`; literal profiles expose it with field2=6 (subset of expected {0,4,5,6}); regex/subpath profiles don't surface `/tmp/foo` literals in the decoder, so they appear absent in the check. Treat this as partial alignment limited to literal anchors.
 
 ## Mitigation guidance for future agents
 - Use SBPL via `sandbox_init` in this experiment; compiled blob + `sandbox_apply` is likely to hit apply gates on this host.

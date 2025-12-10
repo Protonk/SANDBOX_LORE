@@ -1,4 +1,4 @@
-# Runtime Adversarial Suite – Research Report (Sonoma 14.4.1, arm64, SIP on)
+# Runtime Adversarial Suite – Research Report
 
 ## Purpose
 Deliberately stress static↔runtime alignment for this host using adversarial SBPL profiles. This suite covers three families:

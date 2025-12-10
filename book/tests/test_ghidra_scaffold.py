@@ -11,6 +11,7 @@ class ScaffoldCommandTests(unittest.TestCase):
             build_id="unit",
             base=Path("/tmp/unit_base"),
             kernel=Path("/tmp/unit_base/kernel.kc"),
+            sandbox_kext=Path("/tmp/unit_base/sandbox.kext"),
             userland=Path("/tmp/unit_base/userland.dylib"),
             profiles_dir=Path("/tmp/unit_base/profiles"),
             compiled_textedit=Path("/tmp/unit_base/compiled.sb.bin"),
@@ -38,9 +39,11 @@ class ScaffoldCommandTests(unittest.TestCase):
         self.assertEqual(cmd[import_idx + 1], str(self.build.kernel))
         all_idx = cmd.index("all")
         vm_idx = cmd.index("-vmPath")
-        self.assertLess(all_idx, vm_idx)
-        self.assertEqual(cmd[all_idx + 1], "symsub=match")
+        self.assertGreater(all_idx, vm_idx)
         self.assertEqual(cmd[vm_idx + 1], "/usr/bin/java")
+        # Script args should appear at the tail in the order provided.
+        self.assertEqual(cmd[all_idx + 1], "symsub=match")
+        self.assertEqual(cmd[-2:], ["all", "symsub=match"])
 
     def test_build_process_command_uses_process_flag(self):
         task = scaffold.TASKS["kernel-tag-switch"]

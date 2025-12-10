@@ -4,9 +4,9 @@
 Trace how selected entitlements alter compiled sandbox profiles and the resulting allow/deny behavior. Ground the entitlement concept in concrete profile/filter/parameter changes and, where possible, runtime probes.
 
 ## Baseline & scope
-- World: TDB (record OS/build/SIP when runs are performed).
-- Tooling: small C sample, signing via `codesign`, profile decoding via `profile_ingestion.py`.
-- Entitlements: to be selected (network server/client, mach-lookup exceptions, file access candidates).
+- World: sonoma-14.4.1-23E224-arm64-dyld-2c0602c5 (SIP enabled).
+- Tooling: `entitlement_sample` binaries, App Sandbox stubs under `sb/`, `build_profiles.py` to inline/compile, `diff_profiles.py` to decode/diff, `run_probes.py` for runtime attempts.
+- Entitlements: baseline has only app-sandbox; variant enables `com.apple.security.network.server` and a single mach-lookup global-name (`com.apple.cfprefsd.agent`).
 
 ## Deliverables / expected outcomes
 - Minimal C sample and signed variants (`entitlement_sample`, `entitlement_sample_unsigned`) with extracted entitlements recorded in `out/*.entitlements.plist`.
@@ -16,11 +16,13 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
 
 ## Plan & execution log
 ### Completed
-- **Current status**
-  - Sample program added (`entitlement_sample.c`) and built as `entitlement_sample` (ad-hoc signed with `com.apple.security.network.server`) and `entitlement_sample_unsigned` (signed with empty entitlements).
-  - Entitlements extracted to `out/entitlement_sample.entitlements.plist` and `..._unsigned.entitlements.plist` (network.server present vs empty).
-  - Next steps: derive or synthesize compiled sandbox profiles that reflect these entitlements (e.g., via app sandbox template) and run probes to see behavioral deltas; use the SBPL/Blob wrapper once profiles exist to avoid the earlier `sandbox-exec` roadblock. Current blocker: generating per-entitlement profiles.
-  - Updated harness plan: compile App Sandbox SBPL per entitlement variant and apply via wrapper for runtime probes (network/mach). SBPL path should avoid sandbox-exec issues; need to produce the per-entitlement SBPL first.
+- Sample program built (`entitlement_sample`) and unsigned variant captured with entitlements in `out/entitlement_sample*.entitlements.plist`.
+- App Sandbox stubs derived from `book/profiles/textedit/application.sb` with pinned params/entitlements (`sb/appsandbox-*.sb`); `build_profiles.py` expands/compiles to `sb/build/*.expanded.sb` and `.sb.bin`.
+- Decoded both blobs and wrote structural deltas to `out/profile_diffs.json` (ops present via op_table indices, literal adds/removals, literal_refs deltas, tag deltas) alongside raw decodes in `out/decoded_profiles.json`.
+- Runtime probes via `book/api/SBPL-wrapper/wrapper --blob` with staged binaries under `/private/tmp/entitlement-diff/app_bundle/`:
+  - baseline (app sandbox only): `entitlement_sample` bind denied (`bind: Operation not permitted`), `mach_probe com.apple.cfprefsd.agent` allowed.
+  - network_mach (network.server + mach allowlist): bind allowed, mach-lookup allowed.
+  Results recorded in `out/runtime_results.json`.
 
 ### Planned
 - Show how specific entitlements change compiled profiles and filters/parameters, and how those changes affect runtime behavior. Produce diffs that connect entitlements → SBPL parameters/filters → compiled graph → allow/deny behavior.
@@ -56,63 +58,16 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
   - Notes on environment constraints (e.g., SIP, signing requirements).
 
 ## Evidence & artifacts
-- Source and build scaffolding for `entitlement_sample` under this experiment directory.
-- Extracted entitlements in `book/experiments/entitlement-diff/out/entitlement_sample*.entitlements.plist`.
-- Notes in `Notes.md` describing signing commands, entitlement choices, and the intended harness.
+- Source and build scaffolding for `entitlement_sample` under this experiment directory; extracted entitlements in `out/entitlement_sample*.entitlements.plist`.
+- App Sandbox stubs and compiled outputs in `sb/` and `sb/build/` (expanded SBPL + blobs); build helper `build_profiles.py`.
+- Decodes and structural diffs in `out/decoded_profiles.json` and `out/profile_diffs.json` (includes literal_refs and tag_literal_refs); manifest recorded in `out/manifest.json`.
+- Runtime results in `out/runtime_results.json` (baseline: network bind/outbound denied, mach allowed, container file read/write allowed; network_mach: bind allowed, mach allowed, file read/write allowed, outbound `nc` to localhost still denied).
 
 ## Blockers / risks
-- No reliable pipeline yet from entitlements → concrete App Sandbox profiles on this host; generating per-entitlement profiles is the main blocker.
-- Runtime probes depend on the SBPL/Blob wrapper and may still encounter SIP/TCC or sandbox-apply gates once profiles exist.
+- Runtime observations are limited to the staged binaries and simple probes; broader coverage (other ops/filters) remains open.
+- Entitlement-driven decode diffs are structural; filter/semantic alignment is still provisional until more tag/field2 mapping and runtime coverage exist.
 
 ## Next steps
-- Derive or obtain App Sandbox SBPL templates for the existing signed/unsigned variants (or closely matching profiles) and compile them for this host.
-- Decode and diff the resulting profiles with `profile_ingestion.py`, focusing on filter/parameter changes driven by entitlements.
-- Run a small set of runtime probes (file/network/mach) under each variant using the SBPL/Blob wrapper and record behavioral deltas.
-- Summarize at least one entitlement with a clear profile/filter delta and, if possible, observable runtime behavior.
-# Entitlement Diff – Research Report (Sonoma baseline)
-
-## Purpose
-Compare entitlements, derived App Sandbox SBPL, compiled profiles, and (eventually) runtime behavior for matched binaries on this host. The goal is to turn specific entitlement changes into observable differences in compiled policy and, where possible, runtime allow/deny behavior.
-
-## Baseline & scope
-- World: Sonoma baseline from `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`.
-- Inputs: signed binaries with and without specific entitlements, their extracted entitlements plists, and any derived SBPL/profiles.
-- Tooling: codesign/entitlement extraction helpers, `book.api.sbpl_compile`, and decoder tooling where profile blobs are available.
-
-## Deliverables / expected outcomes
-- A small set of entitlement pairs (with/without, or before/after) with:
-  - entitlement manifests under `out/entitlement_manifest.json` (or similar),
-  - any derived SBPL or compiled profiles under `out/`,
-  - notes on structural differences in compiled profiles where they can be obtained.
-- Clear notes in this Report and in `Notes.md` about which parts of the pipeline are currently blocked (for example, profile derivation from entitlements).
-
-## Plan & execution log
-### Completed
-- Experiment scaffolded (Plan, Notes, this Report).
-- Initial entitlement extraction runs completed for at least one binary pair; manifests captured under `out/` and referenced from `Notes.md`.
-- Pipeline status recorded: entitlement comparison is working; SBPL/profile derivation from entitlements remains blocked on missing tooling and platform behavior on this host.
-
-### Maintenance / rerun plan
-As entitlement tooling improves, reuse this outline:
-
-1. **Scope and setup**
-   - Confirm the host baseline in `book/world/.../world-baseline.json`, this Report, and `Notes.md`.
-   - Choose a small set of binaries where entitlement changes are well-understood and reproducible.
-2. **Entitlement extraction and diff**
-   - Extract entitlements for each binary and write a manifest under `out/entitlement_manifest.json` (or per-pair files).
-   - Record diffs in `Notes.md` and summarize them here.
-3. **Profile derivation (when available)**
-   - Once the pipeline exists, derive App Sandbox SBPL and compiled profiles from those entitlements and decode them.
-   - Capture structural differences (operations, filters, profile layers) in `out/` and summarize them in this Report.
-
-## Evidence & artifacts
-- Entitlement manifests under `book/experiments/entitlement-diff/out/` (file names documented in `Notes.md`).
-- Any SBPL or compiled profile blobs derived from those entitlements as the pipeline comes online.
-
-## Blockers / risks
-- There is not yet a complete, reliable pipeline from entitlements → App Sandbox SBPL → compiled profile on this host; most structural comparisons remain “planned” rather than implemented.
-- Platform behavior and signing/hardening constraints may limit which binaries can be safely used for repeatable comparisons.
-
-## Next steps
-- Tighten the entitlement manifest format and keep it stable under `out/`.
-- Once SBPL/profile derivation is available, run a first end-to-end pair (with/without a single entitlement) and document structural differences.
+- Extend runtime probes to additional operations (e.g., mach-register, outbound network variants) if we add matching helpers.
+- Refine filter-level interpretation as tag/field2 mapping improves; align observed tag_literal_refs with expected entitlement-driven rules.
+- Keep the entitlement manifest format stable and track any further runtime scenarios in `out/runtime_results.json`; consider mapping op-table deltas to vocab IDs once alignment is available.

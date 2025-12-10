@@ -1,8 +1,8 @@
 {
   "runtime:allow_all": {
-    "status": "partial",
-    "profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
-    "base_profile_path": "book/profiles/golden-triple/allow_all.sb.bin",
+    "status": "ok",
+    "profile_path": "book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
+    "base_profile_path": "book/experiments/sbpl-graph-runtime/profiles/allow_all.sb",
     "probes": [
       {
         "name": "read_/etc/hosts",
@@ -10,25 +10,21 @@
         "operation": "file-read*",
         "path": "/etc/hosts",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/allow_all.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/profiles/golden-triple/allow_all.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
           "/private/etc/hosts"
         ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "exit_code": 0,
+        "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+        "stderr": ""
       },
       {
         "name": "read_/tmp/sbpl_rt/read.txt",
@@ -36,25 +32,21 @@
         "operation": "file-read*",
         "path": "/tmp/sbpl_rt/read.txt",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/allow_all.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/profiles/golden-triple/allow_all.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
           "/private/tmp/sbpl_rt/read.txt"
         ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "exit_code": 0,
+        "stdout": "runtime-checks read\n",
+        "stderr": ""
       },
       {
         "name": "write_/tmp/sbpl_rt/write.txt",
@@ -62,33 +54,28 @@
         "operation": "file-write*",
         "path": "/tmp/sbpl_rt/write.txt",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/allow_all.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/profiles/golden-triple/allow_all.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
           "/private/tmp/sbpl_rt/write.txt"
         ],
-        "exit_code": 1,
+        "exit_code": 0,
         "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "stderr": ""
       }
-    ],
-    "notes": "runtime results diverged from expected allow/deny matrix"
+    ]
   },
   "runtime:metafilter_any": {
-    "status": "partial",
-    "profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
-    "base_profile_path": "book/profiles/golden-triple/metafilter_any.sb.bin",
+    "status": "ok",
+    "profile_path": "book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+    "base_profile_path": "book/experiments/sbpl-graph-runtime/profiles/metafilter_any.sb",
     "probes": [
       {
         "name": "read_foo",
@@ -96,25 +83,21 @@
         "operation": "file-read*",
         "path": "/tmp/foo.txt",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
           "/private/tmp/foo.txt"
         ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "exit_code": 0,
+        "stdout": "foo\n",
+        "stderr": ""
       },
       {
         "name": "read_bar",
@@ -122,25 +105,21 @@
         "operation": "file-read*",
         "path": "/tmp/bar.txt",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
           "/private/tmp/bar.txt"
         ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "exit_code": 0,
+        "stdout": "bar\n",
+        "stderr": ""
       },
       {
         "name": "read_other",
@@ -148,28 +127,23 @@
         "operation": "file-read*",
         "path": "/tmp/qux.txt",
         "expected": "allow",
-        "actual": "deny",
-        "match": false,
+        "actual": "allow",
+        "match": true,
         "runtime_result": {
-          "status": "errno",
-          "errno": 1
+          "status": "success",
+          "errno": null
         },
         "violation_summary": null,
         "command": [
-          "book/api/SBPL-wrapper/wrapper",
-          "--blob",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
-          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/profiles/golden-triple/metafilter_any.sb.bin",
+          "book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
           "/private/tmp/qux.txt"
         ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": "sandbox initialization failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\nsandbox_init failed: no version specified\n\nBacktrace: \n<implicit policy library>:239:33:\n\t(target self)\n\n"
+        "exit_code": 0,
+        "stdout": "qux\n",
+        "stderr": ""
       }
-    ],
-    "notes": "runtime results diverged from expected allow/deny matrix"
+    ]
   },
   "bucket4:v1_read": {
     "status": "ok",
@@ -317,5 +291,100 @@
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
+  },
+  "runtime:strict_1": {
+    "status": "ok",
+    "profile_path": "book/profiles/golden-triple/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+    "base_profile_path": "book/profiles/golden-triple/strict_1.sb",
+    "probes": [
+      {
+        "name": "read_strict_ok",
+        "expectation_id": "runtime:strict_1|file-read*|/private/tmp/strict_ok/allow.txt",
+        "operation": "file-read*",
+        "path": "/private/tmp/strict_ok/allow.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "book/experiments/runtime-checks/sandbox_reader",
+          "book/profiles/golden-triple/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+          "/private/tmp/strict_ok/allow.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "strict allow\n",
+        "stderr": ""
+      },
+      {
+        "name": "write_strict_ok",
+        "expectation_id": "runtime:strict_1|file-write*|/private/tmp/strict_ok/allow.txt",
+        "operation": "file-write*",
+        "path": "/private/tmp/strict_ok/allow.txt",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null
+        },
+        "violation_summary": null,
+        "command": [
+          "book/experiments/runtime-checks/sandbox_writer",
+          "book/profiles/golden-triple/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+          "/private/tmp/strict_ok/allow.txt"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "read_/etc/hosts",
+        "expectation_id": null,
+        "operation": "file-read*",
+        "path": "/etc/hosts",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "book/experiments/runtime-checks/sandbox_reader",
+          "book/profiles/golden-triple/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+          "/private/etc/hosts"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      },
+      {
+        "name": "write_/etc/hosts",
+        "expectation_id": null,
+        "operation": "file-write*",
+        "path": "/etc/hosts",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": 2
+        },
+        "violation_summary": "EPERM",
+        "command": [
+          "book/experiments/runtime-checks/sandbox_writer",
+          "book/profiles/golden-triple/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
+          "/private/etc/hosts"
+        ],
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "open target: Operation not permitted\n"
+      }
+    ]
   }
 }

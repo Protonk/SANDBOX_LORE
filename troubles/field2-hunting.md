@@ -1,6 +1,6 @@
-# Field2 hunting
+# Field2 hunting (reopened)
 
->CLOSED: Unknown `filter_arg_raw` values are structurally bounded (tags/ops/fan-in/out) and the kernel treats this slot as a raw u16; further semantic work should live in new experiments or notes and treat this file as fixed context.
+Unknown `filter_arg_raw` values are structurally bounded (tags/ops/fan-in/out) and the kernel treats this slot as a raw u16; earlier work treated this as closed. This note is reopened to track dependencies and coordination points for any further field2 work.
 
 This note captures the hunt for the third 16‑bit payload slot in compiled PolicyGraph nodes on this Sonoma host. Early drafts called it `field2`; the decoder now exposes it as `filter_arg_raw` (with `field2_hi = raw & 0xc000`, `field2_lo = raw & 0x3fff`). The search is **closed**: low values line up with the public filter vocabulary, every remaining unknown is bounded by tag/op context, and the kernel reads this slot as a raw u16 with no hi/lo split or obvious node struct.
 
@@ -28,6 +28,18 @@ Key artifacts (all under `book/experiments/field2-filters/`):
 
 **Bottom line:** `filter_arg_raw` is consumed as a plain u16; hi/lo splitting is an analytic convenience only. The unmapped values remain: 16660, 2560, 10752, 165, 166, 170, 174, 115, 109, 3584, 0xffff.
 
+## Current experiments that touch field2
+
+- `book/experiments/field2-filters` — status: complete (negative). Primary inventories (`out/field2_inventory.json`, `out/unknown_nodes.json`); SBPL probes + Ghidra VM/struct hunts; no hi/lo split.
+- `book/experiments/probe-op-structure` — status: partial. Anchor-aware/tag-aware field2 structuring (`out/anchor_hits.json`, `out/analysis.json`, tag layout assumptions); binds anchors → node indices → field2 values.
+- `book/experiments/anchor-filter-map` — status: partial. Consumes field2 inventories + anchor hits to publish curated anchor → Filter IDs (`book/graph/mappings/anchors/anchor_filter_map.json`, candidates in `out/anchor_filter_candidates.json`); guardrailed by `tests/test_mappings_guardrail.py`.
+- `book/experiments/tag-layout-decode` — status: ok (structural). Publishes literal-bearing tag layouts at `book/graph/mappings/tag_layouts/tag_layouts.json`, used by decoder and field2 consumers.
+- `book/experiments/libsandbox-encoder` — status: partial. Field2 encoder matrix (`out/field2_encoder_matrix.json`) from SBPL→blob probes; explores compiler emission of field2/payloads for selected tags.
+- `book/experiments/node-layout` — status: ok (structural). Node stride/layout census informing where field2/payloads live.
+- `book/experiments/metadata-runner` — status: partial. Structural checks include anchor/field2 consistency (`out/anchor_structural_check.json`).
+- `book/experiments/vfs-canonicalization` — status: partial. Decodes temp profiles; notes field2 payload placement in `out/decode_tmp_profiles.json`.
+- `book/experiments/op-table-operation`, `runtime-adversarial`, `entitlement-diff` — indirect. Use shared decoder/tag layouts (and thus field2 positioning) but do not advance field2 semantics.
+
 ## How we got here (paths and outcomes)
 
 1) **Census and tagging:** `harvest_field2.py` + `unknown_focus.py` over system profiles and probes to locate all unknowns with tag/op/fan-in/fan-out context (`out/field2_inventory.json`, `out/unknown_nodes.json`).
@@ -38,9 +50,3 @@ Key artifacts (all under `book/experiments/field2-filters/`):
 ## Status and closure
 
 Closed. Unknowns are bounded by structure (tags, ops, fan-in/out) but unmapped. No kernel-side hi/lo split or recoverable node struct was found. Further progress would require new work (e.g., helper-level compare/index analysis or userland `libsandbox` compiler study) and should be tracked as a new trouble or experiment, referencing these artifacts for context.
-
-## If reopened later
-
-- Re-use existing artifacts as ground truth (inventories, unknown_nodes, evaluator/helper dumps, struct-scan negative).  
-- Focus any new work on where the raw u16 is *used* (equality tests or table indices), not on recovering a fixed node layout.  
-- Keep this note immutable; log new work in a fresh note and link back here.

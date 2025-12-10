@@ -145,7 +145,7 @@ def _safe_external_location(sym):
     """Return external location if available; tolerate FunctionSymbols lacking getExternalLocation."""
     try:
         return sym.getExternalLocation()
-    except AttributeError:
+    except Exception:
         return None
 
 

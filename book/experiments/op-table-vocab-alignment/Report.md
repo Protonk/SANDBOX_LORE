@@ -1,4 +1,4 @@
-# Op-table ↔ Operation Vocabulary Alignment – Research Report (Sonoma baseline)
+# Op-table ↔ Operation Vocabulary Alignment – Research Report
 
 ## Purpose
 The substrate distinguishes three closely-related concepts:

@@ -1,4 +1,4 @@
-# Tag Layout Decode – Research Report (Sonoma baseline)
+# Tag Layout Decode – Research Report
 
 ## Purpose
 Map node tags that reference literal or regex pools to interpretable layouts (edge fields plus operand fields) using the current decoder and anchor hits. Produce a reusable map at `book/graph/mappings/tag_layouts/tag_layouts.json` for other tooling and book chapters.

@@ -47,6 +47,7 @@ class BuildPaths:
     build_id: str
     base: Path
     kernel: Path
+    sandbox_kext: Path
     userland: Path
     profiles_dir: Path
     compiled_textedit: Path
@@ -59,6 +60,7 @@ class BuildPaths:
             build_id=build_id,
             base=base,
             kernel=base / "kernel" / "BootKernelExtensions.kc",
+            sandbox_kext=base / "kernel" / "sandbox_kext.bin",
             userland=base / "userland" / "libsystem_sandbox.dylib",
             profiles_dir=base / "profiles" / "Profiles",
             compiled_textedit=base / "profiles" / "compiled" / "com.apple.TextEdit.sandbox.sb.bin",
@@ -68,6 +70,7 @@ class BuildPaths:
     def missing(self) -> List[Path]:
         paths = [
             self.kernel,
+            self.sandbox_kext,
             self.userland,
             self.profiles_dir,
             self.compiled_textedit,
@@ -121,6 +124,12 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="kernel",
         description="Dump disassembly for specified functions/addresses.",
     ),
+    "kernel-imports": TaskConfig(
+        name="kernel-imports",
+        script="kernel_imports_scan.py",
+        import_target="kernel",
+        description="Enumerate external symbols/imports and their references.",
+    ),
     "kernel-addr-lookup": TaskConfig(
         name="kernel-addr-lookup",
         script="kernel_addr_lookup.py",
@@ -132,6 +141,12 @@ TASKS: Dict[str, TaskConfig] = {
         script="kernel_function_info.py",
         import_target="kernel",
         description="Emit metadata for specified functions (callers, callees, size).",
+    ),
+    "sandbox-kext-conf-scan": TaskConfig(
+        name="sandbox-kext-conf-scan",
+        script="sandbox_kext_conf_scan.py",
+        import_target="sandbox_kext",
+        description="Scan sandbox kext data segments for mac_policy_conf candidates.",
     ),
     "kernel-imm-search": TaskConfig(
         name="kernel-imm-search",
@@ -193,12 +208,7 @@ def build_headless_command(
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
     # Full import + analysis run that overwrites the program and runs our postScript.
-    cmd = [
-        str(headless),
-        str(project_dir),
-        project_name,
-        "-overwrite",
-    ]
+    cmd = [str(headless), str(project_dir), project_name, "-overwrite"]
     if processor:
         cmd.extend(["-processor", processor])
     if no_analysis:
@@ -208,6 +218,8 @@ def build_headless_command(
     if pre_scripts:
         for script in pre_scripts:
             cmd.extend(["-preScript", script])
+    if vm_path:
+        cmd.extend(["-vmPath", str(vm_path)])
     cmd.extend(
         [
             "-import",
@@ -223,8 +235,6 @@ def build_headless_command(
         ]
     )
     cmd.extend(script_args)
-    if vm_path:
-        cmd.extend(["-vmPath", str(vm_path)])
     return cmd, out_dir
 
 
@@ -246,11 +256,7 @@ def build_process_command(
     headless = resolve_headless_path(ghidra_headless, require_exists=False)
     project_dir = PROJECTS_ROOT
     # Script-only pass against an already-imported project (no overwrite).
-    cmd = [
-        str(headless),
-        str(project_dir),
-        project_name,
-    ]
+    cmd = [str(headless), str(project_dir), project_name]
     if no_analysis:
         cmd.append("-noanalysis")
     if analysis_properties:
@@ -258,6 +264,8 @@ def build_process_command(
     if pre_scripts:
         for script in pre_scripts:
             cmd.extend(["-preScript", script])
+    if vm_path:
+        cmd.extend(["-vmPath", str(vm_path)])
     cmd.extend(
         [
             "-process",
@@ -273,8 +281,6 @@ def build_process_command(
         ]
     )
     cmd.extend(script_args)
-    if vm_path:
-        cmd.extend(["-vmPath", str(vm_path)])
     return cmd, out_dir
 
 

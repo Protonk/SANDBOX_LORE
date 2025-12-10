@@ -1,0 +1,128 @@
+{
+  "results": [
+    {
+      "field2": 0,
+      "filter_name": "path",
+      "notes": "Multiple anchor witnesses in probe-op-structure; present in canonical sys:sample decode (tag 7). Structural coverage ok; runtime to be refreshed.",
+      "runtime_candidate": {
+        "expected": "allow",
+        "operation": "file-read*",
+        "probe_name": "allow-tmp",
+        "profile_id": "adv:path_edges",
+        "result": "deny",
+        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+        "scenario_id": "field2-0-path_edges",
+        "source": "book/graph/mappings/runtime/runtime_signatures.json",
+        "target": "/tmp/runtime-adv/edges/a"
+      },
+      "seed_anchors": [
+        {
+          "anchor": "/etc/hosts",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        },
+        {
+          "anchor": "/tmp/foo",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        }
+      ],
+      "status": "runtime_backed",
+      "target_ops": [
+        "file-read-data",
+        "file-write-data"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    },
+    {
+      "field2": 5,
+      "filter_name": "global-name",
+      "notes": "Global-name appears on multiple anchors (mach + path probes) and in sys:bsd tag 27; runtime backed by mach-lookup traces on this host.",
+      "runtime_candidate": {
+        "expected": "allow",
+        "operation": "mach-lookup",
+        "probe_name": "allow-cfprefsd",
+        "profile_id": "adv:mach_simple_allow",
+        "result": "allow",
+        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
+        "scenario_id": "field2-5-mach-global",
+        "source": "book/graph/mappings/runtime/runtime_signatures.json",
+        "target": "com.apple.cfprefsd.agent"
+      },
+      "seed_anchors": [
+        {
+          "anchor": "preferences/logging",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        },
+        {
+          "anchor": "/etc/hosts",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        }
+      ],
+      "status": "runtime_backed",
+      "target_ops": [
+        "mach-lookup"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    },
+    {
+      "field2": 7,
+      "filter_name": "local",
+      "notes": "Local (mach/socket) has multiple anchor witnesses, including a blocked flow-divert path; present in sys:sample tags 3/7/8. Runtime probes exist for mach/local combos; reuse them here.",
+      "runtime_candidate": {
+        "expected": "allow",
+        "operation": "mach-lookup",
+        "probe_name": "allow-cfprefsd-local",
+        "profile_id": "adv:mach_local_literal",
+        "result": "allow",
+        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
+        "scenario_id": "field2-7-mach-local",
+        "source": "book/graph/mappings/runtime/runtime_signatures.json",
+        "target": "com.apple.cfprefsd.agent"
+      },
+      "seed_anchors": [
+        {
+          "anchor": "/etc/hosts",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        },
+        {
+          "anchor": "flow-divert",
+          "source": "anchor_filter_map",
+          "status": "blocked"
+        }
+      ],
+      "status": "runtime_backed",
+      "target_ops": [
+        "mach-lookup"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    },
+    {
+      "field2": 1,
+      "filter_name": "mount-relative-path",
+      "notes": "Nearby static-only candidate riding the same path ops/profiles as seed0; added to exercise atlas growth. No runtime probe yet.",
+      "runtime_candidate": null,
+      "seed_anchors": [
+        {
+          "anchor": "/etc/hosts",
+          "source": "anchor_filter_map",
+          "status": "partial"
+        }
+      ],
+      "status": "no_runtime_candidate",
+      "target_ops": [
+        "file-read-data",
+        "file-write-data"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    }
+  ],
+  "source_artifacts": {
+    "runtime_signatures": "book/graph/mappings/runtime/runtime_signatures.json",
+    "seeds": "book/experiments/field2-atlas/field2_seeds.json"
+  },
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+}

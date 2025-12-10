@@ -9,18 +9,20 @@ from book.api.ghidra import scaffold
 
 def _stub_build(tmp_dir: Path, build_id: str = "unit") -> scaffold.BuildPaths:
     kernel = tmp_dir / "kernel.kc"
+    sandbox_kext = tmp_dir / "sandbox.kext"
     userland = tmp_dir / "userland.dylib"
     profiles = tmp_dir / "profiles"
     compiled = tmp_dir / "compiled.sb.bin"
     system_version = tmp_dir / "SYSTEM_VERSION.txt"
     profiles.mkdir(parents=True, exist_ok=True)
-    for path in [kernel, userland, compiled, system_version]:
+    for path in [kernel, sandbox_kext, userland, compiled, system_version]:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()
     return scaffold.BuildPaths(
         build_id=build_id,
         base=tmp_dir,
         kernel=kernel,
+        sandbox_kext=sandbox_kext,
         userland=userland,
         profiles_dir=profiles,
         compiled_textedit=compiled,

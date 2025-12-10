@@ -1,4 +1,4 @@
-# Field2 ↔ Filter Mapping – Research Report (Sonoma baseline) — **Status: complete (negative)**
+# Field2 ↔ Filter Mapping – Research Report — **Status: complete (negative)**
 
 ## Purpose
 Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know yet. This experiment is now **closed**: we have exhausted SBPL probing and kernel struct hunting on this host without finding a kernel-side hi/lo split or a Blazakis-style `[tag, filter, u16 arg, u16 edge0, u16 edge1]` node array. `filter_arg_raw` is read as a plain u16 in the kernel VM; the remaining unknowns stay unmapped.
@@ -59,7 +59,7 @@ High/unknown `field2` IDs on this host—such as 16660 (`bsd` tail), 165/166/107
 - Summarizes, in `book/experiments/probe-op-structure/Report.md`, an **“Anchor status summary for this world”** table that distinguishes structurally solid anchors (pinned `filter_id` with guardrail-backed witnesses) from anchors that remain `status: "blocked"`.
 - Feeds the curated anchor layer in `book/graph/mappings/anchors/anchor_filter_map.json`, whose consistency with `anchor_hits.json` is enforced by `book/tests/test_anchor_filter_alignment.py`.
 
-**Usage rule for new agents:** when interpreting `out/field2_inventory.json` and `out/unknown_nodes.json` in this experiment, use the **solid anchors** from `probe-op-structure` (as listed in its Anchor status summary and in `anchor_filter_map.json`) as your safest examples of how specific anchors sit in the graph. Do **not** infer semantics for high/unknown `field2` values beyond what is explicitly recorded in the Limitations/Non-claims sections of both experiments; treat the high IDs in this report as structurally bounded but semantically opaque for this world.
+**Usage rule for new agents:** when interpreting `out/field2_inventory.json` and `out/unknown_nodes.json` in this experiment, use the **solid anchors** from `probe-op-structure` (as listed in its Anchor status summary and in `anchor_filter_map.json`) as your safest examples of how specific anchors sit in the graph. For a field2-first, runtime-tagged slice (0/5/7) see `book/experiments/field2-atlas/`, which flips the axis to “field2 as primary key.” Do **not** infer semantics for high/unknown `field2` values beyond what is explicitly recorded in the Limitations/Non-claims sections of both experiments; treat the high IDs in this report as structurally bounded but semantically opaque for this world.
 
 ## Artifacts index
 - Inventories: `book/experiments/field2-filters/out/field2_inventory.json`, `out/unknown_nodes.json`.

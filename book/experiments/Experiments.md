@@ -79,14 +79,7 @@ Across this life-cycle, experiments remain the primary link between the project�
 
 ---
 
-## 5. Current experiment index (Sonoma baseline)
+## 5. Selected experiment notes (Sonoma baseline)
 
-This section summarizes selected experiments for this world. Status labels are **bedrock**, **mapped-but-partial**, **brittle**, or **blocked**, following the validation tiers in the root `AGENTS.md`.
-
-- **field2-filters** – **mapped-but-partial (structural, closed)**  
-  `book/experiments/field2-filters/`  
-  Maps `field2` usage across canonical system profiles and selected probes (`out/field2_inventory.json`, `out/unknown_nodes.json`). Concludes that `filter_arg_raw` is consumed as a raw u16 on this host and leaves high/unknown values unmapped but tightly bounded. Closed for now; further semantic work should happen in new experiments.
-
-- **probe-op-structure** – **mapped-but-partial (structural, no runtime)**  
-  `book/experiments/probe-op-structure/`  
-  Designs richer SBPL probes and decodes canonical/system profiles to surface tag- and anchor-aware `field2` structure (`out/analysis.json`, `out/anchor_hits.json`). Feeds the anchor mappings under `book/graph/mappings/anchors/` (`anchor_filter_map.json`) and is protected by `book/tests/test_anchor_filter_alignment.py` so mapped anchors always have concrete witnesses.
+- **field2-atlas** – **mapped-but-partial (field2-first, static + runtime)**  
+  Field2-first slice that follows specific field2 IDs (`path`/`global-name`/`local` plus one static-only neighbor) across tag layouts, anchors, canonical system profiles, and runtime signatures. Static records live in `book/experiments/field2-atlas/out/static/field2_records.jsonl`, runtime results in `out/runtime/field2_runtime_results.json`, and the merged atlas/summary in `out/atlas/`. Guardrailed by `book/tests/test_field2_atlas.py` to keep baseline seeds runtime-backed and prevent atlas dropouts.

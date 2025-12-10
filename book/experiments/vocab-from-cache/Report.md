@@ -1,4 +1,4 @@
-# Vocab from Cache – Research Report (Sonoma baseline)
+# Vocab from Cache – Research Report
 
 ## Purpose
 Extract Operation/Filter vocab tables (name ↔ ID) from the macOS dyld shared cache (Sandbox.framework / libsandbox payloads) and align them with decoder‑derived `op_count` / op‑table data from canonical blobs, producing real `ops.json` / `filters.json` for this host.

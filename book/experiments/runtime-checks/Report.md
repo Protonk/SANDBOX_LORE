@@ -1,4 +1,4 @@
-# Runtime Checks – Research Report (Sonoma baseline)
+# Runtime Checks – Research Report
 
 ## Purpose
 Validate that runtime allow/deny behavior for selected profiles matches decoder-derived expectations, especially around bucket‑4 vs bucket‑5 distinctions and canonical system profiles. Capture reproducible traces under `book/graph/mappings/runtime/` and add guardrails.

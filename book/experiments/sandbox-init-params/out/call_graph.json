@@ -1,0 +1,61 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "scenario": "init_params_probe: sandbox_init_with_parameters -> sandbox_compile_string -> sandbox_apply -> __sandbox_ms",
+  "frames": [
+    {
+      "lib": "libsystem_sandbox.dylib",
+      "symbol": "_sandbox_init_with_parameters",
+      "address": "0x18b704980",
+      "arg_roles": [
+        "x0 profile_cstring",
+        "x1 flags",
+        "x2 params_ptr",
+        "x3 error_out_ptr"
+      ],
+      "notes": "dlopen /usr/lib/libsandbox.1.dylib; dlsym sandbox_create_params/set_param/free_params; chooses sandbox_compile_* and sandbox_apply"
+    },
+    {
+      "lib": "libsystem_sandbox.dylib",
+      "symbol": "dlsym->sandbox_compile_string",
+      "address": "callsite 0x18b704b44 -> blraaz x8 @0x18b704b60",
+      "arg_roles": [
+        "x0 profile_cstring",
+        "x1 flags (propagated)",
+        "x2 error_buffer_ptr",
+        "x3 unused (params handled earlier)"
+      ],
+      "notes": "compile SBPL string into profile handle via libsandbox"
+    },
+    {
+      "lib": "libsystem_sandbox.dylib",
+      "symbol": "dlsym->sandbox_apply",
+      "address": "callsite 0x18b704b74 -> blraaz x8 @0x18b704b88",
+      "arg_roles": [
+        "x0 compiled_handle",
+        "x1 container_path_null"
+      ],
+      "notes": "transfers profile handle to libsandbox _sandbox_apply"
+    },
+    {
+      "lib": "libsandbox.1.dylib",
+      "symbol": "_sandbox_apply",
+      "address": "0x183d0985c",
+      "arg_roles": [
+        "x0 profile_handle",
+        "x1 container_path_nullable"
+      ],
+      "notes": "builds arg block from handle fields and container pointer/length"
+    },
+    {
+      "lib": "libsandbox.1.dylib",
+      "symbol": "___sandbox_ms (callsite)",
+      "address": "0x183d098e8",
+      "arg_roles": [
+        "x0 \"Sandbox\" literal",
+        "w1 call_code (1 when handle[0]!=0, else 0)",
+        "x2 pointer to arg block on stack"
+      ],
+      "notes": "MAC syscall stub invoked from _sandbox_apply"
+    }
+  ]
+}

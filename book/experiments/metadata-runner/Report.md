@@ -32,17 +32,17 @@
 - Skeleton established with SBPL probes for alias/canonical/both path sets.
 - `file-write-metadata` is not in the SBPL vocabulary; metadata writes are exercised via `file-write*` using `chmod` and `utimes`.
 - Swift runner built (`metadata_runner.swift`) using `sandbox_init` with SBPL input; driver `run_metadata.py` compiles probes, builds the runner, seeds fixtures, and emits runtime/decode outputs.
-- Matrix coverage expanded: `file-read-metadata` via `lstat`/`getattrlist`/`setattrlist`/`fstat`; `file-write*` via `chmod`/`utimes`/`fchmod`/`futimes`/`lchown`/`fchown`/`fchownat`/`lutimes`; anchor forms tested for each profile family (literal, subpath, regex).
-- Results: canonical-only and both-path profiles allow canonical requests across all tested syscalls and deny alias requests; alias-only profiles deny all. Anchor form does not change the outcome: alias access is denied for literal/subpath/regex anchors. `setattrlist` returns `EINVAL` on canonical paths, `EPERM` on aliases.
+- Matrix coverage expanded: `file-read-metadata` via `lstat`/`getattrlist`/`setattrlist`/`fstat`; `file-write*` via `chmod`/`utimes`/`fchmod`/`futimes`/`lchown`/`fchown`/`fchownat`/`lutimes`; anchor forms tested for each profile family (literal, subpath, regex) and attrlist payload variants (`cmn`, `cmn-name`, `cmn-times`, `file-size`).
+- Results: alias-only profiles deny everything; canonical-only profiles allow canonical paths and deny aliases. Anchor type matters for mixed-path profiles: literal-both still only allows canonical paths, but subpath-both and regex-both allow `/tmp/*` aliases (while `/var/tmp/canon` remains denied). `setattrlist` returns `EINVAL` on canonical paths and `EPERM` on aliases across anchor forms.
 
 ## Evidence & artifacts
 - SBPL probes: `sb/metadata_*.sb`; compiled blobs: `sb/build/*.sb.bin`.
 - Runner + driver: `metadata_runner.swift`, `run_metadata.py` (builds runner to `build/metadata_runner`, ignored in git).
-- Outputs: `out/runtime_results.json` (matrix run) and `out/decode_profiles.json` (anchor summaries).
+- Outputs: `out/runtime_results.json` (matrix run) and `out/decode_profiles.json` (anchor summaries); `out/anchor_structural_check.json` (cross-check vs anchor_filter_map for available anchors).
 
 ## Blockers / risks
 - No SBPL symbol for `file-write-metadata`; metadata writes are probed via `file-write*` using chmod/time/owner syscalls.
-- Alias requests are denied even when alias anchors are present (literal, subpath, or regex) and when canonical anchors appear in the both-path profile, diverging from the data-op canonicalization story; the tested syscall set (`lstat`, `getattrlist`, `setattrlist`, `fstat`, `chmod`, `utimes`, `fchmod`, `futimes`, `lchown`, `fchown`, `fchownat`, `lutimes`) all show this pattern (with `setattrlist` giving `EINVAL` on canonical paths).
+- Alias handling depends on anchor form: literal-both paths still deny alias requests, but subpath-both and regex-both allow `/tmp/*` aliases (while `/var/tmp/canon` stays denied). This diverges from data-op canonicalization (where alias + canonical literals deny alias); continue to treat anchor form as a key variable. `setattrlist` is unstable (`EINVAL` canonical, `EPERM` alias).
 
 ## Next steps
 - Extend syscall coverage to include `setattrlist` (if practical) and any remaining metadata-relevant syscalls to see whether any canonicalize aliases differently.

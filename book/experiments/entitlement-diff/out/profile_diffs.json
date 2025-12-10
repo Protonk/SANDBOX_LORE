@@ -1,0 +1,1283 @@
+{
+  "profiles": {
+    "baseline": {
+      "path": "book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+      "op_count": 255,
+      "node_count": 43,
+      "literal_count": 658,
+      "tag_counts": {
+        "254": 6,
+        "5": 1,
+        "184": 1,
+        "21": 1,
+        "129": 1,
+        "28": 1,
+        "27": 1,
+        "36": 2,
+        "31": 1,
+        "20": 1,
+        "3": 1,
+        "16": 1,
+        "39": 1,
+        "38": 1,
+        "42": 1,
+        "252": 1,
+        "253": 1,
+        "195": 1,
+        "48": 1,
+        "222": 1,
+        "51": 1,
+        "243": 1,
+        "57": 2,
+        "4": 1,
+        "166": 1,
+        "63": 2,
+        "142": 1,
+        "76": 1,
+        "66": 1,
+        "85": 1,
+        "214": 1,
+        "73": 1,
+        "61": 1,
+        "75": 1,
+        "72": 1
+      }
+    },
+    "variant": {
+      "path": "book/experiments/entitlement-diff/sb/build/appsandbox-network-mach.sb.bin",
+      "op_count": 265,
+      "node_count": 56,
+      "literal_count": 684,
+      "tag_counts": {
+        "14": 1,
+        "8": 7,
+        "5": 1,
+        "187": 1,
+        "24": 1,
+        "232": 1,
+        "128": 1,
+        "30": 1,
+        "133": 1,
+        "33": 1,
+        "62": 1,
+        "36": 1,
+        "1": 1,
+        "109": 1,
+        "239": 1,
+        "45": 1,
+        "211": 1,
+        "48": 1,
+        "0": 2,
+        "51": 1,
+        "27": 1,
+        "54": 2,
+        "49": 1,
+        "57": 1,
+        "88": 1,
+        "63": 2,
+        "4": 2,
+        "234": 1,
+        "69": 2,
+        "210": 1,
+        "140": 1,
+        "72": 1,
+        "149": 1,
+        "22": 1,
+        "79": 1,
+        "125": 1,
+        "81": 1,
+        "136": 1,
+        "12": 1,
+        "87": 1,
+        "90": 1,
+        "114": 1,
+        "93": 1,
+        "96": 1,
+        "119": 1
+      }
+    }
+  },
+  "ops": {
+    "added": [
+      {
+        "id": 193,
+        "name": null
+      },
+      {
+        "id": 255,
+        "name": null
+      },
+      {
+        "id": 256,
+        "name": null
+      },
+      {
+        "id": 257,
+        "name": null
+      },
+      {
+        "id": 258,
+        "name": null
+      },
+      {
+        "id": 259,
+        "name": null
+      },
+      {
+        "id": 260,
+        "name": null
+      },
+      {
+        "id": 261,
+        "name": null
+      },
+      {
+        "id": 262,
+        "name": null
+      },
+      {
+        "id": 263,
+        "name": null
+      },
+      {
+        "id": 264,
+        "name": null
+      }
+    ],
+    "removed": [
+      {
+        "id": 194,
+        "name": null
+      },
+      {
+        "id": 197,
+        "name": null
+      },
+      {
+        "id": 198,
+        "name": null
+      },
+      {
+        "id": 199,
+        "name": null
+      }
+    ],
+    "baseline_total": 254,
+    "variant_total": 261
+  },
+  "literals": {
+    "added": [
+      "\nAne",
+      "\nEtworkd",
+      "\nIrelatived.",
+      "\nIusymptomsd",
+      "\nJoreGraphics",
+      "\nKpreferences/",
+      "\nLdnssd.service",
+      "\nMsessionmanager",
+      "\nNcfprefsd.daemon",
+      "\nNwork.statistics",
+      "\nQAppSSO.service-xpc",
+      "\nQystemConfiguration",
+      "\nRtrust-settings.user",
+      "\nSSystemConfiguration.",
+      "\nTSCNetworkReachability",
+      "\nWcfnetwork.cfnetworkagent",
+      "\nWcom.apple.AppSSO.version",
+      "\nWcom.apple.kerberos.plist",
+      "\nWvar/db/datadetectors/sys",
+      "\nfcom.apple.networkextension.tracker-info",
+      "\njusers/entitlement-diff/library/dictionaries",
+      "Bsrc",
+      "Ehelper",
+      "GFNetwork",
+      "Hsymptomsd",
+      "Jorg.h5l.kcm",
+      "LKerberosAgent",
+      "LPPPController",
+      "Lcom.apple.net",
+      "Letc/krb5.conf",
+      "Mcfprefsd.agent",
+      "Oedu.mit.kerberos",
+      "Ttmp/com.apple.csseed.",
+      "U/private/var/run/cupsd",
+      "Ylibrary/colorsync/profiles",
+      "Znsurlstoraged/dafsadata.bin",
+      "b/library/preferences/com.apple.gss.",
+      "klibrary/preferences/com.apple.networkd.plist"
+    ],
+    "removed": [
+      "\nEdaemon",
+      "\nHcfprefsd.",
+      "\nKCoreGraphics",
+      "\nKdictionaries",
+      "\nLmdnsresponder",
+      "\nU/tmp/com.apple.csseed.",
+      "\n_private/var/db/datadetectors/sys",
+      "Dcupsd",
+      "Irelatived.",
+      "P/private/var/run/",
+      "Qcolorsync/profiles",
+      "\\com.apple.trust-settings.user"
+    ]
+  },
+  "literal_refs": {
+    "added": [
+      "\nBmpo",
+      "\nC/tty",
+      "\nCuser",
+      "\nErashes",
+      "\nHGPMClient",
+      "\nHhdd.smart",
+      "\nIcontainer/",
+      "\nOmobile documents",
+      "\nS.videoperformancehud",
+      "\n\\private/tmp/entitlement-diff/",
+      "\nmlibrary/preferences/com.apple.viewbridge.plist",
+      "Cache",
+      "Cburn",
+      "Cpush",
+      "Ecaches",
+      "Flibrary",
+      "H/dev/ttys",
+      "H/volumes/",
+      "Hdocuments",
+      "Htpcamerad",
+      "LKerberosAgent",
+      "Ogroup containers",
+      "PKit.TextFavorites",
+      "Ycom.apple.app-sandbox.read",
+      "]/private/tmp/entitlement-diff/",
+      "b/private/tmp/entitlement-diff/user/",
+      "c/private/tmp/entitlement-diff/cache/",
+      "com.apple.sandbox.oopjit",
+      "f/private/tmp/entitlement-diff/container",
+      "k/users/entitlement-diff/library/colorpickers",
+      "klibrary/preferences/com.apple.networkd.plist",
+      "o/users/entitlement-diff/library/group containers",
+      "o/users/entitlement-diff/library/mobile documents"
+    ],
+    "removed": [
+      "\nErandom",
+      "\nFlibrary",
+      "\nOapp-sandbox.read",
+      "\nOgroup containers",
+      "\nTWorkflowServiceRunner",
+      "\nXcolorsync.install.profile",
+      "Btty",
+      "Cuser",
+      "Ddevfs",
+      "O/.temporaryitems",
+      "P/dev/dtracehelper",
+      "\\com.apple.trust-settings.user",
+      "]/users/entitlement-diff/.trash",
+      "com.apple.cfprefsd.read"
+    ]
+  },
+  "tag_literal_refs": {
+    "0": {
+      "added": [
+        "\nErashes",
+        "\nHGPMClient",
+        "Esystem",
+        "IOCDMedia",
+        "Icom.apple.",
+        "LKerberosAgent"
+      ],
+      "removed": []
+    },
+    "1": {
+      "added": [
+        "\nErashes",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "3": {
+      "added": [],
+      "removed": [
+        "\nFlibrary",
+        "Ddata/",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "4": {
+      "added": [
+        "\nC/tty",
+        "\nErashes",
+        "\nGontainer",
+        "\nIapp_bundle",
+        "Cburn",
+        "H/dev/ttys",
+        "IOCDMedia",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": [
+        "\nXcolorsync.install.profile",
+        "\nxpplication scripts/com.example.entitlement-diff.container",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "5": {
+      "added": [
+        "\nErashes",
+        "\nHhdd.smart",
+        "H/volumes/",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": [
+        "\nFsystem.",
+        "\nFvolume.",
+        "Btty",
+        "P/dev/dtracehelper",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "8": {
+      "added": [
+        "\nC/tty",
+        "\nErashes",
+        "Cdata",
+        "Flibrary",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/",
+        "i/users/entitlement-diff/library/keychains/"
+      ],
+      "removed": []
+    },
+    "12": {
+      "added": [
+        "\nErashes",
+        "\nS.videoperformancehud",
+        "LKerberosAgent",
+        "PKit.TextFavorites",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "14": {
+      "added": [
+        "\nErashes",
+        "Cburn",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "16": {
+      "added": [],
+      "removed": [
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "20": {
+      "added": [],
+      "removed": [
+        "\nFsystem.",
+        "Btty",
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "21": {
+      "added": [],
+      "removed": [
+        "Cuser",
+        "Ddevfs",
+        "IODVDMedia",
+        "\\com.apple.trust-settings.user",
+        "com.apple.sandbox.container"
+      ]
+    },
+    "22": {
+      "added": [
+        "\nErashes",
+        "Ecaches",
+        "Icom.apple.",
+        "Rlibrary/containers/",
+        "g/private/tmp/entitlement-diff/container/"
+      ],
+      "removed": []
+    },
+    "24": {
+      "added": [
+        "\nC/tty",
+        "\nIcontainer/",
+        "IOCDMedia",
+        "IODVDMedia",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "27": {
+      "added": [
+        "\nErashes",
+        "Dr/lib",
+        "Htpcamerad",
+        "IOCDMedia",
+        "Icom.apple."
+      ],
+      "removed": [
+        "\nUapp-sandbox.read-write",
+        "Btmp",
+        "Cuser",
+        "Rcfprefsd.read-write",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "28": {
+      "added": [],
+      "removed": [
+        "Cuser",
+        "Ddevfs",
+        "Icom.apple.",
+        "\\com.apple.trust-settings.user"
+      ]
+    },
+    "30": {
+      "added": [
+        "\nC/tty",
+        "\nCuser",
+        "\nErashes",
+        "\nUapp-sandbox.read-write",
+        "Icom.apple.",
+        "Wcom.apple.aned.read-only"
+      ],
+      "removed": []
+    },
+    "31": {
+      "added": [],
+      "removed": [
+        "\nErandom",
+        "Btmp",
+        "Cuser",
+        "Iapp_bundle",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "33": {
+      "added": [
+        "\nBtmp",
+        "\nC/tty",
+        "\nErashes",
+        "Iapp_bundle",
+        "Icom.apple."
+      ],
+      "removed": []
+    },
+    "36": {
+      "added": [
+        "\nBtmp",
+        "\nErashes",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": [
+        "Cuser",
+        "Ddevfs",
+        "Rlibrary/containers/",
+        "Wcom.apple.aned.read-only",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "38": {
+      "added": [],
+      "removed": [
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "com.apple.cfprefsd.read",
+        "com.apple.cfprefsd.read-write"
+      ]
+    },
+    "39": {
+      "added": [],
+      "removed": [
+        "\nBtmp",
+        "\nHdocuments",
+        "Icom.apple.",
+        "\\com.apple.trust-settings.user"
+      ]
+    },
+    "42": {
+      "added": [],
+      "removed": [
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "com.apple.app-sandbox.read",
+        "com.apple.app-sandbox.read-write"
+      ]
+    },
+    "45": {
+      "added": [
+        "\nErashes",
+        "IOCDMedia",
+        "Icom.apple.",
+        "com.apple.app-sandbox.read",
+        "com.apple.cfprefsd.read-write"
+      ],
+      "removed": []
+    },
+    "48": {
+      "added": [
+        "\nErashes",
+        "Icom.apple.",
+        "Lcfprefsd.read"
+      ],
+      "removed": [
+        "\nNpp-sandbox.read",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "49": {
+      "added": [
+        "\nErashes",
+        "\nHquicktime",
+        "Btmp",
+        "Cpush",
+        "IOCDMedia",
+        "Icom.apple.",
+        "LKerberosAgent"
+      ],
+      "removed": []
+    },
+    "51": {
+      "added": [
+        "\nAus",
+        "\nErashes",
+        "Esystem",
+        "IOCDMedia",
+        "Icom.apple."
+      ],
+      "removed": [
+        "\nHquicktime",
+        "\n\\ers/entitlement-diff/library/",
+        "Dr/lib",
+        "\\com.apple.trust-settings.user"
+      ]
+    },
+    "54": {
+      "added": [
+        "\nC/tty",
+        "\nCuser",
+        "\nGontainer",
+        "\n\\ers/entitlement-diff/library/",
+        "Btmp",
+        "Esounds",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "57": {
+      "added": [
+        "\nIcomponents",
+        "\n\\private/tmp/entitlement-diff/",
+        "Judio/sounds"
+      ],
+      "removed": [
+        "\nxpplication scripts/com.example.entitlement-diff.container",
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "61": {
+      "added": [],
+      "removed": [
+        "\nOgroup containers",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "62": {
+      "added": [
+        "\nCuser",
+        "\nErashes",
+        "Hdocuments",
+        "Icom.apple."
+      ],
+      "removed": []
+    },
+    "63": {
+      "added": [
+        "\nErashes",
+        "Htpcamerad",
+        "IOCDMedia",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/",
+        "f/private/tmp/entitlement-diff/container"
+      ],
+      "removed": [
+        "\nGontainer",
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "66": {
+      "added": [],
+      "removed": [
+        "\nOapp-sandbox.read",
+        "Icom.apple.",
+        "Lcfprefsd.read",
+        "\\com.apple.trust-settings.user"
+      ]
+    },
+    "69": {
+      "added": [
+        "\nErashes",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "Lcfprefsd.read",
+        "Z/appleinternal/applications",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "72": {
+      "added": [
+        "Gdata/tmp",
+        "Icom.apple.",
+        "Rlibrary/containers/",
+        "_/users/entitlement-diff/library/"
+      ],
+      "removed": [
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "73": {
+      "added": [],
+      "removed": [
+        "\nErandom",
+        "\nTWorkflowServiceRunner",
+        "Omobile documents",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "75": {
+      "added": [],
+      "removed": [
+        "Ddevfs",
+        "Rlibrary/containers/",
+        "\\com.apple.trust-settings.user",
+        "g/private/tmp/entitlement-diff/container/"
+      ]
+    },
+    "76": {
+      "added": [],
+      "removed": [
+        "Icom.apple.",
+        "Z/appleinternal/applications",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "79": {
+      "added": [
+        "\nErashes",
+        "Ddata/",
+        "Icom.apple."
+      ],
+      "removed": []
+    },
+    "81": {
+      "added": [
+        "Icom.apple.",
+        "LKerberosAgent",
+        "Ycom.apple.app-sandbox.read",
+        "]/private/tmp/entitlement-diff/",
+        "b/private/tmp/entitlement-diff/user/"
+      ],
+      "removed": []
+    },
+    "85": {
+      "added": [],
+      "removed": [
+        "\nOapp-sandbox.read",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "j/private/tmp/entitlement-diff/container/tmp"
+      ]
+    },
+    "87": {
+      "added": [
+        "\nC/tty",
+        "\nOmobile documents",
+        "\nS.videoperformancehud",
+        "\nmlibrary/preferences/com.apple.viewbridge.plist",
+        "Icom.apple.",
+        "Ogroup containers",
+        "klibrary/preferences/com.apple.networkd.plist"
+      ],
+      "removed": []
+    },
+    "88": {
+      "added": [
+        "\nErashes",
+        "\nxpplication scripts/com.example.entitlement-diff.container",
+        "IOCDMedia",
+        "Icom.apple."
+      ],
+      "removed": []
+    },
+    "90": {
+      "added": [
+        "\nC/tty",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/",
+        "o/users/entitlement-diff/library/group containers",
+        "o/users/entitlement-diff/library/mobile documents"
+      ],
+      "removed": []
+    },
+    "93": {
+      "added": [
+        "\nC/tty",
+        "\nGontainer",
+        "\nHdocuments",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/",
+        "com.apple.sandbox.oopjit"
+      ],
+      "removed": []
+    },
+    "96": {
+      "added": [
+        "\nCuser",
+        "\nHhdd.smart",
+        "Cache",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "109": {
+      "added": [
+        "\nBtmp",
+        "\nErashes",
+        "\nHdocuments",
+        "IOCDMedia",
+        "Icom.apple."
+      ],
+      "removed": []
+    },
+    "114": {
+      "added": [
+        "\nFvolume.",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/",
+        "com.apple.sandbox.oopjit",
+        "k/users/entitlement-diff/library/colorpickers"
+      ],
+      "removed": []
+    },
+    "119": {
+      "added": [
+        "\nC/tty",
+        "\nFsystem.",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/",
+        "klibrary/preferences/com.apple.networkd.plist"
+      ],
+      "removed": []
+    },
+    "125": {
+      "added": [
+        "\nErashes",
+        "Ecaches",
+        "Icom.apple.",
+        "c/private/tmp/entitlement-diff/cache/"
+      ],
+      "removed": []
+    },
+    "128": {
+      "added": [
+        "\nC/tty",
+        "\nIcontainer/",
+        "Icom.apple.",
+        "Rcfprefsd.read-write",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "129": {
+      "added": [],
+      "removed": [
+        "Ddevfs",
+        "Icom.apple.",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "133": {
+      "added": [
+        "\nErashes",
+        "\nIcontainer/",
+        "Icom.apple.",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "136": {
+      "added": [
+        "\nErashes",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "140": {
+      "added": [
+        "\nErashes",
+        "Icom.apple.",
+        "Rlibrary/containers/",
+        "j/private/tmp/entitlement-diff/container/tmp"
+      ],
+      "removed": []
+    },
+    "142": {
+      "added": [],
+      "removed": [
+        "\nGontainer",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "149": {
+      "added": [
+        "\nErashes",
+        "Ecaches",
+        "Icom.apple.",
+        "Omobile documents",
+        "_/users/entitlement-diff/library/"
+      ],
+      "removed": []
+    },
+    "166": {
+      "added": [],
+      "removed": [
+        "Ddevfs",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "184": {
+      "added": [],
+      "removed": [
+        "\nErandom",
+        "\nxpplication scripts/com.example.entitlement-diff.container",
+        "Cdata",
+        "Cuser",
+        "IOCDMedia",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "187": {
+      "added": [
+        "\nBmpo",
+        "\nC/tty",
+        "\nErashes",
+        "Icom.apple.",
+        "com.apple.sandbox.container",
+        "f/private/tmp/entitlement-diff/container"
+      ],
+      "removed": []
+    },
+    "195": {
+      "added": [],
+      "removed": [
+        "\nErandom",
+        "Lned.read-only",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "210": {
+      "added": [
+        "\nErashes",
+        "Icom.apple.",
+        "Lcfprefsd.read"
+      ],
+      "removed": []
+    },
+    "211": {
+      "added": [
+        "\nErashes",
+        "IOCDMedia",
+        "Icom.apple.",
+        "Lned.read-only"
+      ],
+      "removed": []
+    },
+    "214": {
+      "added": [],
+      "removed": [
+        "Gdata/tmp",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "_/users/entitlement-diff/library/"
+      ]
+    },
+    "222": {
+      "added": [],
+      "removed": [
+        "\nAus",
+        "\nIcomponents",
+        "Judio/sounds",
+        "\\com.apple.trust-settings.user"
+      ]
+    },
+    "232": {
+      "added": [
+        "\nErashes",
+        "Icom.apple.",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/",
+        "f/private/tmp/entitlement-diff/container"
+      ],
+      "removed": []
+    },
+    "234": {
+      "added": [
+        "\nErashes",
+        "LKerberosAgent",
+        "]/private/tmp/entitlement-diff/"
+      ],
+      "removed": []
+    },
+    "239": {
+      "added": [
+        "\nErashes",
+        "\nNpp-sandbox.read",
+        "Icom.apple.",
+        "com.apple.app-sandbox.read-write"
+      ],
+      "removed": []
+    },
+    "243": {
+      "added": [],
+      "removed": [
+        "Esounds",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "252": {
+      "added": [],
+      "removed": [
+        "Cdata",
+        "Lcfprefsd.read",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "com.apple.app-sandbox.read"
+      ]
+    },
+    "253": {
+      "added": [],
+      "removed": [
+        "Lcfprefsd.read",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash"
+      ]
+    },
+    "254": {
+      "added": [],
+      "removed": [
+        "\nErandom",
+        "\nFsystem.",
+        "Btty",
+        "Cuser",
+        "Ddevfs",
+        "O/.temporaryitems",
+        "Rlibrary/containers/",
+        "\\com.apple.trust-settings.user",
+        "]/users/entitlement-diff/.trash",
+        "i/users/entitlement-diff/library/keychains/"
+      ]
+    }
+  },
+  "tag_counts": {
+    "0": {
+      "baseline": 0,
+      "variant": 2
+    },
+    "1": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "3": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "4": {
+      "baseline": 1,
+      "variant": 2
+    },
+    "8": {
+      "baseline": 0,
+      "variant": 7
+    },
+    "12": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "14": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "16": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "20": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "21": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "22": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "24": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "28": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "30": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "31": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "33": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "36": {
+      "baseline": 2,
+      "variant": 1
+    },
+    "38": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "39": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "42": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "45": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "49": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "54": {
+      "baseline": 0,
+      "variant": 2
+    },
+    "57": {
+      "baseline": 2,
+      "variant": 1
+    },
+    "61": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "62": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "66": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "69": {
+      "baseline": 0,
+      "variant": 2
+    },
+    "73": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "75": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "76": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "79": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "81": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "85": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "87": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "88": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "90": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "93": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "96": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "109": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "114": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "119": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "125": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "128": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "129": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "133": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "136": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "140": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "142": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "149": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "166": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "184": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "187": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "195": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "210": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "211": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "214": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "222": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "232": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "234": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "239": {
+      "baseline": 0,
+      "variant": 1
+    },
+    "243": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "252": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "253": {
+      "baseline": 1,
+      "variant": 0
+    },
+    "254": {
+      "baseline": 6,
+      "variant": 0
+    }
+  }
+}

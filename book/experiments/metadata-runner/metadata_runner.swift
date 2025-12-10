@@ -180,8 +180,8 @@ func performOperation(op: String, syscall: String, path: String, chmodMode: mode
         var attr = payload.attrlist
         var buf = payload.buffer
         errno = 0
-        let rv = buf.withUnsafeBufferPointer { ptr -> Int32 in
-            return setattrlist(cPath, &attr, ptr.baseAddress, ptr.count, 0)
+        let rv = buf.withUnsafeMutableBytes { bytes -> Int32 in
+            return setattrlist(cPath, &attr, bytes.baseAddress, bytes.count, 0)
         }
         if rv == 0 {
             return ("ok", 0, "setattrlist-ok")

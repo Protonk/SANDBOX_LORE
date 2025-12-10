@@ -1,6 +1,4 @@
-# VFS Canonicalization – Research Report (Sonoma baseline)
-
-## Purpose
+# VFS Canonicalization – Research Report
 
 This experiment checks how `/tmp/foo` and `/private/tmp/foo` behave structurally and at runtime on world `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`, using three simple probe profiles and a minimal runtime harness. The goal is to make one small, explicit statement about VFS canonicalization on this host: structurally, `/tmp/foo` and `/private/tmp/foo` are distinct anchors in the compiled PolicyGraph, but at runtime only the canonical `/private/tmp/...` literal is effective for enforcement.
 

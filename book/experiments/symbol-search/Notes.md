@@ -52,3 +52,29 @@ Use this file for concise notes on commands, findings, and pivots.
 ## Notes on blockers and next pivots
 
 - Migrated scripts to `book/api/ghidra/scripts/`; reran `kernel_string_refs.py` via scaffold (`--process-existing --noanalysis`, args: `all symsub=mac_policy symsub=sandbox extlib=`). Output: 2 string hits (AppleMatch and com.apple.security.sandbox in `__TEXT`), 0 symbol hits, 0 external libraries, 0 references. Confirms no external import table entries or in-text refs for AppleMatch or mac_policy* substrings. Next pivot: move away from symbol-table/string pivots toward mac_policy_conf/mac_policy_ops struct discovery or GOT/stub pattern scans.
+
+## ARM64 string refs rerun (AppleMatch + sandbox)
+
+- `python -m book.api.ghidra.run_task kernel-string-refs --process-existing --no-analysis --exec --script-args "all extlib=match symsub=applematch symsub=sandbox symsub=mac_policy symsub=seatbelt AppleMatch applematch _matchExec _matchUnpack AppleSandbox sandbox seatbelt mac_policy mac policy"` (ARM64 processor + `disable_x86_analyzers.py`). Output: `dumps/ghidra/out/14.4.1-23E224/kernel-string-refs/string_references.json` with 190 string hits, 0 symbol hits, 0 AppleMatch externals (lib filter `match`). Queries include a stray `-vmPath ...` because run_task appends vmPath after script args.
+- All references are LINKEDIT data refs (symbol-table strings). Non-LINKEDIT hits—including `com.apple.security.sandbox` copies in `__TEXT`/`__data` and mac_policy_* strings—have zero recorded callers. AppleMatch/mac_policy pivots remain string-only with no callable anchors.
+- After reordering `-vmPath` ahead of postScript args in the scaffold and rerunning with `extlib=` (no filter), queries are clean (no `-vmPath` in meta), still 190 string hits, 0 symbol hits, 0 externals, and an empty external library summary. No new anchors emerged.
+
+## mac_policy_conf / mac_policy_ops sweep
+
+- `python -m book.api.ghidra.run_task kernel-data-define --process-existing --no-analysis --exec --script-args "addr:0xffffff8002dd2920 addr:0xffffff800020ef10 addr:0xffffff8002650f78 addr:0xffffff8002698000 addr:0xffffff8002726010 addr:0xffffff8002cd1000"`. Targets = sandbox name strings plus a few __const table starts from op_table_candidates.
+- Results (`dumps/ghidra/out/14.4.1-23E224/kernel-data-define/data_refs.json`): two targets typed as strings (`com.apple.security.sandbox`, no callers); four targets typed as pointers to `0xffffff8000100000`. Only `0x-7ffd968000` shows a DATA ref from `0x-7ffc3311d0` (no function); other targets have zero callers.
+- Follow-up `kernel-addr-lookup` on `0xffffff8003ccee30` (the lone ref site) reports a LINKEDIT address with no data/function metadata. No mac_policy_conf/mac_policy_ops struct located; MACF hook path still unresolved and needs a different pivot (GOT/stub decode or mac_policy registration decomp).
+- No dispatcher/helper candidates surfaced to compare against `book/graph/mappings/op_table/op_table.json`; intersection remains empty.
+
+## GOT/import scan (new headless task)
+
+- Added `kernel_imports_scan.py` + scaffold task `kernel-imports` to enumerate externals/GOT stubs and their callers.
+- Run: `python -m book.api.ghidra.run_task kernel-imports --process-existing --no-analysis --exec --script-args "applematch mac_policy sandbox seatbelt"`.
+- Output: `dumps/ghidra/out/14.4.1-23E224/kernel-imports/external_symbols.json` → `symbol_count: 0` (no externals matched substrings). Import/GOT pivot remains dry; need alternative hooks (mac_policy registration decomp or broader, unfiltered import sweep).
+- Unfiltered census: copied `external_symbols.json` to `imports_all.json`; filtered view via `filter_imports.py --substr applematch mac_policy sandbox seatbelt` → `imports_filtered_sandbox.json` with 0 symbols. Kernel imports are ok-negative for these substrings (full census checked).
+
+## mac_policy registration trace attempts (imm-search)
+
+- `kernel_imm_search` for mac_policy_init string address `0xffffff8000c335f4`: 0 instruction hits.
+- `kernel_imm_search` for `_mac_policy_register` string address `0xffffff8003c03208`: 0 instruction hits.
+- No code refs surfaced from these anchors; registration path remains unresolved and needs a different approach (e.g., decomp from nearby functions or symbol-guided search).

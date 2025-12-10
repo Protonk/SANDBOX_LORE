@@ -40,20 +40,9 @@ For a compact narrative of these assumptions and the surrounding ecosystem (TCC,
 - `substrate/Orientation.md` – architecture and policy lifecycle.
 - `substrate/Concepts.md` – core Seatbelt concepts and definitions.
 
-## Testing
-
-Use the single entrypoint to exercise both Python tests and Swift build checks:
-
-```
-source .venv/bin/activate
-make -C book test
-```
-
-The Python harness mirrors the pytest suite without invoking pytest; the Swift step builds `book/graph` to surface compile-time contract issues. There is no alternative test runner.
-
 ## Repository Layout
 
-This section sketches the main pieces of the repo; detailed navigation and norms live in layered `AGENTS.md` files in each subtree.
+Detailed navigation and norms live in layered `AGENTS.md` files in each subtree.
 
 - `book/`  
   Textbook, labs, and tooling:
@@ -80,4 +69,3 @@ This section sketches the main pieces of the repo; detailed navigation and norms
 - `troubles/`  
   Records of crashes, decoding problems, runtime failures, and other issues that need follow-up.
 
-When in doubt about how to extend or use any part of the tree, consult the nearest `AGENTS.md` file; those layered guides are the authoritative “map” for both humans and agents. 

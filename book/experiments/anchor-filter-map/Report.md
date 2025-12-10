@@ -1,4 +1,4 @@
-# Anchor ↔ Filter ID Mapping – Research Report (Sonoma baseline)
+# Anchor ↔ Filter ID Mapping – Research Report
 
 ## Purpose
 Bind anchor labels emitted by `probe-op-structure` to concrete Filter IDs, using anchor hits, `field2` inventories, and vocab artifacts. The resulting map (`book/graph/mappings/anchors/anchor_filter_map.json`) lets other tools interpret anchors in terms of filter semantics on this host.
@@ -70,3 +70,4 @@ If the anchor map needs to be updated (for example, new probes or improved decod
 - Design and run targeted SBPL probes for remaining ambiguous anchors to tighten their mappings.
 - Refresh `anchor_filter_map.json` and candidates after decoder or field2 mapping improvements.
 - Extend guardrail coverage once additional high-confidence anchors are established.
+- For a field2-first, runtime-tagged slice (field2 0/5/7 + a static-only candidate), see `book/experiments/field2-atlas/`, which follows field2 as the primary key across anchors, profiles, and runtime traces.

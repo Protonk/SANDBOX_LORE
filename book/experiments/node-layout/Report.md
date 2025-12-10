@@ -1,4 +1,4 @@
-# Node Layout Experiment – Research Report (Sonoma baseline)
+# Node Layout Experiment – Research Report
 
 ## Purpose
 The synthetic textbook treats compiled sandbox profiles as **PolicyGraphs**: node arrays plus edges derived from SBPL **Operations**, **Filters**, and **Metafilters**, with an **Operation Pointer Table** and shared literal/regex tables.
