@@ -1,0 +1,17 @@
+(version 1)
+
+(deny default)
+
+;; Regex anchors for both alias and canonical paths
+(allow file-read* (regex "^/tmp(/|$)"))
+(allow file-read* (regex "^/private/tmp(/|$)"))
+(allow file-read* (regex "^/var/tmp/canon(/|$)?"))
+(allow file-read* (regex "^/private/var/tmp/canon(/|$)?"))
+(allow file-read-metadata (regex "^/tmp(/|$)"))
+(allow file-read-metadata (regex "^/private/tmp(/|$)"))
+(allow file-read-metadata (regex "^/var/tmp/canon(/|$)?"))
+(allow file-read-metadata (regex "^/private/var/tmp/canon(/|$)?"))
+(allow file-write* (regex "^/tmp(/|$)"))
+(allow file-write* (regex "^/private/tmp(/|$)"))
+(allow file-write* (regex "^/var/tmp/canon(/|$)?"))
+(allow file-write* (regex "^/private/var/tmp/canon(/|$)?"))

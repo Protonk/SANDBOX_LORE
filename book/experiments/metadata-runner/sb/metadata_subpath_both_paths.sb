@@ -1,0 +1,17 @@
+(version 1)
+
+(deny default)
+
+;; Subpath anchors for both alias and canonical paths
+(allow file-read* (subpath "/tmp"))
+(allow file-read* (subpath "/private/tmp"))
+(allow file-read* (subpath "/var/tmp/canon"))
+(allow file-read* (subpath "/private/var/tmp/canon"))
+(allow file-read-metadata (subpath "/tmp"))
+(allow file-read-metadata (subpath "/private/tmp"))
+(allow file-read-metadata (subpath "/var/tmp/canon"))
+(allow file-read-metadata (subpath "/private/var/tmp/canon"))
+(allow file-write* (subpath "/tmp"))
+(allow file-write* (subpath "/private/tmp"))
+(allow file-write* (subpath "/var/tmp/canon"))
+(allow file-write* (subpath "/private/var/tmp/canon"))

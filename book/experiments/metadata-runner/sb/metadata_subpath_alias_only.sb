@@ -1,0 +1,11 @@
+(version 1)
+
+(deny default)
+
+;; Subpath anchors for alias /tmp/* and /var/tmp/canon
+(allow file-read* (subpath "/tmp"))
+(allow file-read* (subpath "/var/tmp/canon"))
+(allow file-read-metadata (subpath "/tmp"))
+(allow file-read-metadata (subpath "/var/tmp/canon"))
+(allow file-write* (subpath "/tmp"))
+(allow file-write* (subpath "/var/tmp/canon"))

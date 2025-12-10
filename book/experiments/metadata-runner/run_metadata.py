@@ -32,9 +32,15 @@ OUT_DIR = BASE_DIR / "out"
 WORLD_PATH = find_repo_root(Path(__file__)) / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "world-baseline.json"
 
 PROFILE_SOURCES = {
-    "metadata_alias_only": SB_DIR / "metadata_alias_only.sb",
-    "metadata_canonical_only": SB_DIR / "metadata_canonical_only.sb",
-    "metadata_both_paths": SB_DIR / "metadata_both_paths.sb",
+    "literal_alias_only": SB_DIR / "metadata_alias_only.sb",
+    "literal_canonical_only": SB_DIR / "metadata_canonical_only.sb",
+    "literal_both_paths": SB_DIR / "metadata_both_paths.sb",
+    "subpath_alias_only": SB_DIR / "metadata_subpath_alias_only.sb",
+    "subpath_canonical_only": SB_DIR / "metadata_subpath_canonical_only.sb",
+    "subpath_both_paths": SB_DIR / "metadata_subpath_both_paths.sb",
+    "regex_alias_only": SB_DIR / "metadata_regex_alias_only.sb",
+    "regex_canonical_only": SB_DIR / "metadata_regex_canonical_only.sb",
+    "regex_both_paths": SB_DIR / "metadata_regex_both_paths.sb",
 }
 
 PATH_PAIRS = [
@@ -44,6 +50,8 @@ PATH_PAIRS = [
     ("/var/tmp/canon", "/private/var/tmp/canon"),
 ]
 OPS = ["file-read-metadata", "file-write*"]
+READ_SYSCALLS = ["lstat", "getattrlist", "setattrlist", "fstat"]
+WRITE_SYSCALLS = ["chmod", "utimes", "fchmod", "futimes", "lchown", "fchown", "fchownat", "lutimes"]
 
 
 def _literal_candidates(s: str) -> set[str]:
@@ -152,7 +160,7 @@ def ensure_fixtures() -> None:
         p.chmod(0o640)
 
 
-def run_probe(binary: Path, sb_path: Path, op: str, path: str) -> Dict[str, Any]:
+def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, path: str) -> Dict[str, Any]:
     """Run a single probe through the Swift runner and parse JSON output."""
     cmd = [
         str(binary),
@@ -160,6 +168,8 @@ def run_probe(binary: Path, sb_path: Path, op: str, path: str) -> Dict[str, Any]
         str(sb_path),
         "--op",
         op,
+        "--syscall",
+        syscall,
         "--path",
         path,
     ]
@@ -185,19 +195,22 @@ def run_matrix(binary: Path, blobs: Dict[str, Path]) -> Path:
     for profile_id, blob in blobs.items():
         sb_path = PROFILE_SOURCES[profile_id]
         for op in OPS:
+            syscalls = READ_SYSCALLS if op == "file-read-metadata" else WRITE_SYSCALLS
             for alias, canonical in PATH_PAIRS:
                 for target in (alias, canonical):
-                    rec = run_probe(binary, sb_path, op, target)
-                    rec.update(
-                        {
-                            "profile_id": profile_id,
-                            "operation": op,
-                            "requested_path": target,
-                            "sbpl": str(sb_path),
-                            "blob": str(blob),
-                        }
-                    )
-                    results.append(rec)
+                    for syscall in syscalls:
+                        rec = run_probe(binary, sb_path, op, syscall, target)
+                        rec.update(
+                            {
+                                "profile_id": profile_id,
+                                "operation": op,
+                                "syscall": syscall,
+                                "requested_path": target,
+                                "sbpl": str(sb_path),
+                                "blob": str(blob),
+                            }
+                        )
+                        results.append(rec)
     payload = {"world_id": load_world_id(), "results": results}
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / "runtime_results.json"

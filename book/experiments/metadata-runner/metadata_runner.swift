@@ -1,6 +1,9 @@
 import Foundation
 import Darwin
 
+@_silgen_name("lutimes")
+func lutimes(_ file: UnsafePointer<CChar>!, _ times: UnsafePointer<timeval>!) -> Int32
+
 @_silgen_name("sandbox_init")
 func sandbox_init(_ profile: UnsafePointer<CChar>, _ flags: UInt64, _ errorbuf: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>!) -> Int32
 
@@ -19,6 +22,8 @@ typealias SandboxApplyFn = @convention(c) (UnsafeMutableRawPointer?) -> Int32
 struct RunResult: Codable {
     let op: String
     let path: String
+    let syscall: String
+    let attr_payload: String?
     let status: String
     let errno: Int32?
     let errno_name: String?
@@ -47,7 +52,7 @@ func errnoName(_ code: Int32) -> String {
 }
 
 func usage() -> Never {
-    fputs("Usage: metadata_runner (--sbpl <profile.sb> | --blob <profile.sb.bin>) --op <file-read-metadata|file-write*> --path <target> [--chmod-mode <octal>]\n", stderr)
+    fputs("Usage: metadata_runner (--sbpl <profile.sb> | --blob <profile.sb.bin>) --op <file-read-metadata|file-write*> --path <target> [--syscall <lstat|getattrlist|setattrlist|chmod|utimes>] [--attr-payload <cmn|cmn-name|cmn-times|file-size>] [--chmod-mode <octal>]\n", stderr)
     exit(64) // EX_USAGE
 }
 
@@ -99,12 +104,54 @@ func applySandbox(blobPath: String?, sbplPath: String?) -> (rc: Int32, err: Int3
     }
 }
 
-func performOperation(op: String, path: String, chmodMode: mode_t) -> (status: String, err: Int32?, message: String?) {
+struct AttrPayload {
+    let attrlist: attrlist
+    let buffer: [UInt8]
+}
+
+func makeAttrPayload(kind: String) -> AttrPayload {
+    var attr = attrlist()
+    attr.bitmapcount = UInt16(ATTR_BIT_MAP_COUNT)
+    var buf = [UInt8]()
+    switch kind {
+    case "cmn-name":
+        attr.commonattr = UInt32(ATTR_CMN_NAME)
+        buf = Array(repeating: 0, count: 256)
+    case "cmn-times":
+        attr.commonattr = UInt32(ATTR_CMN_MODTIME | ATTR_CMN_CHGTIME)
+        var timespecs = [
+            timespec(tv_sec: time_t(time(nil)), tv_nsec: 0),
+            timespec(tv_sec: time_t(time(nil)), tv_nsec: 0),
+        ]
+        buf = withUnsafeBytes(of: &timespecs) { Array($0) }
+    case "file-size":
+        attr.fileattr = UInt32(ATTR_FILE_TOTALSIZE)
+        var size: UInt64 = 0
+        buf = withUnsafeBytes(of: &size) { Array($0) }
+    case "cmn":
+        fallthrough
+    default:
+        attr.commonattr = UInt32(ATTR_CMN_NAME)
+        buf = Array(repeating: 0, count: 256)
+    }
+    return AttrPayload(attrlist: attr, buffer: buf)
+}
+
+func performOperation(op: String, syscall: String, path: String, chmodMode: mode_t, attrPayload: AttrPayload?) -> (status: String, err: Int32?, message: String?) {
     var opErrno: Int32 = 0
     let cPath = path.cString(using: .utf8)!
 
-    switch op {
-    case "file-read-metadata":
+    func openFd(_ flags: Int32 = O_RDONLY) -> Int32 {
+        errno = 0
+        let fd = open(cPath, flags)
+        if fd == -1 {
+            opErrno = errno
+        }
+        return fd
+    }
+
+    switch (op, syscall) {
+    case ("file-read-metadata", "lstat"):
         var st = stat()
         errno = 0
         let rv = lstat(cPath, &st)
@@ -114,7 +161,51 @@ func performOperation(op: String, path: String, chmodMode: mode_t) -> (status: S
             opErrno = errno
             return ("op_failed", opErrno, String(cString: strerror(opErrno)))
         }
-    case "file-write*":
+    case ("file-read-metadata", "getattrlist"):
+        let payload = attrPayload ?? makeAttrPayload(kind: "cmn")
+        var attr = payload.attrlist
+        var buf = payload.buffer
+        errno = 0
+        let rv = buf.withUnsafeMutableBytes { bytes -> Int32 in
+            return getattrlist(cPath, &attr, bytes.baseAddress, bytes.count, 0)
+        }
+        if rv == 0 {
+            return ("ok", 0, "getattrlist-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-read-metadata", "setattrlist"):
+        let payload = attrPayload ?? makeAttrPayload(kind: "cmn")
+        var attr = payload.attrlist
+        var buf = payload.buffer
+        errno = 0
+        let rv = buf.withUnsafeBufferPointer { ptr -> Int32 in
+            return setattrlist(cPath, &attr, ptr.baseAddress, ptr.count, 0)
+        }
+        if rv == 0 {
+            return ("ok", 0, "setattrlist-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-read-metadata", "fstat"):
+        let fd = openFd()
+        if fd == -1 {
+            return ("op_failed", opErrno, "open failed")
+        }
+        var st = stat()
+        errno = 0
+        let rv = fstat(fd, &st)
+        let savedErr = errno
+        close(fd)
+        if rv == 0 {
+            return ("ok", 0, "fstat-ok")
+        } else {
+            opErrno = savedErr
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "chmod"):
         errno = 0
         let rv = chmod(cPath, chmodMode)
         if rv == 0 {
@@ -123,8 +214,116 @@ func performOperation(op: String, path: String, chmodMode: mode_t) -> (status: S
             opErrno = errno
             return ("op_failed", opErrno, String(cString: strerror(opErrno)))
         }
+    case ("file-write*", "utimes"):
+        var now = time_t(time(nil))
+        var times = [
+            timeval(tv_sec: now, tv_usec: 0),
+            timeval(tv_sec: now, tv_usec: 0),
+        ]
+        errno = 0
+        let rv = times.withUnsafeBufferPointer { ptr -> Int32 in
+            return utimes(cPath, ptr.baseAddress)
+        }
+        if rv == 0 {
+            return ("ok", 0, "utimes-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "fchmod"):
+        let fd = openFd(O_WRONLY)
+        if fd == -1 {
+            return ("op_failed", opErrno, "open failed")
+        }
+        errno = 0
+        let rv = fchmod(fd, chmodMode)
+        let savedErr = errno
+        close(fd)
+        if rv == 0 {
+            return ("ok", 0, "fchmod-ok")
+        } else {
+            opErrno = savedErr
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "futimes"):
+        let fd = openFd(O_WRONLY)
+        if fd == -1 {
+            return ("op_failed", opErrno, "open failed")
+        }
+        let now = time_t(time(nil))
+        let times = [
+            timeval(tv_sec: now, tv_usec: 0),
+            timeval(tv_sec: now, tv_usec: 0),
+        ]
+        errno = 0
+        let rv = times.withUnsafeBufferPointer { ptr -> Int32 in
+            return futimes(fd, ptr.baseAddress)
+        }
+        let savedErr = errno
+        close(fd)
+        if rv == 0 {
+            return ("ok", 0, "futimes-ok")
+        } else {
+            opErrno = savedErr
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "lchown"):
+        let uid = getuid()
+        let gid = getgid()
+        errno = 0
+        let rv = lchown(cPath, uid, gid)
+        if rv == 0 {
+            return ("ok", 0, "lchown-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "fchown"):
+        let fd = openFd(O_WRONLY)
+        if fd == -1 {
+            return ("op_failed", opErrno, "open failed")
+        }
+        let uid = getuid()
+        let gid = getgid()
+        errno = 0
+        let rv = fchown(fd, uid, gid)
+        let savedErr = errno
+        close(fd)
+        if rv == 0 {
+            return ("ok", 0, "fchown-ok")
+        } else {
+            opErrno = savedErr
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "fchownat"):
+        let uid = getuid()
+        let gid = getgid()
+        errno = 0
+        let rv = fchownat(AT_FDCWD, cPath, uid, gid, 0)
+        if rv == 0 {
+            return ("ok", 0, "fchownat-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
+    case ("file-write*", "lutimes"):
+        let now = time_t(time(nil))
+        let times = [
+            timeval(tv_sec: now, tv_usec: 0),
+            timeval(tv_sec: now, tv_usec: 0),
+        ]
+        errno = 0
+        let rv = times.withUnsafeBufferPointer { ptr -> Int32 in
+            return lutimes(cPath, ptr.baseAddress)
+        }
+        if rv == 0 {
+            return ("ok", 0, "lutimes-ok")
+        } else {
+            opErrno = errno
+            return ("op_failed", opErrno, String(cString: strerror(opErrno)))
+        }
     default:
-        return ("invalid_op", nil, "unsupported op \(op)")
+        return ("invalid_op", nil, "unsupported \(op) syscall \(syscall)")
     }
 }
 
@@ -135,6 +334,8 @@ func main() {
     var op: String?
     var targetPath: String?
     var chmodMode: mode_t = 0o640
+    var syscallName: String?
+    var attrPayloadKind: String?
 
     var idx = 1
     while idx < args.count {
@@ -163,6 +364,14 @@ func main() {
                 chmodMode = mode_t(parsed)
             }
             idx += 2
+        case "--syscall":
+            guard idx + 1 < args.count else { usage() }
+            syscallName = args[idx + 1]
+            idx += 2
+        case "--attr-payload":
+            guard idx + 1 < args.count else { usage() }
+            attrPayloadKind = args[idx + 1]
+            idx += 2
         default:
             usage()
         }
@@ -174,12 +383,18 @@ func main() {
     if op != "file-read-metadata" && op != "file-write*" {
         usage()
     }
+    if syscallName == nil {
+        syscallName = (op == "file-read-metadata") ? "lstat" : "chmod"
+    }
+    let attrPayload = makeAttrPayload(kind: attrPayloadKind ?? "cmn")
 
     let applyResult = applySandbox(blobPath: blobPath, sbplPath: sbplPath)
     if applyResult.rc != 0 {
         let result = RunResult(
             op: op,
             path: targetPath,
+            syscall: syscallName ?? "unknown",
+            attr_payload: attrPayloadKind,
             status: "apply_failed",
             errno: nil,
             errno_name: nil,
@@ -199,10 +414,12 @@ func main() {
         exit(0)
     }
 
-    let opResult = performOperation(op: op, path: targetPath, chmodMode: chmodMode)
+    let opResult = performOperation(op: op, syscall: syscallName ?? "unknown", path: targetPath, chmodMode: chmodMode, attrPayload: attrPayload)
     let final = RunResult(
         op: op,
         path: targetPath,
+        syscall: syscallName ?? "unknown",
+        attr_payload: attrPayloadKind,
         status: opResult.status,
         errno: opResult.err,
         errno_name: opResult.err.map { errnoName($0) },
