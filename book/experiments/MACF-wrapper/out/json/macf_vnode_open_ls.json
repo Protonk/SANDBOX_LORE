@@ -1,0 +1,236 @@
+{
+  "events": [
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3b8a6008"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_COLLATE",
+        "sys": "open",
+        "timestamp_ns": 12738071089625
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071117041,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bdcad70"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_CTYPE",
+        "sys": "open",
+        "timestamp_ns": 12738071178500
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071188458,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bdc94b0"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_MONETARY",
+        "sys": "open",
+        "timestamp_ns": 12738071272791
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071281333,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bdd2d70"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_NUMERIC",
+        "sys": "open",
+        "timestamp_ns": 12738071298791
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071313333,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bd6d9d8"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_TIME",
+        "sys": "open",
+        "timestamp_ns": 12738071350000
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071356916,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "1",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bd6e740"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x0",
+        "path": "/usr/share/locale/en_US.UTF-8/LC_MESSAGES/LC_MESSAGES",
+        "sys": "open",
+        "timestamp_ns": 12738071376125
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071386833,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "16777217",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b3bbed6c0"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x1000000",
+        "path": ".",
+        "sys": "open",
+        "timestamp_ns": 12738071415541
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071419708,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    },
+    {
+      "args": {
+        "acc_mode": "17825797",
+        "ctx": "0xfffffe166cbd2bc0",
+        "vp": "0xfffffe1b39ddf4a8"
+      },
+      "derived_operation": "vnode_open",
+      "execname": "ls",
+      "hook": "mac_vnode_check_open",
+      "operation_flags": [
+        "read"
+      ],
+      "pid": 10542,
+      "run_id": "macf_vnode_open_ls",
+      "syscall": {
+        "flags": "0x1100004",
+        "path": "/tmp",
+        "sys": "open",
+        "timestamp_ns": 12738071592791
+      },
+      "tid": 80429,
+      "timestamp_ns": 12738071600208,
+      "world_id": "sonoma-14.6.1-debug-vm"
+    }
+  ],
+  "hooks": [
+    "mac_vnode_check_open",
+    "mac_vnop_setxattr"
+  ],
+  "kernel_version": null,
+  "module": "mach_kernel",
+  "os_build": null,
+  "provider": "fbt",
+  "run_command": "/bin/ls /tmp",
+  "run_id": "macf_vnode_open_ls",
+  "runtime_world_id": "sonoma-14.6.1-debug-vm",
+  "scenario": "vnode_open_ls_tmp",
+  "scenario_description": "run /bin/ls /tmp; expect mac_vnode_check_open",
+  "static_reference": {
+    "op_table_hash": "ea427308ef5b71cf2a8e89de2244bcc8764d09218a9bf21387a0d0633fe98b60",
+    "vocab_filters_hash": "9e9d6e6590267935ddb399f4009d02ea71eb99f570a78ff855e7d24e5474ca17",
+    "vocab_ops_hash": "e636078ca7efa92ae984e96d2514e9ff4f2d182e5e1da857baab9a15a4a4c4de"
+  },
+  "summary": {
+    "correlation": {
+      "mac_vnode_check_open/open": {
+        "count": 8,
+        "max_delta_us": 27.416,
+        "min_delta_us": 4.167,
+        "p50_delta_us": 9.25,
+        "p95_delta_us": 22.910099999999993
+      }
+    },
+    "hook_counts": {
+      "mac_vnode_check_open": 8
+    },
+    "run_id": "macf_vnode_open_ls",
+    "runtime_world_id": "sonoma-14.6.1-debug-vm",
+    "scenario": "vnode_open_ls_tmp",
+    "scenario_description": "run /bin/ls /tmp; expect mac_vnode_check_open",
+    "syscall_counts": {
+      "open": 8
+    }
+  },
+  "target_pid": null
+}

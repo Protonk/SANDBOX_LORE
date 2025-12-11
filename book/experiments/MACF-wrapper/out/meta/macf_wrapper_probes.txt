@@ -1,0 +1,21 @@
+   ID   PROVIDER            MODULE                          FUNCTION NAME
+276455        fbt       mach_kernel                    mac_audit_text entry
+276457        fbt       mach_kernel               mac_policy_register entry
+276459        fbt       mach_kernel             mac_policy_unregister entry
+276461        fbt       mach_kernel              mac_schedule_userret entry
+276463        fbt       mach_kernel               mac_labelzone_alloc entry
+276465        fbt       mach_kernel                mac_labelzone_free entry
+276466        fbt       mach_kernel                     mac_label_get entry
+276468        fbt       mach_kernel                     mac_label_set entry
+276470        fbt       mach_kernel              mac_vnode_check_open entry
+276472        fbt       mach_kernel   mac_vnode_check_trigger_resolve entry
+276474        fbt       mach_kernel    mac_mount_check_snapshot_mount entry
+276476        fbt       mach_kernel               mac_vnode_label_get entry
+276478        fbt       mach_kernel               mac_vnode_label_set entry
+276480        fbt       mach_kernel                 mac_vnop_setxattr entry
+276482        fbt       mach_kernel                 mac_vnop_getxattr entry
+276484        fbt       mach_kernel              mac_vnop_removexattr entry
+276486        fbt       mach_kernel       mac_iokit_check_hid_control entry
+276488        fbt       mach_kernel                 mac_file_setxattr entry
+276490        fbt       mach_kernel                 mac_file_getxattr entry
+276492        fbt       mach_kernel              mac_file_removexattr entry

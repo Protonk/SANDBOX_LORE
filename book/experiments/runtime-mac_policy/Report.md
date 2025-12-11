@@ -1,10 +1,11 @@
 # runtime-mac_policy – Research Report
 
 ## Purpose
-Trace sandbox/mac_policy registration at runtime and capture live `mac_policy_conf`/`mac_policy_ops` evidence (call sites, arguments, and resolved pointers). This is not part of the static “book world” for `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`; it describes a future runtime-only world (or set of worlds) that could supply live evidence the static world cannot see. Until such a runtime world exists and is approved, this experiment is design-only; no runtime evidence is present.
+Trace sandbox/mac_policy registration at runtime and capture live `mac_policy_conf`/`mac_policy_ops` evidence (call sites, arguments, and resolved pointers). This is not part of the static “book world” for `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`; it uses a separate runtime-only world to look for evidence the static world cannot see. On the current runtime host no registration events were observed after trace attach.
 
 ## Baseline & scope
-- Static reference: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` (Apple Silicon, SIP on) stays the comparison point for vocab/op-table IR. Runtime observations would come from a separately tagged runtime world on the same host lineage.
+- Static reference: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` (Apple Silicon, SIP on) stays the comparison point for vocab/op-table IR. Runtime observations come from separately tagged runtime worlds and must carry their own host metadata.
+- Current runtime host: VM tagged `runtime-mac-policy-dev` running macOS 14.6.1 (23G93), arm64, SIP disabled to allow `fbt`. This host is intentionally separate from the static baseline.
 - Inputs: runtime tracing/probing of the kernel/mac_policy layer; static mappings and CARTON stay read-only references.
 - Out of scope: cross-version generalizations or any claim not grounded in the eventual runtime world’s behavior.
 
@@ -42,13 +43,15 @@ Trace sandbox/mac_policy registration at runtime and capture live `mac_policy_co
    - For each `mpc_ops`, map entry pointers to image/segment/offset and compare a representative subset of indices against `book/graph/mappings/op_table/op_table.json`.
    - Allow outcomes: shape-compatible (weak/strong alignment) or shape-incompatible (suggesting per-policy or alternative tables). No reconstruction or overwrite of static op-table mapping.
 
-## Evidence & artifacts (to produce)
-- Schema: `runtime_mac_policy_registration.schema.json` (top-level runtime metadata + per-event fields for call info, struct snapshots, and ops samples).
-- Runtime world stub: `book/world/runtime-mac-policy-dev/world-baseline.json` (placeholder metadata pointing at this experiment’s outputs; populate after first capture).
-- Runtime trace/log of `mac_policy_register` calls in the runtime world (call targets, caller classification, argument registers).
-- Normalization toolchain: `normalize.py` converts raw DTrace-style logs into `out/runtime_mac_policy_registration.json` (schema-conformant).
-- Normalized JSON (`out/runtime_mac_policy_registration.json`) capturing call sites, struct snapshots, ops samples, and image/segment mappings.
-- Notes summarizing observed `mpc_ops` pointers and alignment outcomes (weak/strong/incompatible).
+## Evidence & artifacts
+- Schema: `runtime_mac_policy_registration.schema.json`.
+- Tooling: `capture.py` (dynamic DTrace wrapper) and `normalize.py` (raw → schema JSON); covered by `test_normalize.py`.
+- Runtime world metadata: `book/world/runtime-mac-policy-dev/world-baseline.json` (macOS 14.6.1, build 23G93, SIP disabled; runtime-only host).
+- Captures:
+  - `out/raw/fbt_smoketest.log` and `out/fbt_smoketest.json` — single `fbt:mach_kernel:vnode_put:entry` event (pipeline proof).
+  - `out/raw/mac_policy_register_min.log` and `out/mac_policy_register_min.json` — no events (ran with `/bin/ls /`).
+  - `out/raw/mac_policy_register_sleep.log` and `out/mac_policy_register_sleep.json` — no events (5s dwell).
+- Static references: untouched; alignment/struct fields remain empty because no `mac_policy_register` events fired post-attach.
 
 ## Proposed JSON schema (`runtime_mac_policy_registration.json`)
 Top-level object:
@@ -73,8 +76,11 @@ Event object fields:
   - `notes`: freeform string for discrepancies or per-policy hints.
 
 ## Status
-- Skeleton only; no runtime evidence captured yet.
-- DTrace fbt is blocked by SIP: `dtrace -l -P fbt` yields “failed to match fbt:::: System Integrity Protection is on.” Even with passwordless sudo, fbt probes cannot be enabled.
-- Capture pipeline verified with `syscall` provider: `capture.py` (dynamic D script) against `syscall::read:entry` with `--exit-after-one` produced `out/raw/syscall_read.log` and normalized `out/syscall_read.json` (one EVENT line with args populated). Attempting `-c` command execution under DTrace was denied (`Operation not permitted`), so the pipeline uses exit-after-one with a high-frequency probe.
-- mac_policy_register remains unobservable via DTrace in this SIP-on VM; next step would require SIP/boot-arg changes or a kernel patch/kext path.
-- SIP state check: `sudo csrutil status` reports “enabled.” `sudo nvram csr-active-config` returned not found. Re-running `sudo dtrace -l -P fbt | head` still blocked by SIP.
+- Runtime host prepared: SIP disabled (`csrutil status` → disabled); `fbt` probes usable. Host metadata recorded in `book/world/runtime-mac-policy-dev/world-baseline.json`.
+- Pipeline proven with `fbt`: `fbt:mach_kernel:vnode_put:entry` probe produced one EVENT (`out/raw/fbt_smoketest.log`, `out/fbt_smoketest.json`).
+- Target discovery: `fbt:mach_kernel:mac_policy_register:{entry,return}` is present.
+- Outcome: no `mac_policy_register` events observed after attach (both `/bin/ls /` and 5s dwell captures produced zero events). Conclusion: built-in MACF policies, including sandbox, register before DTrace can attach on this host and no dynamic MACF policies register later.
+- Current status: `design-only / blocked by timing (registration pre-attach); pipeline and schema retained for future runtime hosts`. Static references remain untouched; struct/ops alignment unpopulated.
+
+## Conclusion
+On this runtime host (macOS 14.6.1, SIP disabled), DTrace `fbt` works and the capture/normalize pipeline is functional, but `mac_policy_register` never fires after attachment. The experiment is parked as design-only for this host; the tooling and schema remain for future runtime worlds or alternate instrumentation paths.

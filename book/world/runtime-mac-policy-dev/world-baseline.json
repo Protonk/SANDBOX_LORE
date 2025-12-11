@@ -3,15 +3,15 @@
   "capture_reason": "runtime probe staging for mac_policy_register",
   "host": {
     "product": "macOS",
-    "version": null,
-    "build": null,
-    "kernel": null,
+    "version": "14.6.1",
+    "build": "23G93",
+    "kernel": "Darwin Kernel Version 23.6.0: Mon Jul 29 21:13:03 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_VMAPPLE",
     "machine": "arm64",
-    "sip": "enabled (runtime VM; csrutil status enabled)"
+    "sip": "disabled (csrutil status reports disabled; VM is a runtime-only sandbox for tracing)"
   },
   "dyld_manifest": "book/world/sonoma-14.4.1-23E224-arm64/dyld-manifest.json",
   "tcc_state": "not_collected",
   "profile_format_variant": "modern-heuristic",
-  "apply_gates": "runtime world stub; fbt blocked by SIP; no mac_policy_register visibility via DTrace",
-  "notes": "Placeholder runtime world for mac_policy_register tracing; csrutil status enabled, fbt blocked under SIP. Populate build/kernel/UUID/hashes when a capture is taken on a host with fbt access."
+  "apply_gates": "runtime world stub; fbt available after SIP disable; mac_policy_register events not observed (registration likely pre-attach on this host)",
+  "notes": "Runtime-only VM for mac_policy_register tracing. SIP disabled to allow fbt. Host build differs from static baseline; BootKC/sandbox UUID/hash not yet recorded."
 }

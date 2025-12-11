@@ -35,8 +35,9 @@ This file captures a kext-probe path to collect runtime evidence for `mac_policy
 - PAC handling: strip PAC on code pointers before classification (`xpaclri`/`autia` as appropriate).
 - Keep hooks lightweight (no printf); defer formatting to userland; bound buffers to avoid overruns.
 
-### Current tooling
+### Current tooling and status
 - Capture wrapper (`capture.py`) generates a minimal DTrace script on the fly (provider + function) and normalizes output via `normalize.py` into `out/runtime_mac_policy_registration.json`.
-- Current blocker: fbt provider is denied under SIP (“failed to match fbt:::: System Integrity Protection is on”), so mac_policy_register is not observable via DTrace here. syscalls are observable with the `syscall` provider, and the pipeline has been proven against `syscall::read:entry`.
-- First end-to-end probe: `sudo env PYTHONPATH=. .venv/bin/python book/experiments/runtime-mac_policy/capture.py --runtime-world-id runtime-mac-policy-dev --provider syscall --target-func read --exit-after-one --raw-out .../out/raw/syscall_read.log --json-out .../out/syscall_read.json` → produced a single EVENT line and normalized JSON.
-- SIP check: `sudo csrutil status` → enabled. `sudo nvram csr-active-config` not found. Retrying `sudo dtrace -l -P fbt | head` remains blocked.
+- SIP disabled on the runtime VM; `fbt` available.
+- Pipeline proven with `fbt`: `mach_kernel:vnode_put:entry` + `--run-command "/bin/ls /"` + `--exit-after-one` → `out/raw/fbt_smoketest.log`, `out/fbt_smoketest.json` (one EVENT line).
+- mac_policy_register target exists in `fbt` (`mach_kernel:mac_policy_register:{entry,return}`), but captures (`out/raw/mac_policy_register_min.log` / `out/mac_policy_register_min.json` with `/bin/ls /`; `out/raw/mac_policy_register_sleep.log` / `out/mac_policy_register_sleep.json` with `sleep 5`) produced zero events; registration occurs before attach and no dynamic MACF policies register later on this host.
+- Status: design-only on this host; runtime registration evidence is blocked by timing. Tooling retained for a future runtime world where registration can be observed or where a kext/debugger track is acceptable.

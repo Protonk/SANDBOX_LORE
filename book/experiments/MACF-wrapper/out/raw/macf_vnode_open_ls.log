@@ -1,0 +1,20 @@
+com.apple.launchd.sJz4G0zLl1
+macf_wrapper_xattr_test
+powerlog
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071089625 path=/usr/share/locale/en_US.UTF-8/LC_COLLATE flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071117041 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3b8a6008 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071178500 path=/usr/share/locale/en_US.UTF-8/LC_CTYPE flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071188458 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bdcad70 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071272791 path=/usr/share/locale/en_US.UTF-8/LC_MONETARY flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071281333 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bdc94b0 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071298791 path=/usr/share/locale/en_US.UTF-8/LC_NUMERIC flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071313333 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bdd2d70 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071350000 path=/usr/share/locale/en_US.UTF-8/LC_TIME flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071356916 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bd6d9d8 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071376125 path=/usr/share/locale/en_US.UTF-8/LC_MESSAGES/LC_MESSAGES flags=0x0
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071386833 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bd6e740 acc_mode=1
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071415541 path=. flags=0x1000000
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071419708 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b3bbed6c0 acc_mode=16777217
+EVENT kind=syscall sys=open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071592791 path=/tmp flags=0x1100004
+EVENT kind=hook hook=mac_vnode_check_open world=sonoma-14.6.1-debug-vm run_id=macf_vnode_open_ls pid=10542 tid=80429 exec=ls ts=12738071600208 ctx=0xfffffe166cbd2bc0 vp=0xfffffe1b39ddf4a8 acc_mode=17825797
+

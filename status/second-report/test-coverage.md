@@ -1,10 +1,10 @@
 # Test Coverage Inventory
 
-**Kernel summary.** Tests in `book/` are designed as fast guardrails around the Sonoma world’s IR rather than as exhaustive semantic proofs: they strongly pin vocab and mapping structure to this host, give high-confidence runtime stories for a small golden slice of operations and profiles, and largely leave chapters, many experiments, and Swift graph logic to external review.
+ Tests in `book/` are designed as fast guardrails around the Sonoma world’s IR rather than as exhaustive semantic proofs: they strongly pin vocab and mapping structure to this host, give high-confidence runtime stories for a small golden slice of operations and profiles, and largely leave chapters, many experiments, and Swift graph logic to external review.
 
 ## Scope and Entry Points
 
-**Kernel summary.** All automated checks flow through a single CI harness that mirrors pytest discovery without relying on pytest’s runner, and then compiles the Swift graph tools; this keeps “what passes CI” tightly coupled to the host-specific world and the mapping layer.
+ All automated checks flow through a single CI harness that mirrors pytest discovery without relying on pytest’s runner, and then compiles the Swift graph tools; this keeps “what passes CI” tightly coupled to the host-specific world and the mapping layer.
 
 - Single entrypoint: `make -C book test` (default Make target) calls `book/ci.py`, which in turn runs the Python harness and the Swift build once, with coarse-grained stamps in `book/out/ci-stamps/`.
 - Python side: `book/ci.py` fingerprints `book/tests`, `book/api`, `book/graph/concepts/validation`, `book/examples`, and `book/experiments`, then invokes `python -m book.tests.run_all` as a lightweight stand-in for pytest.
@@ -14,7 +14,7 @@
 
 ## High-Level Coverage Picture
 
-**Kernel summary.** Coverage clusters fall into four main bands: (1) structural bedrock for vocab, system profiles, tag layouts, and op-table, (2) CARTON manifest and query API contracts, (3) runtime semantics for a small “golden” operation/profile set plus a VFS canonicalization scenario, and (4) shape and presence checks for experiments, examples, and toolchain builds.
+ Coverage clusters fall into four main bands: (1) structural bedrock for vocab, system profiles, tag layouts, and op-table, (2) CARTON manifest and query API contracts, (3) runtime semantics for a small “golden” operation/profile set plus a VFS canonicalization scenario, and (4) shape and presence checks for experiments, examples, and toolchain builds.
 
 At a high level:
 - Structural/mapping tests aim at the **bedrock** tier: they assert file presence, schema, world pinning, and cross-file consistency for the shared IR in `book/graph/mappings/*` and golden-corpus outputs.
@@ -26,7 +26,7 @@ The sections below expand each band and connect individual tests back to the con
 
 ## Structural / Mapping Guardrails
 
-**Kernel summary.** This cluster pins the static IR for the Sonoma world: Operation/Filter vocab tables, system profile digests, tag layouts, anchor/field2 mappings, and decoder behavior are treated as bedrock, and tests assert that they stay world-pinned, internally consistent, and in sync with golden-corpus and validation outputs.
+ This cluster pins the static IR for the Sonoma world: Operation/Filter vocab tables, system profile digests, tag layouts, anchor/field2 mappings, and decoder behavior are treated as bedrock, and tests assert that they stay world-pinned, internally consistent, and in sync with golden-corpus and validation outputs.
 
 In this band, tests mostly answer “are the mapping JSONs that everything else uses still present, well-formed, and aligned with the concept inventory and world baseline?” rather than “are all semantic claims complete?”. Key pieces:
 
@@ -55,7 +55,7 @@ Together, these tests say: if they pass, the project can treat vocab tables, can
 
 ## CARTON and API Surfaces
 
-**Kernel summary.** The CARTON layer is tested as a frozen projection of the mapping and validation IR: the manifest, coverage and index overlays, and query helpers are all checked so that callers can rely on CARTON as the default read-only view of this world without re-reading raw JSONs.
+ The CARTON layer is tested as a frozen projection of the mapping and validation IR: the manifest, coverage and index overlays, and query helpers are all checked so that callers can rely on CARTON as the default read-only view of this world without re-reading raw JSONs.
 
 - **Manifest and world pinning**
   - `book/tests/test_carton_manifest.py` regenerates `book/api/carton/CARTON.json` via `create_manifest.main()`, then asserts that the manifest’s file set is exactly the expected list (vocab, system digests, runtime signatures, CARTON overlays, and selected validation IR), that every path exists on disk, that SHA-256 hashes match the contents, and that no `generated_at` timestamp sneaks into the manifest.
@@ -74,7 +74,7 @@ When these tests pass, the project can treat CARTON as a faithful, world-pinned 
 
 ## Runtime and Behavioral Probes
 
-**Kernel summary.** Runtime tests provide a dense, host-specific picture for a handful of “golden” profiles and operations, establishing that the static IR (vocab, tag layouts, system digests) agrees with observed kernel behavior for those cases; outside that slice, runtime coverage is explicitly partial.
+ Runtime tests provide a dense, host-specific picture for a handful of “golden” profiles and operations, establishing that the static IR (vocab, tag layouts, system digests) agrees with observed kernel behavior for those cases; outside that slice, runtime coverage is explicitly partial.
 
 - **Golden runtime scenarios**
   - `book/tests/test_runtime_golden.py`, `test_runtime_results_structure.py`, `test_runtime_results_outcomes.py`, `test_runtime_matrix_shape.py`, `test_runtime_results_metafilter.py`, and `test_runtime_results_system_profiles.py` all consume normalized runtime IR from `book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json` and from `book/experiments/runtime-checks/out`. They assert:
@@ -100,7 +100,7 @@ Collectively, these tests justify treating runtime behavior for `file-read*`, `f
 
 ## Experiments, Examples, and Assets
 
-**Kernel summary.** Experiment and example tests are almost entirely structural: they ensure that curated SBPL profiles, experiment outputs, kernel symbol inventories, and example demos remain present and well-shaped so other tools and chapters can rely on them as inputs.
+ Experiment and example tests are almost entirely structural: they ensure that curated SBPL profiles, experiment outputs, kernel symbol inventories, and example demos remain present and well-shaped so other tools and chapters can rely on them as inputs.
 
 - **Experiment outputs**
   - `book/tests/test_experiments.py` inspects artifacts from `book/experiments/node-layout/out`, `op-table-operation/out`, and `op-table-vocab-alignment/out`, checking for expected keys (names, op entries, section lengths, alignment records) and verifying that node-layout decoder blocks contain node counts, tag counts, and op-table offsets. These tests treat those JSON files as stable IR for decoder/op-table work.
@@ -115,7 +115,7 @@ These tests do not claim semantic completeness for the experiments or examples; 
 
 ## Toolchain Build (Swift)
 
-**Kernel summary.** The Swift graph package is exercised only at the “builds successfully” level today; there are no Swift unit tests guarding behavior, so all semantic guarantees for graph IR still come from Python-side validation and mappings.
+ The Swift graph package is exercised only at the “builds successfully” level today; there are no Swift unit tests guarding behavior, so all semantic guarantees for graph IR still come from Python-side validation and mappings.
 
 - `book/ci.py` calls `book/graph/swift_build.py` as a second step after the Python harness and records a `swift-build` stamp in `book/out/ci-stamps/`.
 - The Swift package parses mapping JSONs and emits a lightweight validation report, but CI currently treats any successful build as sufficient; failures stop the build, but no additional assertions are made about Swift-side logic.
@@ -123,7 +123,7 @@ These tests do not claim semantic completeness for the experiments or examples; 
 
 ## Evidence Tiers and Status
 
-**Kernel summary.** Test coverage lines up cleanly with the project’s evidence tiers: structural and vocab clusters are treated as bedrock, runtime/lifecycle work as mapped-but-partial, and much of the narrative/experiment layer as substrate-only or shape-guarded.
+ Test coverage lines up cleanly with the project’s evidence tiers: structural and vocab clusters are treated as bedrock, runtime/lifecycle work as mapped-but-partial, and much of the narrative/experiment layer as substrate-only or shape-guarded.
 
 - **Bedrock cluster**
   - `book/graph/concepts/validation/out/validation_status.json` lists four jobs, all `ok-unchanged` for this world: vocab extraction (`vocab:sonoma-14.4.1`), field2 experiment normalization, runtime-checks normalization, and system-profile-digest IR. Many mapping tests (vocab, system digests, tag layouts, runtime signatures) implicitly assume these jobs have produced their outputs.
@@ -141,7 +141,7 @@ These tests do not claim semantic completeness for the experiments or examples; 
 
 ## Gaps and Next Focus
 
-**Kernel summary.** The main gaps are breadth of runtime semantics, lifecycle/entitlement coverage, Swift-side behavior, and automated checks for narrative drift; closing them will require new experiments and validation jobs rather than just more shape tests.
+ The main gaps are breadth of runtime semantics, lifecycle/entitlement coverage, Swift-side behavior, and automated checks for narrative drift; closing them will require new experiments and validation jobs rather than just more shape tests.
 
 - **Runtime breadth and operation coverage**
   - Today, strong runtime evidence is concentrated on `file-read*`, `file-write*`, `mach-lookup`, and a narrow VFS canonicalization scenario. Most operations in `ops_coverage.json` have `runtime_evidence == False`.

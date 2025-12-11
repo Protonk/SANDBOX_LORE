@@ -46,3 +46,15 @@ def test_normalize_produces_schema_shaped_json(tmp_path: Path):
     event = data["events"][0]
     assert event["args"]["mpc"] == "0xabc"
     assert event["mpc_raw_slots"] == ["0x1", "0x2"]
+
+
+def test_parse_target_symbol_lines(tmp_path: Path):
+    raw = tmp_path / "raw_symbol.log"
+    raw.write_text("EVENT target_symbol=vnode_put mpc=ffff handlep=abcd xd=0\n")
+
+    events = normalize.parse_raw_log(raw.read_text().splitlines())
+    assert len(events) == 1
+    event = events[0]
+    assert event["target_symbol"] == "vnode_put"
+    assert event["args"]["mpc"] == "ffff"
+    assert event["args"]["handlep"] == "abcd"

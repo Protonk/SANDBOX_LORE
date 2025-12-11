@@ -1,0 +1,21 @@
+{
+  "correlation": {
+    "mac_vnode_check_open/open": {
+      "count": 1,
+      "max_delta_us": 19.167,
+      "min_delta_us": 19.167,
+      "p50_delta_us": 19.167,
+      "p95_delta_us": 19.167
+    }
+  },
+  "hook_counts": {
+    "mac_vnode_check_open": 1
+  },
+  "run_id": "macf_setxattr_test",
+  "runtime_world_id": "sonoma-14.6.1-debug-vm",
+  "scenario": "xattr_tmp_file",
+  "scenario_description": "set com.airlock.macfwrapper on out/tmp/macf_wrapper_xattr_test via xattr(1)",
+  "syscall_counts": {
+    "open": 1
+  }
+}
