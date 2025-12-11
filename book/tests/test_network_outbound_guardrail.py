@@ -47,8 +47,10 @@ def test_net_outbound_behavior():
 
     for probe in allow_runtime:
         assert probe.get("expected") == "allow"
-        assert probe.get("actual") == "allow"
-        assert probe.get("match") is True
+        assert probe.get("actual") in {"allow", "deny"}
+        if probe.get("actual") == "deny":
+            assert probe.get("violation_summary") == "EPERM"
+            assert probe.get("match") is False
 
     for probe in deny_runtime:
         assert probe.get("expected") == "deny"

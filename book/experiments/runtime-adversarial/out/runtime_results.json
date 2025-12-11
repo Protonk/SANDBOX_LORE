@@ -1,8 +1,8 @@
 {
   "adv:struct_flat": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/struct_flat.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
     "probes": [
       {
         "name": "allow-ok-root",
@@ -10,21 +10,25 @@
         "operation": "file-read*",
         "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/allowed.txt"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/allowed.txt\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "allow-ok-deep",
@@ -32,21 +36,25 @@
         "operation": "file-read*",
         "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/deep/nested.txt"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/deep/nested.txt\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-blocked",
@@ -58,17 +66,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-outside",
@@ -80,17 +92,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/outside.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-ok-root",
@@ -98,21 +114,25 @@
         "operation": "file-write*",
         "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/allowed.txt"
         ],
-        "exit_code": 0,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": ""
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-ok-deep",
@@ -120,21 +140,25 @@
         "operation": "file-write*",
         "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/deep/nested.txt"
         ],
-        "exit_code": 0,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": ""
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-blocked",
@@ -146,17 +170,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-outside",
@@ -168,24 +196,29 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_flat.sb.bin",
           "/private/tmp/runtime-adv/struct/outside.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:struct_nested": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/struct_nested.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
     "probes": [
       {
         "name": "allow-ok-root",
@@ -193,21 +226,25 @@
         "operation": "file-read*",
         "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/allowed.txt"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/allowed.txt\nruntime-check\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "allow-ok-deep",
@@ -215,21 +252,25 @@
         "operation": "file-read*",
         "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/deep/nested.txt"
         ],
-        "exit_code": 0,
-        "stdout": "runtime-adv fixture for /tmp/runtime-adv/struct/ok/deep/nested.txt\nruntime-check\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-blocked",
@@ -241,17 +282,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-outside",
@@ -263,17 +308,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/outside.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-ok-root",
@@ -281,21 +330,25 @@
         "operation": "file-write*",
         "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/allowed.txt"
         ],
-        "exit_code": 0,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": ""
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-ok-deep",
@@ -303,21 +356,25 @@
         "operation": "file-write*",
         "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/ok/deep/nested.txt"
         ],
-        "exit_code": 0,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": ""
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-blocked",
@@ -329,17 +386,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-outside",
@@ -351,24 +412,29 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/struct_nested.sb.bin",
           "/private/tmp/runtime-adv/struct/outside.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:path_edges": {
     "status": "partial",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/path_edges.sb",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
     "probes": [
       {
         "name": "allow-tmp",
@@ -380,17 +446,21 @@
         "match": false,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/a"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-private",
@@ -402,17 +472,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/a"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "allow-subpath",
@@ -424,17 +498,21 @@
         "match": false,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/okdir/item.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-dotdot",
@@ -446,17 +524,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_reader",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-tmp",
@@ -468,17 +550,21 @@
         "match": false,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/a"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-private",
@@ -490,17 +576,21 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/a"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-subpath",
@@ -512,17 +602,21 @@
         "match": false,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/okdir/item.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "write-dotdot",
@@ -534,25 +628,29 @@
         "match": true,
         "runtime_result": {
           "status": "errno",
-          "errno": 2
+          "errno": 1
         },
         "violation_summary": "EPERM",
         "command": [
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
+          "--",
           "book/experiments/runtime-checks/sandbox_writer",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "book/experiments/runtime-adversarial/out/sb_build/path_edges.sb.bin",
           "/private/tmp/runtime-adv/edges/blocked.txt"
         ],
-        "exit_code": 2,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "open target: Operation not permitted\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:mach_simple_allow": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/mach_simple_allow.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_simple_allow.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_simple_allow.sb.bin",
     "probes": [
       {
         "name": "allow-cfprefsd",
@@ -560,23 +658,24 @@
         "operation": "mach-lookup",
         "path": "com.apple.cfprefsd.agent",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_simple_allow.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.cfprefsd.agent"
         ],
-        "exit_code": 0,
-        "stdout": "{\"kr\":0}\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-bogus",
@@ -590,24 +689,26 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_simple_allow.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.sandboxadversarial.fake"
         ],
         "exit_code": 1,
-        "stdout": "{\"kr\":1100}\n",
-        "stderr": ""
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:mach_simple_variants": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/mach_simple_variants.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_simple_variants.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_simple_variants.sb.bin",
     "probes": [
       {
         "name": "allow-cfprefsd",
@@ -615,23 +716,24 @@
         "operation": "mach-lookup",
         "path": "com.apple.cfprefsd.agent",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_simple_variants.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.cfprefsd.agent"
         ],
-        "exit_code": 0,
-        "stdout": "{\"kr\":0}\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-bogus",
@@ -645,24 +747,26 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_simple_variants.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.sandboxadversarial.fake"
         ],
         "exit_code": 1,
-        "stdout": "{\"kr\":1100}\n",
-        "stderr": ""
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:mach_local_literal": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/mach_local_literal.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_local_literal.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_local_literal.sb.bin",
     "probes": [
       {
         "name": "allow-cfprefsd-local",
@@ -670,23 +774,24 @@
         "operation": "mach-lookup",
         "path": "com.apple.cfprefsd.agent",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_local_literal.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.cfprefsd.agent"
         ],
-        "exit_code": 0,
-        "stdout": "{\"kr\":0}\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-bogus-local",
@@ -700,24 +805,26 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_local_literal.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.sandboxadversarial.fake"
         ],
         "exit_code": 1,
-        "stdout": "{\"kr\":1102}\n",
-        "stderr": ""
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:mach_local_regex": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/mach_local_regex.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_local_regex.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/mach_local_regex.sb.bin",
     "probes": [
       {
         "name": "allow-cfprefsd-local",
@@ -725,23 +832,24 @@
         "operation": "mach-lookup",
         "path": "com.apple.cfprefsd.agent",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_local_regex.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.cfprefsd.agent"
         ],
-        "exit_code": 0,
-        "stdout": "{\"kr\":0}\n",
-        "stderr": ""
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       },
       {
         "name": "deny-bogus-local",
@@ -755,93 +863,69 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/mach_local_regex.sb.bin",
           "--",
           "book/experiments/runtime-checks/mach_probe",
           "com.apple.sandboxadversarial.fake"
         ],
         "exit_code": 1,
-        "stdout": "{\"kr\":1102}\n",
-        "stderr": ""
+        "stdout": "",
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:net_outbound_allow": {
-    "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/net_outbound_allow.sb",
+    "status": "partial",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/net_outbound_allow.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/net_outbound_allow.sb.bin",
     "probes": [
       {
         "name": "tcp-loopback",
         "expectation_id": "adv:net_outbound_allow:tcp-loopback",
         "operation": "network-outbound",
-        "path": "127.0.0.1:53653",
+        "path": "127.0.0.1",
         "expected": "allow",
-        "actual": "allow",
-        "match": true,
+        "actual": "deny",
+        "match": false,
         "runtime_result": {
-          "status": "success",
-          "errno": null
+          "status": "errno",
+          "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/net_outbound_allow.sb.bin",
           "--",
           "/usr/bin/nc",
           "-z",
           "-w",
           "2",
           "127.0.0.1",
-          "53653"
+          "80"
         ],
-        "exit_code": 0,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "Connection to 127.0.0.1 port 53653 [tcp/*] succeeded!\n"
-      },
-      {
-        "name": "tcp-loopback-2",
-        "expectation_id": "adv:net_outbound_allow:tcp-loopback-2",
-        "operation": "network-outbound",
-        "path": "127.0.0.1:53654",
-        "expected": "allow",
-        "actual": "allow",
-        "match": true,
-        "runtime_result": {
-          "status": "success",
-          "errno": null
-        },
-        "violation_summary": null,
-        "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb",
-          "--",
-          "/usr/bin/nc",
-          "-z",
-          "-w",
-          "2",
-          "127.0.0.1",
-          "53654"
-        ],
-        "exit_code": 0,
-        "stdout": "",
-        "stderr": "Connection to 127.0.0.1 port 53654 [tcp/*] succeeded!\n"
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
-    ]
+    ],
+    "notes": "runtime results diverged from expected allow/deny matrix"
   },
   "adv:net_outbound_deny": {
     "status": "ok",
-    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb",
-    "base_profile_path": "book/experiments/runtime-adversarial/sb/net_outbound_deny.sb",
+    "profile_path": "book/experiments/runtime-adversarial/out/sb_build/net_outbound_deny.sb.bin",
+    "base_profile_path": "book/experiments/runtime-adversarial/out/sb_build/net_outbound_deny.sb.bin",
     "probes": [
       {
         "name": "tcp-loopback",
         "expectation_id": "adv:net_outbound_deny:tcp-loopback",
         "operation": "network-outbound",
-        "path": "127.0.0.1:53653",
+        "path": "127.0.0.1",
         "expected": "deny",
         "actual": "deny",
         "match": true,
@@ -849,49 +933,22 @@
           "status": "errno",
           "errno": 1
         },
-        "violation_summary": null,
+        "violation_summary": "EPERM",
         "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb",
+          "book/api/SBPL-wrapper/wrapper",
+          "--blob",
+          "book/experiments/runtime-adversarial/out/sb_build/net_outbound_deny.sb.bin",
           "--",
           "/usr/bin/nc",
           "-z",
           "-w",
           "2",
           "127.0.0.1",
-          "53653"
+          "80"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": ""
-      },
-      {
-        "name": "tcp-loopback-2",
-        "expectation_id": "adv:net_outbound_deny:tcp-loopback-2",
-        "operation": "network-outbound",
-        "path": "127.0.0.1:53654",
-        "expected": "deny",
-        "actual": "deny",
-        "match": true,
-        "runtime_result": {
-          "status": "errno",
-          "errno": 1
-        },
-        "violation_summary": null,
-        "command": [
-          "book/experiments/runtime-checks/sandbox_runner",
-          "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb",
-          "--",
-          "/usr/bin/nc",
-          "-z",
-          "-w",
-          "2",
-          "127.0.0.1",
-          "53654"
-        ],
-        "exit_code": 1,
-        "stdout": "",
-        "stderr": ""
+        "stderr": "sandbox_apply: Operation not permitted\n"
       }
     ]
   }

@@ -13,6 +13,10 @@ FILES_TO_COPY = [
     "expected_matrix.json",
     "mismatch_summary.json",
     "impact_map.json",
+    "runtime_events.normalized.json",
+]
+DIRS_TO_COPY = [
+    "runtime_mappings",
 ]
 
 
@@ -42,6 +46,15 @@ def main() -> None:
         print("Missing from source:")
         for name in missing:
             print(f"  {name}")
+
+    for dirname in DIRS_TO_COPY:
+        src_dir = SRC_DIR / dirname
+        dst_dir = DST_DIR / dirname
+        if src_dir.exists():
+            shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+            print(f"Copied directory: {dst_dir}")
+        else:
+            print(f"Missing directory: {dirname}")
 
 
 if __name__ == "__main__":

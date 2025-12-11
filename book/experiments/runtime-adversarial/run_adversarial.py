@@ -6,12 +6,11 @@ Builds expected matrices for two families (structural variants, path/literal edg
 compiles SBPL → blob, runs runtime probes via golden_runner, and emits mismatch summaries.
 """
 from __future__ import annotations
-
 import json
+
 import socketserver
 import sys
 import threading
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -20,9 +19,9 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from book.api.path_utils import ensure_absolute, find_repo_root, to_repo_relative
-from book.api.runtime_harness import runner as golden_runner
-from book.api.sbpl_compile import compile_sbpl_string
+from book.api.path_utils import find_repo_root
+from book.api.runtime.pipeline import FamilySpec, run_family_specs
+from book.api.runtime import WORLD_ID, generate_runtime_cut, write_normalized_events
 
 REPO_ROOT = find_repo_root(Path(__file__))
 
@@ -34,21 +33,16 @@ WORLD_PATH = REPO_ROOT / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "worl
 ADVERSARIAL_SUMMARY = REPO_ROOT / "book" / "graph" / "mappings" / "runtime" / "adversarial_summary.json"
 
 
-@dataclass
-class ProfileSpec:
-    key: str
-    sbpl: Path
-    family: str
-    semantic_group: str
+def write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2))
 
 
 def load_world_id() -> str:
+    import json
+
     data = json.loads(WORLD_PATH.read_text())
-    return data.get("world_id") or data.get("id", "unknown-world")
-
-
-def rel(path: Path) -> str:
-    return to_repo_relative(path, REPO_ROOT)
+    return data.get("world_id") or data.get("id", WORLD_ID)
 
 
 def ensure_fixture_files() -> None:
@@ -89,22 +83,7 @@ def start_loopback_server() -> Tuple[socketserver.TCPServer, int]:
     return srv, srv.server_address[1]
 
 
-def compile_profiles(specs: List[ProfileSpec]) -> Dict[str, Path]:
-    """Compile SBPL profiles to blobs under sb/build and return a map of key -> blob path."""
-    BUILD_DIR.mkdir(parents=True, exist_ok=True)
-    blob_paths: Dict[str, Path] = {}
-    for spec in specs:
-        blob_path = BUILD_DIR / f"{spec.sbpl.stem}.sb.bin"
-        blob = compile_sbpl_string(spec.sbpl.read_text()).blob
-        blob_path.write_bytes(blob)
-        blob_paths[spec.key] = blob_path
-    return blob_paths
-
-
-def build_expected_matrix(
-    world_id: str, specs: List[ProfileSpec], blobs: Dict[str, Path], network_targets: List[str] | None = None
-) -> Dict[str, Any]:
-    """Construct expected_matrix.json payload."""
+def build_families(loopback_targets: List[str]) -> List[FamilySpec]:
     probes_common_read = [
         {
             "name": "allow-ok-root",
@@ -241,150 +220,78 @@ def build_expected_matrix(
         },
     ]
 
-    matrix: Dict[str, Any] = {"world_id": world_id, "profiles": {}}
-    for spec in specs:
-        if spec.family == "structural_variants":
-            probes = probes_common_read + probes_common_write
-        elif spec.family == "path_edges":
-            probes = probes_edges_read + probes_edges_write
-        elif spec.family == "mach_variants":
-            probes = probes_mach
-        elif spec.family == "mach_local":
-            probes = probes_mach_local
-        elif spec.family == "network":
-            allow_expected = "allow" if "allow" in spec.key else "deny"
-            probes = []
-            for idx, target in enumerate(network_targets or ["127.0.0.1"]):
-                probes.append(
-                    {
-                        "name": "tcp-loopback" if idx == 0 else f"tcp-loopback-{idx+1}",
-                        "operation": "network-outbound",
-                        "target": target,
-                        "expected": allow_expected,
-                    }
-                )
-        else:
-            probes = []
-        profile_entry = {
-            "mode": "sbpl",
-            "sbpl": rel(spec.sbpl),
-            "blob": rel(blobs[spec.key]),
-            "family": spec.family,
-            "semantic_group": spec.semantic_group,
-            "probes": [],
-        }
-        for probe in probes:
-            probe_copy = dict(probe)
-            probe_copy["expectation_id"] = f"{spec.key}:{probe['name']}"
-            profile_entry["probes"].append(probe_copy)
-        matrix["profiles"][spec.key] = profile_entry
-    return matrix
+    probes_net_allow = []
+    probes_net_deny = []
+    for idx, target in enumerate(loopback_targets or ["127.0.0.1"]):
+        name = "tcp-loopback" if idx == 0 else f"tcp-loopback-{idx+1}"
+        probes_net_allow.append({"name": name, "operation": "network-outbound", "target": target, "expected": "allow"})
+        probes_net_deny.append({"name": name, "operation": "network-outbound", "target": target, "expected": "deny"})
 
-
-def write_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2))
-
-
-def classify_mismatch(expected: str | None, actual: str | None, probe: Dict[str, Any]) -> str:
-    op = probe.get("operation")
-    if expected == "allow" and actual == "deny":
-        path = probe.get("path") or ""
-        if op == "file-read*" and (".." in path or path.startswith("/tmp/runtime-adv/edges")):
-            return "path_normalization"
-        return "unexpected_deny"
-    if expected == "deny" and actual == "allow":
-        if op == "file-read*" and ".." in (probe.get("path") or ""):
-            return "path_normalization"
-        return "unexpected_allow"
-    if probe.get("violation_summary") == "EPERM":
-        return "apply_gate"
-    return "filter_diff"
-
-
-def static_prediction_for(profile_id: str, expected_probe: Dict[str, Any]) -> Dict[str, Any]:
-    """Manual static expectations for mismatches to record which filters were intended to fire."""
-    path = expected_probe.get("target")
-    name = expected_probe.get("name")
-    if profile_id == "adv:path_edges":
-        if name == "allow-tmp":
-            return {
-                "static_filters": ["literal:/tmp/runtime-adv/edges/a"],
-                "static_reason": "literal allow on /tmp path; separate deny literal on /private/tmp expected to distinguish canonical paths",
-            }
-        if name == "allow-subpath":
-            return {
-                "static_filters": ["subpath:/tmp/runtime-adv/edges/okdir"],
-                "static_reason": "subpath allow under /tmp/.../okdir; deny literal on .. sibling intended to catch traversal",
-            }
-    if profile_id.startswith("adv:mach_simple"):
-        if name == "allow-cfprefsd":
-            return {
-                "static_filters": ["mach-lookup:global-name com.apple.cfprefsd.agent"],
-                "static_reason": "allow specific mach global-name, default deny others",
-            }
-        if name == "deny-bogus":
-            return {
-                "static_filters": ["mach-lookup default deny"],
-                "static_reason": "bogus service should be denied by default",
-            }
-    if profile_id.startswith("adv:mach_local"):
-        if name == "allow-cfprefsd-local":
-            return {
-                "static_filters": ["mach-lookup:local-name com.apple.cfprefsd.agent"],
-                "static_reason": "allow specific mach local-name, default deny others",
-            }
-        if name == "deny-bogus-local":
-            return {
-                "static_filters": ["mach-lookup default deny"],
-                "static_reason": "bogus local service should be denied by default",
-            }
-    return {}
-
-
-def compare_results(expected_matrix: Path, runtime_results: Path, world_id: str) -> Dict[str, Any]:
-    expected = json.loads(expected_matrix.read_text())
-    runtime = json.loads(runtime_results.read_text()) if runtime_results.exists() else {}
-    mismatches: List[Dict[str, Any]] = []
-    counts: Dict[str, int] = {}
-
-    for profile_id, rec in (expected.get("profiles") or {}).items():
-        expected_by_id = {p["expectation_id"]: p for p in rec.get("probes") or []}
-        runtime_entry = runtime.get(profile_id) or {}
-        for probe in runtime_entry.get("probes") or []:
-            eid = probe.get("expectation_id")
-            expected_probe = expected_by_id.get(eid) or {}
-            expected_decision = expected_probe.get("expected")
-            actual_decision = probe.get("actual")
-            match = expected_decision == actual_decision and probe.get("match", True)
-            if match:
-                continue
-            mismatch_type = classify_mismatch(expected_decision, actual_decision, probe)
-            counts[mismatch_type] = counts.get(mismatch_type, 0) + 1
-            static_view = static_prediction_for(profile_id, expected_probe)
-            mismatches.append(
-                {
-                    "world_id": world_id,
-                    "profile_id": profile_id,
-                    "expectation_id": eid,
-                    "operation": probe.get("operation"),
-                    "path": probe.get("path"),
-                    "expected": expected_decision,
-                    "actual": actual_decision,
-                    "mismatch_type": mismatch_type,
-                    "notes": probe.get("stderr"),
-                    **static_view,
-                }
-            )
-
-    summary = {
-        "world_id": world_id,
-        "generated_by": "book/experiments/runtime-adversarial/run_adversarial.py",
-        "mismatches": mismatches,
-        "counts": counts,
-    }
-    write_json(OUT_DIR / "mismatch_summary.json", summary)
-    return summary
+    return [
+        FamilySpec(
+            profile_id="adv:struct_flat",
+            profile_path=SB_DIR / "struct_flat.sb",
+            probes=probes_common_read + probes_common_write,
+            family="structural_variants",
+            semantic_group="structural:file-read-subpath",
+        ),
+        FamilySpec(
+            profile_id="adv:struct_nested",
+            profile_path=SB_DIR / "struct_nested.sb",
+            probes=probes_common_read + probes_common_write,
+            family="structural_variants",
+            semantic_group="structural:file-read-subpath",
+        ),
+        FamilySpec(
+            profile_id="adv:path_edges",
+            profile_path=SB_DIR / "path_edges.sb",
+            probes=probes_edges_read + probes_edges_write,
+            family="path_edges",
+            semantic_group="paths:literal-vs-normalized",
+        ),
+        FamilySpec(
+            profile_id="adv:mach_simple_allow",
+            profile_path=SB_DIR / "mach_simple_allow.sb",
+            probes=probes_mach,
+            family="mach_variants",
+            semantic_group="mach:global-name-allow",
+        ),
+        FamilySpec(
+            profile_id="adv:mach_simple_variants",
+            profile_path=SB_DIR / "mach_simple_variants.sb",
+            probes=probes_mach,
+            family="mach_variants",
+            semantic_group="mach:global-name-allow",
+        ),
+        FamilySpec(
+            profile_id="adv:mach_local_literal",
+            profile_path=SB_DIR / "mach_local_literal.sb",
+            probes=probes_mach_local,
+            family="mach_local",
+            semantic_group="mach:local-name-allow",
+        ),
+        FamilySpec(
+            profile_id="adv:mach_local_regex",
+            profile_path=SB_DIR / "mach_local_regex.sb",
+            probes=probes_mach_local,
+            family="mach_local",
+            semantic_group="mach:local-name-allow",
+        ),
+        FamilySpec(
+            profile_id="adv:net_outbound_allow",
+            profile_path=SB_DIR / "net_outbound_allow.sb",
+            probes=probes_net_allow,
+            family="network",
+            semantic_group="network:outbound-allow",
+        ),
+        FamilySpec(
+            profile_id="adv:net_outbound_deny",
+            profile_path=SB_DIR / "net_outbound_deny.sb",
+            probes=probes_net_deny,
+            family="network",
+            semantic_group="network:outbound-deny",
+        ),
+    ]
 
 
 def update_adversarial_summary(world_id: str, matrix: Dict[str, Any], summary: Dict[str, Any]) -> None:
@@ -412,78 +319,51 @@ def main() -> int:
     except Exception:
         loopback_srvs = []
         loopback_targets = []
-    specs = [
-        ProfileSpec(
-            key="adv:struct_flat",
-            sbpl=SB_DIR / "struct_flat.sb",
-            family="structural_variants",
-            semantic_group="structural:file-read-subpath",
-        ),
-        ProfileSpec(
-            key="adv:struct_nested",
-            sbpl=SB_DIR / "struct_nested.sb",
-            family="structural_variants",
-            semantic_group="structural:file-read-subpath",
-        ),
-        ProfileSpec(
-            key="adv:path_edges",
-            sbpl=SB_DIR / "path_edges.sb",
-            family="path_edges",
-            semantic_group="paths:literal-vs-normalized",
-        ),
-        ProfileSpec(
-            key="adv:mach_simple_allow",
-            sbpl=SB_DIR / "mach_simple_allow.sb",
-            family="mach_variants",
-            semantic_group="mach:global-name-allow",
-        ),
-        ProfileSpec(
-            key="adv:mach_simple_variants",
-            sbpl=SB_DIR / "mach_simple_variants.sb",
-            family="mach_variants",
-            semantic_group="mach:global-name-allow",
-        ),
-        ProfileSpec(
-            key="adv:mach_local_literal",
-            sbpl=SB_DIR / "mach_local_literal.sb",
-            family="mach_local",
-            semantic_group="mach:local-name-allow",
-        ),
-        ProfileSpec(
-            key="adv:mach_local_regex",
-            sbpl=SB_DIR / "mach_local_regex.sb",
-            family="mach_local",
-            semantic_group="mach:local-name-allow",
-        ),
-        ProfileSpec(
-            key="adv:net_outbound_allow",
-            sbpl=SB_DIR / "net_outbound_allow.sb",
-            family="network",
-            semantic_group="network:outbound-allow",
-        ),
-        ProfileSpec(
-            key="adv:net_outbound_deny",
-            sbpl=SB_DIR / "net_outbound_deny.sb",
-            family="network",
-            semantic_group="network:outbound-deny",
-        ),
-    ]
 
-    blobs = compile_profiles(specs)
-    matrix = build_expected_matrix(world_id, specs, blobs, network_targets=loopback_targets)
-    matrix_path = OUT_DIR / "expected_matrix.json"
-    write_json(matrix_path, matrix)
+    families = build_families(loopback_targets)
+    artifacts = run_family_specs(families, OUT_DIR, world_id=world_id)
+    matrix_path = artifacts.get("expected_matrix") or OUT_DIR / "expected_matrix.generated.json"
+    runtime_out = artifacts.get("runtime_results") or OUT_DIR / "runtime_results.json"
 
-    profile_paths = {spec.key: ensure_absolute(spec.sbpl, REPO_ROOT) for spec in specs}
-    # No extra key-specific rules here; allow/deny profiles bake their own process-exec pins.
-    runtime_out = golden_runner.run_expected_matrix(matrix_path, out_dir=OUT_DIR, profile_paths=profile_paths)
-    summary = compare_results(matrix_path, runtime_out, world_id)
-
+    # Keep compatibility filenames for downstream consumers during transition.
+    if matrix_path.exists():
+        (OUT_DIR / "expected_matrix.json").write_text(Path(matrix_path).read_text())
+    if runtime_out.exists():
+        (OUT_DIR / "runtime_results.json").write_text(Path(runtime_out).read_text())
+    mismatch_doc = {}
+    if artifacts.get("mismatch_summary"):
+        mismatch_doc = json.loads(Path(artifacts["mismatch_summary"]).read_text())
+        (OUT_DIR / "mismatch_summary.json").write_text(json.dumps(mismatch_doc, indent=2))
     impact_map = OUT_DIR / "impact_map.json"
-    if not impact_map.exists():
-        write_json(impact_map, {})
+    impact_body: Dict[str, Any] = {}
+    for mismatch in mismatch_doc.get("mismatches") or []:
+        eid = mismatch.get("expectation_id")
+        if not eid:
+            continue
+        entry = {
+            "world_id": world_id,
+            "profile_id": mismatch.get("profile_id"),
+            "operation": mismatch.get("operation"),
+            "mismatch_type": mismatch.get("mismatch_type"),
+            "notes": mismatch.get("notes"),
+            "path": mismatch.get("path"),
+        }
+        if mismatch.get("violation_summary") == "EPERM":
+            entry["tags"] = ["apply_gate"]
+        impact_body[eid] = entry
+    impact_map.write_text(json.dumps(impact_body, indent=2))
 
-    update_adversarial_summary(world_id, matrix, summary)
+    try:
+        events_path = OUT_DIR / "runtime_events.normalized.json"
+        write_normalized_events(matrix_path, runtime_out, events_path, world_id=world_id)
+        print(f"[+] wrote normalized events to {events_path}")
+        print(f"[+] runtime mapping set under {OUT_DIR / 'runtime_mappings'} -> {artifacts}")
+    except Exception as e:
+        print(f"[!] failed to normalize runtime events: {e}")
+
+    matrix_doc = json.loads(Path(matrix_path).read_text())
+    summary_doc = json.loads((OUT_DIR / "mismatch_summary.json").read_text()) if (OUT_DIR / "mismatch_summary.json").exists() else {}
+    update_adversarial_summary(world_id, matrix_doc, summary_doc)
     for srv in loopback_srvs:
         try:
             srv.shutdown()

@@ -1,7 +1,103 @@
 {
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-  "generated_by": "book/experiments/runtime-adversarial/run_adversarial.py",
+  "generated_by": "book/api/runtime/pipeline.py",
   "mismatches": [
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:allow-ok-root",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:allow-ok-deep",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:write-ok-root",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:write-ok-deep",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:allow-ok-root",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:allow-ok-deep",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:write-ok-root",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:write-ok-deep",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
       "profile_id": "adv:path_edges",
@@ -11,11 +107,8 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "path_normalization",
-      "notes": "open target: Operation not permitted\n",
-      "static_filters": [
-        "literal:/tmp/runtime-adv/edges/a"
-      ],
-      "static_reason": "literal allow on /tmp path; separate deny literal on /private/tmp expected to distinguish canonical paths"
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -26,11 +119,8 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "path_normalization",
-      "notes": "open target: Operation not permitted\n",
-      "static_filters": [
-        "subpath:/tmp/runtime-adv/edges/okdir"
-      ],
-      "static_reason": "subpath allow under /tmp/.../okdir; deny literal on .. sibling intended to catch traversal"
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -41,7 +131,8 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "unexpected_deny",
-      "notes": "open target: Operation not permitted\n"
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -52,11 +143,72 @@
       "expected": "allow",
       "actual": "deny",
       "mismatch_type": "unexpected_deny",
-      "notes": "open target: Operation not permitted\n"
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_simple_allow",
+      "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_simple_variants",
+      "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_local_literal",
+      "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_local_regex",
+      "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:net_outbound_allow",
+      "expectation_id": "adv:net_outbound_allow:tcp-loopback",
+      "operation": "network-outbound",
+      "path": "127.0.0.1",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "unexpected_deny",
+      "violation_summary": "EPERM",
+      "notes": "sandbox_apply: Operation not permitted\n"
     }
   ],
   "counts": {
-    "path_normalization": 2,
-    "unexpected_deny": 2
+    "unexpected_deny": 15,
+    "path_normalization": 2
   }
 }

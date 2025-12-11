@@ -8,12 +8,13 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
+import json
 
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from book.api.runtime_harness.runner import run_expected_matrix
+from book.api.runtime import WORLD_ID, run_from_expected_matrix, write_normalized_events
 
 
 ROOT = Path(__file__).resolve().parent
@@ -32,12 +33,15 @@ KEY_SPECIFIC_RULES = {
 
 
 def main() -> int:
-    out_path = run_expected_matrix(
-        MATRIX,
-        out_dir=OUT_DIR,
-        runtime_profile_dir=RUNTIME_PROFILES,
-        key_specific_rules=KEY_SPECIFIC_RULES,
-    )
+    artifacts = run_from_expected_matrix(MATRIX, OUT_DIR, world_id=WORLD_ID, key_specific_rules=KEY_SPECIFIC_RULES)
+    out_path = artifacts.get("runtime_results") or OUT_DIR / "runtime_results.json"
+    try:
+        events_path = OUT_DIR / "runtime_events.normalized.json"
+        write_normalized_events(MATRIX, out_path, events_path, world_id=WORLD_ID)
+        print(f"[+] wrote normalized events to {events_path}")
+        print(f"[+] runtime cut artifacts: {artifacts}")
+    except Exception as e:
+        print(f"[!] failed to normalize runtime events: {e}")
     print(f"[+] wrote {out_path}")
     return 0
 

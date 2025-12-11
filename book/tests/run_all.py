@@ -16,18 +16,85 @@ import os
 import sys
 import tempfile
 import traceback
+import types
 import unittest
 from pathlib import Path
 from typing import Callable, Iterable, List, Tuple
 
+# Provide a minimal pytest stub when the package is unavailable.
 try:
-    import pytest
-except ImportError:  # pragma: no cover - pytest should already be available
-    pytest = None
+    import pytest  # type: ignore
+except ImportError:  # pragma: no cover - fallback stub
+    class _RaisesContext:
+        def __init__(self, expected_exc):
+            self.expected_exc = expected_exc
 
-if pytest is None:
-    sys.stderr.write("pytest is required to import tests (install it in your venv).\n")
-    sys.exit(1)
+        def __enter__(self):
+            return None
+
+        def __exit__(self, exc_type, exc, tb):
+            if exc is None:
+                raise AssertionError(f"Did not raise {self.expected_exc}")
+            if not issubclass(exc_type, self.expected_exc):
+                return False
+            return True
+
+    class _MonkeyPatch:
+        def __init__(self):
+            self._actions = []
+
+        def setattr(self, obj, name, value):
+            had_attr = hasattr(obj, name)
+            old = getattr(obj, name, None)
+            self._actions.append(("setattr", obj, name, old, had_attr))
+            setattr(obj, name, value)
+
+        def setenv(self, key, value):
+            had = key in os.environ
+            old = os.environ.get(key)
+            self._actions.append(("setenv", None, key, old, had))
+            os.environ[key] = value
+
+        def delenv(self, key, raising=True):
+            had = key in os.environ
+            old = os.environ.get(key)
+            self._actions.append(("setenv", None, key, old, had))
+            try:
+                del os.environ[key]
+            except KeyError:
+                if raising:
+                    raise
+
+        def undo(self):
+            # Restore in reverse order
+            for action in reversed(self._actions):
+                kind, obj, name_or_key, old, had = action
+                if kind == "setattr":
+                    if had:
+                        setattr(obj, name_or_key, old)
+                    else:
+                        delattr(obj, name_or_key)
+                elif kind == "setenv":
+                    if had:
+                        os.environ[name_or_key] = old if old is not None else ""
+                    else:
+                        os.environ.pop(name_or_key, None)
+            self._actions = []
+
+    class _Mark:
+        def __getattr__(self, _name):
+            def decorator(fn):
+                return fn
+
+            return decorator
+
+    stub = types.SimpleNamespace(
+        MonkeyPatch=_MonkeyPatch,
+        raises=lambda exc: _RaisesContext(exc),
+        mark=_Mark(),
+    )
+    sys.modules["pytest"] = stub
+    pytest = stub  # type: ignore
 
 
 ROOT = Path(__file__).resolve().parents[2]
