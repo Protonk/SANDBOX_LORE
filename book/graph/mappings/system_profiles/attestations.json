@@ -1,5 +1,4 @@
 {
-  "attestation_count": 4,
   "attestations": [
     {
       "anchors": [],
@@ -28,7 +27,7 @@
         "0": 1,
         "1": 28
       },
-      "tag_layout_version": "ea7d582cbdd5831c26d3362a829bc8d6a4b4372cee513474711ee02e71d3e826",
+      "tag_layout_version": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
       "vocab_versions": {
         "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
         "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
@@ -72,7 +71,7 @@
         "1": 2,
         "3": 26
       },
-      "tag_layout_version": "ea7d582cbdd5831c26d3362a829bc8d6a4b4372cee513474711ee02e71d3e826",
+      "tag_layout_version": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
       "vocab_versions": {
         "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
         "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
@@ -118,7 +117,7 @@
       "sha256": "172766f1897fb960eaf6bf32f25a7335419934ce39184b4426b57103a62cb8ad",
       "source": "book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
       "tag_counts": {},
-      "tag_layout_version": "ea7d582cbdd5831c26d3362a829bc8d6a4b4372cee513474711ee02e71d3e826",
+      "tag_layout_version": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
       "vocab_versions": {
         "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
         "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
@@ -157,18 +156,34 @@
       "sha256": "c4b59ce1ada17d736b107369ddfce80e090d041239942982969fa949344f7ebd",
       "source": "book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
       "tag_counts": {},
-      "tag_layout_version": "ea7d582cbdd5831c26d3362a829bc8d6a4b4372cee513474711ee02e71d3e826",
+      "tag_layout_version": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
       "vocab_versions": {
         "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
         "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
       }
     }
   ],
-  "runtime_manifest": "book/graph/mappings/runtime/expectations.json",
-  "tag_layout_hash": "ea7d582cbdd5831c26d3362a829bc8d6a4b4372cee513474711ee02e71d3e826",
-  "vocab_versions": {
-    "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
-    "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
-  },
-  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  "metadata": {
+    "attestation_count": 4,
+    "inputs": [
+      "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+      "book/graph/mappings/system_profiles/digests.json",
+      "book/graph/mappings/anchors/anchor_filter_map.json",
+      "book/graph/mappings/tag_layouts/tag_layouts.json",
+      "book/graph/mappings/vocab/ops.json",
+      "book/graph/mappings/vocab/filters.json",
+      "book/graph/mappings/runtime/expectations.json"
+    ],
+    "runtime_manifest": "book/graph/mappings/runtime/expectations.json",
+    "source_jobs": [
+      "generator:system_profiles:attestations"
+    ],
+    "status": "ok",
+    "tag_layout_hash": "a896f8210c5d76029d018df7a3dd3a1c31c74afdcf2fbd453eb785fcfff1320a",
+    "vocab_versions": {
+      "filters_version": "065fea41eaea955e0cfda4b96571370d574b66184648ff4762dd7401245ceec8",
+      "ops_version": "1ea1be04243c2d229f71ba12562e7c826ef6a15bcbccbd0b8f1d469cbe5d7b8e"
+    },
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  }
 }

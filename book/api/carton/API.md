@@ -1,6 +1,6 @@
 # CARTON API surface
 
-The CARTON API (`book.api.carton.carton_query`) is the public entrypoint for querying CARTON. It answers questions about operations, system profiles/profile layers, filters, and runtime signatures using the CARTON manifest at `book/api/carton/CARTON.json` and its listed mappings.
+The CARTON API (`book.api.carton.carton_query`) is the public entrypoint for querying CARTON. It answers questions about operations, system profiles/profile layers, and filters using the CARTON manifest at `book/api/carton/CARTON.json` and its listed mappings.
 
 For CARTON’s role in the project and how concepts map to artifacts, see `README.md`. For agent‑level routing guidance, see `AGENTS.md`.
 
@@ -20,11 +20,11 @@ These functions expose what CARTON knows without requiring callers to know inter
   - Returns a sorted list of filter names from the CARTON filter index.
   - Backed by `carton.filter_index.json` and the filter vocabulary.
 - `ops_with_low_coverage(threshold: int = 0) -> List[Dict[str, object]]`
-  - Returns operations whose combined system‑profile and runtime‑signature counts are less than or equal to `threshold`.
-  - Each entry contains: `name`, `op_id`, and a `counts` dict with `system_profiles` and `runtime_signatures`.
+  - Returns operations whose system‑profile counts are less than or equal to `threshold`.
+  - Each entry contains: `name`, `op_id`, and a `counts` dict with `system_profiles`.
   - Backed by `carton.operation_coverage.json`.
 - `list_carton_paths() -> Dict[str, str]`
-  - Returns resolved filesystem paths for the core CARTON mappings (vocab, runtime signatures, system profile digests, coverage, indices).
+  - Returns resolved filesystem paths for the core CARTON mappings (vocab, system profile digests, coverage, indices).
   - Intended for diagnostics and debugging, not for regular querying.
 
 ## Operation‑centred helpers
@@ -39,8 +39,7 @@ These helpers answer “what do we know about operation X?” type questions. Al
     - `op_name`: the name passed in.
     - `op_id`: numeric operation ID.
     - `system_profiles`: list of system profiles that include this operation.
-    - `runtime_signatures`: list of runtime signature IDs that probe this operation.
-    - `counts`: `{"system_profiles": int, "runtime_signatures": int}`.
+    - `counts`: `{"system_profiles": int}`.
     - `known`: `True` for operations present in the CARTON vocab.
   - Backed by the operation vocab and coverage mapping.
 - `operation_story(op_name: str) -> Dict[str, object]`
@@ -48,7 +47,6 @@ These helpers answer “what do we know about operation X?” type questions. Al
     - `op_name`, `op_id`, `known`,
     - `system_profiles`: as above,
     - `profile_layers`: today a simple list (for example, `["system"]` when system profiles exist),
-    - `runtime_signatures`: IDs of signatures that probe this operation,
     - `coverage_counts`: same counts as `profiles_and_signatures_for_operation`.
   - Intended as the primary helper when an agent wants a single, joined view of how an operation shows up in system profiles and runtime.
 
@@ -59,7 +57,6 @@ These helpers answer “what do we know about operation X?” type questions. Al
     - `profile_id`: identifier from system profile digests.
     - `layer`: a simple label such as `"system"` for current profiles.
     - `ops`: list of `{"name": op_name, "id": op_id}` entries for operations present in the profile’s op‑table and vocab.
-    - `runtime_signatures`: sorted list of runtime signature IDs that touch any of those operations, derived from coverage.
     - `filters`: a placeholder block, currently `{"known": False, "filters": []}` to avoid guessing filter linkage before it is mapped.
   - Raises `CartonDataError` if the profile ID is not present in system profile digests or if required CARTON mappings are missing or malformed.
 
@@ -72,17 +69,7 @@ These helpers answer “what do we know about operation X?” type questions. Al
     - `known`: boolean flag indicating whether CARTON considers this filter concretely mapped.
     - `usage_status`: one of `present-in-vocab-only`, `referenced-in-profiles`, `referenced-in-runtime`, or `unknown`.
     - `system_profiles`: list of system profiles where this filter is known to appear (may be empty for now).
-    - `runtime_signatures`: list of runtime signatures where this filter is known to appear (may be empty for now).
   - Backed by `carton.filter_index.json`. Raises `CartonDataError` if the filter name is not in the index or the index is malformed.
-
-## Runtime‑signature helpers
-
-- `runtime_signature_info(sig_id: str) -> Dict[str, object]`
-  - Returns a view of a runtime signature:
-    - `probes`: the recorded probe outcomes for this signature, taken from `runtime_signatures.json`.
-    - `runtime_profile`: the runtime profile/blob associated with this signature, if recorded in `profiles_metadata`.
-    - `expected`: any expected outcome entry from the runtime “expected matrix”, when present.
-  - Does not currently raise a dedicated error for unknown IDs; absent entries will simply appear as `None`. Use this helper as a read‑only view into known signatures.
 
 ## Error types and manifest behavior
 
@@ -104,8 +91,6 @@ These snippets illustrate typical use; they all assume `from book.api.carton imp
   - `profiles = carton_query.profiles_with_operation("file-read*")`
 - Inspect a profile:
   - `story = carton_query.profile_story("sys:bsd")`
-- Inspect a runtime signature:
-  - `info = carton_query.runtime_signature_info("bucket4:v1_read")`
 - Explore under‑covered operations:
   - `low = carton_query.ops_with_low_coverage(threshold=0)`
 

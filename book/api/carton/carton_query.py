@@ -2,7 +2,7 @@
 Public CARTON query API (stable entrypoint for agents and tools).
 
 Implements simple lookups over CARTON mappings (vocab, system profile digests,
-runtime signatures, coverage) without touching experiment out/ directly.
+coverage) without touching experiment out/ directly.
 
 This module enforces a small error contract so helpers get predictable failures
 when CARTON data is missing or out of date. Coverage and index helpers surface
@@ -26,7 +26,6 @@ LOGICAL_PATHS = {
     "vocab.ops": "book/graph/mappings/vocab/ops.json",
     "vocab.filters": "book/graph/mappings/vocab/filters.json",
     "system.digests": "book/graph/mappings/system_profiles/digests.json",
-    "runtime.signatures": "book/graph/mappings/runtime/runtime_signatures.json",
     "carton.coverage": "book/graph/mappings/carton/operation_coverage.json",
     "carton.operation_index": "book/graph/mappings/carton/operation_index.json",
     "carton.profile_layer_index": "book/graph/mappings/carton/profile_layer_index.json",
@@ -183,11 +182,9 @@ def profiles_and_signatures_for_operation(op_name: str) -> Dict[str, Any]:
         "op_id": op_id,
         "system_profiles": entry.get("system_profiles") or [],
         "system_profile_status": entry.get("system_profile_status") or {},
-        "runtime_signatures": entry.get("runtime_signatures") or [],
         "counts": {
             "system_profiles": counts.get("system_profiles", 0),
             "system_profiles_ok": counts.get("system_profiles_ok", 0),
-            "runtime_signatures": counts.get("runtime_signatures", 0),
         },
         "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
         "canonical_profile_status": (coverage_full.get("metadata") or {}).get("canonical_profile_status") or {},
@@ -195,37 +192,20 @@ def profiles_and_signatures_for_operation(op_name: str) -> Dict[str, Any]:
     }
 
 
-def runtime_signature_info(sig_id: str) -> Dict[str, object]:
-    """Fetch probe list, runtime profile, and expectation matrix for a runtime signature id."""
-    sigs = _load_json_from_manifest("runtime.signatures", required_keys=["signatures"])
-    signatures = sigs.get("signatures") or {}
-    meta = sigs.get("profiles_metadata") or {}
-    expected = (sigs.get("expected_matrix") or {}).get("profiles") or {}
-    return {
-        "probes": signatures.get(sig_id),
-        "runtime_profile": (meta.get(sig_id) or {}).get("runtime_profile"),
-        "expected": expected.get(sig_id),
-    }
-
-
 def ops_with_low_coverage(threshold: int = 0) -> List[Dict[str, object]]:
     """
-    Return ops whose combined system-profile + runtime-signature coverage is at
-    or below the threshold. Coverage metadata is preserved for upstream sorting.
+    Return ops whose system-profile coverage is at or below the threshold.
+    Coverage metadata is preserved for upstream sorting.
     """
     coverage = _load_coverage()
     low = []
     for name, entry in coverage.items():
         counts = entry.get("counts") or {}
-        total = (counts.get("system_profiles", 0) + counts.get("runtime_signatures", 0))
+        total = counts.get("system_profiles", 0)
         if total <= threshold:
-            low.append({"name": name, "op_id": entry.get("op_id"), "counts": counts})
+            low.append({"name": name, "op_id": entry.get("op_id"), "counts": {"system_profiles": total}})
     low.sort(
-        key=lambda rec: (
-            rec.get("counts", {}).get("system_profiles", 0)
-            + rec.get("counts", {}).get("runtime_signatures", 0),
-            rec.get("name"),
-        )
+        key=lambda rec: (rec.get("counts", {}).get("system_profiles", 0), rec.get("name")),
     )
     return low
 
@@ -269,7 +249,6 @@ def filter_story(filter_name: str) -> Dict[str, Any]:
         "known": entry.get("known", False),
         "usage_status": entry.get("usage_status"),
         "system_profiles": entry.get("system_profiles") or [],
-        "runtime_signatures": entry.get("runtime_signatures") or [],
     }
 
 
@@ -279,7 +258,6 @@ def list_carton_paths() -> Dict[str, str]:
         ("vocab.ops", "vocab_ops"),
         ("vocab.filters", "vocab_filters"),
         ("system.digests", "system_profiles"),
-        ("runtime.signatures", "runtime_signatures"),
         ("carton.coverage", "coverage"),
         ("carton.operation_index", "operation_index"),
         ("carton.profile_layer_index", "profile_layer_index"),
@@ -305,7 +283,6 @@ def operation_story(op_name: str) -> Dict[str, Any]:
         "system_profiles": op_info["system_profiles"],
         "system_profile_status": op_info.get("system_profile_status") or entry.get("system_profile_status") or {},
         "profile_layers": ["system"] if op_info["system_profiles"] else [],
-        "runtime_signatures": op_info["runtime_signatures"],
         "coverage_counts": op_info["counts"],
         "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
         "canonical_profile_status": (coverage_full.get("metadata") or {}).get("canonical_profile_status") or {},
@@ -325,11 +302,6 @@ def profile_story(profile_id: str) -> Dict[str, Any]:
     ops = [{"name": id_to_name.get(op_id), "id": op_id} for op_id in op_ids if op_id in id_to_name]
     coverage_full = _load_json_from_manifest("carton.coverage", required_keys=["coverage"])  # reused coverage shape
     coverage = coverage_full.get("coverage") or {}
-    runtime_sigs = set()
-    for op in ops:
-        cov = coverage.get(op["name"]) or {}
-        for sig in cov.get("runtime_signatures") or []:
-            runtime_sigs.add(sig)
     # Filter linkage is not yet mapped per profile; keep an explicit placeholder to avoid ad-hoc guesses.
     filters_info = {
         "known": False,
@@ -346,7 +318,6 @@ def profile_story(profile_id: str) -> Dict[str, Any]:
         "layer": "system",
         "status": profile_body.get("status") or meta.get("status"),
         "ops": ops,
-        "runtime_signatures": sorted(runtime_sigs),
         "filters": filters_info,
         "canonical_profile_status": canonical_profile_status,
         "coverage_status": (coverage_full.get("metadata") or {}).get("status"),
@@ -366,5 +337,4 @@ __all__ = [
     "profile_story",
     "profiles_and_signatures_for_operation",
     "profiles_with_operation",
-    "runtime_signature_info",
 ]

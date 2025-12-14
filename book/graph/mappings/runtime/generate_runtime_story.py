@@ -9,6 +9,7 @@ include a pointer to the story file so loaders can discover it.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -24,6 +25,11 @@ from book.api.runtime import story as rt_story
 CUT_ROOT = ROOT / "book" / "graph" / "mappings" / "runtime_cuts"
 
 
+def sha256_path(path: Path) -> str:
+    data = path.read_bytes()
+    return hashlib.sha256(data).hexdigest()
+
+
 def main() -> None:
     manifest_path = CUT_ROOT / "runtime_manifest.json"
     if not manifest_path.exists():
@@ -34,6 +40,21 @@ def main() -> None:
     ops_path = path_utils.ensure_absolute(manifest.get("ops"), ROOT)
 
     story = rt_story.build_runtime_story(ops_path, scenarios_path)
+    inputs = [
+        path_utils.to_repo_relative(ops_path, ROOT),
+        path_utils.to_repo_relative(scenarios_path, ROOT),
+    ]
+    input_hashes = {
+        inputs[0]: sha256_path(ops_path),
+        inputs[1]: sha256_path(scenarios_path),
+    }
+    meta = story.get("meta", {})
+    meta["inputs"] = inputs
+    meta["input_hashes"] = input_hashes
+    manifest_meta = manifest.get("meta") or {}
+    if manifest_meta.get("source_jobs"):
+        meta["source_jobs"] = manifest_meta["source_jobs"]
+    story["meta"] = meta
     out_path = CUT_ROOT / "runtime_story.json"
     rt_story.write_runtime_story(story, out_path)
 

@@ -10,20 +10,27 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Set
+from typing import Dict, Set
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OPS_JSON = REPO_ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json"
 OUT_JSON = REPO_ROOT / "book" / "graph" / "mappings" / "vocab" / "ops_coverage.json"
+RUNTIME_COVERAGE = REPO_ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_coverage.json"
 
 RUNTIME_MATRICES = [
     REPO_ROOT / "book" / "experiments" / "runtime-checks" / "out" / "expected_matrix.json",
     REPO_ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "expected_matrix.json",
     REPO_ROOT / "book" / "profiles" / "golden-triple" / "expected_matrix.json",
 ]
+WORLD_BASELINE = REPO_ROOT / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "world-baseline.json"
 
 
 def load_runtime_ops() -> Set[str]:
+    if RUNTIME_COVERAGE.exists():
+        data = json.loads(RUNTIME_COVERAGE.read_text())
+        coverage = data.get("coverage") or {}
+        return {name for name, entry in coverage.items() if (entry.get("counts") or {}).get("runtime_signatures")}
+
     ops: Set[str] = set()
     for path in RUNTIME_MATRICES:
         if not path.exists():
@@ -37,11 +44,25 @@ def load_runtime_ops() -> Set[str]:
     return ops
 
 
+def load_world_id(vocab: Dict[str, object]) -> str:
+    world_id = (vocab.get("metadata") or {}).get("world_id")
+    if world_id:
+        return world_id
+    if not WORLD_BASELINE.exists():
+        raise FileNotFoundError(f"missing baseline: {WORLD_BASELINE}")
+    data = json.loads(WORLD_BASELINE.read_text())
+    world_id = data.get("world_id")
+    if not world_id:
+        raise RuntimeError("world_id missing from baseline")
+    return world_id
+
+
 def main() -> int:
     assert OPS_JSON.exists(), f"missing ops.json at {OPS_JSON}"
     vocab = json.loads(OPS_JSON.read_text())
     ops_list = vocab.get("ops") or []
     runtime_ops = load_runtime_ops()
+    world_id = load_world_id(vocab)
 
     coverage: Dict[str, Dict[str, object]] = {}
     for entry in ops_list:
@@ -54,7 +75,32 @@ def main() -> int:
             "notes": "",
         }
 
-    OUT_JSON.write_text(json.dumps(coverage, indent=2))
+    inputs = [str(OPS_JSON.relative_to(REPO_ROOT))]
+    if RUNTIME_COVERAGE.exists():
+        inputs.append(str(RUNTIME_COVERAGE.relative_to(REPO_ROOT)))
+    for path in RUNTIME_MATRICES:
+        inputs.append(str(path.relative_to(REPO_ROOT)))
+
+    OUT_JSON.write_text(
+        json.dumps(
+            {
+                "metadata": {
+                    "world_id": world_id,
+                    "inputs": inputs,
+                    "status": "ok",
+                    "source_jobs": [
+                        "vocab:sonoma-14.4.1",
+                        "experiment:runtime-checks",
+                        "experiment:runtime-adversarial",
+                        "profiles:golden-triple",
+                    ],
+                    "notes": "Runtime evidence is derived from runtime coverage when present, else from expected matrices; structural evidence is implied by vocab presence.",
+                },
+                "coverage": coverage,
+            },
+            indent=2,
+        )
+    )
     print(f"[+] wrote {OUT_JSON} (runtime_ops={sorted(runtime_ops)})")
     return 0
 

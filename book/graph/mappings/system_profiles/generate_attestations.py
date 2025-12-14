@@ -237,18 +237,29 @@ def main() -> None:
         out_trace = OUT_DIR / f"{path.stem}.jsonl"
         out_trace.write_text(json.dumps(asdict(att), indent=2, sort_keys=True))
 
+    metadata = {
+        "world_id": world_id,
+        "tag_layout_hash": tag_layout_hash,
+        "vocab_versions": vocab_versions,
+        "runtime_manifest": str(Path("book/graph/mappings/runtime/expectations.json")) if runtime_manifest else None,
+        "attestation_count": len(attestations),
+        "inputs": [
+            str(Path(BASELINE_REF)),
+            str(Path("book/graph/mappings/system_profiles/digests.json")),
+            str(Path("book/graph/mappings/anchors/anchor_filter_map.json")),
+            str(Path("book/graph/mappings/tag_layouts/tag_layouts.json")),
+            str(Path("book/graph/mappings/vocab/ops.json")),
+            str(Path("book/graph/mappings/vocab/filters.json")),
+            str(Path("book/graph/mappings/runtime/expectations.json")),
+        ],
+        "source_jobs": ["generator:system_profiles:attestations"],
+        "status": "ok",
+    }
+
     OUT_JSON.write_text(
-            json.dumps(
-                {
-                    "world_id": world_id,
-                    "attestation_count": len(attestations),
-                    "tag_layout_hash": tag_layout_hash,
-                    "vocab_versions": vocab_versions,
-                "runtime_manifest": str(
-                    (Path("book/graph/mappings/runtime/expectations.json")).as_posix()
-                )
-                if runtime_manifest
-                else None,
+        json.dumps(
+            {
+                "metadata": metadata,
                 "attestations": attestations,
             },
             indent=2,

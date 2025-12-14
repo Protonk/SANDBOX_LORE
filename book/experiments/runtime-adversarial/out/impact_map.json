@@ -1,4 +1,11 @@
 {
+  "metadata": {
+    "allowed_tags": [
+      "apply_gate",
+      "path_normalization",
+      "out_of_scope:VFS_canonicalization"
+    ]
+  },
   "adv:struct_flat:allow-ok-root": {
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
     "profile_id": "adv:struct_flat",

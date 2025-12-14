@@ -11,36 +11,32 @@
       "sha256": "9e9d6e6590267935ddb399f4009d02ea71eb99f570a78ff855e7d24e5474ca17"
     },
     {
-      "path": "book/graph/mappings/runtime/runtime_signatures.json",
-      "sha256": "f93c044512dc584c45e25bcb888dbc386714e6162eab65726856c30b0385b67b"
-    },
-    {
       "path": "book/graph/mappings/system_profiles/digests.json",
       "sha256": "7faaf3643018b598baec6ca5f6374921afa663165457386abd3bd01f8d3e1774"
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
-      "sha256": "14e93ea985140b0750f702f62b30b09d5d8fde30bdd82ca59895d53dffdb4fc2"
+      "sha256": "1a78855d2a501627bb57a736586d7909a1bd4bc313b7266b576e56846c2d4926"
     },
     {
       "path": "book/graph/mappings/carton/operation_index.json",
-      "sha256": "68ab6ea655c7cefadde2cdbfe6f4ff009f5ba1dc98b67ddd23fcade69050fef1"
+      "sha256": "06aeaece1fc9719bd61c10f87e8c465d6304bdd527a9cf0c8e5c2d42e64ec0e7"
     },
     {
       "path": "book/graph/mappings/carton/profile_layer_index.json",
-      "sha256": "55634023d25d810f2e0077eae600e924489794385d123045fa304a9d2ff0ce02"
+      "sha256": "8aa62f95cc6d846bbfb47ce2f65c6b14284a45e9e04c1d402d26ab5bd23335bf"
     },
     {
       "path": "book/graph/mappings/carton/filter_index.json",
-      "sha256": "d3d26300b82cc8c34a92fc7f6ca312e42f038081a0f089706570bf9c9c3442e6"
+      "sha256": "920e7d51a7a3564aa35cba7818e762fc46e1f688f407af10ad5c2ed191d28b9e"
     },
     {
       "path": "book/graph/mappings/carton/concept_index.json",
       "sha256": "811df6b41314df40cd94e1099f2836c7af0103b9b69c0a1607b69a7446c02b3b"
     },
     {
-      "path": "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
-      "sha256": "cb7444bb72e8d1147cbc5ed3d3bb18c170e51aa5e0f842004202cb65dca40f54"
+      "path": "book/graph/mappings/carton/anchor_index.json",
+      "sha256": "0748e77fa2e72a7702a9b622981fb24b2d075c3ec854d2d0385b3b9f43fe792b"
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
@@ -56,7 +52,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "46d5b0ebd0a5ef70732449398b9e2288de7ef9e10d2b4a1f37a52f01c3c57bfa"
+      "sha256": "1f085b631adc2f6106a51014c84f3c69e8610158e6cd2089ad3889226ee33489"
     }
   ]
 }

@@ -58,6 +58,19 @@
       "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472"
     }
   ],
-  "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
-  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  "metadata": {
+    "inputs": [
+      "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json",
+      "book/graph/mappings/tag_layouts/tag_layouts.json",
+      "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
+      "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
+      "book/examples/sb/build/sample.sb.bin"
+    ],
+    "source_jobs": [
+      "generator:system_profiles:static_checks"
+    ],
+    "status": "ok",
+    "tag_layout_hash": "4f00378decc2346c8e944c2b8b6ced1556733c0f610a3870b5b75cf899772472",
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  }
 }

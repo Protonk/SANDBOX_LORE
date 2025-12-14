@@ -102,8 +102,17 @@ def main() -> None:
     OUT_PATH.write_text(
         json.dumps(
             {
-                "world_id": world_id,
-                "tag_layout_hash": tag_layout_hash_value,
+                "metadata": {
+                    "world_id": world_id,
+                    "tag_layout_hash": tag_layout_hash_value,
+                    "inputs": [
+                        str(Path(BASELINE_REF)),
+                        str(Path("book/graph/mappings/tag_layouts/tag_layouts.json")),
+                    ]
+                    + [str(p.relative_to(REPO_ROOT)) for p in profiles if p.exists()],
+                    "source_jobs": ["generator:system_profiles:static_checks"],
+                    "status": "ok",
+                },
                 "entries": checks,
             },
             indent=2,

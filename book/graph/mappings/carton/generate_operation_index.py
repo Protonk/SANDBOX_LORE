@@ -5,7 +5,6 @@ Generate operation_index.json from CARTON mappings.
 Inputs (all from CARTON):
 - vocab/ops.json
 - system_profiles/digests.json
-- runtime/runtime_signatures.json
 - carton/operation_coverage.json
 - carton/CARTON.json (for host, optional)
 """
@@ -61,7 +60,6 @@ def build_index() -> dict:
     inputs: List[str] = [
         "book/graph/mappings/vocab/ops.json",
         "book/graph/mappings/system_profiles/digests.json",
-        "book/graph/mappings/runtime/runtime_signatures.json",
         "book/graph/mappings/carton/operation_coverage.json",
         "book/api/carton/CARTON.json",
     ]
@@ -85,19 +83,16 @@ def build_index() -> dict:
         cov = coverage_map.get(name) or {}
         counts = cov.get("counts") or {}
         system_profiles = cov.get("system_profiles") or []
-        runtime_sigs = cov.get("runtime_signatures") or []
         profile_layers = ["system"] if system_profiles else []
         operations[name] = {
             "name": name,
             "id": op_id,
             "profile_layers": profile_layers,
             "system_profiles": system_profiles,
-            "runtime_signatures": runtime_sigs,
             "system_profile_status": cov.get("system_profile_status") or {},
             "coverage_counts": {
                 "system_profiles": counts.get("system_profiles", 0),
                 "system_profiles_ok": counts.get("system_profiles_ok", 0),
-                "runtime_signatures": counts.get("runtime_signatures", 0),
             },
             "known": True,
         }

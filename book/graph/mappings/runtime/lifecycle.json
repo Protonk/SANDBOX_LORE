@@ -1,4 +1,18 @@
 {
+  "metadata": {
+    "input_hashes": {
+      "book/graph/concepts/validation/out/lifecycle/entitlements.json": "b0e8a638affb871cce7434716d3244448416d237a7b49e272d6126c199486df4",
+      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md": "f8b7d72eb0a2930cde63a86381e78be5ed9100d400c60931b6abb6cc67ade432"
+    },
+    "inputs": [
+      "book/graph/concepts/validation/out/lifecycle/entitlements.json",
+      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md",
+      "book/graph/concepts/validation/out/metadata.json"
+    ],
+    "notes": "Lifecycle probes normalized; blocked/partial scenarios retained with source logs.",
+    "status": "partial",
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  },
   "profile_format_variant": "modern-heuristic",
   "scenarios": [
     {
@@ -19,7 +33,5 @@
     }
   ],
   "sip_status": "enabled",
-  "metadata": {
-    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
-  }
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 }

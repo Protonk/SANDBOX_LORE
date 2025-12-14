@@ -32,7 +32,6 @@ def test_coverage_for_file_read():
     assert entry.get("op_id") == 21
     assert entry.get("counts", {}).get("system_profiles", 0) > 0
     assert "sys:bsd" in entry.get("system_profiles", [])
-    assert "bucket4:v1_read" in entry.get("runtime_signatures", [])
 
 
 def test_coverage_zero_bucket_present():
@@ -47,13 +46,8 @@ def test_coverage_summary_matches_counts():
     coverage = data.get("coverage") or {}
     summary = data.get("summary") or {}
     assert len(coverage) == summary.get("ops_total")
-    zero = sum(
-        1
-        for entry in coverage.values()
-        if not entry.get("system_profiles") and not entry.get("runtime_signatures")
-    )
+    zero = sum(1 for entry in coverage.values() if not entry.get("system_profiles"))
     assert zero == summary.get("ops_with_no_coverage")
-    assert summary.get("unknown_runtime_ops") == []
 
 
 def test_coverage_metadata_inputs_include_carton_manifest():

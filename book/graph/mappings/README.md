@@ -16,3 +16,4 @@ Subdirectories:
 - `runtime/` – Runtime probe expectations and (when possible) traces from running profiles under Seatbelt. This connects decoder-level predictions to observed allow/deny decisions in the live sandbox.
 - `vocab/` – Operation/Filter vocabulary maps with attestations linking the tables to dyld slices and reference blobs for this host/build.
 - `carton/` – CARTON-derived overlays (e.g., operation coverage) built purely from the frozen CARTON interface, not raw experiment outputs.
+  - `carton/anchor_index.json` publishes structural anchor → field2 hints (default `role: exploratory`) for CARTON consumers, derived from `anchors/anchor_field2_map.json` and `experiments/probe-op-structure/out/anchor_hits.json`.

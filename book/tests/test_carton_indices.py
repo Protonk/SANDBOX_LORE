@@ -27,7 +27,6 @@ def test_operation_index_shape_and_sample():
     assert isinstance(op["id"], int)
     assert "system" in op["profile_layers"]
     assert "sys:bsd" in op["system_profiles"]
-    assert "bucket4:v1_read" in op["runtime_signatures"]
     counts = op["coverage_counts"]
     assert counts["system_profiles"] >= 1
 
@@ -41,7 +40,6 @@ def test_profile_layer_index_shape_and_sample():
     assert bsd["layer"] == "system"
     assert bsd["ops"], "expected ops for sys:bsd"
     assert all("name" in op and "id" in op for op in bsd["ops"])
-    assert "bucket4:v1_read" in bsd["runtime_signatures"]
     # Ensure ops are unique by id
     ids = [op["id"] for op in bsd["ops"]]
     assert len(ids) == len(set(ids))
@@ -62,7 +60,6 @@ def test_filter_index_shape():
         "unknown",
     }
     assert path_entry["system_profiles"] == []
-    assert path_entry["runtime_signatures"] == []
     # Ensure at least one filter is marked present-in-vocab-only (current conservative default).
     assert any(entry.get("usage_status") == "present-in-vocab-only" for entry in filters.values())
 

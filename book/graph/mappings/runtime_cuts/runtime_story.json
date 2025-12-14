@@ -5,7 +5,15 @@
     "runtime_log_schema": "runtime_log_schema.v0.1.json",
     "status": "partial",
     "source_jobs": [],
-    "notes": "joined runtime story"
+    "notes": "joined runtime story",
+    "inputs": [
+      "book/graph/mappings/runtime_cuts/ops.json",
+      "book/graph/mappings/runtime_cuts/scenarios.json"
+    ],
+    "input_hashes": {
+      "book/graph/mappings/runtime_cuts/ops.json": "d63a29fe2820c5dda1ad3c17aaff36e21a76d84ea6de1f7dd44108419f862159",
+      "book/graph/mappings/runtime_cuts/scenarios.json": "c1c6c1691b8a0d3faf932946604bac48e95605403051951981864ee01a461d9e"
+    }
   },
   "ops": {
     "21": {

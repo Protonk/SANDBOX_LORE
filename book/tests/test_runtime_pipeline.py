@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 from book.api.runtime import pipeline, events as runtime_events, story as runtime_story
-from book.api.carton import runtime_adapter
 
 
 def _write_fixture(matrix_path: Path, results_path: Path) -> None:
@@ -109,7 +108,6 @@ def test_full_cut_lifecycle_and_story(tmp_path: Path) -> None:
     story = runtime_story.build_runtime_story(promoted["ops"], promoted["scenarios"])
     coverage_view = runtime_story.story_to_coverage(story)
     signatures_view = runtime_story.story_to_runtime_signatures(story)
-    adapter_cov = runtime_adapter.runtime_coverage_view(story)
 
     # index consistency
     idx_doc = json.loads(promoted["indexes"].read_text())
@@ -118,11 +116,8 @@ def test_full_cut_lifecycle_and_story(tmp_path: Path) -> None:
 
     # metadata invariants
     assert (story.get("meta") or {}).get("world_id") == runtime_events.WORLD_ID
-    for meta in [coverage_view.get("metadata"), signatures_view.get("metadata"), adapter_cov.get("metadata")]:
+    for meta in [coverage_view.get("metadata"), signatures_view.get("metadata")]:
         assert meta.get("world_id") == runtime_events.WORLD_ID
-
-    # adapter mirrors coverage view
-    assert coverage_view.get("coverage") == adapter_cov.get("coverage")
 
     # events stream aligns with scenario/op mappings
     ops_doc = json.loads(promoted["ops"].read_text())

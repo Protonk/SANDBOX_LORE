@@ -19,7 +19,6 @@
       "id": 30,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "%entitlement-is-bool-true": {
@@ -27,7 +26,6 @@
       "id": 86,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "%entitlement-is-present": {
@@ -35,7 +33,6 @@
       "id": 87,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "%entitlement-load": {
@@ -43,7 +40,6 @@
       "id": 29,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "%entitlement-string": {
@@ -51,7 +47,6 @@
       "id": 31,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "ancestor-signing-identifier": {
@@ -59,7 +54,6 @@
       "id": 61,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "appleevent-destination": {
@@ -67,7 +61,6 @@
       "id": 24,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "boot-arg": {
@@ -75,7 +68,6 @@
       "id": 48,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "codesigning-operation": {
@@ -83,7 +75,6 @@
       "id": 91,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "control-name": {
@@ -91,7 +82,6 @@
       "id": 9,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "csr": {
@@ -99,7 +89,6 @@
       "id": 45,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "datavault-disk-filter": {
@@ -107,7 +96,6 @@
       "id": 54,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "device-conforms-to": {
@@ -115,7 +103,6 @@
       "id": 21,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "device-major": {
@@ -123,7 +110,6 @@
       "id": 19,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "device-minor": {
@@ -131,7 +117,6 @@
       "id": 20,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "extension": {
@@ -139,7 +124,6 @@
       "id": 22,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "extension-class": {
@@ -147,7 +131,6 @@
       "id": 23,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "extension-path-ancestor": {
@@ -155,7 +138,6 @@
       "id": 55,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "fcntl-command": {
@@ -163,7 +145,6 @@
       "id": 77,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "file-attribute": {
@@ -171,7 +152,6 @@
       "id": 56,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "file-mode": {
@@ -179,7 +159,6 @@
       "id": 3,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "fileprovider-syncroot-path": {
@@ -187,7 +166,6 @@
       "id": 89,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "filesystem-name": {
@@ -195,7 +173,6 @@
       "id": 47,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "fsctl-command": {
@@ -203,7 +180,6 @@
       "id": 14,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "global-name": {
@@ -211,7 +187,6 @@
       "id": 5,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "host-special-port": {
@@ -219,7 +194,6 @@
       "id": 46,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "info-type": {
@@ -227,7 +201,6 @@
       "id": 33,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "ioctl-command": {
@@ -235,7 +208,6 @@
       "id": 15,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-connection": {
@@ -243,7 +215,6 @@
       "id": 18,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-method-number": {
@@ -251,7 +222,6 @@
       "id": 72,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-property": {
@@ -259,7 +229,6 @@
       "id": 17,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-registry-entry-attribute": {
@@ -267,7 +236,6 @@
       "id": 66,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-registry-entry-class": {
@@ -275,7 +243,6 @@
       "id": 16,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-trap-number": {
@@ -283,7 +250,6 @@
       "id": 73,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-usb-interface-class": {
@@ -291,7 +257,6 @@
       "id": 59,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-usb-interface-subclass": {
@@ -299,7 +264,6 @@
       "id": 60,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "iokit-user-client-type": {
@@ -307,7 +271,6 @@
       "id": 76,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "ipc-posix-name": {
@@ -315,7 +278,6 @@
       "id": 4,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "kas-info-selector": {
@@ -323,7 +285,6 @@
       "id": 92,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "kernel-mig-routine": {
@@ -331,7 +292,6 @@
       "id": 75,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "kext-bundle-id": {
@@ -339,7 +299,6 @@
       "id": 32,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "local": {
@@ -347,7 +306,6 @@
       "id": 7,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "local-name": {
@@ -355,7 +313,6 @@
       "id": 6,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "mac-policy-name": {
@@ -363,7 +320,6 @@
       "id": 80,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "mac-syscall-number": {
@@ -371,7 +327,6 @@
       "id": 81,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "mach-derived-port-role": {
@@ -379,7 +334,6 @@
       "id": 69,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "machtrap-number": {
@@ -387,7 +341,6 @@
       "id": 74,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "memorystatus-control-command": {
@@ -395,7 +348,6 @@
       "id": 83,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "message-name": {
@@ -403,7 +355,6 @@
       "id": 71,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "message-number": {
@@ -411,7 +362,6 @@
       "id": 70,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "mount-relative-path": {
@@ -419,7 +369,6 @@
       "id": 1,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "mount-root-path": {
@@ -427,7 +376,6 @@
       "id": 90,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "necp-client-action": {
@@ -435,7 +383,6 @@
       "id": 82,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "notification-name": {
@@ -443,7 +390,6 @@
       "id": 34,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "notification-payload": {
@@ -451,7 +397,6 @@
       "id": 35,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "nvram-variable": {
@@ -459,7 +404,6 @@
       "id": 44,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "path": {
@@ -467,7 +411,6 @@
       "id": 0,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "persona-type": {
@@ -475,7 +418,6 @@
       "id": 63,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "preference-domain": {
@@ -483,7 +425,6 @@
       "id": 27,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "privilege-id": {
@@ -491,7 +432,6 @@
       "id": 41,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "process-attribute": {
@@ -499,7 +439,6 @@
       "id": 42,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "process-path": {
@@ -507,7 +446,6 @@
       "id": 38,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "reboot-flags": {
@@ -515,7 +453,6 @@
       "id": 53,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "remote": {
@@ -523,7 +460,6 @@
       "id": 8,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "require-ancestor-with-entitlement": {
@@ -531,7 +467,6 @@
       "id": 62,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "require-responsible-binary-with-entitlement": {
@@ -539,7 +474,6 @@
       "id": 85,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "require-target-with-entitlement": {
@@ -547,7 +481,6 @@
       "id": 65,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "right-name": {
@@ -555,7 +488,6 @@
       "id": 26,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "rootless-boot-device-filter": {
@@ -563,7 +495,6 @@
       "id": 39,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "rootless-disk-filter": {
@@ -571,7 +502,6 @@
       "id": 40,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "semaphore-owner": {
@@ -579,7 +509,6 @@
       "id": 36,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "signal-number": {
@@ -587,7 +516,6 @@
       "id": 51,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "signing-identifier": {
@@ -595,7 +523,6 @@
       "id": 50,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "snapshot-name": {
@@ -603,7 +530,6 @@
       "id": 68,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "socket-domain": {
@@ -611,7 +537,6 @@
       "id": 10,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "socket-option-level": {
@@ -619,7 +544,6 @@
       "id": 78,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "socket-option-name": {
@@ -627,7 +551,6 @@
       "id": 79,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "socket-protocol": {
@@ -635,7 +558,6 @@
       "id": 12,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "socket-type": {
@@ -643,7 +565,6 @@
       "id": 11,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "state-flag": {
@@ -651,7 +572,6 @@
       "id": 84,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "storage-class": {
@@ -659,7 +579,6 @@
       "id": 57,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "storage-class-extension": {
@@ -667,7 +586,6 @@
       "id": 58,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "syscall-number": {
@@ -675,7 +593,6 @@
       "id": 64,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "sysctl-name": {
@@ -683,7 +600,6 @@
       "id": 37,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "system-attribute": {
@@ -691,7 +607,6 @@
       "id": 25,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "target": {
@@ -699,7 +614,6 @@
       "id": 13,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "target-signing-identifier": {
@@ -707,7 +621,6 @@
       "id": 52,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "task-special-port": {
@@ -715,7 +628,6 @@
       "id": 88,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "uid": {
@@ -723,7 +635,6 @@
       "id": 43,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "user-intent-extension": {
@@ -731,7 +642,6 @@
       "id": 67,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "vnode-type": {
@@ -739,7 +649,6 @@
       "id": 28,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "xattr": {
@@ -747,7 +656,6 @@
       "id": 2,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     },
     "xpc-service-name": {
@@ -755,7 +663,6 @@
       "id": 49,
       "usage_status": "present-in-vocab-only",
       "system_profiles": [],
-      "runtime_signatures": [],
       "known": true
     }
   }

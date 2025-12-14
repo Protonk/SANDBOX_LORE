@@ -16,10 +16,9 @@ def test_carton_mini_story_coherence():
 
     # Operation counts should match the lengths of the returned lists.
     assert op_story["coverage_counts"]["system_profiles"] == len(op_story["system_profiles"])
-    assert op_story["coverage_counts"]["runtime_signatures"] == len(op_story["runtime_signatures"])
     assert op_story.get("coverage_status") == "ok"
 
-    # Profile story should report ops that include the chosen op (when present) and expose runtime signatures.
+    # Profile story should report ops that include the chosen op (when present).
     op_names_in_profile = {op["name"] for op in profile_story["ops"]}
     if op_name in op_names_in_profile:
         assert profile_story["profile_id"] in op_story["system_profiles"]

@@ -17,7 +17,7 @@
       "sys:bsd": "ok",
       "sys:sample": "ok"
     },
-    "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries and inherit canonical profile status."
+    "notes": "Derived from CARTON system digests and coverage; inherits canonical profile status."
   },
   "profiles": {
     "sys:airlock": {
@@ -129,8 +129,7 @@
           "name": "system-kext*",
           "id": 166
         }
-      ],
-      "runtime_signatures": []
+      ]
     },
     "sys:bsd": {
       "id": "sys:bsd",
@@ -157,18 +156,6 @@
           "name": "file-test-existence",
           "id": 27
         }
-      ],
-      "runtime_signatures": [
-        "adv:path_edges",
-        "adv:struct_flat",
-        "adv:struct_nested",
-        "bucket4:v1_read",
-        "bucket5:v11_read_subpath",
-        "runtime:allow_all",
-        "runtime:metafilter_any",
-        "runtime:strict_1",
-        "sys:airlock",
-        "sys:bsd"
       ]
     },
     "sys:sample": {
@@ -184,8 +171,7 @@
           "name": "distributed-notification-post",
           "id": 8
         }
-      ],
-      "runtime_signatures": []
+      ]
     }
   }
 }

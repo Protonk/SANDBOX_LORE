@@ -4,7 +4,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SIGNATURES = ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_signatures.json"
 BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
-GOLDEN = {"bucket4:v1_read", "bucket5:v11_read_subpath", "runtime:metafilter_any"}
 
 
 def load_signatures():
@@ -24,8 +23,19 @@ def test_signatures_present_and_host():
     assert "generated_at" not in meta
     assert meta.get("world_id") == baseline_world()
     sigs = data.get("signatures") or {}
-    for key in GOLDEN:
-        assert key in sigs, f"missing signature for {key}"
+    scenarios = data.get("scenarios") or {}
+    expected = (data.get("expected_matrix") or {}).get("profiles") or {}
+    assert sigs, "expected runtime signatures per-profile map"
+    assert scenarios, "expected scenario-level signatures map"
+    assert "adv:path_edges" in sigs
+    assert "adv:path_edges:allow-tmp" in scenarios
+    any_classified = False
+    for prof in expected.values():
+        for probe in prof.get("probes") or []:
+            if probe.get("classification"):
+                any_classified = True
+                break
+    assert any_classified, "expected_matrix rows should carry classifications"
 
 
 def test_field2_summary_structure():

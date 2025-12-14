@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "input_hashes": {
+      "book/graph/concepts/validation/out/lifecycle/entitlements.json": "b0e8a638affb871cce7434716d3244448416d237a7b49e272d6126c199486df4",
+      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md": "f8b7d72eb0a2930cde63a86381e78be5ed9100d400c60931b6abb6cc67ade432"
+    },
+    "inputs": [
+      "book/graph/concepts/validation/out/lifecycle/entitlements.json",
+      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md",
+      "book/graph/concepts/validation/out/metadata.json"
+    ],
+    "notes": "Lifecycle story derived from validation outputs; expected vs observed per scenario.",
+    "status": "partial",
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+  },
+  "scenarios": {
+    "entitlements-evolution": {
+      "classification": "mismatch_disallowed",
+      "expected": {
+        "entitlements_present": true
+      },
+      "kind": "entitlements",
+      "mismatches": [
+        {
+          "actual": false,
+          "expectation_id": "entitlements-evolution:present",
+          "expected": true,
+          "tags": [
+            "missing_entitlements"
+          ]
+        }
+      ],
+      "observed": {
+        "entitlements_present": false
+      },
+      "scenario_id": "entitlements-evolution",
+      "static_ref": "book/graph/concepts/validation/out/lifecycle/entitlements.json"
+    },
+    "extensions-dynamic": {
+      "classification": "mismatch_disallowed",
+      "expected": {
+        "token_issued": true
+      },
+      "kind": "extensions",
+      "mismatches": [
+        {
+          "actual": false,
+          "expectation_id": "extensions-dynamic:token",
+          "expected": true,
+          "tags": [
+            "extension_failure"
+          ]
+        }
+      ],
+      "notes": "# extensions-dynamic probe notes\n\n- Attempted to run `book/examples/extensions-dynamic/extensions_demo` (libsandbox extension issuance/consume demo) on macOS 14.4.1 (23E224), SIP enabled.\n- Outcome: process crashes with `Sandbox(Signal 11)` (exit 139) even after adding guards to skip consume/release when issuance fails.\n- lldb attempts (`lldb -- ./extensions_demo` with `run`/`bt`) failed to attach because process exits before tracing; dtruss blocked by SIP. Token issuance via isolated Python/ctypes calls returns `rc=0` with `token=NULL` for both `/private/var/db/ConfigurationProfiles` and `/tmp`, suggesting libsandbox may be returning success with null tokens for unentitled callers.\n- Hypothesis: demo crashes inside libsandbox when dereferencing/processing a NULL token or due to missing entitlement context. Next steps would be to:",
+      "observed": {
+        "token_issued": false
+      },
+      "scenario_id": "extensions-dynamic",
+      "static_ref": "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md"
+    }
+  }
+}

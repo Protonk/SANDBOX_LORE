@@ -17,6 +17,8 @@ EXPERIMENT_STATUS_DIR = ROOT / "book" / "graph" / "concepts" / "validation" / "o
 CARTON_MANIFEST = ROOT / "book" / "api" / "carton" / "CARTON.json"
 MAPPING_CHECKS = [
     ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_signatures.json",
+    ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_coverage.json",
+    ROOT / "book" / "graph" / "mappings" / "runtime" / "expectations.json",
     ROOT / "book" / "graph" / "mappings" / "system_profiles" / "digests.json",
     ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json",
     ROOT / "book" / "graph" / "mappings" / "vocab" / "filters.json",

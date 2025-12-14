@@ -75,7 +75,6 @@ def build_index() -> dict:
             "id": filter_id,
             "usage_status": "present-in-vocab-only",  # conservative default until usage mapping is wired
             "system_profiles": [],
-            "runtime_signatures": [],
             "known": True,
         }
 

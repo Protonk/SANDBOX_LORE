@@ -5,7 +5,7 @@ Generate profile_layer_index.json from CARTON mappings.
 Inputs (all from CARTON):
 - system_profiles/digests.json
 - vocab/ops.json
-- carton/operation_coverage.json (runtime signatures per op)
+- carton/operation_coverage.json
 - carton/CARTON.json (for host, optional)
 """
 
@@ -85,30 +85,24 @@ def build_index() -> dict:
                 raise ValueError(f"op id {op_id} not found in vocab for profile {profile_id}")
             ops_list.append({"name": name, "id": op_id})
         op_names = [item["name"] for item in ops_list]
-        runtime_sigs = set()
-        for name in op_names:
-            cov = coverage_map.get(name) or {}
-            for sig in cov.get("runtime_signatures") or []:
-                runtime_sigs.add(sig)
         profiles[profile_id] = {
             "id": profile_id,
             "layer": "system",
             "status": val.get("status") or "unknown",
             "ops": ops_list,
-            "runtime_signatures": sorted(runtime_sigs),
         }
 
     return {
         "metadata": {
-            "world_id": world_id,
-            "inputs": inputs,
-            "source_jobs": source_jobs,
-            "status": coverage_status,
-            "canonical_profile_status": canonical_status,
-            "notes": "Derived from CARTON system digests and coverage; runtime signatures are linked via coverage entries and inherit canonical profile status.",
-        },
-        "profiles": dict(sorted(profiles.items(), key=lambda kv: kv[0])),
-    }
+        "world_id": world_id,
+        "inputs": inputs,
+        "source_jobs": source_jobs,
+        "status": coverage_status,
+        "canonical_profile_status": canonical_status,
+        "notes": "Derived from CARTON system digests and coverage; inherits canonical profile status.",
+    },
+    "profiles": dict(sorted(profiles.items(), key=lambda kv: kv[0])),
+}
 
 
 def main() -> None:

@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+    "inputs": [
+      "book/graph/mappings/runtime_cuts/ops.json",
+      "book/graph/mappings/runtime_cuts/scenarios.json",
+      "book/experiments/runtime-adversarial/out/impact_map.json"
+    ],
+    "input_hashes": {
+      "book/graph/mappings/runtime_cuts/ops.json": "d63a29fe2820c5dda1ad3c17aaff36e21a76d84ea6de1f7dd44108419f862159",
+      "book/graph/mappings/runtime_cuts/scenarios.json": "c1c6c1691b8a0d3faf932946604bac48e95605403051951981864ee01a461d9e"
+    },
+    "source_jobs": [
+      "experiment:runtime-checks",
+      "experiment:runtime-adversarial"
+    ],
+    "status": "ok",
+    "notes": "Runtime coverage derived from runtime_story; mismatches allowed only when tagged in impact_map.json.",
+    "mismatches": [],
+    "mismatch_summary": {
+      "total_mismatches": 17,
+      "total_disallowed_mismatches": 0,
+      "tags": {
+        "apply_gate": 17
+      }
+    },
+    "provenance": {
+      "runtime_story": {
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+        "schema_version": "runtime-mapping.v0.1",
+        "runtime_log_schema": "runtime_log_schema.v0.1.json",
+        "status": "partial",
+        "source_jobs": [],
+        "notes": "joined runtime story",
+        "inputs": [
+          "book/graph/mappings/runtime_cuts/ops.json",
+          "book/graph/mappings/runtime_cuts/scenarios.json"
+        ],
+        "input_hashes": {
+          "book/graph/mappings/runtime_cuts/ops.json": "d63a29fe2820c5dda1ad3c17aaff36e21a76d84ea6de1f7dd44108419f862159",
+          "book/graph/mappings/runtime_cuts/scenarios.json": "c1c6c1691b8a0d3faf932946604bac48e95605403051951981864ee01a461d9e"
+        }
+      }
+    }
+  },
+  "coverage": {
+    "file-read*": {
+      "op_id": 21,
+      "runtime_signatures": [
+        "adv:path_edges:allow-subpath",
+        "adv:path_edges:allow-tmp",
+        "adv:path_edges:deny-dotdot",
+        "adv:path_edges:deny-private",
+        "adv:struct_flat:allow-ok-deep",
+        "adv:struct_flat:allow-ok-root",
+        "adv:struct_flat:deny-blocked",
+        "adv:struct_flat:deny-outside",
+        "adv:struct_nested:allow-ok-deep",
+        "adv:struct_nested:allow-ok-root",
+        "adv:struct_nested:deny-blocked",
+        "adv:struct_nested:deny-outside"
+      ],
+      "counts": {
+        "runtime_signatures": 12
+      },
+      "status": "ok",
+      "mismatches": [],
+      "mismatch_summary": {
+        "total_mismatches": 6,
+        "total_disallowed_mismatches": 0,
+        "tags": {
+          "apply_gate": 6
+        }
+      }
+    },
+    "file-write*": {
+      "op_id": 29,
+      "runtime_signatures": [
+        "adv:path_edges:write-dotdot",
+        "adv:path_edges:write-private",
+        "adv:path_edges:write-subpath",
+        "adv:path_edges:write-tmp",
+        "adv:struct_flat:write-blocked",
+        "adv:struct_flat:write-ok-deep",
+        "adv:struct_flat:write-ok-root",
+        "adv:struct_flat:write-outside",
+        "adv:struct_nested:write-blocked",
+        "adv:struct_nested:write-ok-deep",
+        "adv:struct_nested:write-ok-root",
+        "adv:struct_nested:write-outside"
+      ],
+      "counts": {
+        "runtime_signatures": 12
+      },
+      "status": "ok",
+      "mismatches": [],
+      "mismatch_summary": {
+        "total_mismatches": 6,
+        "total_disallowed_mismatches": 0,
+        "tags": {
+          "apply_gate": 6
+        }
+      }
+    },
+    "mach-lookup": {
+      "op_id": 96,
+      "runtime_signatures": [
+        "adv:mach_local_literal:allow-cfprefsd-local",
+        "adv:mach_local_literal:deny-bogus-local",
+        "adv:mach_local_regex:allow-cfprefsd-local",
+        "adv:mach_local_regex:deny-bogus-local",
+        "adv:mach_simple_allow:allow-cfprefsd",
+        "adv:mach_simple_allow:deny-bogus",
+        "adv:mach_simple_variants:allow-cfprefsd",
+        "adv:mach_simple_variants:deny-bogus"
+      ],
+      "counts": {
+        "runtime_signatures": 8
+      },
+      "status": "ok",
+      "mismatches": [],
+      "mismatch_summary": {
+        "total_mismatches": 4,
+        "total_disallowed_mismatches": 0,
+        "tags": {
+          "apply_gate": 4
+        }
+      }
+    },
+    "network-outbound": {
+      "op_id": 112,
+      "runtime_signatures": [
+        "adv:net_outbound_allow:tcp-loopback",
+        "adv:net_outbound_deny:tcp-loopback"
+      ],
+      "counts": {
+        "runtime_signatures": 2
+      },
+      "status": "ok",
+      "mismatches": [],
+      "mismatch_summary": {
+        "total_mismatches": 1,
+        "total_disallowed_mismatches": 0,
+        "tags": {
+          "apply_gate": 1
+        }
+      }
+    }
+  }
+}
