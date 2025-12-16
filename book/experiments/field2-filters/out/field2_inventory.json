@@ -714,6 +714,40 @@
     ],
     "anchors": []
   },
+  "probe:airlock_system_fcntl_matrix.sb": {
+    "op_count": 5,
+    "node_count": 32,
+    "field2": [
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "name": "ipc-posix-name",
+        "count": 21,
+        "tags": {
+          "4": 13,
+          "3": 8
+        }
+      },
+      {
+        "raw": 3,
+        "raw_hex": "0x3",
+        "hi": 0,
+        "lo": 3,
+        "name": "file-mode",
+        "count": 11,
+        "tags": {
+          "4": 5,
+          "3": 4,
+          "2": 1,
+          "0": 1
+        }
+      }
+    ],
+    "unknown_nodes": [],
+    "anchors": []
+  },
   "probe:bsd_broader.sb": {
     "op_count": 8,
     "node_count": 31,
@@ -1240,6 +1274,102 @@
     ],
     "anchors": []
   },
+  "probe:net_require_all_domain_type_proto_udp.sb": {
+    "op_count": 9,
+    "node_count": 32,
+    "field2": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "name": "remote",
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "name": "local",
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "name": "global-name",
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "name": "ipc-posix-name",
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "name": null,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "name": "xattr",
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ],
+    "unknown_nodes": [
+      {
+        "idx": 30,
+        "tag": 0,
+        "fields": [
+          0,
+          0,
+          2560,
+          0,
+          7
+        ],
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "literal_refs": [
+          "Tcom.apple.flow-divert"
+        ]
+      }
+    ],
+    "anchors": []
+  },
   "probe:net_require_all_type_proto.sb": {
     "op_count": 8,
     "node_count": 31,
@@ -1277,6 +1407,50 @@
         "count": 1,
         "tags": {
           "7": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "name": "path",
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ],
+    "unknown_nodes": [],
+    "anchors": []
+  },
+  "probe:right_and_preference_names.sb": {
+    "op_count": 7,
+    "node_count": 31,
+    "field2": [
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "name": "local-name",
+        "count": 18,
+        "tags": {
+          "6": 17,
+          "5": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "name": "global-name",
+        "count": 12,
+        "tags": {
+          "6": 7,
+          "5": 4,
+          "0": 1
         }
       },
       {

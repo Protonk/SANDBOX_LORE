@@ -73,12 +73,12 @@
         "smoke"
       ],
       "hashes": {
-        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "9ccc9b696f24ae51310a87737c50ef63a274823fef6e6a65de9c080db9695aeb",
-        "book/graph/concepts/validation/out/experiments/field2/status.json": "622761259300da82b46b43c4990c20b97831d67186beb5e702c80efca502cdaa"
+        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "bbb85cb8a21c37388450839c3a1109dd010c1cbc17ec1a9216c164583a808928",
+        "book/graph/concepts/validation/out/experiments/field2/status.json": "735410973d8935c6db258af6fc6125ae1cbd325dde847d1f875d6079454d0419"
       },
       "notes": "Normalized field2 inventory and unknown nodes into IR.",
       "metrics": {
-        "profiles": 32,
+        "profiles": 35,
         "unknown_nodes": 0
       },
       "change": "unchanged"

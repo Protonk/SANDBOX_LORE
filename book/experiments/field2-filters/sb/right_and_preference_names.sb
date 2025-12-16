@@ -1,0 +1,9 @@
+(version 1)
+
+;; Probe how right-name and preference-domain arguments land in field2.
+
+(deny default)
+(allow authorization-right-obtain (right-name "system.preferences"))
+(allow authorization-right-obtain (right-name "system.services.systemconfiguration.network"))
+(allow authorization-right-obtain (preference-domain "com.apple.TimeMachine"))
+(allow authorization-right-obtain (preference-domain "com.apple.networkextension"))

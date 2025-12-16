@@ -216,6 +216,7 @@ These tools give us a consistent “slice + decode” view of modern profiles th
 - SBPL probe profiles under `sb/` and their compiled blobs in `sb/build/*.sb.bin`.
 - `book/experiments/node-layout/analyze.py` as the main ingestion and summary script.
 - `book/experiments/node-layout/out/summary.json` with per-variant structural data and decoder output.
+- Header/preamble and node-remainder contracts for canonical profiles captured in `book/graph/mappings/system_profiles/header_contract.json` and `book/graph/concepts/validation/out/static/node_remainders.json` (guardrailed in `book/tests/`).
 - Shared ingestion/decoder helpers under `book/graph/concepts/validation/` as referenced in the Baseline & scope section.
 
 ## Blockers / risks
@@ -224,7 +225,7 @@ These tools give us a consistent “slice + decode” view of modern profiles th
 
 ## Next steps
 - Tighten `field2` ↔ SBPL-construct hypotheses by adding carefully controlled single-change SBPL variants and comparing updated summaries.
-- Further characterize “front” versus “tail” regions for a few reference profiles to see which tags and constructs cluster where.
+- Further characterize “front” versus “tail” regions for a few reference profiles to see which tags and constructs cluster where, and pair that with the new header/preamble contract so the heuristic slice and remainder bytes are bounded by explicit reference values.
 - Add at least one minimal mach+literal probe and compare its node signatures to existing read/write-only variants.
 - Coordinate with `op-table-operation`, `field2-filters`, and `tag-layout-decode` once their artifacts stabilize, so this experiment can be annotated with concrete operation and filter IDs where justified.
 

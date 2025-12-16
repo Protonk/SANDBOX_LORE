@@ -510,6 +510,12 @@
     "nodes_start": 22,
     "literal_start": 369,
     "tag_validation": {
+      "2": {
+        "edge_in_bounds": 54,
+        "edge_total": 54,
+        "payloads": {},
+        "record_size": 12
+      },
       "0": {
         "edge_in_bounds": 2,
         "edge_total": 2,

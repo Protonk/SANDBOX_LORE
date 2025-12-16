@@ -2,6 +2,16 @@
   "format_variant": "modern-heuristic",
   "op_count": 6,
   "length": 467,
+  "header_words": [
+    0,
+    6,
+    190,
+    0,
+    0,
+    0,
+    0,
+    5
+  ],
   "op_entries": [
     5,
     5,

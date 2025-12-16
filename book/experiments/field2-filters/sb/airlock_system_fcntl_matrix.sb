@@ -1,0 +1,9 @@
+(version 1)
+
+;; Sweep a few fcntl-command values to see how field2 encodes them under system-fcntl.
+
+(deny default)
+(allow system-fcntl (fcntl-command 0))
+(allow system-fcntl (fcntl-command 1))
+(allow system-fcntl (fcntl-command 2))
+(allow system-fcntl (fcntl-command 3))

@@ -346,3 +346,12 @@ The final notes for 2025-11-28 push further into mixed-op probes explicitly targ
   - 3–5 literals (`v24`/`v25`/`v29`): `[5, 5, 4]` (rem len 5).
   - 6–8 literals (`v30`/`v31`/`v32`): `[3584, 1, 4, 5]` (rem len 7).
 - Takeaway: require-any shows a bimodal tail/branch pattern—branch marker + `[3584,1,4,5]` for 2 or ≥6 literals; no marker + `[5,5,4]` for 3–5 literals. Ordering stays irrelevant; decoder nodes stabilize per mode.
+
+## Pass 23
+
+- Added a header/preamble contract alongside inspect/op-table summaries to capture the first 16 bytes for canonical profiles (airlock/bsd/sample) and pinned it with a guardrail test. This keeps the modern-heuristic header assumptions explicit while we keep tail structure heuristic.
+- Next run: reuse this contract in the tail analysis—fold header_words and node remainders into a small “nodes + remainder” contract for a few reference blobs to bound the heuristic slice while we continue to map tail bytes.
+
+## Pass 24
+
+- Captured node-region lengths and remainder bytes (stride 12) for canonical profiles via `profile_ingestion`; recorded in `book/graph/concepts/validation/out/static/node_remainders.json` with a guardrail test. This bounds the current modern slice and tail bytes for airlock/bsd/sample while tail semantics remain heuristic.

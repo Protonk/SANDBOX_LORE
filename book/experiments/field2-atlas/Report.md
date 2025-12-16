@@ -21,7 +21,7 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 ## Status
 - Static: `ok` for the seed slice (anchors + system profiles present for 0/5/7).
 - Runtime: **partial** — reuses existing runtime signatures (mach path/global/local and path_edges) and tags each to a seed; no new harness runs yet. All three baseline seeds are `runtime_backed`; the extra static-only seed is marked `no_runtime_candidate`.
-- Atlas: `runtime_backed` for baseline seeds, `no_runtime_candidate` for the static-only add-on; will expand if we add seeds or new probes.
+- Atlas: `runtime_backed` for baseline seeds, `no_runtime_candidate` for the static-only add-on; rebuilt after the refreshed field2 inventory (UDP network variant, fcntl/right-name sweeps) with no status changes. Will expand if we add seeds or new probes.
 
 ## Case studies (seed slice)
 - Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*) and currently returns `deny` in the signature set.

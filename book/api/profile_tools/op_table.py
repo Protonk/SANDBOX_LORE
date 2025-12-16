@@ -124,6 +124,7 @@ class Summary:
     format_variant: str | None
     op_count: int
     op_count_source: str
+    header_words: List[int] | None
     op_entries: List[int]
     section_lengths: Dict[str, int]
     tag_counts_stride12: Dict[str, int]
@@ -148,6 +149,7 @@ def summarize_profile(
     op_count = header.operation_count or 0
     entries = op_entries(blob, op_count) if op_count else []
     decoded = decoder.decode_profile_dict(blob)
+    header_words = [int.from_bytes(blob[i : i + 2], "little") for i in range(0, min(len(blob), 16), 2)]
     entry_sigs = {str(e): entry_signature(decoded, e) for e in sorted(set(entries))}
     return Summary(
         name=name,
@@ -158,6 +160,7 @@ def summarize_profile(
         format_variant=header.format_variant,
         op_count=op_count,
         op_count_source="override" if op_count_override else "header",
+        header_words=header_words if header_words else None,
         op_entries=entries,
         section_lengths={
             "op_table": len(sections.op_table),

@@ -27,13 +27,18 @@ Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyG
 ## Recent probes & inventories
 - Added `sb/bsd_ops_default_file.sb` (ops 0,10,21–27) → only low path/socket IDs + 3584 sentinel; no bsd highs.
 - Added `sb/airlock_system_fcntl.sb` (system-fcntl + fcntl-command) → mostly low path/socket IDs + new 0xffff sentinel.
+- Added `sb/net_require_all_domain_type_proto_udp.sb` (AF_INET + SOCK_DGRAM + IPPROTO_UDP) → mirrors the TCP require-all shape; still emits the same flow-divert tag0 node with `field2=2560`.
+- Added `sb/airlock_system_fcntl_matrix.sb` (fcntl-command sweep 0–3) → collapses to low scaffolding filters only; no high/unknown `field2` values.
+- Added `sb/right_and_preference_names.sb` (right-name + preference-domain literals) → only path/name scaffolding, no tag26/27 highs.
 - Inventories refreshed (`harvest_field2.py`, `unknown_focus.py`); op reach now included for unknowns.
+- Added guardrail test `book/tests/test_field2_unknowns.py` to pin the current unknown/high field2 set; update `EXPECTED_UNKNOWN_RAW` deliberately if new unknowns appear.
 
 ## New observations
 - `unknown_nodes.json` summary:
   - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 sit on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
   - `airlock`: highs 165/166/10752 on tags 166/1/0; op reach concentrated on op 162 (`system-fcntl`). `airlock_system_fcntl` adds a sentinel 0xffff (hi=0xc000) on tag 1, op-empty.
-- `flow-divert`: 2560 only in mixed require-all (domain+type+protocol) probes, tag 0, fan_in=0, fan_out=2→node0, op-empty.
+- `flow-divert`: 2560 only in mixed require-all (domain+type+protocol) probes (TCP and UDP), tag 0, fan_in=0, fan_out=2→node0, op-empty.
+- `system-fcntl` sweep (0–3) did not surface the 0xffff/0xa5/0xa6 highs; only low scaffolding filters appeared. Right-name/preference-domain probes likewise stayed in low path/name scaffolding with no tag26/27 highs.
 - `sample` and probe clones: sentinel 3584 on tag 0, fan_out=2→node0, op-empty.
 - `field2_evaluator.json` shows `__read16` callers worth inspecting: `_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`. No immediates for the unknown constants appear in `eval.txt`, reinforcing that the helper/evaluator passes the u16 through unmasked.
 - Obstacle: direct `llvm-objdump` on the carved sandbox binary (whole file or slices) reports “truncated or malformed object” / “not an object file,” so caller disassembly needs to go through Ghidra. Plan: add a headless script to dump those callers from the existing `sandbox_field2_sbx` project and log how the `__read16` result is consumed.

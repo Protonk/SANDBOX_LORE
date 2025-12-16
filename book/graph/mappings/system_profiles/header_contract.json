@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+    "status": "ok",
+    "inputs": [
+      "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
+      "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
+      "book/examples/sb/build/sample.sb.bin"
+    ],
+    "notes": "Preamble (first 16 bytes) contract for canonical system profiles on this host."
+  },
+  "profiles": {
+    "sys:airlock": {
+      "source": "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
+      "length": 4662,
+      "header_words": [
+        16384,
+        167,
+        190,
+        0,
+        0,
+        1,
+        7,
+        283
+      ],
+      "op_count_word": 167,
+      "maybe_flags_word": 16384
+    },
+    "sys:bsd": {
+      "source": "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
+      "length": 2140,
+      "header_words": [
+        0,
+        28,
+        190,
+        0,
+        0,
+        0,
+        0,
+        27
+      ],
+      "op_count_word": 28,
+      "maybe_flags_word": 0
+    },
+    "sys:sample": {
+      "source": "book/examples/sb/build/sample.sb.bin",
+      "length": 583,
+      "header_words": [
+        0,
+        9,
+        190,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "op_count_word": 9,
+      "maybe_flags_word": 0
+    }
+  }
+}

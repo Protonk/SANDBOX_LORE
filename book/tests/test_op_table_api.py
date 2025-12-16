@@ -47,6 +47,7 @@ def test_build_alignment_stub():
         format_variant=None,
         op_count=1,
         op_count_source="header",
+        header_words=None,
         op_entries=[4],
         section_lengths={},
         tag_counts_stride12={},

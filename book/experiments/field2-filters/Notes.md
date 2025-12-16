@@ -196,3 +196,11 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
   - `_match_network`: single `tst w10,#0xffff` gate after a protocol/domain compare.
   - `_variables_populate`: `tst w9,#0xffff` then `and x9,x9,#0xffff` prior to address arithmetic; again just masking, no high-constant compares.
 - No occurrences of 0xa00/0x4114/0x2a00/0xe00/0xffff as immediates in these callers. Suggests `filter_arg_raw` is masked to 16 bits in places but not compared against our unknown constants here. Next refinement would be to correlate these mask sites with the node fields they read (e.g., which node/tag they’re decoding) or widen context to nearby table lookups.
+
+## New probe variants (field2 sweeps)
+
+- Added `net_require_all_domain_type_proto_udp.sb` to mirror the TCP require-all matrix with UDP (AF_INET + SOCK_DGRAM + IPPROTO_UDP). Compilation + harvest show the same `field2=2560` flow-divert tag0 node as the TCP variant; no new high IDs or anchors surfaced.
+- Added `airlock_system_fcntl_matrix.sb` (fcntl-command sweep 0–3) to probe whether command payloads drive the 0xffff/0xa5/0xa6 highs. Decode/harvest shows only low scaffolding filters (ipc-posix-name/file-mode) and no unknown/high `field2` values.
+- Added `right_and_preference_names.sb` (right-name/preference-domain literals) to see if tag26/27 highs map to literal arguments. Decode shows only path/name scaffolding; no high/unknown `field2` values and no tag26/27 payloads beyond vocab IDs.
+- Reran `harvest_field2.py` and `unknown_focus.py` to fold in the new profiles. Unknowns remain limited to the existing clusters: flow-divert `field2=2560` on tag0 nodes with edges →0, bsd tail `field2=0x4114` and tag26 payloads, airlock highs {165,166,0x2a00}, and the probe-only 0xffff sentinel on `airlock_system_fcntl`.
+- Added guardrail `book/tests/test_field2_unknowns.py` to pin the current unknown/high `field2` set; adjust `EXPECTED_UNKNOWN_RAW` deliberately if future probes surface new unknowns.

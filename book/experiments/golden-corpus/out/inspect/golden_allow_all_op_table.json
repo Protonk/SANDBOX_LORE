@@ -7,6 +7,16 @@
   "format_variant": "modern-heuristic",
   "op_count": 2,
   "op_count_source": "header",
+  "header_words": [
+    0,
+    2,
+    190,
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
   "op_entries": [
     1,
     1

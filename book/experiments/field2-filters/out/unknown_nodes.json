@@ -512,6 +512,7 @@
       "literal_refs": []
     }
   ],
+  "probe:airlock_system_fcntl_matrix.sb": [],
   "probe:bsd_broader.sb": [],
   "probe:bsd_ops_default_file.sb": [
     {
@@ -577,7 +578,36 @@
       ]
     }
   ],
+  "probe:net_require_all_domain_type_proto_udp.sb": [
+    {
+      "idx": 30,
+      "tag": 0,
+      "fields": [
+        0,
+        0,
+        2560,
+        0,
+        7
+      ],
+      "edges": [
+        0,
+        0
+      ],
+      "fan_out": 2,
+      "fan_in": 0,
+      "ops": [],
+      "raw": 2560,
+      "raw_hex": "0xa00",
+      "hi": 0,
+      "lo": 2560,
+      "name_lo": null,
+      "literal_refs": [
+        "Tcom.apple.flow-divert"
+      ]
+    }
+  ],
   "probe:net_require_all_type_proto.sb": [],
+  "probe:right_and_preference_names.sb": [],
   "probe:v0_subpath.sb": [],
   "probe:v1_literal.sb": [],
   "probe:v2_global_name.sb": [],

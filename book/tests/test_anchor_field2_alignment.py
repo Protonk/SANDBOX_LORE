@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from book.api import path_utils
+
 ROOT = Path(__file__).resolve().parents[2]
 WORLD_ID = "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 
@@ -10,6 +12,11 @@ WORLD_ID = "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 def load_json(path: Path):
     assert path.exists(), f"missing required file: {path}"
     return json.loads(path.read_text())
+
+
+def repo_rel(path) -> str:
+    absolute = path_utils.ensure_absolute(path, ROOT)
+    return path_utils.to_repo_relative(absolute, ROOT)
 
 
 def build_anchor_hits(path: Path):
@@ -31,7 +38,8 @@ def test_anchor_field2_map_metadata_and_presence():
     metadata = anchor_map.get("metadata") or {}
     assert metadata.get("world_id") == WORLD_ID
     assert metadata.get("status") in {"partial", "ok"}
-    assert hits_path.as_posix() in metadata.get("inputs", [])
+    metadata_inputs = {repo_rel(p) for p in (metadata.get("inputs") or [])}
+    assert repo_rel(hits_path) in metadata_inputs
     assert "source_jobs" in metadata
 
     anchor_hits = build_anchor_hits(hits_path)
@@ -72,8 +80,10 @@ def test_carton_anchor_index_aligns_with_map_and_hits():
     index_meta = index_doc.get("metadata") or {}
     assert index_meta.get("world_id") == WORLD_ID
     assert index_meta.get("status") in {"partial", "ok"}
-    for required in [anchor_map_path.as_posix(), hits_path.as_posix()]:
-        assert required in (index_meta.get("inputs") or []), f"missing input {required}"
+    metadata_inputs = {repo_rel(p) for p in (index_meta.get("inputs") or [])}
+    for required in [anchor_map_path, hits_path]:
+        required_input = repo_rel(required)
+        assert required_input in metadata_inputs, f"missing input {required_input}"
 
     anchor_map = load_json(anchor_map_path)
     anchor_hits = build_anchor_hits(hits_path)

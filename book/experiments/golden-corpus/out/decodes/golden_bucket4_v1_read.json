@@ -568,6 +568,12 @@
         },
         "record_size": 12
       },
+      "2": {
+        "edge_in_bounds": 2,
+        "edge_total": 2,
+        "payloads": {},
+        "record_size": 12
+      },
       "0": {
         "edge_in_bounds": 1,
         "edge_total": 2,

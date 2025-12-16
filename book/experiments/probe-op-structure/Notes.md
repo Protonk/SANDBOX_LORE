@@ -100,3 +100,7 @@ Use this file for concise notes on probe designs, compile logs, and findings.
 ## Decoder wiring and refresh
 
 - Adjusted `analyze_profiles.py` and `anchor_scan.py` to compute the repository root as three parents up from this experiment directory (so `book.*` imports resolve correctly), then reran both scripts from the repo root. `out/analysis.json` and `out/anchor_hits.json` are now refreshed under the current `book.api.decoder` (which prefers `book/graph/mappings/tag_layouts/tag_layouts.json` when present).
+
+## Refresh with updated layouts/contracts
+
+- Reran `analyze_profiles.py` and `anchor_scan.py` after landing the header/tail contracts and new tag layouts (meta tags 2/3, payload tag10). Outputs are aligned with the trimmed node region and current decoder; anchor hits for flow-divert/bsd/airlock/system profiles remain structurally stable.

@@ -2,6 +2,24 @@
   "notes": "Best-effort tag layouts derived from literal-bearing nodes in canonical profiles (airlock, bsd, sample). Edges assumed in fields[0..1]; payloads carry literal/regex operands in field[2].",
   "tags": [
     {
+      "tag": 2,
+      "record_size_bytes": 12,
+      "edge_fields": [
+        0,
+        1
+      ],
+      "payload_fields": []
+    },
+    {
+      "tag": 3,
+      "record_size_bytes": 12,
+      "edge_fields": [
+        0,
+        1
+      ],
+      "payload_fields": []
+    },
+    {
       "tag": 0,
       "record_size_bytes": 12,
       "edge_fields": [
@@ -58,6 +76,17 @@
     },
     {
       "tag": 8,
+      "record_size_bytes": 12,
+      "edge_fields": [
+        0,
+        1
+      ],
+      "payload_fields": [
+        2
+      ]
+    },
+    {
+      "tag": 10,
       "record_size_bytes": 12,
       "edge_fields": [
         0,

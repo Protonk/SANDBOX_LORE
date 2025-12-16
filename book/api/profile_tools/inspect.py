@@ -19,6 +19,7 @@ class Summary:
     format_variant: str | None
     op_count: int | None
     length: int
+    header_words: List[int] | None
     op_entries: List[int]
     section_lengths: Dict[str, int]
     stride_stats: List[Dict[str, Any]]
@@ -97,6 +98,7 @@ def _ascii_strings(buf: bytes, min_len: int = 4) -> List[Dict[str, Any]]:
 
 
 def summarize_blob(blob: bytes, strides: Sequence[int] = (8, 12, 16)) -> Summary:
+    header_words = [int.from_bytes(blob[i : i + 2], "little") for i in range(0, min(len(blob), 16), 2)]
     header = pi.parse_header(pi.ProfileBlob(bytes=blob, source="inspect_profile"))
     sections = pi.slice_sections(pi.ProfileBlob(bytes=blob, source="inspect_profile"), header)
     op_count = header.operation_count or 0
@@ -140,6 +142,7 @@ def summarize_blob(blob: bytes, strides: Sequence[int] = (8, 12, 16)) -> Summary
         format_variant=header.format_variant,
         op_count=op_count,
         length=len(blob),
+        header_words=header_words if header_words else None,
         op_entries=op_entries,
         section_lengths={
             "op_table": len(sections.op_table),

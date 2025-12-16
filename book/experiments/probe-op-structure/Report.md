@@ -213,6 +213,7 @@ This table summarizes the anchors that this experiment **actively touches** (i.e
   - `python3 book/experiments/probe-op-structure/analyze_profiles.py`
   - `python3 book/experiments/probe-op-structure/anchor_scan.py`
 - Both scripts compute `ROOT = Path(__file__).resolve().parents[3]` and import `book.api.decoder`, so they expect to run from anywhere with the repo root on `sys.path` (running them from the repo root is the simplest path).
+- Outputs are current with the trimmed node-region remainder contract and tag-layout mapping (meta tags 2/3 and payload-bearing tag10). Rerun after decoder/tag-layout changes to keep `analysis.json` and `anchor_hits.json` aligned.
 - **Running tests / guardrails:**
   - The unified harness is `make -C book test`, which runs `python3 ci.py` and, in turn, `python -m book.tests.run_all`.
   - On this host, the CI harness currently calls:
