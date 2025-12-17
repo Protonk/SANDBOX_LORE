@@ -33,6 +33,11 @@
       "vary": "socket-protocol"
     },
     {
+      "spec_id": "proto_256",
+      "sbpl_file": "proto_256.sb",
+      "vary": "socket-protocol"
+    },
+    {
       "spec_id": "triple_all_tcp",
       "sbpl_file": "triple_all_tcp.sb",
       "vary": "socket-domain+type+proto"
@@ -56,6 +61,111 @@
       "spec_id": "triple_nested_tcp",
       "sbpl_file": "triple_nested_tcp.sb",
       "vary": "socket-domain+type+proto"
+    },
+    {
+      "spec_id": "pair_dt_all_inet_stream",
+      "sbpl_file": "pair_dt_all_inet_stream.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dt_all_system_stream",
+      "sbpl_file": "pair_dt_all_system_stream.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dt_all_inet_dgram",
+      "sbpl_file": "pair_dt_all_inet_dgram.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dt_any_inet_stream",
+      "sbpl_file": "pair_dt_any_inet_stream.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dt_any_system_stream",
+      "sbpl_file": "pair_dt_any_system_stream.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dt_any_inet_dgram",
+      "sbpl_file": "pair_dt_any_inet_dgram.sb",
+      "vary": "socket-domain+type"
+    },
+    {
+      "spec_id": "pair_dp_all_inet_tcp",
+      "sbpl_file": "pair_dp_all_inet_tcp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_dp_all_system_tcp",
+      "sbpl_file": "pair_dp_all_system_tcp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_dp_all_inet_udp",
+      "sbpl_file": "pair_dp_all_inet_udp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_dp_any_inet_tcp",
+      "sbpl_file": "pair_dp_any_inet_tcp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_dp_any_system_tcp",
+      "sbpl_file": "pair_dp_any_system_tcp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_dp_any_inet_udp",
+      "sbpl_file": "pair_dp_any_inet_udp.sb",
+      "vary": "socket-domain+proto"
+    },
+    {
+      "spec_id": "pair_tp_all_stream_tcp",
+      "sbpl_file": "pair_tp_all_stream_tcp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "pair_tp_all_dgram_tcp",
+      "sbpl_file": "pair_tp_all_dgram_tcp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "pair_tp_all_stream_udp",
+      "sbpl_file": "pair_tp_all_stream_udp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "pair_tp_any_stream_tcp",
+      "sbpl_file": "pair_tp_any_stream_tcp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "pair_tp_any_dgram_tcp",
+      "sbpl_file": "pair_tp_any_dgram_tcp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "pair_tp_any_stream_udp",
+      "sbpl_file": "pair_tp_any_stream_udp.sb",
+      "vary": "socket-type+proto"
+    },
+    {
+      "spec_id": "triple_all_system_stream_tcp",
+      "sbpl_file": "triple_all_system_stream_tcp.sb",
+      "vary": "socket-domain+type+proto"
+    },
+    {
+      "spec_id": "triple_all_inet_dgram_tcp",
+      "sbpl_file": "triple_all_inet_dgram_tcp.sb",
+      "vary": "socket-domain+type+proto"
+    },
+    {
+      "spec_id": "triple_all_inet_stream_udp",
+      "sbpl_file": "triple_all_inet_stream_udp.sb",
+      "vary": "socket-domain+type+proto"
     }
   ],
   "diff_pairs": [
@@ -78,11 +188,136 @@
       "intent": "Isolate socket-protocol argument bytes."
     },
     {
+      "pair_id": "proto_tcp_vs_256",
+      "a": "proto_tcp",
+      "b": "proto_256",
+      "intent": "Attempt to witness a non-zero high byte in the 2-byte socket-protocol emission (TCP vs numeric 256)."
+    },
+    {
       "pair_id": "triple_all_tcp_vs_udp",
       "a": "triple_all_tcp",
       "b": "triple_all_udp",
       "intent": "Isolate combined triple argument bytes (domain/type/proto) under require-all."
+    },
+    {
+      "pair_id": "pair_dt_all_inet_stream_vs_system_stream",
+      "a": "pair_dt_all_inet_stream",
+      "b": "pair_dt_all_system_stream",
+      "intent": "Domain delta inside a (domain+type) require-all form."
+    },
+    {
+      "pair_id": "pair_dt_all_inet_stream_vs_inet_dgram",
+      "a": "pair_dt_all_inet_stream",
+      "b": "pair_dt_all_inet_dgram",
+      "intent": "Type delta inside a (domain+type) require-all form."
+    },
+    {
+      "pair_id": "pair_dt_any_inet_stream_vs_system_stream",
+      "a": "pair_dt_any_inet_stream",
+      "b": "pair_dt_any_system_stream",
+      "intent": "Domain delta inside a (domain+type) require-any form."
+    },
+    {
+      "pair_id": "pair_dt_any_inet_stream_vs_inet_dgram",
+      "a": "pair_dt_any_inet_stream",
+      "b": "pair_dt_any_inet_dgram",
+      "intent": "Type delta inside a (domain+type) require-any form."
+    },
+    {
+      "pair_id": "pair_dp_all_inet_tcp_vs_system_tcp",
+      "a": "pair_dp_all_inet_tcp",
+      "b": "pair_dp_all_system_tcp",
+      "intent": "Domain delta inside a (domain+proto) require-all form."
+    },
+    {
+      "pair_id": "pair_dp_all_inet_tcp_vs_inet_udp",
+      "a": "pair_dp_all_inet_tcp",
+      "b": "pair_dp_all_inet_udp",
+      "intent": "Proto delta inside a (domain+proto) require-all form."
+    },
+    {
+      "pair_id": "pair_dp_any_inet_tcp_vs_system_tcp",
+      "a": "pair_dp_any_inet_tcp",
+      "b": "pair_dp_any_system_tcp",
+      "intent": "Domain delta inside a (domain+proto) require-any form."
+    },
+    {
+      "pair_id": "pair_dp_any_inet_tcp_vs_inet_udp",
+      "a": "pair_dp_any_inet_tcp",
+      "b": "pair_dp_any_inet_udp",
+      "intent": "Proto delta inside a (domain+proto) require-any form."
+    },
+    {
+      "pair_id": "pair_tp_all_stream_tcp_vs_dgram_tcp",
+      "a": "pair_tp_all_stream_tcp",
+      "b": "pair_tp_all_dgram_tcp",
+      "intent": "Type delta inside a (type+proto) require-all form."
+    },
+    {
+      "pair_id": "pair_tp_all_stream_tcp_vs_stream_udp",
+      "a": "pair_tp_all_stream_tcp",
+      "b": "pair_tp_all_stream_udp",
+      "intent": "Proto delta inside a (type+proto) require-all form."
+    },
+    {
+      "pair_id": "pair_tp_any_stream_tcp_vs_dgram_tcp",
+      "a": "pair_tp_any_stream_tcp",
+      "b": "pair_tp_any_dgram_tcp",
+      "intent": "Type delta inside a (type+proto) require-any form."
+    },
+    {
+      "pair_id": "pair_tp_any_stream_tcp_vs_stream_udp",
+      "a": "pair_tp_any_stream_tcp",
+      "b": "pair_tp_any_stream_udp",
+      "intent": "Proto delta inside a (type+proto) require-any form."
+    },
+    {
+      "pair_id": "triple_all_tcp_vs_system_stream_tcp",
+      "a": "triple_all_tcp",
+      "b": "triple_all_system_stream_tcp",
+      "intent": "Domain delta inside a (domain+type+proto) require-all form."
+    },
+    {
+      "pair_id": "triple_all_tcp_vs_inet_dgram_tcp",
+      "a": "triple_all_tcp",
+      "b": "triple_all_inet_dgram_tcp",
+      "intent": "Type delta inside a (domain+type+proto) require-all form."
+    },
+    {
+      "pair_id": "triple_all_tcp_vs_inet_stream_udp",
+      "a": "triple_all_tcp",
+      "b": "triple_all_inet_stream_udp",
+      "intent": "Proto delta inside a (domain+type+proto) require-all form."
+    },
+    {
+      "pair_id": "domain_only_vs_pair_dp_all_inet_tcp",
+      "a": "domain_af_inet",
+      "b": "pair_dp_all_inet_tcp",
+      "intent": "Single-arg vs combined-form: add proto to a socket-domain clause (require-all)."
+    },
+    {
+      "pair_id": "proto_only_vs_pair_dp_all_inet_tcp",
+      "a": "proto_tcp",
+      "b": "pair_dp_all_inet_tcp",
+      "intent": "Single-arg vs combined-form: add domain to a socket-protocol clause (require-all)."
+    },
+    {
+      "pair_id": "type_only_vs_pair_tp_all_stream_tcp",
+      "a": "type_sock_stream",
+      "b": "pair_tp_all_stream_tcp",
+      "intent": "Single-arg vs combined-form: add proto to a socket-type clause (require-all)."
+    },
+    {
+      "pair_id": "proto_only_vs_pair_tp_all_stream_tcp",
+      "a": "proto_tcp",
+      "b": "pair_tp_all_stream_tcp",
+      "intent": "Single-arg vs combined-form: add type to a socket-protocol clause (require-all)."
+    },
+    {
+      "pair_id": "pair_dt_all_vs_triple_all_tcp",
+      "a": "pair_dt_all_inet_stream",
+      "b": "triple_all_tcp",
+      "intent": "Combined-form vs combined-form: add proto to a (domain+type) require-all form."
     }
   ]
 }
-

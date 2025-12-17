@@ -24,8 +24,8 @@ Map how this host’s `libsandbox` populates the per-node u16 payload slot (hist
     - `out/matrix_v2_field2_encoder_matrix.json` (arg-variance probe; still structurally useful, but not relied on for strong conclusions).
   - A small **network argument matrix** now provides byte-level witnesses for domain/type/proto argument deltas without relying on runtime:
     - Specimens: `sb/network_matrix/*.sb` (manifest: `sb/network_matrix/MANIFEST.json`).
-    - Outputs: `out/network_matrix/index.json`, `out/network_matrix/node_records.jsonl`, `out/network_matrix/blob_diffs.json`.
-    - This is the current “most falsifiable” Phase A sub-surface for network arg emission.
+    - Outputs: `out/network_matrix/index.json`, `out/network_matrix/node_records.jsonl`, `out/network_matrix/blob_diffs.json`, `out/network_matrix/join_records.jsonl`, `out/network_matrix/join_summary.json`.
+    - This is the current “most falsifiable” Phase A sub-surface for network arg emission and for joining `_emit_network`’s {1,1,2} writes to concrete blob structure.
   - Interpretation is intentionally conservative: these tables are *descriptive* (what tags/u16 payloads appear), not a proof of per-tag semantics.
 - **Phase B (static RE of `libsandbox`): partial.**
   - Initial encoder-site mapping exists at `out/encoder_sites.json` (not promoted; evidence remains incomplete).
@@ -60,6 +60,8 @@ Phase A also carries experiment-local tag-layout overrides at `out/tag_layout_ov
   - `out/network_matrix/index.json` (per-spec section boundaries + tag counts)
   - `out/network_matrix/node_records.jsonl` (joinable node record samples keyed by `spec_id`)
   - `out/network_matrix/blob_diffs.json` (byte diffs + record annotations)
+  - `out/network_matrix/join_records.jsonl` (diff offsets normalized into 8-byte record context for both sides of each pair)
+  - `out/network_matrix/join_summary.json` (rollups keyed by `pair_id`)
 - Legacy (kept for historical continuity; prefer the `matrix_v*` outputs):
   - `out/field2_encoder_matrix.json`
 
@@ -73,11 +75,13 @@ Evidence is static and local: SBPL sources + compiled blobs + byte diffs. No ker
 
 Current strongest witnesses live in `out/network_matrix/blob_diffs.json`:
 
-- Single-arg deltas are isolated to a **single byte change in the nodes region** (no literal-pool diffs) for the minimal specimens:
+- Single-arg deltas land in a stable u16 slot in the nodes region for the minimal specimens:
   - `domain_af_inet` ↔ `domain_af_system`: `a_byte=2` ↔ `b_byte=32` (AF_SYSTEM compiles to `32` on this host baseline).
   - `type_sock_stream` ↔ `type_sock_dgram`: `1` ↔ `2`.
   - `proto_tcp` ↔ `proto_udp`: `6` ↔ `17`.
-- Under `triple_all_tcp` ↔ `triple_all_udp` (domain fixed at AF_INET), the type+proto changes show up as two byte deltas in the same nodes region (see the pair entry in `out/network_matrix/blob_diffs.json`).
+  - `proto_tcp` ↔ `proto_256`: two-byte span witness for the proto u16 (TCP `0x0006` ↔ numeric `0x0100`).
+- Pairwise combined forms (domain+type / domain+proto / type+proto; both `require-all` and `require-any`) show argument deltas in a different structural role: the varying arg lands in `u16_index=0` for a `tag=0` record whose kind byte matches the argument family (`0x0b`/`0x0c`/`0x0d` for domain/type/proto); see the `pair_*` diff pairs in `out/network_matrix/blob_diffs.json` and the rollups in `out/network_matrix/join_summary.json`.
+- For the witnessed triple `require-all` forms, the in-range argument deltas for domain/type/proto land in the record tag byte (`within_record_offset=0`) for the exercised values (e.g., TCP `6`, UDP `17`, SOCK_STREAM `1`, SOCK_DGRAM `2`). Domain AF_SYSTEM (`32`) yields an unknown tag byte (not present in `tag_layouts.json`) but remains structurally consistent under fixed 8-byte framing; see `triple_all_tcp_vs_*` pairs and `out/network_matrix/join_summary.json`.
 
 This is sufficient to treat “network arg bytes are serialized into the compiled blob (nodes section)” as an experiment-local, world-scoped fact, and it provides a concrete join point for Phase B’s `_emit_network` disassembly.
 
@@ -135,9 +139,9 @@ These are **static** witnesses from the dyld slice for this world; they do not e
 - Refresh Phase A network arg matrix (recompiles `sb/network_matrix/*.sb` and rewrites `out/network_matrix/*`):
   - `python3 book/experiments/libsandbox-encoder/run_network_matrix.py`
   - `python3 book/experiments/libsandbox-encoder/diff_network_matrix.py`
+  - `python3 book/experiments/libsandbox-encoder/join_network_matrix.py`
 
 ## Next steps
 
-- Execute the “byte-level structural join” branch (Phase A → Phase B) so `_emit_network` can be tied to a concrete, checkable blob location and record framing.
-- Extend the network matrix with a `socket-protocol` value that forces a non-zero high byte if the compiler accepts it (otherwise record the rejection as a bounded negative result).
-- Once the join exists, revisit Phase B conclusions and only then propose minimal shared decode/mapping changes (role assignment, record boundaries) backed by the join witness.
+- Execute the remaining “byte-level structural join” work by extending the proto high-byte witness into combined forms (especially the triple `require-all` encoding) so we can confirm where the proto high byte lands outside the single-filter specimens.
+- Once the join exists for single, pairwise, and triple forms, revisit Phase B conclusions and only then propose minimal shared decode/mapping changes (role assignment, record boundaries) backed by byte-level witnesses.

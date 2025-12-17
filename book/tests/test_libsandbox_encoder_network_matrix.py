@@ -43,3 +43,69 @@ def test_libsandbox_encoder_network_matrix_blob_diffs():
     assert by_pair["proto_tcp_vs_udp"]["diffs"][0]["a_byte"] == 6  # IPPROTO_TCP
     assert by_pair["proto_tcp_vs_udp"]["diffs"][0]["b_byte"] == 17  # IPPROTO_UDP
 
+    # Proto high-byte witness: TCP (0x0006) ↔ numeric 256 (0x0100) must flip both bytes
+    # in the same u16 field slot for the minimal single-filter specimen.
+    proto_hi = by_pair["proto_tcp_vs_256"]
+    assert proto_hi["diff_byte_count"] == 2
+    assert proto_hi["diff_counts_by_section"] == {"nodes:records": 2}
+    assert proto_hi["diffs"][0]["offset"] == shared_off
+    assert proto_hi["diffs"][1]["offset"] == shared_off + 1
+    assert proto_hi["diffs"][0]["record"]["u16_index"] == 1
+    assert proto_hi["diffs"][0]["record"]["within_record_offset"] == 4
+    assert proto_hi["diffs"][1]["record"]["within_record_offset"] == 5
+    assert proto_hi["diffs"][0]["a_byte"] == 6
+    assert proto_hi["diffs"][0]["b_byte"] == 0
+    assert proto_hi["diffs"][1]["a_byte"] == 0
+    assert proto_hi["diffs"][1]["b_byte"] == 1
+
+    # Combined (pairwise) forms: argument deltas land in u16_index=0, with kind byte
+    # indicating the argument family (0x0b domain, 0x0c type, 0x0d proto).
+    dt_domain = by_pair["pair_dt_all_inet_stream_vs_system_stream"]["diffs"][0]
+    assert dt_domain["section"] == "nodes:records"
+    assert dt_domain["record"]["tag"] == 0
+    assert dt_domain["record"]["kind"] == 11
+    assert dt_domain["record"]["u16_index"] == 0
+    assert dt_domain["record"]["within_record_offset"] == 2
+    assert dt_domain["a_byte"] == 2
+    assert dt_domain["b_byte"] == 32
+
+    dt_type = by_pair["pair_dt_all_inet_stream_vs_inet_dgram"]["diffs"][0]
+    assert dt_type["section"] == "nodes:records"
+    assert dt_type["record"]["tag"] == 0
+    assert dt_type["record"]["kind"] == 12
+    assert dt_type["record"]["u16_index"] == 0
+    assert dt_type["record"]["within_record_offset"] == 2
+    assert dt_type["a_byte"] == 1
+    assert dt_type["b_byte"] == 2
+
+    dp_proto = by_pair["pair_dp_all_inet_tcp_vs_inet_udp"]["diffs"][0]
+    assert dp_proto["section"] == "nodes:records"
+    assert dp_proto["record"]["tag"] == 0
+    assert dp_proto["record"]["kind"] == 13
+    assert dp_proto["record"]["u16_index"] == 0
+    assert dp_proto["record"]["within_record_offset"] == 2
+    assert dp_proto["a_byte"] == 6
+    assert dp_proto["b_byte"] == 17
+
+    # Triple (require-all) form: the argument deltas for the witnessed small values
+    # land in the record tag byte (within_record_offset==0), not the u16 payload slots.
+    tri_domain = by_pair["triple_all_tcp_vs_system_stream_tcp"]["diffs"][0]
+    assert tri_domain["section"] == "nodes:records"
+    assert tri_domain["record"]["within_record_offset"] == 0
+    assert tri_domain["a_byte"] == 2
+    assert tri_domain["b_byte"] == 32
+    assert tri_domain["record"]["tag"] == tri_domain["a_byte"]
+
+    tri_type = by_pair["triple_all_tcp_vs_inet_dgram_tcp"]["diffs"][0]
+    assert tri_type["section"] == "nodes:records"
+    assert tri_type["record"]["within_record_offset"] == 0
+    assert tri_type["a_byte"] == 1
+    assert tri_type["b_byte"] == 2
+    assert tri_type["record"]["tag"] == tri_type["a_byte"]
+
+    tri_proto = by_pair["triple_all_tcp_vs_inet_stream_udp"]["diffs"][0]
+    assert tri_proto["section"] == "nodes:records"
+    assert tri_proto["record"]["within_record_offset"] == 0
+    assert tri_proto["a_byte"] == 6
+    assert tri_proto["b_byte"] == 17
+    assert tri_proto["record"]["tag"] == tri_proto["a_byte"]
