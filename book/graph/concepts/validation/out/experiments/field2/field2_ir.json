@@ -2823,62 +2823,8 @@
     "probe:flow_divert_variant.sb": [],
     "probe:net_require_all_domain_proto.sb": [],
     "probe:net_require_all_domain_type.sb": [],
-    "probe:net_require_all_domain_type_proto.sb": [
-      {
-        "idx": 30,
-        "tag": 0,
-        "fields": [
-          0,
-          0,
-          2560,
-          0,
-          7
-        ],
-        "edges": [
-          0,
-          0
-        ],
-        "fan_out": 2,
-        "fan_in": 0,
-        "ops": [],
-        "raw": 2560,
-        "raw_hex": "0xa00",
-        "hi": 0,
-        "lo": 2560,
-        "name_lo": null,
-        "literal_refs": [
-          "Tcom.apple.flow-divert"
-        ]
-      }
-    ],
-    "probe:net_require_all_domain_type_proto_udp.sb": [
-      {
-        "idx": 30,
-        "tag": 0,
-        "fields": [
-          0,
-          0,
-          2560,
-          0,
-          7
-        ],
-        "edges": [
-          0,
-          0
-        ],
-        "fan_out": 2,
-        "fan_in": 0,
-        "ops": [],
-        "raw": 2560,
-        "raw_hex": "0xa00",
-        "hi": 0,
-        "lo": 2560,
-        "name_lo": null,
-        "literal_refs": [
-          "Tcom.apple.flow-divert"
-        ]
-      }
-    ],
+    "probe:net_require_all_domain_type_proto.sb": [],
+    "probe:net_require_all_domain_type_proto_udp.sb": [],
     "probe:net_require_all_type_proto.sb": [],
     "probe:right_and_preference_names.sb": [],
     "probe:v0_subpath.sb": [],
@@ -2893,64 +2839,10 @@
     "probe-op:v1_file_require_any.sb": [],
     "probe-op:v2_file_three_filters_any.sb": [],
     "probe-op:v3_mach_global_local.sb": [],
-    "probe-op:v4_network_socket_require_all.sb": [
-      {
-        "idx": 30,
-        "tag": 0,
-        "fields": [
-          0,
-          0,
-          2560,
-          0,
-          7
-        ],
-        "edges": [
-          0,
-          0
-        ],
-        "fan_out": 2,
-        "fan_in": 0,
-        "ops": [],
-        "raw": 2560,
-        "raw_hex": "0xa00",
-        "hi": 0,
-        "lo": 2560,
-        "name_lo": null,
-        "literal_refs": [
-          "Tcom.apple.flow-divert"
-        ]
-      }
-    ],
+    "probe-op:v4_network_socket_require_all.sb": [],
     "probe-op:v5_iokit_class_property.sb": [],
     "probe-op:v6_file_mach_combo.sb": [],
-    "probe-op:v7_file_network_combo.sb": [
-      {
-        "idx": 30,
-        "tag": 0,
-        "fields": [
-          0,
-          0,
-          2560,
-          0,
-          7
-        ],
-        "edges": [
-          0,
-          0
-        ],
-        "fan_out": 2,
-        "fan_in": 0,
-        "ops": [],
-        "raw": 2560,
-        "raw_hex": "0xa00",
-        "hi": 0,
-        "lo": 2560,
-        "name_lo": null,
-        "literal_refs": [
-          "Tcom.apple.flow-divert"
-        ]
-      }
-    ],
+    "probe-op:v7_file_network_combo.sb": [],
     "probe-op:v8_all_combo.sb": []
   }
 }

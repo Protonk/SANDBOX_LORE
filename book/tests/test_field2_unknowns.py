@@ -4,10 +4,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 UNKNOWN_NODES_PATH = ROOT / "book/experiments/field2-filters/out/unknown_nodes.json"
+MATRIX_RECORDS_PATH = ROOT / "book/experiments/flow-divert-2560/out/matrix_records.jsonl"
 
 # Stable set of high/unknown field2 payloads on this host baseline.
 EXPECTED_UNKNOWN_RAW = {
-    2560,   # flow-divert tag0 in require-all socket probes
     3584,   # sample/bsd sentinel tag0
     65535,  # airlock_system_fcntl probe sentinel
     10752,  # airlock tag0 payload
@@ -18,6 +18,15 @@ EXPECTED_UNKNOWN_RAW = {
     170,    # bsd tag26 payload
     115,    # bsd tag26 payload
     109,    # bsd tag26 payload
+}
+
+FLOW_DIVERT_TRIPLE_SPECS = {
+    "fd_domain_type_proto_all_tcp_order1.sb",
+    "fd_domain_type_proto_all_tcp_order2.sb",
+    "fd_domain_type_proto_all_udp_order1.sb",
+    "fd_domain_type_proto_all_udp_order2.sb",
+    "fd_domain_type_proto_any_tcp.sb",
+    "fd_domain_type_proto_nested_tcp.sb",
 }
 
 
@@ -35,3 +44,28 @@ def test_expected_unknown_field2_values_present_and_stable():
     assert observed.issubset(
         EXPECTED_UNKNOWN_RAW
     ), f"unexpected new unknowns observed: {sorted(observed - EXPECTED_UNKNOWN_RAW)}"
+
+
+def test_flow_divert_2560_is_triple_only_with_expected_shape():
+    seen: dict[str, set[int]] = {}
+    with MATRIX_RECORDS_PATH.open() as fh:
+        for line in fh:
+            rec = json.loads(line)
+            spec = rec["spec_id"]
+            raw = rec.get("field2_raw")
+            seen.setdefault(spec, set()).add(raw)
+            if raw == 2560:
+                # Structural witness: tag0, filter_vocab_id role, literal contains flow-divert.
+                assert rec.get("tag") == 0
+                assert rec.get("u16_role") == "filter_vocab_id"
+                literal_refs = rec.get("literal_refs") or []
+                assert any("flow-divert" in lit for lit in literal_refs)
+
+    specs_with_2560 = {spec for spec, payloads in seen.items() if 2560 in payloads}
+    assert specs_with_2560 == FLOW_DIVERT_TRIPLE_SPECS, f"unexpected specs with 2560: {sorted(specs_with_2560)}"
+
+    for spec, payloads in seen.items():
+        if spec in FLOW_DIVERT_TRIPLE_SPECS:
+            assert 2560 in payloads, f"missing 2560 in triple spec {spec}"
+        else:
+            assert 2560 not in payloads, f"2560 leaked into non-triple spec {spec}"

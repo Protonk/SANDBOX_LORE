@@ -1,0 +1,3 @@
+- Initialized experiment scaffold. Report links to upstream inventories (`field2-filters`, `probe-op-structure`, `tag-layout-decode`, `system-profile-digest`, `golden-corpus`) and records prior failed probes (e.g., `bsd_tail_context.sb`, `dtracehelper_posixspawn.sb`, kernel immediate searches).
+- No local probes run yet; `out/` is empty pending new SBPL variants for `bsd` tag-26/tail and `airlock` high tags.
+- Expect to author SBPL under `sb/` and keep decoded node inventories under `out/` for cross-comparison with existing field2 census.

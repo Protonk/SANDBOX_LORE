@@ -12,7 +12,7 @@
         "probe_name": "allow-tmp",
         "profile_id": "adv:path_edges",
         "result": "deny",
-        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+        "runtime_profile": "--blob",
         "scenario_id": "field2-0-path_edges",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
         "target": "/tmp/runtime-adv/edges/a"
@@ -163,6 +163,14 @@
           "count": 1,
           "name": "path",
           "profile": "probe:net_require_all_type_proto.sb",
+          "tags": {
+            "6": 1
+          }
+        },
+        {
+          "count": 1,
+          "name": "path",
+          "profile": "probe:right_and_preference_names.sb",
           "tags": {
             "6": 1
           }
@@ -407,8 +415,8 @@
         "operation": "mach-lookup",
         "probe_name": "allow-cfprefsd",
         "profile_id": "adv:mach_simple_allow",
-        "result": "allow",
-        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
+        "result": "deny",
+        "runtime_profile": "--blob",
         "scenario_id": "field2-5-mach-global",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
         "target": "com.apple.cfprefsd.agent"
@@ -575,9 +583,27 @@
         {
           "count": 1,
           "name": "global-name",
+          "profile": "probe:net_require_all_domain_type_proto_udp.sb",
+          "tags": {
+            "8": 1
+          }
+        },
+        {
+          "count": 1,
+          "name": "global-name",
           "profile": "probe:net_require_all_type_proto.sb",
           "tags": {
             "7": 1
+          }
+        },
+        {
+          "count": 12,
+          "name": "global-name",
+          "profile": "probe:right_and_preference_names.sb",
+          "tags": {
+            "0": 1,
+            "5": 4,
+            "6": 7
           }
         },
         {
@@ -769,8 +795,8 @@
         "operation": "mach-lookup",
         "probe_name": "allow-cfprefsd-local",
         "profile_id": "adv:mach_local_literal",
-        "result": "allow",
-        "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
+        "result": "deny",
+        "runtime_profile": "--blob",
         "scenario_id": "field2-7-mach-local",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
         "target": "com.apple.cfprefsd.agent"
@@ -822,7 +848,7 @@
             2560
           ],
           "filter_id": null,
-          "filter_name": null,
+          "filter_name": "local",
           "sources": [
             "probe:v4_network_socket_require_all",
             "probe:v7_file_network_combo"
@@ -902,6 +928,16 @@
           }
         },
         {
+          "count": 5,
+          "name": "local",
+          "profile": "probe:net_require_all_domain_type_proto_udp.sb",
+          "tags": {
+            "0": 1,
+            "7": 3,
+            "8": 1
+          }
+        },
+        {
           "count": 17,
           "name": "local",
           "profile": "probe:net_require_all_type_proto.sb",
@@ -964,6 +1000,110 @@
     "status": "runtime_backed",
     "target_ops": [
       "mach-lookup"
+    ]
+  },
+  {
+    "field2": 2560,
+    "filter_name": "local",
+    "runtime": {
+      "field2": 2560,
+      "filter_name": "local",
+      "notes": "Characterized static token for flow-divert triples (domain+type+proto) on tag0 with literal com.apple.flow-divert; derived from flow-divert-2560 matrix decode. No runtime witness; world-scoped.",
+      "runtime_candidate": null,
+      "seed_anchors": [
+        {
+          "anchor": "flow-divert",
+          "notes": "Triple-only: domain+type+proto; tag0 u16_role=filter_vocab_id; literal com.apple.flow-divert",
+          "source": "flow-divert-2560",
+          "status": "characterized"
+        }
+      ],
+      "status": "no_runtime_candidate",
+      "target_ops": [
+        "network-outbound"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    },
+    "static": {
+      "anchor_hits": [
+        {
+          "anchor": "flow-divert",
+          "field2_values": [
+            2,
+            7,
+            2560
+          ],
+          "filter_id": null,
+          "filter_name": "local",
+          "sources": [
+            "probe:v4_network_socket_require_all",
+            "probe:v7_file_network_combo"
+          ],
+          "status": "blocked"
+        }
+      ],
+      "field2": 2560,
+      "filter_name": "local",
+      "notes": "Characterized static token for flow-divert triples (domain+type+proto) on tag0 with literal com.apple.flow-divert; derived from flow-divert-2560 matrix decode. No runtime witness; world-scoped.",
+      "profiles": [
+        {
+          "count": 1,
+          "name": null,
+          "profile": "probe:net_require_all_domain_type_proto.sb",
+          "tags": {
+            "0": 1
+          }
+        },
+        {
+          "count": 1,
+          "name": null,
+          "profile": "probe:net_require_all_domain_type_proto_udp.sb",
+          "tags": {
+            "0": 1
+          }
+        },
+        {
+          "count": 1,
+          "name": null,
+          "profile": "probe-op:v4_network_socket_require_all.sb",
+          "tags": {
+            "0": 1
+          }
+        },
+        {
+          "count": 1,
+          "name": null,
+          "profile": "probe-op:v7_file_network_combo.sb",
+          "tags": {
+            "0": 1
+          }
+        }
+      ],
+      "seed_anchors": [
+        {
+          "anchor": "flow-divert",
+          "notes": "Triple-only: domain+type+proto; tag0 u16_role=filter_vocab_id; literal com.apple.flow-divert",
+          "source": "flow-divert-2560",
+          "status": "characterized"
+        }
+      ],
+      "source_artifacts": {
+        "anchor_map": "book/graph/mappings/anchors/anchor_filter_map.json",
+        "field2_inventory": "book/experiments/field2-filters/out/field2_inventory.json",
+        "seeds": "book/experiments/field2-atlas/field2_seeds.json"
+      },
+      "status": "ok",
+      "tag_ids": [
+        0
+      ],
+      "target_ops": [
+        "network-outbound"
+      ],
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+    },
+    "status": "no_runtime_candidate",
+    "target_ops": [
+      "network-outbound"
     ]
   }
 ]

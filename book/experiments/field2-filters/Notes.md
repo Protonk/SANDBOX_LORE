@@ -27,6 +27,10 @@ Use this file for concise notes on progress, commands, and intermediate findings
 
 - New shared artifacts unblocking deeper mapping: tag layouts published at `book/graph/mappings/tag_layouts/tag_layouts.json` and anchor → filter map at `book/graph/mappings/anchors/anchor_filter_map.json`. Use these to reinterpret anchor-bearing nodes and rerun `harvest_field2.py` for clearer filter IDs.
 
+## Characterization updates
+
+- Reclassified flow-divert payload 2560 as characterized (triple-only, tag0/u16_role=filter_vocab_id, literal `com.apple.flow-divert`); `unknown_focus.py` now skips it via `CHARACTERIZED_FIELD2`, and `unknown_nodes.json` refreshed.
+
 ## Kernel evaluator location (x86_64 KC)
 
 - Located the kernel evaluator in the sandbox fileset: `FUN_ffffff8002d8547a` in `com.apple.security.sandbox` (`vmaddr 0xffffff8002d70000`, fileoff `0x02c68000`, text span `0xffffff8002d71208–0xffffff8002da9f7f`). It drives the opcode switch and calls helper readers `FUN_ffffff8002d87d4a`, `FUN_ffffff8002d87d8f`, `FUN_ffffff8002d8809a`, `FUN_ffffff8002d8907f` to load edges/`field2`. High-level decompile shows `field2` forwarded directly from `FUN_2d87d4a`; any hi-bit/lo-bit handling likely lives inside these helpers.
@@ -198,6 +202,12 @@ Next steps: If needed, scan the main evaluator (FUN_ffffff8002d8547a in arm64e) 
 - No occurrences of 0xa00/0x4114/0x2a00/0xe00/0xffff as immediates in these callers. Suggests `filter_arg_raw` is masked to 16 bits in places but not compared against our unknown constants here. Next refinement would be to correlate these mask sites with the node fields they read (e.g., which node/tag they’re decoding) or widen context to nearby table lookups.
 
 ## New probe variants (field2 sweeps)
+
+## Closure posture (structural only)
+
+- Slot is treated as a raw u16 (`filter_arg_raw`) whose meaning is tag-structured and tied to the host filter vocabulary; beyond in-vocab vs out-of-vocab, semantics remain closed as a negative result (SBPL toggles + kernel reader hunts exhausted).
+- Roles are now explicit: tag layouts stay in `tag_layouts.json`, and per-tag u16 roles are captured in `tag_u16_roles.json` (filter_vocab_id/arg_u16/none/meta). Decoder stays permissive and table-driven; validation/guardrails on canonical corpora enforce that encountered tags have explicit layouts/roles and that out-of-vocab values are inventoried, not interpreted.
+- Unknown/high values are parked as bounded opaque tokens on this host; no further semantic inference is attempted unless a new, apply-able specimen plus runtime harness is named to reopen the question.
 
 - Added `net_require_all_domain_type_proto_udp.sb` to mirror the TCP require-all matrix with UDP (AF_INET + SOCK_DGRAM + IPPROTO_UDP). Compilation + harvest show the same `field2=2560` flow-divert tag0 node as the TCP variant; no new high IDs or anchors surfaced.
 - Added `airlock_system_fcntl_matrix.sb` (fcntl-command sweep 0–3) to probe whether command payloads drive the 0xffff/0xa5/0xa6 highs. Decode/harvest shows only low scaffolding filters (ipc-posix-name/file-mode) and no unknown/high `field2` values.

@@ -1,79 +1,82 @@
-# Field2 ↔ Filter Mapping – Research Report — **Status: complete (negative)**
+#+#+#+#+#+#+#+#+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Field2 ↔ Filter Mapping — Research Report
 
-## Purpose
-Anchor the third node slot (`filter_arg_raw` / “field2”) in compiled PolicyGraphs to concrete Filter vocabulary entries on this host. Use static decoding plus SBPL probes to turn unknown/high values into evidence-backed mappings and to bound what we do **not** know yet. This experiment is now **closed**: we have exhausted SBPL probing and kernel struct hunting on this host without finding a kernel-side hi/lo split or a Blazakis-style `[tag, filter, u16 arg, u16 edge0, u16 edge1]` node array. `filter_arg_raw` is read as a plain u16 in the kernel VM; the remaining unknowns stay unmapped.
+Status: complete (negative)
 
-## Baseline & evidence backbone
-- World: Sonoma baseline from `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`.
-- Canonical vocab: `book/graph/mappings/vocab/{filters,ops}.json` (status: ok).
-- Canonical profiles: `book/examples/extract_sbs/build/profiles/{bsd,airlock,sample}.sb.bin`.
-- Core outputs: `out/field2_inventory.json` (histograms + hi/lo/tag counts) and `out/unknown_nodes.json` (hi/unknown nodes with fan-in/out and op reach).
-- Tooling: `harvest_field2.py`, `unknown_focus.py`, Ghidra scripts under `book/api/ghidra/scripts/` (notably `find_field2_evaluator.py`).
+## Purpose and closure posture
 
-## What we know (evidence)
-- **Low IDs match vocab**: `bsd` and `sample` map path/socket/iokit filters as expected (e.g., 0=path, 1=mount-relative-path, 3=file-mode, 5=global-name, 6=local-name, 7=local, 8=remote, 11=socket-type, 17/18 iokit, 26/27 right-name/preference-domain, 80 mac-policy-name).
-- **High/unknown clusters** (hi=0 unless noted):
-  - `flow-divert` literal → `field2=2560` (lo=0xa00) only when socket-domain + type + protocol are all required (mixed probes v4/v7 and `net_require_all_domain_type_proto`); op reach empty.
-  - `bsd` tail → `field2=16660` (hi=0x4000, lo=0x114) on tag 0, reachable from ops 0–27 (default/file* cluster). Other bsd highs 170/174/115/109 live on tag 26, op-empty.
-  - `airlock` → 165/166/10752 on tags 166/1/0, attached to op 162 (`system-fcntl`).
-  - New probe sentinel → `field2=0xffff` (hi=0xc000, lo=0x3fff) in `airlock_system_fcntl` probe on tag 1, no literals.
-  - `sample` sentinel → 3584 (lo=0xe00) on tag 0, op-empty.
-- **Ghidra (arm64e sandbox kext `/tmp/sandbox_arm64e/com.apple.security.sandbox`)**
-  - Helper hunt prefers `__read16` at `fffffe000b40fa1c`: bounds checks + `ldrh/strh`, no masking. `__read24` (halfword+byte) still used elsewhere.
-  - `_eval` at `fffffe000b40d698` masks on 0x7f / 0xffffff / 0x7fffff and tests bit 0x17; no `0x3fff`/`0x4000` masks found. Dumped in `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`.
-  - No hits for 0x3fff/0x4000 in evaluator path; earlier mask scans also negative.
-  - **Struct hunt outcome (definitive):** a dedicated headless scan (`book/api/ghidra/scripts/kernel_node_struct_scan.py`) over all functions reachable from `_eval` in the sandbox kext found **no** fixed-stride `[byte + ≥2×u16]` node layout. Outputs: `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/node_struct_scan.txt` and `.json` (0 candidates; only two noisy, non-sandboxy hits). Conclusion: on 14.4.1 the evaluator behaves as a bytecode VM over a profile blob, not a directly indexed node array.
+This experiment set out to understand the third u16 slot carried by compiled PolicyGraph nodes on this host baseline. Historically this slot was discussed as “field2”; in this repo it is now named structurally as `filter_arg_raw`. The goal was to connect that u16 to the host Filter vocabulary where appropriate, and to determine whether the remaining high/out-of-vocab values have interpretable semantics (for example, a flag split or a stable auxiliary identifier).
 
-## Recent probes & inventories
-- Added `sb/bsd_ops_default_file.sb` (ops 0,10,21–27) → only low path/socket IDs + 3584 sentinel; no bsd highs.
-- Added `sb/airlock_system_fcntl.sb` (system-fcntl + fcntl-command) → mostly low path/socket IDs + new 0xffff sentinel.
-- Added `sb/net_require_all_domain_type_proto_udp.sb` (AF_INET + SOCK_DGRAM + IPPROTO_UDP) → mirrors the TCP require-all shape; still emits the same flow-divert tag0 node with `field2=2560`.
-- Added `sb/airlock_system_fcntl_matrix.sb` (fcntl-command sweep 0–3) → collapses to low scaffolding filters only; no high/unknown `field2` values.
-- Added `sb/right_and_preference_names.sb` (right-name + preference-domain literals) → only path/name scaffolding, no tag26/27 highs.
-- Inventories refreshed (`harvest_field2.py`, `unknown_focus.py`); op reach now included for unknowns.
-- Added guardrail test `book/tests/test_field2_unknowns.py` to pin the current unknown/high field2 set; update `EXPECTED_UNKNOWN_RAW` deliberately if new unknowns appear.
+The experiment is closed as a negative result. On this host (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`), we have exhausted (1) SBPL-based synthesis and perturbation, and (2) kernel-side structure hunting in the sandbox evaluator path, without finding evidence for a kernel-side hi/lo split, a fixed-stride node array, or stable semantic interpretation of the remaining high/out-of-vocab u16 values. The u16 is read and propagated as a raw u16 by the evaluator’s reader helpers. The only evidence-backed interpretation boundary we keep is structural: the u16 slot exists (or not) depending on tag layout; and when the tag’s u16 role is “filter vocabulary id”, the value may or may not resolve in the host filter vocabulary.
 
-## New observations
-- `unknown_nodes.json` summary:
-  - `bsd`: 16660 (`hi=0x4000`, `lo=0x114`) on tag 0 with `fan_in=33`, `fan_out=1`, reachable from ops 0–27; other highs 170/174/115/109 sit on tag 26 with `fan_out=1`, `fan_in=0`, op-empty.
-  - `airlock`: highs 165/166/10752 on tags 166/1/0; op reach concentrated on op 162 (`system-fcntl`). `airlock_system_fcntl` adds a sentinel 0xffff (hi=0xc000) on tag 1, op-empty.
-- `flow-divert`: 2560 only in mixed require-all (domain+type+protocol) probes (TCP and UDP), tag 0, fan_in=0, fan_out=2→node0, op-empty.
-- `system-fcntl` sweep (0–3) did not surface the 0xffff/0xa5/0xa6 highs; only low scaffolding filters appeared. Right-name/preference-domain probes likewise stayed in low path/name scaffolding with no tag26/27 highs.
-- `sample` and probe clones: sentinel 3584 on tag 0, fan_out=2→node0, op-empty.
-- `field2_evaluator.json` shows `__read16` callers worth inspecting: `_populate_syscall_mask`, `_variables_populate`, `_match_network`, `_check_syscall_mask_composable`, `_iterate_sandbox_state_flags`, `_re_cache_init`, `_match_integer_object`, `___collection_init_block_invoke`, `_match_pattern`, `__readstr`, `__readaddr`. No immediates for the unknown constants appear in `eval.txt`, reinforcing that the helper/evaluator passes the u16 through unmasked.
-- Obstacle: direct `llvm-objdump` on the carved sandbox binary (whole file or slices) reports “truncated or malformed object” / “not an object file,” so caller disassembly needs to go through Ghidra. Plan: add a headless script to dump those callers from the existing `sandbox_field2_sbx` project and log how the `__read16` result is consumed.
-- Follow-up obstacle: first headless Ghidra attempt failed with the usual JDK prompt (`java_home.save` permission; “Unable to prompt user for JDK path, no TTY”). Remedy is to rerun with the established Ghidra env (`JAVA_HOME`/`-vmPath` set, HOME/GHIDRA_USER_HOME in `dumps/ghidra/user`) via the repo’s wrappers before dumping callers.
-- Latest status: second headless retry with explicit `JAVA_HOME`/`-vmPath` and repo-local HOME still hit the JDK prompt error. Next actions: invoke via `book/api/ghidra/run_task.py` (which sets `JAVA_TOOL_OPTIONS` and HOME), or set `JAVA_TOOL_OPTIONS=-Duser.home=$PWD/dumps/ghidra/user` explicitly in the headless call. If headless keeps failing, fall back to an interactive Ghidra export of the caller disassembly.
-- Resolution: using `JAVA_TOOL_OPTIONS="-Dapplication.settingsdir=$PWD/.ghidra-user -Duser.home=$PWD/dumps/ghidra/user"` plus repo-local HOME/GHIDRA_USER_HOME, headless now runs and dumps caller disassembly to `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/read16_callers.txt`. Quick scan: callers mask the payload with `0xffff` in control flow but do not compare against the high field2 constants (0xa00/0x4114/0x2a00/0xffff/0xe00); paths mostly gate indices and bail to error stubs.
+This closure is not “we learned nothing.” We learned a stable set of structural relationships and constraints on this host, and we updated the repo’s IR to preserve those relationships deterministically.
 
-## Open questions
-- Where (if anywhere) are hi/lo bits of field2 interpreted? Current evaluator dump shows no 0x3fff/0x4000 masking; any semantics must arise from raw-u16 compares/table lookups that we have not yet found.
-- What semantics drive the bsd tail high (16660) and the airlock highs (165/166/10752) and the new 0xffff sentinel?
-- Can flow-divert 2560 be tied to a specific filter or tag pattern beyond “triple socket predicates + literal”?
+## World, inputs, and evidence model
 
-## Final status and follow-on (experiment closed)
-- SBPL probing and tag/layout census are complete for this host; unknowns remain unmapped but tightly bounded by `unknown_nodes.json`.
-- Kernel-side struct search is complete: no fixed node array is visible; `_eval` + helpers read `filter_arg_raw` as a raw u16 without hi/lo masking.
-- Further progress would require new work *outside* this experiment scope (e.g., targeted helper-level compares/table lookups or userland `libsandbox` compiler analysis). Record any such follow-ups as new experiments or troubles, not here.
+All claims in this report are about the single frozen world `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`. The primary evidence is compiled profiles and host-bound mappings.
 
-## Anchor-aware structure (sibling experiment)
+Canonical vocabulary mappings live at `book/graph/mappings/vocab/filters.json` and `book/graph/mappings/vocab/ops.json` (status: ok). Canonical profiles used throughout this work are `book/examples/extract_sbs/build/profiles/airlock.sb.bin`, `book/examples/extract_sbs/build/profiles/bsd.sb.bin`, and `book/examples/sb/build/sample.sb.bin`. Experimental probes (SBPL sources and compiled blobs) live under `book/experiments/field2-filters/sb/` and `book/experiments/field2-filters/sb/build/`.
 
-High/unknown `field2` IDs on this host—such as 16660 (`bsd` tail), 165/166/10752 (`airlock`), 2560 (`flow-divert`), and 3584 (`sample`)—are **structurally situated** by `book/experiments/probe-op-structure` via anchors and tags, even though their semantics remain unmapped here. That experiment:
+The experiment’s primary outputs are `book/experiments/field2-filters/out/field2_inventory.json` (per-profile histograms, tag counts, and hi/lo census) and `book/experiments/field2-filters/out/unknown_nodes.json` (concrete unknown/high nodes with fields, fan-in/out derived from the current edge assumptions, and op reach when available).
 
-- Provides `book/experiments/probe-op-structure/out/anchor_hits.json`, which binds concrete anchors (e.g., `/etc/hosts`, `/var/log`, `preferences/logging`, `flow-divert`, `IOUSBHostInterface`, `idVendor`) to node indices and `field2` values under the canonical tag layouts.
-- Summarizes, in `book/experiments/probe-op-structure/Report.md`, an **“Anchor status summary for this world”** table that distinguishes structurally solid anchors (pinned `filter_id` with guardrail-backed witnesses) from anchors that remain `status: "blocked"`.
-- Feeds the curated anchor layer in `book/graph/mappings/anchors/anchor_filter_map.json`, whose consistency with `anchor_hits.json` is enforced by `book/tests/test_anchor_filter_alignment.py`.
+Kernel-side evidence is sourced from Ghidra analysis outputs under `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/`, driven by scripts under `book/api/ghidra/scripts/`.
 
-**Usage rule for new agents:** when interpreting `out/field2_inventory.json` and `out/unknown_nodes.json` in this experiment, use the **solid anchors** from `probe-op-structure` (as listed in its Anchor status summary and in `anchor_filter_map.json`) as your safest examples of how specific anchors sit in the graph. For a field2-first, runtime-tagged slice (0/5/7) see `book/experiments/field2-atlas/`, which flips the axis to “field2 as primary key.” Do **not** infer semantics for high/unknown `field2` values beyond what is explicitly recorded in the Limitations/Non-claims sections of both experiments; treat the high IDs in this report as structurally bounded but semantically opaque for this world.
+## Approach (what we did)
 
-## Artifacts index
-- Inventories: `book/experiments/field2-filters/out/field2_inventory.json`, `out/unknown_nodes.json`.
-- Probes: `sb/` sources and `sb/build/*.sb.bin` (including new `bsd_ops_default_file` and `airlock_system_fcntl`).
-- Ghidra (evaluator/helper): `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/` (`field2_evaluator.json`, `helper.txt`, `eval.txt`, `candidates.json`).
-- Ghidra (struct hunt, negative): `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/node_struct_scan.txt` and `.json` (0 candidates).
-- Scripts: `harvest_field2.py`, `unknown_focus.py`, `book/api/ghidra/scripts/find_field2_evaluator.py`, `kernel_node_struct_scan.py`.
+We approached “field2” as a structural slot whose meaning must be inferred from repeated host witnesses. The work progressed in four strands that fed one another.
 
-## Risks & constraints
-- High values remain sparse and op-empty (except bsd 16660); false positives from generic scaffolding are likely in tiny probes.
-- Tag layouts for higher tags (26/27/166) are only partially understood; keep edge-field assumptions aligned with `book/graph/mappings/tag_layouts/tag_layouts.json`.
-- Runtime/application of platform blobs is gated; all findings are static unless explicitly validated elsewhere (none yet for these highs).
+First, we established and reused a tag-aware structural decoder and tag layout map. The repo’s tag layout mapping for this world is `book/graph/mappings/tag_layouts/tag_layouts.json` (derived in the sibling experiment `book/experiments/tag-layout-decode`). This mapping asserts a record size (12 bytes for the tags in scope), identifies edge field indices, and identifies which field indices are payload fields (including the u16 slot used as `filter_arg_raw` for payload-bearing tags). This made it possible to speak precisely about “the u16 slot” without relying on ad hoc record parsing.
+
+Second, we harvested inventories over canonical blobs and probe blobs. The scripts `book/experiments/field2-filters/harvest_field2.py` and `book/experiments/field2-filters/unknown_focus.py` aggregate, for each profile, the multiset of observed `filter_arg_raw` u16 values, their tag distributions, and (where decode makes it possible) their attachment to literals/anchors and to op reach. The inventory is intentionally descriptive: it records which values appear, where they appear (tag context), and how often; it does not attempt to assign semantics.
+
+Third, we ran a set of SBPL probe families designed to surface and isolate the out-of-vocab/high u16 values seen in system profiles. The probe families include “flow-divert require-all” variants, system-fcntl variants, and attempts to reproduce bsd-tail highs in smaller contexts. A repeating pattern emerged: many simplified probes collapse to a generic low-ID scaffolding and do not reproduce the system-only highs; conversely, richer mixed probes sometimes preserve a specific unknown (notably the flow-divert 2560 value) under a stable predicate combination.
+
+Fourth, we hunted for kernel-side structure and transforms. Using the extracted arm64e sandbox kext (`/tmp/sandbox_arm64e/com.apple.security.sandbox`) and headless Ghidra tooling, we identified u16 reader helpers (`__read16`) and inspected the evaluator (`_eval`) and its reachable neighborhood for (a) bit masking/splitting of the u16 (e.g., `0x3fff`, `0x4000`) and (b) evidence of a fixed-stride node array structure. The reader helper loads a u16 and stores it without masking; `_eval` contains other masks (e.g., `0x7f`, `0xffffff`, `0x7fffff`) but not the hypothesized hi/lo masks for `filter_arg_raw`. A dedicated “node struct scan” over all functions reachable from `_eval` found no fixed-stride `[byte + ≥2×u16]` node layout. This supports the “bytecode VM over a profile blob” model for this host rather than a directly indexed node array model.
+
+## Results (what we learned)
+
+### Low values align with the host filter vocabulary
+
+Across the canonical `bsd` and `sample` profiles, low u16 values in the payload slot correspond directly to filter IDs in `book/graph/mappings/vocab/filters.json`. The inventory includes repeated witnesses for common filter IDs such as path/name/socket classes and system-specific filters (`right-name`, `preference-domain`, iokit-related filters, and others). This is the positive core: when a tag’s payload u16 is used as a filter vocabulary id, the mapping is stable and matches the host vocabulary.
+
+### A bounded set of out-of-vocab/high values persists
+
+The canonical profiles and probe corpus produce a bounded set of out-of-vocab/high values, clustered by tag context and by profile context. The salient clusters are:
+
+`flow-divert` cluster: `filter_arg_raw=2560` (`0x0a00`) appears in mixed “require-all domain+type+protocol” socket probes tied to the literal `com.apple.flow-divert`. The signal is stable across TCP and UDP variants and disappears when the profile is simplified to any pair of those predicates. The observed nodes are tag 0, op reach is empty, and the node’s fan-out is consistent with the “edges to node 0” structure captured in `book/experiments/field2-filters/out/unknown_nodes.json`.
+
+`bsd` tail cluster: `filter_arg_raw=16660` (`0x4114`) appears on a tag 0 node in the full `bsd` profile and is reachable from a broad op slice (ops 0–27 in the current op reach encoding). This is the only unknown/high value with broad op reach on this host. Additional bsd highs (`170`, `174`, `115`, `109`) appear on tag 26 nodes and are op-empty in the current census.
+
+`airlock` system-fcntl cluster: `filter_arg_raw=165`, `166`, and `10752` (`0x2a00`) appear in the `airlock` profile on tags 166/1/0 with op reach concentrated on the `system-fcntl` op. A probe (`airlock_system_fcntl`) also surfaces a sentinel-like value `0xffff` in tag 1, with hi bits set (`0xc000`) in the hi/lo census.
+
+`sample` sentinel: `filter_arg_raw=3584` (`0x0e00`) appears on a tag 0 node, op-empty, and recurs in probe-like contexts that resemble the sample’s structure.
+
+The experiment treats these values as “structurally bounded but semantically opaque” for this world. We keep their contexts and counts; we do not assert a kernel-consumed semantic split.
+
+### Kernel-side structure hunt is negative for u16 splitting and for a fixed node array
+
+The kernel-side work in `dumps/ghidra/out/14.4.1-23E224/find-field2-evaluator/` supports two negative conclusions.
+
+First, the u16 reader helper (`__read16`) loads and forwards the u16 without applying masks or bitfield extracts. Second, neither `_eval` nor its reachable neighborhood contains the hypothesized `0x3fff`/`0x4000` masks that would indicate a stable hi/lo split of `filter_arg_raw`. This does not prove that no semantics exist, but it eliminates a broad and previously plausible hypothesis space.
+
+Separately, a dedicated scan (`kernel_node_struct_scan.py`) over all functions reachable from `_eval` found no fixed-stride node array layout of the form “byte tag plus u16 fields at constant offsets.” The evaluator behaves like a bytecode VM over a profile blob on this host rather than walking a directly indexed node array. This constrains how future semantics work would need to proceed (table lookups and derived indices rather than a simple struct).
+
+## How the repo now preserves the result (structural contract)
+
+This experiment produced two repository-level contract improvements that reduce ambiguity for future work without prematurely enforcing cross-world assumptions.
+
+First, u16 role is now explicit per tag for this world. The mapping `book/graph/mappings/tag_layouts/tag_u16_roles.json` declares, for each tag in scope, whether the payload u16 slot is intended to be treated as a filter vocabulary id (`filter_vocab_id`), an opaque argument u16 (`arg_u16`, with tag10 as the exemplar), or absent/meta-only (`none/meta`). This avoids reintroducing implicit assumptions such as “payload u16 always means filter id” across all tags.
+
+Second, the decoder now exposes structure with provenance rather than silently guessing. `book/api/decoder/__init__.py` remains permissive, but it now attaches `filter_arg_raw`, `u16_role`, and (when applicable) `filter_vocab_ref` / `filter_out_of_vocab` directly on decoded nodes, and it records provenance for layout selection and literal reference recovery. The decoder does not enforce “unknown-but-bounded”; discovery stays possible.
+
+To protect the learned tag/layout/role relationships on this host without freezing a closed unknown inventory, we added a lightweight validation job and guardrail test. The validation job `structure:tag_roles` lives in `book/graph/concepts/validation/tag_role_layout_job.py` and is registered via `book/graph/concepts/validation/registry.py`. It runs on the pinned canonical corpus and verifies the two structural invariants: observed tags have declared roles, and tags whose roles imply a payload slot have layouts. It also reports vocab hit/miss counts and fallback usage, but it does not fail merely because values are out-of-vocab.
+
+The guardrail test `book/tests/test_field2_unknowns.py` continues to pin a known set of unknown/high values observed by this experiment’s inventory; it is intentionally conservative and can be adjusted deliberately when warranted. Flow-divert payload 2560 has been reclassified as “characterized, triple-only” (tag0, `u16_role=filter_vocab_id`, literal `com.apple.flow-divert`), so it is no longer part of the unknown set; the guardrail now asserts that only triple flow-divert specs emit 2560 and that non-triples do not.
+
+## Non-claims and limitations
+
+This report does not claim a semantic interpretation of out-of-vocab/high values such as 2560, 16660, 10752, 0xffff, or 3584. It does not claim that these values are sentinels, indices, or flags; it claims only that they are observed, context-bounded u16 payloads in compiled profiles on this host.
+
+This report also does not claim that the tag layout map is globally complete. `book/graph/mappings/tag_layouts/tag_layouts.json` is “best-effort” and was derived primarily from literal/regex-bearing tag behavior in canonical blobs; tags outside that scope may require additional decoding work.
+
+Finally, platform/runtime gates (e.g., inability to apply certain system profiles) mean that this experiment is predominantly static. Runtime semantics, if they exist, are not established here.

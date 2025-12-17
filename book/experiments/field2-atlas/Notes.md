@@ -4,3 +4,4 @@
 - Static/runtime/atlas outputs are currently placeholders keyed to existing mappings and golden traces; replace with regenerated data once `atlas_static.py` and `atlas_runtime.py` run.
 - Keep runtime attempts, including `EPERM` / apply gates, recorded here with the command, profile, and seed field2 they target.
 - Rebuilt atlas via `PYTHONPATH=. python book/experiments/field2-atlas/atlas_build.py` after refreshing `field2_inventory.json`/`unknown_nodes.json` (new UDP network variant + fcntl/right-name sweeps). Outputs remain stable (`runtime_backed` slice unchanged) but are aligned to the current anchor map/tag layouts.
+- Added seed `2560` for flow-divert triple-only token (tag0/u16_role=filter_vocab_id, literal `com.apple.flow-divert`, target op `network-outbound`); regenerated static/runtime/atlas outputs to include it (static ok, runtime marked `no_runtime_candidate`).

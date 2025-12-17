@@ -22,6 +22,44 @@ DEFAULT_TAG_LAYOUTS: Dict[int, Tuple[int, Tuple[int, ...], Tuple[int, ...]]] = {
     6: (12, (0, 1), (2,)),
 }
 
+ROLE_UNKNOWN = "unknown_role"
+
+
+def _load_filter_vocab() -> Dict[int, str]:
+    """Load filter vocabulary id->name from the published mapping if present."""
+    path = Path("book/graph/mappings/vocab/filters.json")
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except Exception:
+        return {}
+    out: Dict[int, str] = {}
+    for entry in data:
+        try:
+            out[int(entry["id"])] = str(entry["name"])
+        except Exception:
+            continue
+    return out
+
+
+def _load_tag_u16_roles() -> Dict[int, str]:
+    """Load per-tag u16 role mapping if available."""
+    path = Path("book/graph/mappings/tag_layouts/tag_u16_roles.json")
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text())
+    except Exception:
+        return {}
+    out: Dict[int, str] = {}
+    for entry in data.get("roles", []):
+        try:
+            out[int(entry["tag"])] = str(entry["u16_role"])
+        except Exception:
+            continue
+    return out
+
 
 @dataclass
 class DecodedProfile:
@@ -118,18 +156,37 @@ def _parse_nodes_tagged(data: bytes) -> Tuple[List[Dict[str, Any]], Dict[int, in
     records. Returns (nodes, tag_counts, remainder_bytes).
     """
     tag_layouts = {**DEFAULT_TAG_LAYOUTS, **_load_external_tag_layouts()}
+    tag_roles = _load_tag_u16_roles()
+    filter_vocab = _load_filter_vocab()
     nodes: List[Dict[str, Any]] = []
     tag_counts: Dict[int, int] = {}
 
     offset = 0
     while offset + 2 <= len(data):
         tag = data[offset]
-        rec_size, _, _ = tag_layouts.get(tag, (12, (0, 1), (2,)))
+        layout_source = "mapping" if tag in tag_layouts else "default"
+        rec_size, edge_idx, payload_idx = tag_layouts.get(tag, (12, (0, 1), (2,)))
         chunk = data[offset : offset + rec_size]
         if len(chunk) < rec_size:
             break
         fields = [int.from_bytes(chunk[i : i + 2], "little") for i in range(2, rec_size, 2)]
         tag_counts[tag] = tag_counts.get(tag, 0) + 1
+
+        payload_values = [fields[i] for i in payload_idx if i < len(fields)] if payload_idx else []
+        filter_arg_raw: Optional[int | List[int]] = None
+        if payload_values:
+            filter_arg_raw = payload_values[0] if len(payload_values) == 1 else payload_values
+
+        u16_role = tag_roles.get(tag, ROLE_UNKNOWN)
+        filter_vocab_ref: Optional[str] = None
+        out_of_vocab = False
+        if u16_role == "filter_vocab_id" and payload_values:
+            val = payload_values[0]
+            if val in filter_vocab:
+                filter_vocab_ref = filter_vocab[val]
+            else:
+                out_of_vocab = True
+
         nodes.append(
             {
                 "offset": offset,
@@ -137,6 +194,12 @@ def _parse_nodes_tagged(data: bytes) -> Tuple[List[Dict[str, Any]], Dict[int, in
                 "fields": fields,
                 "record_size": rec_size,
                 "hex": chunk.hex(),
+                "layout_provenance": layout_source,
+                "payload_indices": payload_idx,
+                "filter_arg_raw": filter_arg_raw,
+                "u16_role": u16_role,
+                "filter_vocab_ref": filter_vocab_ref,
+                "filter_out_of_vocab": out_of_vocab,
             }
         )
         offset += rec_size
@@ -260,6 +323,7 @@ def decode_profile(data: bytes, header_window: int = 128) -> DecodedProfile:
         literal_refs_per_node.append(sorted(set(matches)))
     for node, refs in zip(nodes, literal_refs_per_node):
         node["literal_refs"] = refs
+        node["literal_refs_provenance"] = "heuristic" if refs else "none"
 
     header_fields: Dict[str, Any] = {}
     try:

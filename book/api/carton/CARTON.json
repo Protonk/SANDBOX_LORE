@@ -40,7 +40,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
-      "sha256": "bbb85cb8a21c37388450839c3a1109dd010c1cbc17ec1a9216c164583a808928"
+      "sha256": "39faf103f3a1cea184e189b11f288e59fa43e17fd7818cb02fae62b5242a2631"
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",

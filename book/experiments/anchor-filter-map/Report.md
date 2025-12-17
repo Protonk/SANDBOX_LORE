@@ -25,6 +25,7 @@ Bind anchor labels emitted by `probe-op-structure` to concrete Filter IDs, using
   - Experiment scaffolded (this Report, Plan, Notes).
   - Baseline candidate extraction done: `out/anchor_filter_candidates.json` holds anchor → {field2_names, field2_values, sources}.
   - First pass map published at `book/graph/mappings/anchors/anchor_filter_map.json` (with host metadata): `/tmp/foo` and `/etc/hosts` pinned to `path` (id 0) for file probes; `/var/log` → ipc-posix-name=4; `idVendor` → local-name=6; `preferences/logging` → global-name=5; other anchors remain `status: ambiguous` with candidates noted. Guardrail added (`tests/test_mappings_guardrail.py`) to ensure map presence and mapped entries.
+  - Flow-divert anchor updated with `filter_name: local`, explicit note that field2 values `{2,7,2560}` are triple-only (domain+type+proto) with tag0/u16_role=filter_vocab_id and literal `com.apple.flow-divert` per flow-divert-2560 matrix; status remains `blocked` pending runtime witness.
 - **1) Scope and setup**
   - Host baseline (OS/build, SIP) recorded in this Report and in `Notes.md`.
   - Inputs confirmed: `probe-op-structure/out/anchor_hits.json`, `field2-filters/out/field2_inventory.json`, vocab (`book/graph/mappings/vocab/filters.json`), anchor → field2 hints (`book/graph/mappings/anchors/anchor_field2_map.json`).

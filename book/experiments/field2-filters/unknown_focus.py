@@ -16,6 +16,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 import book.api.decoder as decoder  # type: ignore
 
+# Field2 payloads that are intentionally characterized elsewhere and should not
+# be treated as "unknown" in this inventory.
+CHARACTERIZED_FIELD2 = {
+    2560,  # flow-divert triple-only token (tag0, literal com.apple.flow-divert)
+}
+
 
 def load_layouts() -> Dict[int, Dict[str, Any]]:
     path = Path("book/graph/mappings/tag_layouts/tag_layouts.json")
@@ -77,6 +83,9 @@ def summarize_profile(path: Path, filter_names: Dict[int, str], op_names: Dict[i
         lo = raw & 0x3FFF
         name = filter_names.get(lo) if hi == 0 else None
         if hi != 0 or name is None:
+            # Skip payloads we have characterized elsewhere to avoid re-classifying them as unknown.
+            if raw in CHARACTERIZED_FIELD2:
+                continue
             edges = [fields[i] for i in edge_fields_for(node.get("tag", -1), layouts) if i < len(fields)]
             unknowns.append(
                 {

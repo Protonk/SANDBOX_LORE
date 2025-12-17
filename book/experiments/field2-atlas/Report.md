@@ -8,7 +8,7 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 
 ## Setup
 - World: `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`.
-- Seed set: fixed in `field2_seeds.json` (0/5/7 with anchors + profile witnesses).
+- Seed set: fixed in `field2_seeds.json` (0/5/7 with anchors + profile witnesses, 1 as nearby static neighbor, 2560 as characterized flow-divert triple-only token: tag0/u16_role=filter_vocab_id/literal `com.apple.flow-divert`).
 - Inputs: `book/graph/mappings/vocab/{ops.json,filters.json}`, `book/graph/mappings/tag_layouts/tag_layouts.json`, `book/graph/mappings/anchors/anchor_filter_map.json`, `book/graph/mappings/system_profiles/{digests.json,static_checks.json}`, `book/experiments/field2-filters/out/field2_inventory.json`, runtime signatures/traces under `book/graph/mappings/runtime/` (notably `runtime_signatures.json`).
 - Deliverables: static records (`out/static/field2_records.jsonl`), runtime results (`out/runtime/field2_runtime_results.json`), and merged atlas (`out/atlas/field2_atlas.json`, `out/atlas/summary.json`).
 
@@ -19,15 +19,16 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 - `out/atlas/summary.json` — counts by status to show field2 coverage at a glance.
 
 ## Status
-- Static: `ok` for the seed slice (anchors + system profiles present for 0/5/7).
-- Runtime: **partial** — reuses existing runtime signatures (mach path/global/local and path_edges) and tags each to a seed; no new harness runs yet. All three baseline seeds are `runtime_backed`; the extra static-only seed is marked `no_runtime_candidate`.
-- Atlas: `runtime_backed` for baseline seeds, `no_runtime_candidate` for the static-only add-on; rebuilt after the refreshed field2 inventory (UDP network variant, fcntl/right-name sweeps) with no status changes. Will expand if we add seeds or new probes.
+- Static: `ok` for the seed slice including new seed `2560` (characterized static-only).
+- Runtime: **partial** — reuses existing runtime signatures (mach path/global/local and path_edges) and tags each to a seed; no new harness runs yet. Baseline seeds are `runtime_backed`; static-only seeds (1, 2560) are `no_runtime_candidate`.
+- Atlas: `runtime_backed` for baseline seeds, `no_runtime_candidate` for static-only add-ons; rebuilt after the refreshed field2 inventory (UDP network variant, fcntl/right-name sweeps) with seed 2560 included. Will expand as seeds/probes are added.
 
 ## Case studies (seed slice)
 - Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*) and currently returns `deny` in the signature set.
 - Field2 5 (`global-name`): Present in `sys:bsd` tag 27 and many mach/path probes; anchors include `preferences/logging` and `/etc/hosts`. Runtime scenario `field2-5-mach-global` exercises `mach-lookup` for `com.apple.cfprefsd.agent` and returns `allow`.
 - Field2 7 (`local`): Present in `sys:sample` tags 3/7/8 and network/mach probes; anchors include `/etc/hosts` and blocked `flow-divert`. Runtime scenario `field2-7-mach-local` hits `mach-lookup` for the same name with a local-mode probe and returns `allow`.
 - Field2 1 (`mount-relative-path`): Added as a nearby static-only neighbor (same ops/profiles as seed0). Anchored via `/etc/hosts` and present in `sys:sample` tag 8; no runtime probe yet (`no_runtime_candidate`).
+- Field2 2560 (`flow-divert triple`): Characterized static token for combined domain/type/proto in flow-divert probes; tag0/u16_role=filter_vocab_id with literal `com.apple.flow-divert`, target op `network-outbound`, no runtime probe yet (`no_runtime_candidate` after regeneration).
 
 ## Evidence & artifacts
 - Seeds: `book/experiments/field2-atlas/field2_seeds.json`
@@ -38,4 +39,5 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 
 ## Next steps
 - Run the runtime wrapper against fresh probes as they appear (mark `blocked`/`deny` explicitly).
+- Regenerate static/runtime/atlas outputs to incorporate seed 2560 and keep anchors/tag layouts aligned.
 - Decide whether to keep the atlas as a fixed exemplar (0/5/7) or add a small second batch with the same field2-first framing and tests.

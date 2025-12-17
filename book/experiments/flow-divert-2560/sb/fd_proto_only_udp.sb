@@ -1,0 +1,4 @@
+(version 1)
+(deny default)
+(allow network-outbound
+  (socket-protocol IPPROTO_UDP))

@@ -1,0 +1,8 @@
+(version 1)
+(deny default)
+(allow network-outbound
+  (require-all
+    (require-all
+      (socket-domain AF_INET)
+      (socket-type SOCK_STREAM))
+    (socket-protocol IPPROTO_TCP)))

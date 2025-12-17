@@ -61,6 +61,7 @@ JOB_MODULES = [
     "book.graph.concepts.validation.schema_meta_job",
     "book.graph.concepts.validation.golden_corpus_job",
     "book.graph.concepts.validation.sandbox_init_params_job",
+    "book.graph.concepts.validation.tag_role_layout_job",
 ]
 
 

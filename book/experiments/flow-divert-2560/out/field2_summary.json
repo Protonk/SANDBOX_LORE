@@ -1,0 +1,767 @@
+{
+  "control_mach_lookup_require_all.sb": {
+    "spec_id": "control_mach_lookup_require_all.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/control_mach_lookup_require_all.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 21,
+        "tags": {
+          "4": 13,
+          "3": 8
+        }
+      },
+      {
+        "raw": 3,
+        "raw_hex": "0x3",
+        "hi": 0,
+        "lo": 3,
+        "count": 11,
+        "tags": {
+          "4": 5,
+          "3": 4,
+          "2": 1,
+          "0": 1
+        }
+      }
+    ]
+  },
+  "control_mach_lookup_require_any.sb": {
+    "spec_id": "control_mach_lookup_require_any.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/control_mach_lookup_require_any.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 21,
+        "tags": {
+          "4": 4,
+          "5": 17
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 9,
+        "tags": {
+          "5": 5,
+          "4": 2,
+          "1": 1,
+          "0": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_only.sb": {
+    "spec_id": "fd_domain_only.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_only.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 18,
+        "tags": {
+          "6": 17,
+          "5": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 12,
+        "tags": {
+          "6": 7,
+          "5": 4,
+          "2": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_proto_all_tcp.sb": {
+    "spec_id": "fd_domain_proto_all_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_proto_all_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 17,
+        "tags": {
+          "6": 4,
+          "7": 13
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 12,
+        "tags": {
+          "6": 5,
+          "7": 7
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_all_tcp.sb": {
+    "spec_id": "fd_domain_type_all_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_all_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 17,
+        "tags": {
+          "6": 4,
+          "7": 13
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 12,
+        "tags": {
+          "6": 5,
+          "7": 7
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_all_tcp_order1.sb": {
+    "spec_id": "fd_domain_type_proto_all_tcp_order1.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_all_tcp_order1.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_all_tcp_order2.sb": {
+    "spec_id": "fd_domain_type_proto_all_tcp_order2.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_all_tcp_order2.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_all_udp_order1.sb": {
+    "spec_id": "fd_domain_type_proto_all_udp_order1.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_all_udp_order1.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_all_udp_order2.sb": {
+    "spec_id": "fd_domain_type_proto_all_udp_order2.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_all_udp_order2.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_any_tcp.sb": {
+    "spec_id": "fd_domain_type_proto_any_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_any_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 6,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1,
+          "1": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      }
+    ]
+  },
+  "fd_domain_type_proto_nested_tcp.sb": {
+    "spec_id": "fd_domain_type_proto_nested_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_domain_type_proto_nested_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 8,
+        "raw_hex": "0x8",
+        "hi": 0,
+        "lo": 8,
+        "count": 23,
+        "tags": {
+          "8": 17,
+          "7": 6
+        }
+      },
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 5,
+        "tags": {
+          "8": 1,
+          "7": 3,
+          "0": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 4,
+        "raw_hex": "0x4",
+        "hi": 0,
+        "lo": 4,
+        "count": 1,
+        "tags": {
+          "8": 1
+        }
+      },
+      {
+        "raw": 2560,
+        "raw_hex": "0xa00",
+        "hi": 0,
+        "lo": 2560,
+        "count": 1,
+        "tags": {
+          "0": 1
+        }
+      },
+      {
+        "raw": 2,
+        "raw_hex": "0x2",
+        "hi": 0,
+        "lo": 2,
+        "count": 1,
+        "tags": {
+          "1": 1
+        }
+      }
+    ]
+  },
+  "fd_proto_only_tcp.sb": {
+    "spec_id": "fd_proto_only_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_proto_only_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 18,
+        "tags": {
+          "6": 17,
+          "5": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 12,
+        "tags": {
+          "6": 7,
+          "5": 4,
+          "2": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_proto_only_udp.sb": {
+    "spec_id": "fd_proto_only_udp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_proto_only_udp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 18,
+        "tags": {
+          "6": 17,
+          "5": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 12,
+        "tags": {
+          "6": 7,
+          "5": 4,
+          "2": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_type_only.sb": {
+    "spec_id": "fd_type_only.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_type_only.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 18,
+        "tags": {
+          "6": 17,
+          "5": 1
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 12,
+        "tags": {
+          "6": 7,
+          "5": 4,
+          "2": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  },
+  "fd_type_proto_all_tcp.sb": {
+    "spec_id": "fd_type_proto_all_tcp.sb",
+    "profile_path": "book/experiments/flow-divert-2560/sb/build/fd_type_proto_all_tcp.sb.bin",
+    "field2_payloads": [
+      {
+        "raw": 7,
+        "raw_hex": "0x7",
+        "hi": 0,
+        "lo": 7,
+        "count": 17,
+        "tags": {
+          "6": 4,
+          "7": 13
+        }
+      },
+      {
+        "raw": 6,
+        "raw_hex": "0x6",
+        "hi": 0,
+        "lo": 6,
+        "count": 12,
+        "tags": {
+          "6": 5,
+          "7": 7
+        }
+      },
+      {
+        "raw": 5,
+        "raw_hex": "0x5",
+        "hi": 0,
+        "lo": 5,
+        "count": 1,
+        "tags": {
+          "7": 1
+        }
+      },
+      {
+        "raw": 0,
+        "raw_hex": "0x0",
+        "hi": 0,
+        "lo": 0,
+        "count": 1,
+        "tags": {
+          "6": 1
+        }
+      }
+    ]
+  }
+}

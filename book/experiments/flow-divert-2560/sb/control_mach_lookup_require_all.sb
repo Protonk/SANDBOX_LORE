@@ -1,0 +1,7 @@
+(version 1)
+(deny default)
+(allow mach-lookup
+  (require-all
+    (global-name "com.apple.cfprefsd.daemon")
+    (global-name "com.apple.securityd")
+    (global-name "com.apple.ocspd")))

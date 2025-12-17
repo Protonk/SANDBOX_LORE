@@ -1,0 +1,29 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "status": "ok",
+  "inputs": [
+    "book/graph/mappings/tag_layouts/tag_layouts.json",
+    "book/graph/mappings/vocab/filters.json"
+  ],
+  "source_jobs": [
+    "experiment:tag-layout-decode",
+    "experiment:field2-filters",
+    "experiment:probe-op-structure",
+    "mappings:tag_layouts"
+  ],
+  "notes": "Per-tag u16 role for the structural slot commonly exposed as filter_arg_raw; used to decide whether to attempt filter vocab resolution or treat the payload as opaque on this host.",
+  "roles": [
+    {"tag": 0, "u16_role": "filter_vocab_id"},
+    {"tag": 1, "u16_role": "filter_vocab_id"},
+    {"tag": 2, "u16_role": "none/meta"},
+    {"tag": 3, "u16_role": "none/meta"},
+    {"tag": 5, "u16_role": "filter_vocab_id"},
+    {"tag": 7, "u16_role": "filter_vocab_id"},
+    {"tag": 8, "u16_role": "filter_vocab_id"},
+    {"tag": 10, "u16_role": "arg_u16"},
+    {"tag": 17, "u16_role": "filter_vocab_id"},
+    {"tag": 26, "u16_role": "filter_vocab_id"},
+    {"tag": 27, "u16_role": "filter_vocab_id"},
+    {"tag": 166, "u16_role": "filter_vocab_id"}
+  ]
+}

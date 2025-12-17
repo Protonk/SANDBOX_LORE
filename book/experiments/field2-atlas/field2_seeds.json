@@ -122,6 +122,23 @@
         }
       ],
       "notes": "Nearby static-only candidate riding the same path ops/profiles as seed0; added to exercise atlas growth. No runtime probe yet."
+    },
+    {
+      "field2": 2560,
+      "filter_name": "local",
+      "target_ops": [
+        "network-outbound"
+      ],
+      "anchors": [
+        {
+          "anchor": "flow-divert",
+          "status": "characterized",
+          "source": "flow-divert-2560",
+          "notes": "Triple-only: domain+type+proto; tag0 u16_role=filter_vocab_id; literal com.apple.flow-divert"
+        }
+      ],
+      "system_profiles": [],
+      "notes": "Characterized static token for flow-divert triples (domain+type+proto) on tag0 with literal com.apple.flow-divert; derived from flow-divert-2560 matrix decode. No runtime witness; world-scoped."
     }
   ]
 }

@@ -69,6 +69,7 @@
     "status": "blocked"
   },
   "flow-divert": {
+    "filter_name": "local",
     "candidates": [
       "local",
       "xattr"
@@ -82,7 +83,8 @@
       "probe:v4_network_socket_require_all",
       "probe:v7_file_network_combo"
     ],
-    "status": "blocked"
+    "status": "blocked",
+    "notes": "Characterized triple-only token (domain+type+proto) with tag0/u16_role=filter_vocab_id and literal com.apple.flow-divert; static witness from flow-divert-2560 matrix."
   },
   "IOUSBHostInterface": {
     "candidates": [

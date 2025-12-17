@@ -73,7 +73,7 @@
         "smoke"
       ],
       "hashes": {
-        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "bbb85cb8a21c37388450839c3a1109dd010c1cbc17ec1a9216c164583a808928",
+        "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "39faf103f3a1cea184e189b11f288e59fa43e17fd7818cb02fae62b5242a2631",
         "book/graph/concepts/validation/out/experiments/field2/status.json": "735410973d8935c6db258af6fc6125ae1cbd325dde847d1f875d6079454d0419"
       },
       "notes": "Normalized field2 inventory and unknown nodes into IR.",
@@ -147,6 +147,48 @@
       "notes": "Normalized system profile digests into IR.",
       "metrics": {
         "profiles": 3
+      },
+      "change": "unchanged"
+    },
+    {
+      "job_id": "structure:tag_roles",
+      "status": "ok-unchanged",
+      "host": {
+        "product": "macOS",
+        "version": "14.4.1",
+        "build": "23E224",
+        "kernel": "23.4.0",
+        "machine": "arm64"
+      },
+      "inputs": [
+        "book/examples/extract_sbs/build/profiles/airlock.sb.bin",
+        "book/examples/extract_sbs/build/profiles/bsd.sb.bin",
+        "book/examples/sb/build/sample.sb.bin",
+        "book/graph/mappings/tag_layouts/tag_layouts.json",
+        "book/graph/mappings/tag_layouts/tag_u16_roles.json"
+      ],
+      "outputs": [
+        "book/graph/concepts/validation/out/tag_roles/ir.json",
+        "book/graph/concepts/validation/out/tag_roles/status.json"
+      ],
+      "tags": [
+        "structure",
+        "tag",
+        "layout",
+        "role",
+        "smoke"
+      ],
+      "hashes": {
+        "book/graph/concepts/validation/out/tag_roles/ir.json": "49f6f5bac88edd786c4496b5e3d6c5f3a84fc19689be478b7f775ca838113f95",
+        "book/graph/concepts/validation/out/tag_roles/status.json": "5660852bfafe5a77f27ca9ea11ad36cafcf709a4e687d0fe6fc1027f383a3c9b"
+      },
+      "metrics": {
+        "profiles": 3,
+        "missing_roles_total": 0,
+        "missing_layout_total": 0,
+        "fallback_nodes_total": 0,
+        "vocab_hits_total": 0,
+        "vocab_misses_total": 78
       },
       "change": "unchanged"
     }
