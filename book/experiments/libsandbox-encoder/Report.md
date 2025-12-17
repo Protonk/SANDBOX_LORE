@@ -81,6 +81,34 @@ Current strongest witnesses live in `out/network_matrix/blob_diffs.json`:
 
 This is sufficient to treat “network arg bytes are serialized into the compiled blob (nodes section)” as an experiment-local, world-scoped fact, and it provides a concrete join point for Phase B’s `_emit_network` disassembly.
 
+## Branch: byte-level structural join for `_emit_network` (Phase A → Phase B)
+
+This branch exists to close a specific gap: we have (a) static RE evidence that `_emit_network` emits domain/type/proto as widths `{1,1,2}`, and (b) a Phase A witness that controlled SBPL deltas produce localized byte diffs in the compiled blob. What we **do not yet have** is a stable, byte-level mapping from `_emit_network`’s “writes into a mutable buffer” to *where those bytes live in the compiled blob structure* (node stream vs any other per-op condition-data region) and which record/tag/field boundaries explain the observed diffs.
+
+### Why this matters (profile oracle)
+
+For this branch, the compiled profile blob is the oracle: SBPL→compile→blob bytes are the primary witness, and every structural claim should be phrased so it can be mechanically checked against those bytes. Static RE and decoder output are supporting tools, but without a byte-level join they remain narrative and brittle. Closing this join is the minimal prerequisite for promoting any “encoder-side structure” claim into shared decoding/mapping tooling.
+
+### What we expect to learn
+
+- Which compiled-blob region contains the domain/type/proto argument bytes for:
+  - single-arg forms (`socket-domain` only, `socket-type` only, `socket-protocol` only), and
+  - combined forms (domain+type+proto under `require-all` / `require-any` / nested forms).
+- Whether those bytes appear as a contiguous sequence (as suggested by `_emit_network`) or are threaded through multiple records/structures.
+- Which record boundaries (8-byte framing) and which u16 slots are the structural “roles” for these bytes (arg u16 vs vocab-like u16), so Phase B can be expressed as a concrete mapping instead of a guess.
+
+### How we plan to do it (static-first)
+
+- Re-run the Phase A network matrix pipeline to keep `out/network_matrix/*` current and to protect against accidental drift in probes/layout assumptions.
+- Extend the SBPL specimen matrix with a small set of new cases designed to falsify common confounders (pairwise combos, isolated triple variations, combinator/nesting/order variants).
+- Add an experiment-local join analyzer that:
+  - anchors on the diff offsets in `out/network_matrix/blob_diffs.json`,
+  - emits a normalized record keyed by `(spec_id, diff_offset)` with local byte windows and 8-byte boundary context, and
+  - attempts both interpretations explicitly (“arg bytes live inside a node record field” vs “arg bytes live in a separate packed condition-data slice that the current record-walk is misclassifying”).
+- Use the analyzer output to evaluate a small set of structural hypotheses across the whole matrix and select the *single* hypothesis that predicts all observed deltas without special-casing.
+- Once the mapping is stable, update `out/encoder_sites.json` so `_emit_network` has an evidence-backed, byte-level join to the compiled blob.
+- Gate the join with a guardrail test so future decoder/layout changes cannot silently break the mapping.
+
 ## Phase B — artifacts and partial findings
 
 - `out/encoder_sites.json` records a small set of encoder-side sites with addresses and evidence notes (partial):
@@ -110,5 +138,6 @@ These are **static** witnesses from the dyld slice for this world; they do not e
 
 ## Next steps
 
-- If the SBPL compiler accepts a `socket-protocol` value with a non-zero high byte (e.g., >255), add it to the network matrix so we can witness `_emit_network`’s `len=2` behavior directly in the blob diff (otherwise record the rejection as a negative result).
-- In Phase B, connect `_emit_network`’s (domain/type/proto) writes to a concrete location in the compiled blob (condition-data tables vs node stream), so the compiler-side interpretation can be expressed as a byte-level witness rather than a narrative guess.
+- Execute the “byte-level structural join” branch (Phase A → Phase B) so `_emit_network` can be tied to a concrete, checkable blob location and record framing.
+- Extend the network matrix with a `socket-protocol` value that forces a non-zero high byte if the compiler accepts it (otherwise record the rejection as a bounded negative result).
+- Once the join exists, revisit Phase B conclusions and only then propose minimal shared decode/mapping changes (role assignment, record boundaries) backed by the join witness.
