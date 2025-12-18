@@ -49,8 +49,8 @@
   },
   "metadata": {
     "input_hashes": {
-      "book/graph/concepts/validation/out/lifecycle/entitlements.json": "b0e8a638affb871cce7434716d3244448416d237a7b49e272d6126c199486df4",
-      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md": "f8b7d72eb0a2930cde63a86381e78be5ed9100d400c60931b6abb6cc67ade432"
+      "book/graph/concepts/validation/out/lifecycle/entitlements.json": "66bfa11db41083b5d012409666303aff7fb5386afd0bf999ce2a16b945faaad4",
+      "book/graph/concepts/validation/out/lifecycle/extensions_dynamic.md": "f12270f5d2cf4ba06b2e51b26656b01a78ab46ade15fa6473e65e0018787fea4"
     },
     "inputs": [
       "book/graph/concepts/validation/out/lifecycle/entitlements.json",

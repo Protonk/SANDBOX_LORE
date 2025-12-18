@@ -179,7 +179,7 @@ Lifecycle examples focus on profile provenance, entitlements, containers, extens
   - **P:** Runtime Lifecycle and Extension (Sandbox Extension, label state).  
   - **S:** Semantic Graph and Evaluation (extension filters and resulting decisions).
 - **Feeds:**
-  - `validation/out/lifecycle/extensions_dynamic.md` (notes on crash/NULL tokens).  
+  - `validation/out/lifecycle/extensions_dynamic.md` (notes on token issuance attempts).  
   - `mappings/runtime/lifecycle.json` + `lifecycle_traces/extensions-dynamic.jsonl` (scenario marked `blocked`).
 
 ### `containers-and-redirects/`

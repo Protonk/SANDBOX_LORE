@@ -1,7 +1,7 @@
 {
-  "pid": 50277,
-  "executable": "book/examples/entitlements-evolution/entitlements_example",
-  "signing_identifier": "entitlements_example",
   "entitlements_present": false,
-  "notes": "Unsigned/unsandboxed build; rerun with signed binaries to compare entitlement payloads."
+  "executable": "book/api/lifecycle_probes/build/entitlements_example",
+  "notes": "Unsigned/unsandboxed build; rerun with signed binaries to compare entitlement payloads.",
+  "pid": 2298,
+  "signing_identifier": "entitlements_example"
 }

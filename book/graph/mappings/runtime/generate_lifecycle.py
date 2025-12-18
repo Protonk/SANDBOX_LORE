@@ -122,21 +122,26 @@ def normalize_entitlements(meta: Dict[str, Any]) -> (Dict[str, Any], List[Dict[s
 def normalize_extensions(meta: Dict[str, Any]) -> (Dict[str, Any], List[Dict[str, Any]], Dict[str, Any]):
     if not EXTENSIONS_PATH.exists():
         return status_entry("extensions-dynamic", "blocked", "missing extensions_dynamic.md", [], None), [], {}
-    notes = EXTENSIONS_PATH.read_text().strip().splitlines()
+    raw = EXTENSIONS_PATH.read_text()
+    notes = raw.strip().splitlines()
     expected_token = True
-    observed_token = False  # crash / NULL tokens
-    classification = "mismatch_disallowed"
-    mismatches = [
-        {
-            "expectation_id": "extensions-dynamic:token",
-            "expected": expected_token,
-            "actual": observed_token,
-            "tags": ["extension_failure"],
-        }
-    ]
+    # Current probe notes include a stable `token_issued=<bool>` marker in the
+    # header; parse it conservatively.
+    observed_token = "token_issued=true" in raw
+    classification = "issued_ok" if observed_token else "mismatch_disallowed"
+    mismatches = []
+    if observed_token != expected_token:
+        mismatches = [
+            {
+                "expectation_id": "extensions-dynamic:token",
+                "expected": expected_token,
+                "actual": observed_token,
+                "tags": ["extension_failure"],
+            }
+        ]
     row = {
         "scenario_id": "extensions-dynamic",
-        "status": "blocked",
+        "status": "ok" if observed_token else "blocked",
         "notes": "\n".join(notes[:6]),
         "source_log": str(EXTENSIONS_PATH.relative_to(REPO_ROOT)),
     }
@@ -144,8 +149,8 @@ def normalize_extensions(meta: Dict[str, Any]) -> (Dict[str, Any], List[Dict[str
     write_trace(REPO_ROOT / trace_rel, [row])
     return status_entry(
         "extensions-dynamic",
-        "blocked",
-        "extensions demo crashes / NULL tokens (see source_log)",
+        "ok" if observed_token else "blocked",
+        "extensions token not issued (see source_log)" if not observed_token else "extensions token issued (see source_log)",
         [trace_rel],
         str(EXTENSIONS_PATH.relative_to(REPO_ROOT)),
     ), [row], {

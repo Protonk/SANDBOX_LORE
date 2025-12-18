@@ -250,7 +250,7 @@ Primary evidence:
 - **Lifecycle manifest**
   - `book/graph/mappings/runtime/lifecycle.json` – normalized lifecycle scenarios:
     - `entitlements-evolution` (unsigned baseline; `partial` – entitlements absent, useful as a baseline witness).
-    - `extensions-dynamic` (`blocked` – crashes/NULL tokens, see `extensions_dynamic.md`).
+    - `extensions-dynamic` (`blocked` – token issuance not observed, see `extensions_dynamic.md`).
   - `book/graph/mappings/runtime/lifecycle_traces/*.jsonl` – per-scenario rows with key fields (executable, entitlements_present, notes, source logs).
 
 - **System profile attestations**
