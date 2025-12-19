@@ -1,0 +1,216 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "baseline_wrapper": {
+    "path": "book/experiments/entitlement-diff/out/runtime_results.json",
+    "profile_key": "baseline"
+  },
+  "jail": {
+    "path": "book/experiments/entitlement-diff/out/jail_runtime_results.json",
+    "variant": "signed"
+  },
+  "match": [],
+  "mismatch": [],
+  "incomparable": [
+    "network_bind",
+    "network_outbound_localhost",
+    "mach_lookup_cfprefsd_agent",
+    "file_read",
+    "file_write"
+  ],
+  "per_probe": {
+    "network_bind": {
+      "wrapper": {
+        "normalized": {
+          "probe_id": "network_bind",
+          "classification": "executed",
+          "exit_code": 2,
+          "decision": "deny",
+          "stderr_hint": "bind: Operation not permitted"
+        },
+        "raw": {
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+            "--",
+            "/private/tmp/entitlement-diff/app_bundle/entitlement_sample"
+          ],
+          "exit_code": 2,
+          "stdout": "entitlement diff sample running (pid=18769)\n",
+          "stderr": "bind: Operation not permitted\n",
+          "status": "deny"
+        }
+      },
+      "jail": {
+        "normalized": {
+          "probe_id": "network_bind",
+          "classification": "blocked",
+          "decision": null
+        },
+        "raw": {
+          "classification": "blocked",
+          "failure_kind": "DEPENDENCY_EXEC_SMOKE_FAILED"
+        }
+      }
+    },
+    "network_outbound_localhost": {
+      "wrapper": {
+        "normalized": {
+          "probe_id": "network_outbound_localhost",
+          "classification": "executed",
+          "exit_code": 1,
+          "decision": "deny"
+        },
+        "raw": {
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+            "--",
+            "/usr/bin/nc",
+            "-z",
+            "-w",
+            "2",
+            "127.0.0.1",
+            "80"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "",
+          "status": "deny"
+        }
+      },
+      "jail": {
+        "normalized": {
+          "probe_id": "network_outbound_localhost",
+          "classification": "blocked",
+          "decision": null
+        },
+        "raw": {
+          "classification": "blocked",
+          "failure_kind": "DEPENDENCY_EXEC_SMOKE_FAILED"
+        }
+      }
+    },
+    "mach_lookup_cfprefsd_agent": {
+      "wrapper": {
+        "normalized": {
+          "probe_id": "mach_lookup_cfprefsd_agent",
+          "classification": "executed",
+          "exit_code": 0,
+          "kr": 0,
+          "decision": "allow"
+        },
+        "raw": {
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+            "--",
+            "/private/tmp/entitlement-diff/app_bundle/mach_probe",
+            "com.apple.cfprefsd.agent"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"kr\":0}\n",
+          "stderr": "",
+          "status": "ok"
+        }
+      },
+      "jail": {
+        "normalized": {
+          "probe_id": "mach_lookup_cfprefsd_agent",
+          "classification": "blocked",
+          "decision": null
+        },
+        "raw": {
+          "classification": "blocked",
+          "failure_kind": "DEPENDENCY_EXEC_SMOKE_FAILED"
+        }
+      }
+    },
+    "file_read": {
+      "wrapper": {
+        "normalized": {
+          "probe_id": "file_read",
+          "classification": "executed",
+          "exit_code": 0,
+          "rc": 0,
+          "errno": 0,
+          "decision": "allow"
+        },
+        "raw": {
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+            "--",
+            "/private/tmp/entitlement-diff/app_bundle/file_probe",
+            "read",
+            "/private/tmp/entitlement-diff/container/runtime.txt"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"op\":\"read\",\"path\":\"/private/tmp/entitlement-diff/container/runtime.txt\",\"rc\":0,\"errno\":0}\n",
+          "stderr": "",
+          "status": "ok"
+        }
+      },
+      "jail": {
+        "normalized": {
+          "probe_id": "file_read",
+          "classification": "blocked",
+          "decision": null
+        },
+        "raw": {
+          "classification": "blocked",
+          "failure_kind": "DEPENDENCY_EXEC_SMOKE_FAILED"
+        }
+      }
+    },
+    "file_write": {
+      "wrapper": {
+        "normalized": {
+          "probe_id": "file_write",
+          "classification": "executed",
+          "exit_code": 0,
+          "rc": 0,
+          "errno": 0,
+          "decision": "allow"
+        },
+        "raw": {
+          "command": [
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/api/SBPL-wrapper/wrapper",
+            "--blob",
+            "/Users/achyland/Desktop/SANDBOX_LORE/book/experiments/entitlement-diff/sb/build/appsandbox-baseline.sb.bin",
+            "--",
+            "/private/tmp/entitlement-diff/app_bundle/file_probe",
+            "write",
+            "/private/tmp/entitlement-diff/container/runtime.txt"
+          ],
+          "exit_code": 0,
+          "stdout": "{\"op\":\"write\",\"path\":\"/private/tmp/entitlement-diff/container/runtime.txt\",\"rc\":0,\"errno\":0}\n",
+          "stderr": "",
+          "status": "ok"
+        }
+      },
+      "jail": {
+        "normalized": {
+          "probe_id": "file_write",
+          "classification": "blocked",
+          "decision": null
+        },
+        "raw": {
+          "classification": "blocked",
+          "failure_kind": "DEPENDENCY_EXEC_SMOKE_FAILED"
+        }
+      }
+    }
+  },
+  "meta": {
+    "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+    "run_id": "c7c4fdfb854b7ca0",
+    "entitlement_jail": {
+      "path": "book/tools/entitlement/EntitlementJail.app/Contents/MacOS/entitlement-jail",
+      "sha256": "ada5d303df5779d8d1b096b298aedfc4c68be04159baab60baa8aae26b02a7b8"
+    }
+  }
+}

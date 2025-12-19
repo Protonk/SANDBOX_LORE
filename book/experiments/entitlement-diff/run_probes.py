@@ -6,22 +6,19 @@ simple network/mach probes. Results are written to out/runtime_results.json.
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import shutil
 from pathlib import Path
 from typing import Dict, List
 
 from book.api.path_utils import find_repo_root, to_repo_relative
+from book.api.runtime import contract as rt_contract
+from book.experiments.entitlement_diff_probe_plan import build_probe_matrix, staged_binary_specs
 
 REPO_ROOT = find_repo_root(Path(__file__))
 WRAPPER = REPO_ROOT / "book" / "api" / "SBPL-wrapper" / "wrapper"
-ENT_SAMPLE_SRC = REPO_ROOT / "book" / "experiments" / "entitlement-diff" / "entitlement_sample"
-MACH_PROBE_SRC = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "mach_probe"
-FILE_PROBE_SRC = REPO_ROOT / "book" / "api" / "file_probe" / "file_probe"
 STAGE_DIR = Path("/private/tmp/entitlement-diff/app_bundle")
-ENT_SAMPLE = STAGE_DIR / "entitlement_sample"
-MACH_PROBE = STAGE_DIR / "mach_probe"
-FILE_PROBE = STAGE_DIR / "file_probe"
 CONTAINER_DIR = Path("/private/tmp/entitlement-diff/container")
 FILE_PROBE_TARGET = CONTAINER_DIR / "runtime.txt"
 
@@ -36,47 +33,105 @@ PROFILES: Dict[str, Dict[str, Path]] = {
     },
 }
 
-TESTS: List[Dict[str, object]] = [
-    {"id": "network_bind", "command": [str(ENT_SAMPLE)]},
-    {"id": "network_outbound_localhost", "command": ["/usr/bin/nc", "-z", "-w", "2", "127.0.0.1", "80"]},
-    {"id": "mach_lookup_cfprefsd_agent", "command": [str(MACH_PROBE), "com.apple.cfprefsd.agent"]},
-    {"id": "file_read", "command": [str(FILE_PROBE), "read", str(FILE_PROBE_TARGET)]},
-    {"id": "file_write", "command": [str(FILE_PROBE), "write", str(FILE_PROBE_TARGET)]},
-]
+TESTS: List[Dict[str, object]] = build_probe_matrix(
+    stage_dir=STAGE_DIR,
+    container_dir=CONTAINER_DIR,
+    repo_root=REPO_ROOT,
+)
+
+_SHA256_CACHE: Dict[str, str] = {}
+
+
+def _sha256_path(path: Path) -> str:
+    key = str(path)
+    cached = _SHA256_CACHE.get(key)
+    if cached:
+        return cached
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    _SHA256_CACHE[key] = digest
+    return digest
+
+
+def _first_marker(markers: List[Dict[str, object]], stage: str) -> Dict[str, object] | None:
+    for marker in markers:
+        if marker.get("stage") == stage:
+            return marker
+    return None
 
 
 def run_probe(profile: Path, command: List[str]) -> Dict[str, object]:
     full_cmd = [str(WRAPPER), "--blob", str(profile), "--"] + command
     try:
         res = subprocess.run(full_cmd, capture_output=True, text=True, timeout=15)
-        payload: Dict[str, object] = {
-            "command": full_cmd,
-            "exit_code": res.returncode,
-            "stdout": res.stdout,
-            "stderr": res.stderr,
-        }
-        if "sandbox_apply" in res.stderr:
-            payload["status"] = "blocked"
-            payload["notes"] = "sandbox_apply returned EPERM"
-        elif res.returncode == 0:
-            payload["status"] = "ok"
+        stderr_raw = res.stderr or ""
+        apply_markers = rt_contract.extract_sbpl_apply_markers(stderr_raw)
+        apply_marker = _first_marker(apply_markers, "apply")
+        applied_marker = _first_marker(apply_markers, "applied")
+        exec_marker = _first_marker(apply_markers, "exec")
+        seatbelt_callouts = rt_contract.extract_seatbelt_callout_markers(stderr_raw) or None
+
+        apply_report = rt_contract.derive_apply_report_from_markers(apply_markers)
+        failure_stage = None
+        failure_kind = None
+        observed_errno = None
+
+        apply_rc = apply_marker.get("rc") if apply_marker else None
+        if isinstance(apply_rc, int) and apply_rc != 0:
+            failure_stage = "apply"
+            api = apply_marker.get("api") if apply_marker else None
+            err_class = apply_marker.get("err_class") if apply_marker else None
+            if err_class == "already_sandboxed":
+                failure_kind = "apply_already_sandboxed"
+            else:
+                failure_kind = f"{api}_failed" if isinstance(api, str) and api else "apply_failed"
+            observed_errno = apply_marker.get("errno") if apply_marker else None
         else:
-            payload["status"] = "deny"
-        return payload
-    except Exception as exc:  # pragma: no cover - runtime helper
-        return {"command": full_cmd, "error": str(exc), "status": "error"}
+            exec_rc = exec_marker.get("rc") if exec_marker else None
+            if isinstance(exec_rc, int) and exec_rc != 0:
+                failure_stage = "bootstrap"
+                observed_errno = exec_marker.get("errno") if exec_marker else None
+                if applied_marker is not None and observed_errno == 1:
+                    failure_kind = "bootstrap_deny_process_exec"
+                else:
+                    failure_kind = "bootstrap_exec_failed"
+            elif res.returncode != 0:
+                failure_stage = "probe"
+                failure_kind = "probe_nonzero_exit"
+                observed_errno = res.returncode
 
+        status = "ok" if res.returncode == 0 else "deny"
+        if failure_stage in {"apply", "bootstrap"}:
+            status = "blocked"
 
-def run_sandbox_exec(sb_path: Path, command: List[str]) -> Dict[str, object]:
-    full_cmd = ["sandbox-exec", "-f", str(sb_path), "--"] + command
-    try:
-        res = subprocess.run(full_cmd, capture_output=True, text=True, timeout=15)
+        stderr_canonical = rt_contract.strip_tool_markers(stderr_raw)
+        runner_info = {
+            "entrypoint": "SBPL-wrapper",
+            "apply_model": "exec_wrapper",
+            "apply_timing": "pre_exec",
+            "entrypoint_path": to_repo_relative(WRAPPER, REPO_ROOT),
+            "entrypoint_sha256": _sha256_path(WRAPPER),
+            "tool_build_id": _sha256_path(WRAPPER),
+        }
+
+        runtime_result = {
+            "status": "success" if res.returncode == 0 else "errno",
+            "errno": None if res.returncode == 0 else observed_errno,
+            "runtime_result_schema_version": rt_contract.CURRENT_RUNTIME_RESULT_SCHEMA_VERSION,
+            "tool_marker_schema_version": rt_contract.CURRENT_TOOL_MARKER_SCHEMA_VERSION,
+            "failure_stage": failure_stage,
+            "failure_kind": failure_kind,
+            "apply_report": apply_report,
+            "runner_info": runner_info,
+            "seatbelt_callouts": seatbelt_callouts,
+        }
+
         return {
             "command": full_cmd,
             "exit_code": res.returncode,
             "stdout": res.stdout,
-            "stderr": res.stderr,
-            "status": "ok" if res.returncode == 0 else "nonzero",
+            "stderr": stderr_canonical,
+            "status": status,
+            "runtime_result": runtime_result,
         }
     except Exception as exc:  # pragma: no cover - runtime helper
         return {"command": full_cmd, "error": str(exc), "status": "error"}
@@ -84,9 +139,8 @@ def run_sandbox_exec(sb_path: Path, command: List[str]) -> Dict[str, object]:
 
 def main() -> int:
     STAGE_DIR.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ENT_SAMPLE_SRC, ENT_SAMPLE)
-    shutil.copy2(MACH_PROBE_SRC, MACH_PROBE)
-    shutil.copy2(FILE_PROBE_SRC, FILE_PROBE)
+    for spec in staged_binary_specs(REPO_ROOT):
+        shutil.copy2(spec.src_path, STAGE_DIR / spec.dest_name)
     CONTAINER_DIR.mkdir(parents=True, exist_ok=True)
     FILE_PROBE_TARGET.write_text("entitlement-diff runtime file\n")
 
@@ -101,8 +155,6 @@ def main() -> int:
         for test in TESTS:
             probe_res = run_probe(blob, test["command"])  # type: ignore[arg-type]
             profile_results[test["id"]] = {"wrapper": probe_res}
-            if probe_res.get("status") == "blocked":
-                profile_results[test["id"]]["sandbox_exec"] = run_sandbox_exec(sb_path, test["command"])  # type: ignore[arg-type]
         results[profile_name] = profile_results
 
     out_path = REPO_ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "runtime_results.json"
