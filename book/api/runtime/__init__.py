@@ -43,6 +43,7 @@ from .pipeline import (
     build_op_summary_from_index,
     generate_runtime_cut,
     load_events_from_index,
+    run_from_expected_matrix,
     promote_runtime_cut,
 )
 
@@ -76,5 +77,6 @@ __all__ = [
     "build_op_summary_from_index",
     "generate_runtime_cut",
     "load_events_from_index",
+    "run_from_expected_matrix",
     "promote_runtime_cut",
 ]

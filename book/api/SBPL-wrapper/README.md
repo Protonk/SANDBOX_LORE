@@ -26,3 +26,5 @@ Run:
 ```
 
 The wrapper applies the selected profile to itself, then `execvp`s the command. On failure it prints the sandbox error and exits non-zero before exec.
+
+It also emits one JSONL marker per phase on stderr with `tool:"sbpl-apply"` and `stage:{apply,applied,exec}` so runners can classify apply/exec failures mechanically without relying on substring matching.

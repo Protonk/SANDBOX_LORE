@@ -142,6 +142,16 @@ def classify_mismatches(
     """
 
     def _default_classify(expected: str | None, actual: str | None, probe: Dict[str, Any]) -> str:
+        runtime_result = probe.get("runtime_result") or {}
+        failure_stage = runtime_result.get("failure_stage")
+        failure_kind = runtime_result.get("failure_kind")
+        if failure_stage == "apply":
+            return "apply_gate"
+        if failure_stage == "bootstrap" and failure_kind == "bootstrap_deny_process_exec":
+            return "bootstrap_deny_process_exec"
+        if failure_stage == "bootstrap":
+            return "bootstrap_failed"
+
         op = probe.get("operation")
         if expected == "allow" and actual == "deny":
             path = probe.get("path") or probe.get("target") or ""
@@ -152,8 +162,6 @@ def classify_mismatches(
             if op == "file-read*" and ".." in (probe.get("path") or probe.get("target") or ""):
                 return "path_normalization"
             return "unexpected_allow"
-        if probe.get("violation_summary") == "EPERM":
-            return "apply_gate"
         return "filter_diff"
 
     classify = classification_strategy or _default_classify

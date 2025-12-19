@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from book.api.path_utils import ensure_absolute, find_repo_root, relativize_command, to_repo_relative
 
@@ -36,6 +36,32 @@ RUNTIME_SHIM_RULES = [
     '(allow file-read-metadata (literal "/private/tmp"))',
     '(allow file-read-metadata (literal "/tmp"))',
 ]
+
+
+def _parse_sbpl_apply_markers(stderr: str) -> List[Dict[str, Any]]:
+    markers: List[Dict[str, Any]] = []
+    for line in (stderr or "").splitlines():
+        candidate = line.strip()
+        if not (candidate.startswith("{") and candidate.endswith("}")):
+            continue
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if payload.get("tool") != "sbpl-apply":
+            continue
+        stage = payload.get("stage")
+        if stage not in {"apply", "applied", "exec"}:
+            continue
+        markers.append(payload)
+    return markers
+
+
+def _first_marker(markers: List[Dict[str, Any]], stage: str) -> Optional[Dict[str, Any]]:
+    for marker in markers:
+        if marker.get("stage") == stage:
+            return marker
+    return None
 
 
 def ensure_tmp_files(fixture_root: Path = Path("/tmp")) -> None:
@@ -211,13 +237,76 @@ def run_expected_matrix(
             raw = run_probe(runtime_profile, probe, profile_mode)
             actual = "allow" if raw.get("exit_code") == 0 else "deny"
             expected = probe.get("expected")
+
+            stderr = raw.get("stderr") or ""
+            apply_markers = _parse_sbpl_apply_markers(stderr)
+            apply_marker = _first_marker(apply_markers, "apply")
+            applied_marker = _first_marker(apply_markers, "applied")
+            exec_marker = _first_marker(apply_markers, "exec")
+
+            failure_stage: Optional[str] = None
+            failure_kind: Optional[str] = None
+            observed_errno: Optional[int] = None
+            apply_report: Optional[Dict[str, Any]] = None
+
+            apply_rc = apply_marker.get("rc") if apply_marker else None
+            if isinstance(apply_rc, int) and apply_rc != 0:
+                failure_stage = "apply"
+                if apply_marker:
+                    api = apply_marker.get("api")
+                    errbuf = apply_marker.get("errbuf")
+                    apply_report = {
+                        "api": api,
+                        "rc": apply_marker.get("rc"),
+                        "errno": apply_marker.get("errno"),
+                        "errbuf": errbuf,
+                    }
+                    if api == "sandbox_init" and isinstance(errbuf, str):
+                        lower = errbuf.lower()
+                        if "already" in lower and "sandbox" in lower:
+                            failure_kind = "apply_already_sandboxed"
+                        else:
+                            failure_kind = f"{api}_failed"
+                    else:
+                        failure_kind = f"{api}_failed" if api else "apply_failed"
+                else:
+                    failure_kind = "apply_failed"
+                observed_errno = apply_marker.get("errno") if apply_marker else None
+            else:
+                if apply_marker:
+                    apply_report = {
+                        "api": apply_marker.get("api"),
+                        "rc": apply_marker.get("rc"),
+                        "errno": apply_marker.get("errno"),
+                        "errbuf": apply_marker.get("errbuf"),
+                    }
+                exec_rc = exec_marker.get("rc") if exec_marker else None
+                if isinstance(exec_rc, int) and exec_rc != 0:
+                    failure_stage = "bootstrap"
+                    observed_errno = exec_marker.get("errno") if exec_marker else None
+                    if applied_marker is not None and observed_errno == 1:
+                        failure_kind = "bootstrap_deny_process_exec"
+                    else:
+                        failure_kind = "bootstrap_exec_failed"
+                elif raw.get("exit_code") not in (None, 0):
+                    failure_stage = "probe"
+                    failure_kind = "probe_nonzero_exit"
+                    observed_errno = observed_errno or raw.get("exit_code")
+
             runtime_result = {
                 "status": "success" if raw.get("exit_code") == 0 else "errno",
-                "errno": raw.get("exit_code") if raw.get("exit_code") else None,
+                "errno": 0 if raw.get("exit_code") == 0 else observed_errno,
+                "failure_stage": failure_stage,
+                "failure_kind": failure_kind,
+                "apply_report": apply_report,
             }
+
             violation_summary = None
-            if raw.get("stderr") and "Operation not permitted" in raw.get("stderr", ""):
+            if observed_errno == 1:
                 violation_summary = "EPERM"
+            elif "Operation not permitted" in stderr:
+                violation_summary = "EPERM"
+
             probe_results.append(
                 {
                     "name": probe.get("name"),

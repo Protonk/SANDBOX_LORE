@@ -32,8 +32,8 @@ TRACE_PATHS = {
 }
 
 PROFILE_BLOBS = {
-    "runtime:allow_all": "book/profiles/golden-triple/runtime_profiles/allow_all.runtime_allow_all.runtime.sb",
-    "runtime:metafilter_any": "book/profiles/golden-triple/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
+    "runtime:allow_all": "book/profiles/golden-triple/allow_all.sb.bin",
+    "runtime:metafilter_any": "book/profiles/golden-triple/metafilter_any.sb.bin",
     "bucket4:v1_read": "book/profiles/golden-triple/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
     "bucket5:v11_read_subpath": "book/profiles/golden-triple/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
 }
@@ -102,6 +102,9 @@ def build_profiles(story: Dict[str, Any], impact_map: Dict[str, Any]) -> List[Di
         blob_rel = PROFILE_BLOBS.get(profile_id)
         blob_path = ROOT / blob_rel if blob_rel else None
         sha = sha256(blob_path) if blob_path and blob_path.exists() else None
+        profile_mode = None
+        if blob_rel:
+            profile_mode = "blob" if blob_rel.endswith(".bin") else "sbpl"
 
         res = profile_results.get(profile_id) or {}
         mismatches = res.get("mismatches") or []
@@ -118,6 +121,7 @@ def build_profiles(story: Dict[str, Any], impact_map: Dict[str, Any]) -> List[Di
                 "profile_id": profile_id,
                 "profile_path": blob_rel,
                 "profile_sha256": sha,
+                "profile_mode": profile_mode,
                 "status": status,
                 "probe_count": count_trace_rows(trace_path),
                 "trace_path": trace_rel if trace_path.exists() else None,

@@ -2,25 +2,30 @@
   "anchors": [],
   "canonical_profile_id": null,
   "format_variant": "modern-heuristic",
-  "length": 416,
-  "literal_strings": [],
-  "op_count": 2,
-  "op_entries": [
-    1,
-    1
+  "length": 450,
+  "literal_strings": [
+    "N/private/tmp/ok"
   ],
-  "profile_id": "allow_all.sb",
+  "op_count": 3,
+  "op_entries": [
+    2,
+    2,
+    2
+  ],
+  "profile_id": "param_deny_root_allow_default_ROOT_private_tmp_ok.sb",
   "role": "golden-profile",
   "runtime_link": null,
   "sections": {
-    "literals": 47,
-    "nodes": 349,
-    "op_table": 4
+    "literals": 24,
+    "nodes": 404,
+    "op_table": 6
   },
-  "sha256": "19832eb9716a32459bee8398c8977fd1dfd575fa26606928f95728462a833c92",
-  "source": "book/profiles/golden-triple/allow_all.sb.bin",
+  "sha256": "1547b8b8b99578925e409b112ac5d947fc128ab3ac1f942e0fab8a9cd60628c2",
+  "source": "book/profiles/golden-triple/param_deny_root_allow_default_ROOT_private_tmp_ok.sb.bin",
   "tag_counts": {
-    "1": 43
+    "0": 3,
+    "1": 1,
+    "2": 46
   },
   "tag_layout_version": "bbe78d204d7d08ecc7e4468e874e9789586b263b4a947b66c826cb0b532a5797",
   "vocab_versions": {

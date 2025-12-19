@@ -42,6 +42,8 @@ from book.graph.concepts.validation import profile_ingestion as pi
 OUT_JSON = REPO_ROOT / "book/graph/mappings/system_profiles/attestations.json"
 OUT_DIR = REPO_ROOT / "book/graph/mappings/system_profiles/attestations"
 BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
+TAG_LAYOUTS_PATH = REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json"
+GOLDEN_TRIPLE_BLOBS_DIR = REPO_ROOT / "book/profiles/golden-triple"
 
 
 def load_baseline() -> Dict[str, Any]:
@@ -94,6 +96,12 @@ def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
+def tag_layout_tag_set_hash(path: Path) -> str:
+    payload = json.loads(path.read_text())
+    tags = {"tags": payload.get("tags")}
+    return hashlib.sha256(json.dumps(tags, sort_keys=True).encode()).hexdigest()
+
+
 def gather_profile_paths() -> Set[Path]:
     paths: Set[Path] = set()
     digests = load_json(REPO_ROOT / "book/graph/mappings/system_profiles/digests.json")
@@ -108,19 +116,17 @@ def gather_profile_paths() -> Set[Path]:
             p = (REPO_ROOT / src).resolve()
             if p.exists():
                 paths.add(p)
-    runtime_exp = load_json(REPO_ROOT / "book/graph/mappings/runtime/expectations.json")
-    for rec in runtime_exp.get("profiles", []):
-        p = rec.get("profile_path")
-        if p:
-            path = (REPO_ROOT / p).resolve()
-            if path.exists():
-                paths.add(path)
+    for p in sorted(GOLDEN_TRIPLE_BLOBS_DIR.glob("*.sb.bin")):
+        if p.exists():
+            paths.add(p.resolve())
     return paths
 
 
 @dataclass
 class Attestation:
     profile_id: str
+    canonical_profile_id: Optional[str]
+    role: str
     source: str
     sha256: str
     length: int
@@ -167,6 +173,8 @@ def anchor_hits(strings: List[str], anchor_map: Dict[str, Any]) -> List[Dict[str
 
 def make_attestation(
     path: Path,
+    canonical_profile_id: Optional[str],
+    role: str,
     anchor_map: Dict[str, Any],
     tag_layout_hash: str,
     vocab_versions: Dict[str, Any],
@@ -185,6 +193,8 @@ def make_attestation(
     runtime_link = match_runtime_link(sha256(path), runtime_manifest)
     return Attestation(
         profile_id=path.stem,
+        canonical_profile_id=canonical_profile_id,
+        role=role,
         source=str(path.relative_to(REPO_ROOT)),
         sha256=sha256(path),
         length=len(blob),
@@ -209,10 +219,19 @@ def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     world_id = baseline_world_id()
     anchor_map = load_json(REPO_ROOT / "book/graph/mappings/anchors/anchor_filter_map.json")
-    tag_layout_hash = sha256(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
+    tag_layout_hash = tag_layout_tag_set_hash(TAG_LAYOUTS_PATH)
+    tag_layouts_file_sha256 = sha256(TAG_LAYOUTS_PATH)
     vocab_ops = load_json(REPO_ROOT / "book/graph/mappings/vocab/ops.json")
     vocab_filters = load_json(REPO_ROOT / "book/graph/mappings/vocab/filters.json")
     runtime_manifest = load_json(REPO_ROOT / "book/graph/mappings/runtime/expectations.json")
+    digests = load_json(REPO_ROOT / "book/graph/mappings/system_profiles/digests.json")
+    canonical_by_source: Dict[str, str] = {}
+    for pid, body in (digests.get("profiles") or {}).items():
+        if not isinstance(body, dict):
+            continue
+        src = body.get("source")
+        if isinstance(pid, str) and isinstance(src, str):
+            canonical_by_source[src] = pid
 
     def vocab_version(entries: Any) -> Optional[str]:
         if not entries:
@@ -228,9 +247,17 @@ def main() -> None:
     attestations: List[Dict[str, Any]] = []
     profiles_seen = sorted(gather_profile_paths())
 
+    for existing in OUT_DIR.glob("*.jsonl"):
+        existing.unlink()
+
     for path in profiles_seen:
+        source_rel = str(path.relative_to(REPO_ROOT))
+        canonical_profile_id = canonical_by_source.get(source_rel)
+        role = "canonical-system-profile" if canonical_profile_id else "golden-profile"
         att = make_attestation(
             path=path,
+            canonical_profile_id=canonical_profile_id,
+            role=role,
             anchor_map=anchor_map,
             tag_layout_hash=tag_layout_hash,
             vocab_versions=vocab_versions,
@@ -243,6 +270,8 @@ def main() -> None:
     metadata = {
         "world_id": world_id,
         "tag_layout_hash": tag_layout_hash,
+        "tag_layout_hash_method": "tag_set",
+        "tag_layouts_file_sha256": tag_layouts_file_sha256,
         "vocab_versions": vocab_versions,
         "runtime_manifest": str(Path("book/graph/mappings/runtime/expectations.json")) if runtime_manifest else None,
         "attestation_count": len(attestations),
@@ -254,7 +283,8 @@ def main() -> None:
             str(Path("book/graph/mappings/vocab/ops.json")),
             str(Path("book/graph/mappings/vocab/filters.json")),
             str(Path("book/graph/mappings/runtime/expectations.json")),
-        ],
+        ]
+        + [str(p.relative_to(REPO_ROOT)) for p in sorted(GOLDEN_TRIPLE_BLOBS_DIR.glob("*.sb.bin")) if p.exists()],
         "source_jobs": ["generator:system_profiles:attestations"],
         "status": "ok",
     }

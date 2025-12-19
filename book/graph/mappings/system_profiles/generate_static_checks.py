@@ -93,7 +93,9 @@ def summarize(path: Path, tag_layout_hash: str) -> Dict[str, Any]:
 
 def main() -> None:
     world_id = baseline_world_id()
-    tag_layout_hash_value = tag_layout_hash(REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json")
+    tag_layouts_path = REPO_ROOT / "book/graph/mappings/tag_layouts/tag_layouts.json"
+    tag_layout_hash_value = tag_layout_hash(tag_layouts_path)
+    tag_layouts_file_sha256 = sha256(tag_layouts_path)
     canonical = digests_mod.canonical_system_profile_blobs(REPO_ROOT)
     profiles = [canonical["airlock"], canonical["bsd"], canonical["sample"]]
     checks = [summarize(p, tag_layout_hash_value) for p in profiles if p.exists()]
@@ -103,6 +105,8 @@ def main() -> None:
                 "metadata": {
                     "world_id": world_id,
                     "tag_layout_hash": tag_layout_hash_value,
+                    "tag_layout_hash_method": "tag_set",
+                    "tag_layouts_file_sha256": tag_layouts_file_sha256,
                     "inputs": [
                         str(Path(BASELINE_REF)),
                         str(Path("book/graph/mappings/tag_layouts/tag_layouts.json")),

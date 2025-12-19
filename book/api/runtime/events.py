@@ -44,12 +44,45 @@ class RuntimeObservation:
     runtime_status: Optional[str] = None
     errno: Optional[int] = None
     errno_name: Optional[str] = None
+    failure_stage: Optional[str] = None
+    failure_kind: Optional[str] = None
+    apply_report: Optional[Dict[str, Any]] = None
     violation_summary: Optional[str] = None
     command: Optional[List[str]] = None
     stdout: Optional[str] = None
     stderr: Optional[str] = None
     harness: Optional[str] = None
     notes: Optional[str] = None
+
+
+def _strip_sbpl_apply_markers(stderr: Optional[str]) -> Optional[str]:
+    """
+    Remove sbpl-apply JSONL stage markers from stderr.
+
+    Markers are inputs to normalization/classification, not part of the canonical
+    normalized runtime IR payload.
+    """
+
+    if not stderr:
+        return stderr
+    kept: List[str] = []
+    for line in stderr.splitlines():
+        candidate = line.strip()
+        if candidate.startswith("{") and candidate.endswith("}"):
+            try:
+                payload = json.loads(candidate)
+            except json.JSONDecodeError:
+                payload = None
+            if (
+                isinstance(payload, dict)
+                and payload.get("tool") == "sbpl-apply"
+                and payload.get("stage") in {"apply", "applied", "exec"}
+            ):
+                continue
+        kept.append(line)
+    if not kept:
+        return ""
+    return "\n".join(kept) + ("\n" if stderr.endswith("\n") else "")
 
 
 def derive_expectation_id(profile_id: str, operation: Optional[str], target: Optional[str]) -> str:
@@ -168,6 +201,28 @@ def normalize_runtime_results(
             actual_decision = probe.get("actual")
             match = probe.get("match")
             runtime_result = probe.get("runtime_result") or {}
+
+            stderr_raw = probe.get("stderr")
+            apply_report = runtime_result.get("apply_report")
+            if apply_report is None and stderr_raw:
+                for line in stderr_raw.splitlines():
+                    candidate = line.strip()
+                    if not (candidate.startswith("{") and candidate.endswith("}")):
+                        continue
+                    try:
+                        payload = json.loads(candidate)
+                    except json.JSONDecodeError:
+                        continue
+                    if payload.get("tool") != "sbpl-apply" or payload.get("stage") != "apply":
+                        continue
+                    apply_report = {
+                        "api": payload.get("api"),
+                        "rc": payload.get("rc"),
+                        "errno": payload.get("errno"),
+                        "errbuf": payload.get("errbuf"),
+                    }
+                    break
+
             observations.append(
                 RuntimeObservation(
                     world_id=resolved_world,
@@ -183,10 +238,13 @@ def normalize_runtime_results(
                     runtime_status=runtime_result.get("status"),
                     errno=runtime_result.get("errno"),
                     errno_name=None,
+                    failure_stage=runtime_result.get("failure_stage"),
+                    failure_kind=runtime_result.get("failure_kind"),
+                    apply_report=apply_report,
                     violation_summary=probe.get("violation_summary"),
                     command=probe.get("command"),
                     stdout=probe.get("stdout"),
-                    stderr=probe.get("stderr"),
+                    stderr=_strip_sbpl_apply_markers(stderr_raw),
                     harness=harness_version,
                     notes=probe.get("notes"),
                 )

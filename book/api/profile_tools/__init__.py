@@ -20,6 +20,7 @@ from . import compile as compile  # noqa: F401
 from . import decoder as decoder  # noqa: F401
 from . import digests as digests  # noqa: F401
 from . import ingestion as ingestion  # noqa: F401
+from . import identity as identity  # noqa: F401
 from . import inspect as inspect  # noqa: F401
 from . import libsandbox as libsandbox  # noqa: F401
 from . import op_table as op_table  # noqa: F401
@@ -46,6 +47,7 @@ __all__ = [
     "decoder",
     "digests",
     "ingestion",
+    "identity",
     "inspect",
     "libsandbox",
     "op_table",
