@@ -26,6 +26,7 @@ from book.api.path_utils import ensure_absolute, find_repo_root, to_repo_relativ
 from book.api.profile_tools import decoder  # type: ignore
 from book.api.runtime_harness.runner import ensure_tmp_files, run_expected_matrix  # type: ignore
 from book.api.profile_tools import compile_sbpl_string  # type: ignore
+from book.api.runtime import write_normalized_events  # type: ignore
 
 
 REPO_ROOT = find_repo_root(Path(__file__))
@@ -137,12 +138,12 @@ def build_harness_matrix(world_id: str, blobs: Dict[str, Path], simple_matrix: L
             },
         )
         probe = {
-            "name": path,
+            "name": f"{operation}:{path}",
             "operation": operation,
             "target": path,
             "expected": expected,
         }
-        probe["expectation_id"] = f"{profile_id}:{path}"
+        probe["expectation_id"] = f"{profile_id}:{operation}:{path}"
         rec["probes"].append(probe)
     matrix = {"world_id": world_id, "profiles": profiles}
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -163,31 +164,40 @@ def run_runtime(matrix_path: Path, sb_paths: Dict[str, Path]) -> Path:
     return runtime_out
 
 
-def downconvert_runtime_results(raw_path: Path) -> Path:
-    """Down-convert harness runtime_results.json into the simple array format."""
-    raw = json.loads(raw_path.read_text())
+def normalize_runtime_results(expected_matrix_path: Path, raw_runtime_results_path: Path) -> Path:
+    """Normalize runtime harness output into canonical runtime events for this suite."""
+    out_path = OUT_DIR / "runtime_events.normalized.json"
+    write_normalized_events(expected_matrix_path, raw_runtime_results_path, out_path)
+    return out_path
+
+
+def downconvert_runtime_results(normalized_events_path: Path) -> Path:
+    """Down-convert normalized runtime events into the simple array format."""
+    events = json.loads(normalized_events_path.read_text())
     simple: List[Dict[str, Any]] = []
-    for profile_id, rec in raw.items():
-        probes = rec.get("probes") or []
-        for probe in probes:
-            runtime_result = probe.get("runtime_result") or {}
-            simple.append(
-                {
-                    "profile_id": profile_id,
-                    "operation": probe.get("operation"),
-                    "requested_path": probe.get("path"),
-                    # At this layer we treat observed_path as the requested path; deeper
-                    # canonicalization is not visible in these logs.
-                    "observed_path": probe.get("path"),
-                    "decision": probe.get("actual"),
-                    "errno": runtime_result.get("errno"),
-                    "raw_log": {
-                        "exit_code": probe.get("exit_code"),
-                        "stdout": probe.get("stdout"),
-                        "stderr": probe.get("stderr"),
-                    },
-                }
-            )
+    for event in events:
+        requested_path = event.get("target")
+        simple.append(
+            {
+                "profile_id": event.get("profile_id"),
+                "operation": event.get("operation"),
+                "requested_path": requested_path,
+                "observed_path": requested_path,
+                "decision": event.get("actual"),
+                "errno": event.get("errno"),
+                "failure_stage": event.get("failure_stage"),
+                "failure_kind": event.get("failure_kind"),
+                "apply_report": event.get("apply_report"),
+                "runner_info": event.get("runner_info"),
+                "seatbelt_callouts": event.get("seatbelt_callouts"),
+                "violation_summary": event.get("violation_summary"),
+                "raw_log": {
+                    "command": event.get("command"),
+                    "stdout": event.get("stdout"),
+                    "stderr": event.get("stderr"),
+                },
+            }
+        )
     out_path = OUT_DIR / "runtime_results.json"
     out_path.write_text(json.dumps(simple, indent=2))
     return out_path
@@ -339,7 +349,8 @@ def main() -> int:
         "vfs_both_paths": SB_DIR / "vfs_both_paths.sb",
     }
     raw_runtime = run_runtime(matrix_path, sb_paths)
-    downconvert_runtime_results(raw_runtime)
+    normalized_events = normalize_runtime_results(matrix_path, raw_runtime)
+    downconvert_runtime_results(normalized_events)
     decode_profiles(blobs)
     emit_mismatch_summary(world_id)
     return 0

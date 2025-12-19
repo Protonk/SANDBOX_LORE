@@ -18,6 +18,7 @@ from typing import Dict, Iterable, List, Mapping, Optional, Callable, Any, Tuple
 
 from book.api import path_utils
 from book.api.runtime import events as runtime_events
+from book.api.runtime import contract as rt_contract
 from book.api.runtime import mappings as rt_map
 from book.api.runtime_harness import runner as runtime_harness
 from book.api.profile_tools import compile_sbpl_string
@@ -71,6 +72,22 @@ def _ensure_blob(profile_path: Path, build_dir: Path) -> Path:
     return blob_path
 
 
+def _effective_profile_mode(spec: FamilySpec) -> str:
+    if spec.mode in {"sbpl", "blob"}:
+        return spec.mode
+    return "sbpl" if spec.profile_path.suffix == ".sb" else "blob"
+
+
+def _profile_path_for_mode(spec: FamilySpec, build_dir: Path) -> Path:
+    mode = _effective_profile_mode(spec)
+    profile_path = path_utils.ensure_absolute(spec.profile_path, REPO_ROOT)
+    if mode == "blob":
+        return _ensure_blob(profile_path, build_dir)
+    if profile_path.suffix == ".bin":
+        raise ValueError(f"profile_mode=sbpl requires an SBPL text path, got: {profile_path}")
+    return profile_path
+
+
 def _inject_expectation_ids(probes: List[Dict[str, Any]], profile_id: str) -> List[Dict[str, Any]]:
     patched: List[Dict[str, Any]] = []
     for probe in probes:
@@ -84,16 +101,21 @@ def _inject_expectation_ids(probes: List[Dict[str, Any]], profile_id: str) -> Li
 
 def build_expected_matrix_from_families(world_id: str, families: List[FamilySpec], build_dir: Path) -> Dict[str, Any]:
     """
-    Build an expected_matrix-like dict from family specs, compiling SBPL as needed.
+    Build an expected_matrix-like dict from family specs.
+
+    Note: The harness treats the `blob` field as the profile input path, which can be
+    either SBPL text (mode=sbpl) or a compiled blob (mode=blob). Do not force SBPL
+    inputs into blob-mode: on this host, `sandbox_apply` is frequently apply-gated.
     """
 
     profiles: Dict[str, Any] = {}
     for spec in families:
-        blob_path = _ensure_blob(spec.profile_path, build_dir)
+        mode = _effective_profile_mode(spec)
+        profile_path = _profile_path_for_mode(spec, build_dir)
         probes = _inject_expectation_ids(spec.probes, spec.profile_id)
         profiles[spec.profile_id] = {
-            "blob": path_utils.to_repo_relative(blob_path, REPO_ROOT),
-            "mode": spec.mode or ("sbpl" if spec.profile_path.suffix == ".sb" else "blob"),
+            "blob": path_utils.to_repo_relative(profile_path, REPO_ROOT),
+            "mode": mode,
             "family": spec.family,
             "semantic_group": spec.semantic_group,
             "probes": probes,
@@ -142,7 +164,7 @@ def classify_mismatches(
     """
 
     def _default_classify(expected: str | None, actual: str | None, probe: Dict[str, Any]) -> str:
-        runtime_result = probe.get("runtime_result") or {}
+        runtime_result = rt_contract.upgrade_runtime_result(probe.get("runtime_result") or {}, probe.get("stderr"))
         failure_stage = runtime_result.get("failure_stage")
         failure_kind = runtime_result.get("failure_kind")
         if failure_stage == "apply":
@@ -311,8 +333,7 @@ def run_family_specs(
 
     profile_paths: Dict[str, Path] = {}
     for spec in families:
-        blob_path = _ensure_blob(spec.profile_path, build_dir)
-        profile_paths[spec.profile_id] = blob_path
+        profile_paths[spec.profile_id] = _profile_path_for_mode(spec, build_dir)
 
     # Merge key-specific rules: global + per-family
     key_rules: Dict[str, List[str]] = {}

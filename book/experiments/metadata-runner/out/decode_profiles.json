@@ -34,12 +34,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "literal_canonical_only": {
@@ -77,12 +77,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "literal_both_paths": {
@@ -120,12 +120,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "subpath_alias_only": {
@@ -163,12 +163,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "subpath_canonical_only": {
@@ -206,12 +206,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "subpath_both_paths": {
@@ -249,12 +249,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "regex_alias_only": {
@@ -292,12 +292,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "regex_canonical_only": {
@@ -335,12 +335,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   },
   "regex_both_paths": {
@@ -378,12 +378,12 @@
         "present": true
       }
     ],
-    "node_count": 31,
+    "node_count": 53,
     "tag_counts": {
-      "6": 23,
-      "4": 2,
-      "5": 5,
-      "0": 1
+      "6": 31,
+      "5": 15,
+      "4": 4,
+      "0": 3
     }
   }
 }

@@ -32,7 +32,7 @@ Concretely, “success” means that each concept has:
 
 ### Current bedrock surfaces (navigation)
 This list mirrors the registry in `book/graph/concepts/BEDROCK_SURFACES.json`; that file is the source of truth for bedrock in this world. For navigation, the current set is:
-- Operation and Filter vocabularies in `book/graph/mappings/vocab/{ops.json,filters.json}`.
+- Operation and Filter vocabularies in `book/graph/mappings/vocab/{ops.json,filters.json,ops_coverage.json}`.
 - Modern format/tag-layout subset in `book/graph/mappings/tag_layouts/tag_layouts.json`.
 - Canonical system profiles in `book/graph/mappings/system_profiles/{digests.json,static_checks.json,attestations.json}` (`sys:airlock`, `sys:bsd`, `sys:sample`).
 
@@ -105,7 +105,7 @@ A single “profile ingestion” spine (decoder + tag layouts) serves this clust
 ### Current evidence & manifests
 
 - **System profile digests and attestation**
-  - `book/graph/mappings/system_profiles/digests.json` – per-profile digests (op-table buckets, tag mixes, literal samples) for canonical system blobs (`airlock`, `bsd`, `sample`).
+  - `book/graph/mappings/system_profiles/digests.json` – per-profile digests (op-table buckets, tag mixes, literal samples) for canonical system blobs (`sys:airlock`, `sys:bsd`, `sys:sample`).
   - `book/graph/mappings/system_profiles/attestations.json` – cross-linked attestations (blob hashes, op-table entries, tag counts, literal strings/anchor hits, tag-layout/vocab versions, runtime links where available).
   - `book/graph/mappings/system_profiles/static_checks.json` – decoder-backed invariants (header op_count, section sizes, tag_counts, tag_layout hash) for the same canonical blobs.
 
@@ -399,7 +399,11 @@ The point of building a concept inventory and validation plan is straightforward
 
 That also means that coherent but wrong models are dangerous: they tend to generate plausible experiments and diagrams that reinforce the wrong picture. The examples below are “fair” misconceptions—plausible, technically informed ways to be wrong—and the kinds of errors they produce.
 
+These are substrate-only “plausible failure modes”: they are conceptual hygiene, not host-witnessed claims. Do not promote them to mapped/bedrock facts without a concrete witness (experiment output, validation IR, or a mapping).
+
 ### SBPL Profile
+
+**Status:** substrate-only “plausible failure mode” (no host witness).
 
 **Misconception**
 
@@ -426,6 +430,8 @@ Your probe reports “denied,” and you incorrectly attribute that denial to a 
 ---
 
 ### Operation
+
+**Status:** substrate-only “plausible failure mode” (no host witness).
 
 **Misconception**
 
@@ -459,6 +465,8 @@ Your mapping from “observed syscall outcomes” to “operation-level policy�
 
 ### Filter
 
+**Status:** substrate-only “plausible failure mode” (no host witness).
+
 **Misconception**
 
 “Filters are simple ‘if-conditions’ checked once per rule; if the key/value matches, the rule fires, otherwise it’s ignored.”
@@ -489,6 +497,8 @@ when in reality the graph structure allows it via a non-obvious route.
 
 ### Profile Layer / Policy Stack Evaluation Order
 
+**Status:** substrate-only “plausible failure mode” (no host witness).
+
 **Misconception**
 
 “Multiple sandbox layers just combine as ‘most restrictive wins’ (a simple logical AND over allows/denies).”
@@ -515,6 +525,8 @@ In practice, evaluation order or an extension changes the decision path so the d
 ---
 
 ### Sandbox Extension
+
+**Status:** substrate-only “plausible failure mode” (no host witness).
 
 **Misconception**
 

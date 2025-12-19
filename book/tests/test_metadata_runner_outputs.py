@@ -3,16 +3,14 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RESULTS_PATH = ROOT / "book" / "experiments" / "metadata-runner" / "out" / "runtime_results.json"
+RESULTS_PATH = ROOT / "book" / "experiments" / "metadata-runner" / "out" / "runtime_events.normalized.json"
 
 
 def load_results():
     assert RESULTS_PATH.exists(), f"missing runtime results at {RESULTS_PATH}"
     data = json.loads(RESULTS_PATH.read_text())
-    assert isinstance(data, dict) and "results" in data, "runtime_results.json should be an object with a results array"
-    results = data["results"]
-    assert isinstance(results, list) and results, "runtime_results results should be non-empty"
-    return results
+    assert isinstance(data, list) and data, "runtime_events.normalized.json should be a non-empty list"
+    return data
 
 
 def test_metadata_anchor_forms_allowlists():
@@ -64,9 +62,9 @@ def test_metadata_anchor_forms_allowlists():
         pid = row.get("profile_id")
         if not pid:
             continue
-        if row.get("status") != "ok":
+        if row.get("actual") != "allow":
             continue
-        by_profile.setdefault(pid, set()).add(row.get("requested_path"))
+        by_profile.setdefault(pid, set()).add(row.get("target"))
 
     for pid, ok_paths in by_profile.items():
         assert ok_paths.issubset(allowed.get(pid, set())), f"{pid} allowed unexpected paths: {ok_paths - allowed.get(pid, set())}"

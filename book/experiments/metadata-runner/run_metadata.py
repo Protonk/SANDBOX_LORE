@@ -7,7 +7,9 @@ Metadata sandbox runner:
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Any, Dict, List
@@ -18,9 +20,10 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from book.api.path_utils import find_repo_root  # type: ignore
+from book.api.path_utils import find_repo_root, to_repo_relative  # type: ignore
 from book.api.profile_tools import decoder  # type: ignore
 from book.api.profile_tools import compile_sbpl_string  # type: ignore
+from book.api.runtime import write_metadata_runner_normalized_events  # type: ignore
 
 BASE_DIR = Path(__file__).resolve().parent
 SB_DIR = BASE_DIR / "sb"
@@ -28,6 +31,8 @@ BUILD_DIR = SB_DIR / "build"
 RUNNER_SRC = BASE_DIR / "metadata_runner.swift"
 RUNNER_BUILD_DIR = BASE_DIR / "build"
 RUNNER_BIN = RUNNER_BUILD_DIR / "metadata_runner"
+TOOL_MARKERS_SWIFT = REPO_ROOT / "book" / "api" / "runtime" / "ToolMarkers.swift"
+SEATBELT_CALLOUT_SHIM_C = REPO_ROOT / "book" / "api" / "runtime" / "seatbelt_callout_shim.c"
 OUT_DIR = BASE_DIR / "out"
 WORLD_PATH = find_repo_root(Path(__file__)) / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "world-baseline.json"
 
@@ -109,6 +114,14 @@ def load_world_id() -> str:
     return data.get("world_id") or data.get("id", "unknown-world")
 
 
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def compile_profiles() -> Dict[str, Path]:
     """Compile SBPL probes to blobs under sb/build."""
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
@@ -147,7 +160,9 @@ def decode_profiles(blobs: Dict[str, Path]) -> Path:
 def build_runner() -> Path:
     """Compile the Swift metadata runner."""
     RUNNER_BUILD_DIR.mkdir(parents=True, exist_ok=True)
-    cmd = ["swiftc", str(RUNNER_SRC), "-o", str(RUNNER_BIN)]
+    shim_obj = RUNNER_BUILD_DIR / "seatbelt_callout_shim.o"
+    subprocess.run(["clang", "-c", str(SEATBELT_CALLOUT_SHIM_C), "-o", str(shim_obj)], check=True, cwd=BASE_DIR)
+    cmd = ["swiftc", str(RUNNER_SRC), str(TOOL_MARKERS_SWIFT), str(shim_obj), "-o", str(RUNNER_BIN)]
     subprocess.run(cmd, check=True, cwd=BASE_DIR)
     return RUNNER_BIN
 
@@ -176,11 +191,17 @@ def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, attr_payload: 
         "--path",
         path,
     ]
-    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=BASE_DIR)
+    env = None
+    if os.environ.get("SANDBOX_LORE_SEATBELT_CALLOUT") == "1":
+        env = dict(os.environ)
+        env["SANDBOX_LORE_SEATBELT_OP"] = op
+        env["SANDBOX_LORE_SEATBELT_FILTER_TYPE"] = "0"
+        env["SANDBOX_LORE_SEATBELT_ARG"] = path
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=BASE_DIR, env=env)
     stdout = proc.stdout.strip()
     record: Dict[str, Any] = {
         "stdout": stdout,
-        "stderr": proc.stderr.strip(),
+        "stderr": proc.stderr,
         "returncode": proc.returncode,
     }
     if stdout:
@@ -195,6 +216,7 @@ def run_probe(binary: Path, sb_path: Path, op: str, syscall: str, attr_payload: 
 
 def run_matrix(binary: Path, blobs: Dict[str, Path]) -> Path:
     results: List[Dict[str, Any]] = []
+    repo_root = find_repo_root(Path(__file__))
     for profile_id, blob in blobs.items():
         sb_path = PROFILE_SOURCES[profile_id]
         for op in OPS:
@@ -212,12 +234,23 @@ def run_matrix(binary: Path, blobs: Dict[str, Path]) -> Path:
                                     "syscall": syscall,
                                     "attr_payload": payload,
                                     "requested_path": target,
-                                    "sbpl": str(sb_path),
-                                    "blob": str(blob),
+                                    "sbpl": to_repo_relative(sb_path, repo_root),
+                                    "blob": to_repo_relative(blob, repo_root),
                                 }
                             )
                             results.append(rec)
-    payload = {"world_id": load_world_id(), "results": results}
+    payload = {
+        "world_id": load_world_id(),
+        "runner_info": {
+            "entrypoint": "metadata_runner",
+            "apply_model": "self_apply",
+            "apply_timing": "pre_syscall",
+            "entrypoint_path": to_repo_relative(binary, repo_root),
+            "entrypoint_sha256": sha256(binary),
+            "tool_build_id": sha256(binary),
+        },
+        "results": results,
+    }
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / "runtime_results.json"
     out_path.write_text(json.dumps(payload, indent=2))
@@ -235,6 +268,9 @@ def main() -> int:
     ensure_fixtures()
     runtime_path = run_matrix(runner, blobs)
     print(f"[+] runtime results -> {runtime_path}")
+    normalized_path = OUT_DIR / "runtime_events.normalized.json"
+    write_metadata_runner_normalized_events(runtime_path, normalized_path)
+    print(f"[+] normalized events -> {normalized_path}")
     return 0
 
 

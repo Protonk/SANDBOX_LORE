@@ -1,3 +1,5 @@
+#include "../../../api/runtime/tool_markers.h"
+
 #include <dlfcn.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -237,7 +239,21 @@ int main(void) {
         }
     }
 
+    const char *marker_profile = profile_env && profile_env[0] ? profile_env : "inline";
+    errno = 0;
     int apply_rv = apply_fn((void *)apply_handle, container && container[0] ? container : NULL);
+    int saved_errno = errno;
+    sbl_emit_sbpl_apply_marker(
+        "blob",
+        "sandbox_apply",
+        apply_rv,
+        saved_errno,
+        (saved_errno == 0) ? NULL : strerror(saved_errno),
+        marker_profile
+    );
+    if (apply_rv == 0) {
+        sbl_emit_sbpl_applied_marker("blob", "sandbox_apply", marker_profile);
+    }
     printf("sandbox_apply returned %d (container=%s)\n", apply_rv, container && container[0] ? container : "NULL");
 
     int call_code = apply_handle[0] ? 1 : 0;

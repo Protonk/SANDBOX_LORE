@@ -6,12 +6,15 @@ Consolidated home for the former `golden_runner`.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from book.api.path_utils import ensure_absolute, find_repo_root, relativize_command, to_repo_relative
+from book.api.runtime import contract as rt_contract
 
 REPO_ROOT = find_repo_root(Path(__file__))
 DEFAULT_OUT = REPO_ROOT / "book" / "profiles" / "golden-triple"
@@ -37,31 +40,25 @@ RUNTIME_SHIM_RULES = [
     '(allow file-read-metadata (literal "/tmp"))',
 ]
 
-
-def _parse_sbpl_apply_markers(stderr: str) -> List[Dict[str, Any]]:
-    markers: List[Dict[str, Any]] = []
-    for line in (stderr or "").splitlines():
-        candidate = line.strip()
-        if not (candidate.startswith("{") and candidate.endswith("}")):
-            continue
-        try:
-            payload = json.loads(candidate)
-        except json.JSONDecodeError:
-            continue
-        if payload.get("tool") != "sbpl-apply":
-            continue
-        stage = payload.get("stage")
-        if stage not in {"apply", "applied", "exec"}:
-            continue
-        markers.append(payload)
-    return markers
-
-
 def _first_marker(markers: List[Dict[str, Any]], stage: str) -> Optional[Dict[str, Any]]:
     for marker in markers:
         if marker.get("stage") == stage:
             return marker
     return None
+
+
+_SHA256_CACHE: Dict[str, str] = {}
+
+
+def _sha256_path(path: Path) -> str:
+    key = str(path)
+    cached = _SHA256_CACHE.get(key)
+    if cached:
+        return cached
+    data = path.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    _SHA256_CACHE[key] = digest
+    return digest
 
 
 def ensure_tmp_files(fixture_root: Path = Path("/tmp")) -> None:
@@ -171,7 +168,24 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
     elif RUNNER.exists():
         full_cmd = [str(RUNNER), str(profile), "--"] + cmd
     else:
-        full_cmd = ["sandbox-exec", "-f", str(profile), "--"] + cmd
+        return {"error": "sandbox_runner missing; sandbox-exec fallback is unsupported for stable runtime IR"}
+
+    env = None
+    if os.environ.get("SANDBOX_LORE_SEATBELT_CALLOUT") == "1":
+        filter_type: Optional[int] = None
+        callout_arg: Optional[str] = None
+        if op in {"file-read*", "file-write*", "file-read-metadata"} and target:
+            filter_type = 0
+            callout_arg = target
+        elif op == "mach-lookup" and target:
+            filter_type = 5
+            callout_arg = target
+
+        if op and filter_type is not None and callout_arg is not None:
+            env = dict(os.environ)
+            env["SANDBOX_LORE_SEATBELT_OP"] = op
+            env["SANDBOX_LORE_SEATBELT_FILTER_TYPE"] = str(filter_type)
+            env["SANDBOX_LORE_SEATBELT_ARG"] = callout_arg
 
     try:
         res = subprocess.run(
@@ -179,6 +193,7 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None) ->
             capture_output=True,
             text=True,
             timeout=10,
+            env=env,
         )
         return {
             "command": full_cmd,
@@ -239,10 +254,11 @@ def run_expected_matrix(
             expected = probe.get("expected")
 
             stderr = raw.get("stderr") or ""
-            apply_markers = _parse_sbpl_apply_markers(stderr)
+            apply_markers = rt_contract.extract_sbpl_apply_markers(stderr)
             apply_marker = _first_marker(apply_markers, "apply")
             applied_marker = _first_marker(apply_markers, "applied")
             exec_marker = _first_marker(apply_markers, "exec")
+            seatbelt_callouts = rt_contract.extract_seatbelt_callout_markers(stderr) or None
 
             failure_stage: Optional[str] = None
             failure_kind: Optional[str] = None
@@ -255,18 +271,17 @@ def run_expected_matrix(
                 if apply_marker:
                     api = apply_marker.get("api")
                     errbuf = apply_marker.get("errbuf")
+                    err_class = apply_marker.get("err_class")
                     apply_report = {
                         "api": api,
                         "rc": apply_marker.get("rc"),
                         "errno": apply_marker.get("errno"),
                         "errbuf": errbuf,
+                        "err_class": err_class,
+                        "err_class_source": apply_marker.get("err_class_source"),
                     }
-                    if api == "sandbox_init" and isinstance(errbuf, str):
-                        lower = errbuf.lower()
-                        if "already" in lower and "sandbox" in lower:
-                            failure_kind = "apply_already_sandboxed"
-                        else:
-                            failure_kind = f"{api}_failed"
+                    if err_class == "already_sandboxed":
+                        failure_kind = "apply_already_sandboxed"
                     else:
                         failure_kind = f"{api}_failed" if api else "apply_failed"
                 else:
@@ -279,6 +294,8 @@ def run_expected_matrix(
                         "rc": apply_marker.get("rc"),
                         "errno": apply_marker.get("errno"),
                         "errbuf": apply_marker.get("errbuf"),
+                        "err_class": apply_marker.get("err_class"),
+                        "err_class_source": apply_marker.get("err_class_source"),
                     }
                 exec_rc = exec_marker.get("rc") if exec_marker else None
                 if isinstance(exec_rc, int) and exec_rc != 0:
@@ -293,18 +310,48 @@ def run_expected_matrix(
                     failure_kind = "probe_nonzero_exit"
                     observed_errno = observed_errno or raw.get("exit_code")
 
+            entrypoint = (raw.get("command") or [None])[0]
+            entrypoint_path = Path(entrypoint) if isinstance(entrypoint, str) else None
+            runner_info: Optional[Dict[str, Any]]
+            if entrypoint == str(WRAPPER):
+                runner_info = {"entrypoint": "SBPL-wrapper", "apply_model": "exec_wrapper", "apply_timing": "pre_exec"}
+            elif entrypoint == str(RUNNER):
+                runner_info = {"entrypoint": "sandbox_runner", "apply_model": "exec_wrapper", "apply_timing": "pre_exec"}
+            elif entrypoint == str(READER):
+                runner_info = {"entrypoint": "sandbox_reader", "apply_model": "self_apply", "apply_timing": "pre_syscall"}
+            elif entrypoint == str(WRITER):
+                runner_info = {"entrypoint": "sandbox_writer", "apply_model": "self_apply", "apply_timing": "pre_syscall"}
+            else:
+                runner_info = None
+
+            if runner_info is not None:
+                runner_info["preexisting_sandbox_suspected"] = failure_kind == "apply_already_sandboxed"
+
+            if runner_info is not None and entrypoint_path and entrypoint_path.exists():
+                runner_info["entrypoint_path"] = to_repo_relative(entrypoint_path, REPO_ROOT)
+                runner_info["entrypoint_sha256"] = _sha256_path(entrypoint_path)
+                runner_info["tool_build_id"] = runner_info["entrypoint_sha256"]
+
             runtime_result = {
                 "status": "success" if raw.get("exit_code") == 0 else "errno",
-                "errno": 0 if raw.get("exit_code") == 0 else observed_errno,
+                "errno": None if raw.get("exit_code") == 0 else observed_errno,
+                "runtime_result_schema_version": rt_contract.CURRENT_RUNTIME_RESULT_SCHEMA_VERSION,
+                "tool_marker_schema_version": rt_contract.CURRENT_TOOL_MARKER_SCHEMA_VERSION,
                 "failure_stage": failure_stage,
                 "failure_kind": failure_kind,
                 "apply_report": apply_report,
+                "runner_info": runner_info,
+                "seatbelt_callouts": seatbelt_callouts,
             }
 
             violation_summary = None
-            if observed_errno == 1:
+            if failure_stage in {"apply", "bootstrap"} and observed_errno == 1:
                 violation_summary = "EPERM"
-            elif "Operation not permitted" in stderr:
+            elif (
+                failure_stage == "apply"
+                and isinstance(apply_report, dict)
+                and apply_report.get("err_class") == "errno_eperm"
+            ):
                 violation_summary = "EPERM"
 
             probe_results.append(

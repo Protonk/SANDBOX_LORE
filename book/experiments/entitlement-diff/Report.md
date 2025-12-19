@@ -25,72 +25,42 @@ Trace how selected entitlements alter compiled sandbox profiles and the resultin
   - baseline (app sandbox only): `entitlement_sample` bind denied (`bind: Operation not permitted`), `mach_probe com.apple.cfprefsd.agent` allowed.
   - network_mach (network.server + mach allowlist): bind allowed, mach-lookup allowed.
   Results recorded in `out/runtime_results.json`.
-- Implemented the EntitlementJail-based runner (`run_probes_jail.py`) and executed an env-probe + exec-smoke run:
+- Implemented the EntitlementJail-based runner (`run_probes_jail.py`) as a second runtime witness and executed an env-probe + exec-gate discriminant run:
   - Observed jail environment: `HOME=/Users/achyland/Library/Containers/com.yourteam.entitlement-jail/Data` (see `out/jail_env_probe.json`).
-  - Exec-smoke blocked: staged `file_probe` could not be executed under the jail (`rc=126`, `Operation not permitted`), so the full jail matrix is currently `blocked` (see `out/jail_runtime_results.json`).
-  - Stage discovery matrix (see `out/jail_env_probe.json`) indicates:
-    - `stat`: repo checkout, `/tmp`, and stage root are visible.
-    - `open`: stage-root file read succeeds, but reading from repo checkout and `/tmp` fails under the jail.
-    - `exec`: executing `file_probe` fails with `Operation not permitted` across repo checkout, `/tmp`, and stage root.
+  - Per-run capture isolation: jail outputs are written under `stage_root/jail_out/<session_id>/...` to avoid stale `.done` reuse between runs (see `meta.session_id` in `out/jail_env_probe.json`).
+  - Exec-gate discriminant (see `out/jail_env_probe.json` → `exec_gate`):
+    - In-place system binary executes: `/usr/bin/true` is `executed`.
+    - Relocated system binary fails: a staged copy of `/usr/bin/true` under `stage_root` is `blocked` (`rc=126`, `Operation not permitted`).
+    - All staged probe Mach-Os (`file_probe`, `mach_probe`, `entitlement_sample{,_unsigned}`) are `blocked` with the same exec failure.
+  - Authoritative denial witness (partial, runtime): kernel log capture shows `process-exec*` denies for the staged paths:
+    - `out/jail_logs_exec_gate_relocated_true_c7c4fdfb854b7ca0.log` includes `deny(1) process-exec* .../relocated_true_c7c4fdfb854b7ca0`.
+    - `out/jail_logs_exec_gate_file_probe_usage_c7c4fdfb854b7ca0.log` includes `deny(1) process-exec* .../file_probe`.
+  - Because `process-exec*` is denied for staged paths on this host, the jail witness cannot yet execute our probe binaries from the container stage root; `out/jail_runtime_results.json` is therefore `blocked` with `failure_kind: EXEC_GATE_LOCATION_OR_WRITABLE_DENIED`.
 
 ### Planned
-- Add an “App Sandbox parent runner” path using `book/tools/entitlement/EntitlementJail.app`, then rerun the existing probe matrix to cross-check wrapper-applied behavior against jail-run behavior.
+- With `process-exec*` denied for container-staged paths, the next phase is to decide whether to route around the exec gate or treat it as the witness conclusion.
 
-  1) **Wire up an env-probe skeleton (witness-shaped)**
-     - Run three jail commands end-to-end: `/usr/bin/id -a`, `/usr/bin/env`, `/bin/pwd`.
-     - Capture stdout/stderr/rc for each and write `out/jail_env_probe.json`.
-     - Use the observed `HOME`/`TMPDIR`/`PWD` as evidence for later staging decisions (do not assume them).
+  1) **Route around: bundle the probes (new witness variant)**
+     - Build a separate, explicitly experimental App Sandbox parent runner that embeds `file_probe`, `mach_probe`, and the entitlement-diff samples as nested code inside the app bundle, then exec them from within the bundle.
+     - Treat this as a distinct witness with its own provenance (codesign identity, hashes, entitlements) rather than modifying the notarized `EntitlementJail.app` in place.
 
-  2) **Pick a single stage root and make it invariant**
-     - Anchor on the jail-observed `HOME` and stage under `$HOME/jail_stage/entitlement-diff/<run_id>/`.
-     - Host-side staging: mkdir stage root, copy probes, `chmod +x` staged binaries.
-     - Every jail invocation uses `cwd=stage_root` to keep relative-path and `getcwd()` behavior stable.
-     - Optionally clear `com.apple.quarantine` on staged copies if exec failures suggest quarantine/xattrs are in play.
-
-  3) **Prove exec works before widening**
-     - Execute one real probe from the stage root (e.g., `file_probe read <stage_root>/smoke.txt`).
-     - If this fails, stop and record the failure crisply; do not continue to the full matrix.
-
-  4) **Make “blocked” first-class (and ruthless)**
-     - Each probe attempt must land in exactly one of: `executed`, `blocked`, `harness_error`.
-     - `blocked` must carry: attempted command line, rc/errno (when available), stderr, a coarse reason code (e.g., `JAIL_EXEC_FAILED`, `JAIL_CWD_UNUSABLE`, `DYLD_LOAD_FAILED`), plus stage_root context (file existence/perms).
-     - Never reinterpret “couldn’t run” as “denied”.
-
-  5) **Run the canonical probe matrix under the jail**
-     - Reuse the same probe IDs and argument vectors as `run_probes.py`.
-     - Avoid plan drift by sharing the probe plan via `book/experiments/entitlement_diff_probe_plan.py` (both runners consume it).
-     - Write results to `out/jail_runtime_results.json`.
-
-  6) **Stage discovery mini-matrix**
-     - Explicitly test whether the jail can read/exec from: repo checkout paths, `/tmp`, `/private/tmp`, and the chosen `$HOME` stage root.
-     - Keep it small but conclusive (path × operation: `stat`, `open`, `exec`) and write it out as evidence (either embedded in `out/jail_env_probe.json` or as a separate artifact).
-
-  7) **Capture entitlements/signing metadata as evidence**
-     - Parent (EntitlementJail): TeamIdentifier/Identifier, entitlements blob, sha256.
-     - Child variants: same, plus the staged path actually executed.
-     - Write `out/jail_entitlements.json`.
-
-  8) **Parity summary**
-     - Compare normalized outcomes (allow/deny + errno/kr), but preserve raw evidence.
-     - Separate `match` vs `mismatch` vs `incomparable` (blocked on either side).
-     - Write `out/jail_parity_summary.json`.
+  2) **Treat as conclusion (current witness)**
+     - Record that, on this host baseline, an App Sandbox parent can execute in-place platform binaries but cannot `process-exec*` arbitrary staged binaries from its container stage root; therefore, parity vs wrapper-applied blobs is not measurable via this witness path without altering packaging/signing.
 
 ## Evidence & artifacts
 - Source and build scaffolding for `entitlement_sample` under this experiment directory; extracted entitlements in `out/entitlement_sample*.entitlements.plist`.
 - App Sandbox stubs and compiled outputs in `sb/` and `sb/build/` (expanded SBPL + blobs); build helper `build_profiles.py`.
 - Decodes and structural diffs in `out/decoded_profiles.json` and `out/profile_diffs.json` (includes literal_refs and tag_literal_refs); manifest recorded in `out/manifest.json`.
 - Runtime results in `out/runtime_results.json` (baseline: network bind/outbound denied, mach allowed, container file read/write allowed; network_mach: bind allowed, mach allowed, file read/write allowed, outbound `nc` to localhost still denied).
-- Jail-run witness artifacts: `out/jail_env_probe.json`, `out/jail_runtime_results.json`, `out/jail_entitlements.json`, and `out/jail_parity_summary.json`.
+- Jail-run witness artifacts: `out/jail_env_probe.json`, `out/jail_runtime_results.json`, `out/jail_entitlements.json`, `out/jail_parity_summary.json`, plus exec-gate log captures `out/jail_logs_exec_gate_{relocated_true,file_probe_usage}_c7c4fdfb854b7ca0.log`.
 
 ## Blockers / risks
 - Runtime observations are limited to the staged binaries and simple probes; broader coverage (other ops/filters) remains open.
 - Entitlement-driven decode diffs are structural; filter/semantic alignment is still provisional until more tag/field2 mapping and runtime coverage exist.
 - The jail runner may refuse to execute probes from the current staging location (`/private/tmp/...`) or may force containerized paths; this could make the jail path `blocked` until we restage probes to observed container directories.
-- Current jail-run is `blocked` earlier than expected: even from the observed jail container `HOME`, executing a staged probe binary (`file_probe`) fails with `Operation not permitted` (likely a `process-exec*`-adjacent gate, but the precise reason is not yet mapped here).
+- Current jail-run is `blocked` earlier than expected: even from the observed jail container `HOME`, executing a staged probe binary (`file_probe`) fails with `Operation not permitted`. Kernel log witnesses show this is a `process-exec*` deny for staged paths (see `out/jail_logs_exec_gate_file_probe_usage_c7c4fdfb854b7ca0.log`).
 
 ## Next steps
-- Add the EntitlementJail runner (`run_probes_jail.py`), capture parent/child entitlements, and write `out/jail_runtime_results.json`.
-- Compare jail-run vs wrapper-run results and write `out/jail_parity_summary.json`.
-- Extend runtime probes to additional operations (e.g., mach-register, outbound network variants) if we add matching helpers.
-- Refine filter-level interpretation as tag/field2 mapping improves; align observed tag_literal_refs with expected entitlement-driven rules.
-- Keep the entitlement manifest format stable and track any further runtime scenarios in `out/runtime_results.json`; consider mapping op-table deltas to vocab IDs once alignment is available.
+- Decide whether this witness is “done” (a clean `process-exec*` block) or whether we want a second, explicitly experimental witness that bundles the probes inside a sandboxed app.
+- If continuing: build a bundled-probes app variant and extend `run_probes_jail.py` to use it for exec, then rerun the shared probe matrix and regenerate `out/jail_parity_summary.json`.
+- If stopping: treat `EXEC_GATE_LOCATION_OR_WRITABLE_DENIED` + the `process-exec*` log witnesses as the experiment outcome and keep further entitlement-diff runtime work on the wrapper-applied path (`run_probes.py`) until a runnable jail witness exists.

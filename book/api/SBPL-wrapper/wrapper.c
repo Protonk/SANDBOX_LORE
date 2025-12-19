@@ -1,10 +1,4 @@
-#include <sandbox.h>
-#include <dlfcn.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include "../runtime/tool_markers.h"
 
 /*
  * SBPL wrapper: apply an SBPL profile to the current process and exec a command.
@@ -15,112 +9,18 @@
  * Usage:
  *   wrapper --sbpl <profile.sb> -- <cmd> [args...]
  *   wrapper --blob <profile.sb.bin> -- <cmd> [args...]
+ *   wrapper --compile <profile.sb> [--out <profile.sb.bin>]
  */
 
-static void json_write_string(FILE *out, const char *s) {
-    fputc('"', out);
-    for (const unsigned char *p = (const unsigned char *)s; p && *p; p++) {
-        switch (*p) {
-        case '\\':
-            fputs("\\\\", out);
-            break;
-        case '"':
-            fputs("\\\"", out);
-            break;
-        case '\b':
-            fputs("\\b", out);
-            break;
-        case '\f':
-            fputs("\\f", out);
-            break;
-        case '\n':
-            fputs("\\n", out);
-            break;
-        case '\r':
-            fputs("\\r", out);
-            break;
-        case '\t':
-            fputs("\\t", out);
-            break;
-        default:
-            if (*p < 0x20) {
-                fprintf(out, "\\u%04x", (unsigned int)*p);
-            } else {
-                fputc(*p, out);
-            }
-        }
-    }
-    fputc('"', out);
-}
-
-static void json_emit_kv_string(FILE *out, int *first, const char *key, const char *value) {
-    if (!value) return;
-    if (!*first) fputc(',', out);
-    *first = 0;
-    json_write_string(out, key);
-    fputc(':', out);
-    json_write_string(out, value);
-}
-
-static void json_emit_kv_int(FILE *out, int *first, const char *key, long value) {
-    if (!*first) fputc(',', out);
-    *first = 0;
-    json_write_string(out, key);
-    fprintf(out, ":%ld", value);
-}
-
-static void emit_stage_apply(const char *mode, const char *api, int rc, int err, const char *errbuf, const char *profile_path) {
-    FILE *out = stderr;
-    int first = 1;
-    fputc('{', out);
-    json_emit_kv_string(out, &first, "tool", "sbpl-apply");
-    json_emit_kv_string(out, &first, "stage", "apply");
-    json_emit_kv_string(out, &first, "mode", mode);
-    json_emit_kv_string(out, &first, "api", api);
-    json_emit_kv_int(out, &first, "rc", rc);
-    json_emit_kv_int(out, &first, "errno", err);
-    json_emit_kv_string(out, &first, "errbuf", errbuf);
-    json_emit_kv_string(out, &first, "profile", profile_path);
-    json_emit_kv_int(out, &first, "pid", (long)getpid());
-    fputs("}\n", out);
-    fflush(out);
-}
-
-static void emit_stage_applied(const char *mode, const char *api, const char *profile_path) {
-    FILE *out = stderr;
-    int first = 1;
-    fputc('{', out);
-    json_emit_kv_string(out, &first, "tool", "sbpl-apply");
-    json_emit_kv_string(out, &first, "stage", "applied");
-    json_emit_kv_string(out, &first, "mode", mode);
-    json_emit_kv_string(out, &first, "api", api);
-    json_emit_kv_int(out, &first, "rc", 0);
-    json_emit_kv_string(out, &first, "profile", profile_path);
-    json_emit_kv_int(out, &first, "pid", (long)getpid());
-    fputs("}\n", out);
-    fflush(out);
-}
-
-static void emit_stage_exec(int rc, int err, const char *argv0) {
-    FILE *out = stderr;
-    int first = 1;
-    fputc('{', out);
-    json_emit_kv_string(out, &first, "tool", "sbpl-apply");
-    json_emit_kv_string(out, &first, "stage", "exec");
-    json_emit_kv_int(out, &first, "rc", rc);
-    json_emit_kv_int(out, &first, "errno", err);
-    json_emit_kv_string(out, &first, "argv0", argv0);
-    json_emit_kv_int(out, &first, "pid", (long)getpid());
-    fputs("}\n", out);
-    fflush(out);
-}
-
 static void usage(const char *prog) {
-    fprintf(stderr, "Usage: %s (--sbpl <profile.sb> | --blob <profile.sb.bin>) -- <cmd> [args...]\n", prog);
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "  %s --sbpl <profile.sb> -- <cmd> [args...]\n", prog);
+    fprintf(stderr, "  %s --blob <profile.sb.bin> -- <cmd> [args...]\n", prog);
+    fprintf(stderr, "  %s --compile <profile.sb> [--out <profile.sb.bin>]\n", prog);
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 4) {
+    if (argc < 3) {
         usage(argv[0]);
         return 64; /* EX_USAGE */
     }
@@ -128,6 +28,7 @@ int main(int argc, char *argv[]) {
     /* parse args */
     const char *mode = NULL;
     const char *profile_path = NULL;
+    const char *out_path = NULL;
     int sep = -1;
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--") == 0) {
@@ -142,8 +43,48 @@ int main(int argc, char *argv[]) {
             mode = "blob";
             profile_path = argv[++i];
         }
+        if (strcmp(argv[i], "--compile") == 0 && i + 1 < argc) {
+            mode = "compile";
+            profile_path = argv[++i];
+        }
+        if (strcmp(argv[i], "--out") == 0 && i + 1 < argc) {
+            out_path = argv[++i];
+        }
     }
-    if (!mode || !profile_path || sep < 0 || sep == argc - 1) {
+
+    if (!mode || !profile_path) {
+        usage(argv[0]);
+        return 64;
+    }
+
+    if (strcmp(mode, "compile") == 0) {
+        sbl_compiled_profile_t *profile = sbl_sandbox_compile_file_with_markers(profile_path, 0, NULL);
+        if (!profile) {
+            fprintf(stderr, "sandbox_compile_file failed\n");
+            return 1;
+        }
+
+        if (out_path) {
+            FILE *out = fopen(out_path, "wb");
+            if (!out) {
+                perror("open out");
+                sbl_sandbox_free_profile(profile);
+                return 66;
+            }
+            if (fwrite(profile->bytecode, 1, profile->bytecode_length, out) != profile->bytecode_length) {
+                perror("write out");
+                fclose(out);
+                sbl_sandbox_free_profile(profile);
+                return 74;
+            }
+            fclose(out);
+        }
+
+        sbl_sandbox_free_profile(profile);
+        return 0;
+    }
+
+    if (sep < 0 || sep == argc - 1) {
         usage(argv[0]);
         return 64;
     }
@@ -169,17 +110,14 @@ int main(int argc, char *argv[]) {
         buf[nread] = '\0';
 
         char *err = NULL;
-        errno = 0;
-        int rc = sandbox_init(buf, 0, &err);
-        int saved_errno = errno;
-        emit_stage_apply("sbpl", "sandbox_init", rc, saved_errno, err, profile_path);
+        sbl_apply_report_t report = sbl_sandbox_init_with_markers(buf, 0, &err, profile_path);
         free(buf);
-        if (rc != 0) {
+        if (report.rc != 0) {
             fprintf(stderr, "sandbox_init failed: %s\n", err ? err : "unknown");
             if (err) sandbox_free_error(err);
             return 1;
         }
-        emit_stage_applied("sbpl", "sandbox_init", profile_path);
+        if (err) sandbox_free_error(err);
     } else if (strcmp(mode, "blob") == 0) {
         /* load blob */
         FILE *fp = fopen(profile_path, "rb");
@@ -231,18 +169,14 @@ int main(int argc, char *argv[]) {
         profile.data = blob;
         profile.size = (size_t)len;
 
-        errno = 0;
-        int rc = p_sandbox_apply(&profile);
-        int saved_errno = errno;
-        emit_stage_apply("blob", "sandbox_apply", rc, saved_errno, saved_errno ? strerror(saved_errno) : NULL, profile_path);
+        sbl_apply_report_t report = sbl_sandbox_apply_with_markers((sbl_sandbox_apply_fn)p_sandbox_apply, &profile, profile_path);
         free(blob);
-        if (rc != 0) {
+        if (report.rc != 0) {
             perror("sandbox_apply");
             dlclose(h);
             return 1;
         }
         dlclose(h);
-        emit_stage_applied("blob", "sandbox_apply", profile_path);
     } else {
         usage(argv[0]);
         return 64;
@@ -250,9 +184,13 @@ int main(int argc, char *argv[]) {
 
     /* exec command */
     char **cmd = &argv[sep + 1];
+    sbl_maybe_seatbelt_callout_from_env("preflight");
     execvp(cmd[0], cmd);
     int saved_errno = errno;
-    emit_stage_exec(-1, saved_errno, cmd[0]);
+    if (saved_errno == EPERM) {
+        sbl_maybe_seatbelt_process_exec_callout("bootstrap_exec", cmd[0]);
+    }
+    sbl_emit_sbpl_exec_marker(-1, saved_errno, cmd[0]);
     perror("execvp");
     return 127;
 }

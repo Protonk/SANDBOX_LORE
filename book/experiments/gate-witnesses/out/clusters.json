@@ -1,0 +1,13 @@
+{
+  "clusters": [
+    {
+      "signature": "3f571e390566aab4dc906365b2f784ea6b8e2644c6794216f004c494d7855667",
+      "targets": [
+        "airlock",
+        "blastdoor",
+        "com.apple.CoreGraphics.CGPDFService"
+      ]
+    }
+  ],
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+}

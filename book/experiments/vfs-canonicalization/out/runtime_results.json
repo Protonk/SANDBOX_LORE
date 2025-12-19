@@ -6,8 +6,53 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -19,8 +64,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -32,8 +122,53 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -45,8 +180,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -58,8 +238,54 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -71,8 +297,54 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -84,8 +356,34 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -97,8 +395,34 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -110,8 +434,53 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -123,8 +492,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -136,8 +550,53 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -149,8 +608,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -162,8 +666,54 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -175,8 +725,54 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -188,8 +784,34 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -201,8 +823,34 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -214,8 +862,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -227,8 +920,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -240,8 +978,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -253,8 +1036,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -266,8 +1094,54 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -279,8 +1153,54 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -292,8 +1212,34 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -305,8 +1251,34 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -318,8 +1290,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -331,8 +1348,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -344,8 +1406,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -357,8 +1464,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -370,8 +1522,54 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -383,8 +1581,54 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -396,8 +1640,34 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -409,8 +1679,34 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_tmp_only.vfs_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -422,8 +1718,53 @@
     "observed_path": "/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "runtime-checks foo\n",
       "stderr": ""
     }
@@ -435,8 +1776,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "runtime-checks foo\n",
       "stderr": ""
     }
@@ -448,8 +1834,53 @@
     "observed_path": "/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -461,8 +1892,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -474,8 +1950,54 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -487,8 +2009,54 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -500,8 +2068,34 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -513,8 +2107,34 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -526,8 +2146,53 @@
     "observed_path": "/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "runtime-checks bar\n",
       "stderr": ""
     }
@@ -539,8 +2204,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "runtime-checks bar\n",
       "stderr": ""
     }
@@ -552,8 +2262,53 @@
     "observed_path": "/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -565,8 +2320,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -578,8 +2378,54 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -591,8 +2437,54 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -604,8 +2496,34 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -617,8 +2535,34 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -630,8 +2574,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "vfs-canonicalization child\n",
       "stderr": ""
     }
@@ -643,8 +2632,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "vfs-canonicalization child\n",
       "stderr": ""
     }
@@ -656,8 +2690,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -669,8 +2748,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -682,8 +2806,54 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -695,8 +2865,54 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -708,8 +2924,34 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -721,8 +2963,34 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -734,8 +3002,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -747,8 +3060,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "vfs-canonicalization canon\n",
       "stderr": ""
     }
@@ -760,8 +3118,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -773,8 +3176,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -786,8 +3234,54 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -799,8 +3293,54 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -812,8 +3352,34 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -825,8 +3391,34 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_private_tmp_only.vfs_private_tmp_only.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -838,8 +3430,53 @@
     "observed_path": "/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "runtime-checks foo\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -851,8 +3488,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "runtime-checks foo\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -864,8 +3546,53 @@
     "observed_path": "/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -877,8 +3604,53 @@
     "observed_path": "/private/tmp/foo",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/foo"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -890,8 +3662,54 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -903,8 +3721,54 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/foo",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -916,8 +3780,34 @@
     "observed_path": "/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -929,8 +3819,34 @@
     "observed_path": "/private/tmp/foo",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -942,8 +3858,53 @@
     "observed_path": "/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "runtime-checks bar\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -955,8 +3916,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "runtime-checks bar\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -968,8 +3974,53 @@
     "observed_path": "/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -981,8 +4032,53 @@
     "observed_path": "/private/tmp/bar",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/bar"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -994,8 +4090,54 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1007,8 +4149,54 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/bar",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1020,8 +4208,34 @@
     "observed_path": "/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1033,8 +4247,34 @@
     "observed_path": "/private/tmp/bar",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1046,8 +4286,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "vfs-canonicalization child\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -1059,8 +4344,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "vfs-canonicalization child\nruntime-check\nruntime-check\n",
       "stderr": ""
     }
@@ -1072,8 +4402,53 @@
     "observed_path": "/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1085,8 +4460,53 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/tmp/nested/child"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1098,8 +4518,54 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1111,8 +4577,54 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/tmp/nested/child",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1124,8 +4636,34 @@
     "observed_path": "/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1137,8 +4675,34 @@
     "observed_path": "/private/tmp/nested/child",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1150,8 +4714,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -1163,8 +4772,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_reader",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
+      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_reader",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "vfs-canonicalization canon\nruntime-check\n",
       "stderr": ""
     }
@@ -1176,8 +4830,53 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": 2,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 2,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": "open target: Operation not permitted\n"
     }
@@ -1189,8 +4888,53 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "allow",
     "errno": null,
+    "failure_stage": null,
+    "failure_kind": null,
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "self_apply",
+      "apply_timing": "pre_syscall",
+      "entrypoint": "sandbox_writer",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
+      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-write*",
+        "rc": 1,
+        "stage": "pre_syscall",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": 0,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_writer",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "/private/var/tmp/canon"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1202,8 +4946,54 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1215,8 +5005,54 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": [
+      {
+        "api": "sandbox_check_by_audit_token",
+        "argument": "/private/var/tmp/canon",
+        "check_type": 1073741824,
+        "decision": "deny",
+        "errno": 0,
+        "filter_type": 0,
+        "filter_type_name": "path",
+        "marker_schema_version": 2,
+        "no_report": true,
+        "no_report_reason": null,
+        "operation": "file-read-metadata",
+        "rc": 1,
+        "stage": "preflight",
+        "token_mach_kr": 0,
+        "token_status": "ok",
+        "tool": "seatbelt-callout",
+        "varargs_count": 1
+      }
+    ],
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1228,8 +5064,34 @@
     "observed_path": "/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }
@@ -1241,8 +5103,34 @@
     "observed_path": "/private/var/tmp/canon",
     "decision": "deny",
     "errno": -6,
+    "failure_stage": "probe",
+    "failure_kind": "probe_nonzero_exit",
+    "apply_report": {
+      "api": "sandbox_init",
+      "err_class": "ok",
+      "err_class_source": "none",
+      "errbuf": null,
+      "errno": 0,
+      "rc": 0
+    },
+    "runner_info": {
+      "apply_model": "exec_wrapper",
+      "apply_timing": "pre_exec",
+      "entrypoint": "sandbox_runner",
+      "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+      "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+      "preexisting_sandbox_suspected": false,
+      "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+    },
+    "seatbelt_callouts": null,
+    "violation_summary": null,
     "raw_log": {
-      "exit_code": -6,
+      "command": [
+        "book/experiments/runtime-checks/sandbox_runner",
+        "book/experiments/vfs-canonicalization/out/harness/runtime_profiles/vfs_both_paths.vfs_both_paths.runtime.sb",
+        "--",
+        "true"
+      ],
       "stdout": "",
       "stderr": ""
     }

@@ -4,21 +4,6 @@ import Darwin
 @_silgen_name("lutimes")
 func lutimes(_ file: UnsafePointer<CChar>!, _ times: UnsafePointer<timeval>!) -> Int32
 
-@_silgen_name("sandbox_init")
-func sandbox_init(_ profile: UnsafePointer<CChar>, _ flags: UInt64, _ errorbuf: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>!) -> Int32
-
-@_silgen_name("sandbox_free_error")
-func sandbox_free_error(_ errorbuf: UnsafeMutablePointer<CChar>!)
-
-// Minimal struct matching libsandbox sandbox_profile_t
-struct SandboxProfile {
-    var builtin: UnsafeMutablePointer<CChar>?
-    var data: UnsafePointer<UInt8>?
-    var size: Int
-}
-
-typealias SandboxApplyFn = @convention(c) (UnsafeMutableRawPointer?) -> Int32
-
 struct RunResult: Codable {
     let op: String
     let path: String
@@ -56,52 +41,19 @@ func usage() -> Never {
     exit(64) // EX_USAGE
 }
 
-func applySandbox(blobPath: String?, sbplPath: String?) -> (rc: Int32, err: Int32?, message: String?, mode: String) {
+func applySandbox(blobPath: String?, sbplPath: String?) -> ToolMarkers.ApplyReport {
     if let sbplPath {
-        errno = 0
         guard let sbpl = try? String(contentsOfFile: sbplPath, encoding: .utf8) else {
-            return (rc: -2, err: errno, message: "failed to read sbpl", mode: "sbpl")
+            let err = errno
+            return ToolMarkers.sandboxInitFailureWithMarkers(rc: -2, err: err, errbuf: "failed to read sbpl", profilePath: sbplPath)
         }
-        var errBuf: UnsafeMutablePointer<CChar>? = nil
-        let rc = sbpl.withCString { cstr in
-            sandbox_init(cstr, 0, &errBuf)
-        }
-        let message = errBuf.map { String(cString: $0) }
-        if let errBuf {
-            sandbox_free_error(errBuf)
-        }
-        let applyErr = errno == 0 ? nil : errno
-        return (rc: rc, err: applyErr, message: message, mode: "sbpl")
+        return ToolMarkers.sandboxInitWithMarkers(profileText: sbpl, flags: 0, profilePath: sbplPath)
     }
 
     guard let blobPath else {
-        return (rc: -3, err: nil, message: "no profile path provided", mode: "none")
+        return ToolMarkers.sandboxApplyWithMarkers(applyRc: -3, applyErrno: EINVAL, profilePath: "none")
     }
-
-    guard let handle = dlopen("/usr/lib/libsandbox.1.dylib", RTLD_NOW | RTLD_LOCAL) else {
-        return (rc: -1, err: errno, message: "dlopen libsandbox failed", mode: "blob")
-    }
-    defer { dlclose(handle) }
-
-    guard let symbol = dlsym(handle, "sandbox_apply") else {
-        return (rc: -1, err: errno, message: "dlsym sandbox_apply failed", mode: "blob")
-    }
-    let apply = unsafeBitCast(symbol, to: SandboxApplyFn.self)
-
-    do {
-        let data = try Data(contentsOf: URL(fileURLWithPath: blobPath))
-        let rc: Int32 = data.withUnsafeBytes { buf -> Int32 in
-            var profile = SandboxProfile(builtin: nil, data: buf.bindMemory(to: UInt8.self).baseAddress, size: data.count)
-            return withUnsafeMutablePointer(to: &profile) { ptr -> Int32 in
-                errno = 0
-                return apply(UnsafeMutableRawPointer(ptr))
-            }
-        }
-        let applyErrno = rc == 0 ? nil : errno
-        return (rc: rc, err: applyErrno, message: nil, mode: "blob")
-    } catch {
-        return (rc: -2, err: errno, message: "failed to load blob", mode: "blob")
-    }
+    return ToolMarkers.sandboxApplyBlobFileWithMarkers(blobPath: blobPath)
 }
 
 struct AttrPayload {
@@ -140,6 +92,8 @@ func makeAttrPayload(kind: String) -> AttrPayload {
 func performOperation(op: String, syscall: String, path: String, chmodMode: mode_t, attrPayload: AttrPayload?) -> (status: String, err: Int32?, message: String?) {
     var opErrno: Int32 = 0
     let cPath = path.cString(using: .utf8)!
+
+    ToolMarkers.maybeSeatbeltCalloutFromEnv(stage: "pre_syscall")
 
     func openFd(_ flags: Int32 = O_RDONLY) -> Int32 {
         errno = 0
@@ -327,7 +281,7 @@ func performOperation(op: String, syscall: String, path: String, chmodMode: mode
     }
 }
 
-func main() {
+func run() {
     let args = CommandLine.arguments
     var blobPath: String?
     var sbplPath: String?
@@ -390,6 +344,7 @@ func main() {
 
     let applyResult = applySandbox(blobPath: blobPath, sbplPath: sbplPath)
     if applyResult.rc != 0 {
+        let applyErrno: Int32? = (applyResult.err == 0) ? nil : applyResult.err
         let result = RunResult(
             op: op,
             path: targetPath,
@@ -400,10 +355,10 @@ func main() {
             errno_name: nil,
             message: "sandbox apply rc \(applyResult.rc)",
             apply_rc: applyResult.rc,
-            apply_errno: applyResult.err,
-            apply_errno_name: applyResult.err.map { errnoName($0) },
+            apply_errno: applyErrno,
+            apply_errno_name: applyErrno.map { errnoName($0) },
             apply_mode: applyResult.mode,
-            apply_message: applyResult.message
+            apply_message: applyResult.errbuf
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -415,6 +370,7 @@ func main() {
     }
 
     let opResult = performOperation(op: op, syscall: syscallName ?? "unknown", path: targetPath, chmodMode: chmodMode, attrPayload: attrPayload)
+    let applyErrno: Int32? = (applyResult.err == 0) ? nil : applyResult.err
     let final = RunResult(
         op: op,
         path: targetPath,
@@ -425,10 +381,10 @@ func main() {
         errno_name: opResult.err.map { errnoName($0) },
         message: opResult.message,
         apply_rc: applyResult.rc,
-        apply_errno: applyResult.err,
-        apply_errno_name: applyResult.err.map { errnoName($0) },
+        apply_errno: applyErrno,
+        apply_errno_name: applyErrno.map { errnoName($0) },
         apply_mode: applyResult.mode,
-        apply_message: applyResult.message
+        apply_message: applyResult.errbuf
     )
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -438,4 +394,9 @@ func main() {
     }
 }
 
-main()
+@main
+struct MetadataRunnerMain {
+    static func main() {
+        run()
+    }
+}

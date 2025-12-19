@@ -166,6 +166,12 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="kernel",
         description="Define data at given addresses and dump references (for pointer/table pivots).",
     ),
+    "sandbox-kext-string-refs": TaskConfig(
+        name="sandbox-kext-string-refs",
+        script="kernel_string_refs.py",
+        import_target="sandbox_kext",
+        description="Resolve references to key sandbox strings inside sandbox_kext.bin.",
+    ),
 }
 
 

@@ -1,6 +1,14 @@
 [
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -13,6 +21,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:allow-ok-root",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-ok-root",
@@ -27,6 +37,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -39,6 +57,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:allow-ok-deep",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-ok-deep",
@@ -53,6 +73,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -65,6 +93,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:deny-blocked",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-blocked",
@@ -79,6 +109,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -91,6 +129,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:deny-outside",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-outside",
@@ -105,6 +145,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -117,6 +165,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:write-ok-root",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-ok-root",
@@ -131,6 +181,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -143,6 +201,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:write-ok-deep",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-ok-deep",
@@ -157,6 +217,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -169,6 +237,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:write-blocked",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-blocked",
@@ -183,6 +253,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -195,6 +273,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_flat:write-outside",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-outside",
@@ -209,6 +289,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -221,6 +309,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:allow-ok-root",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-ok-root",
@@ -235,6 +325,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -247,6 +345,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:allow-ok-deep",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-ok-deep",
@@ -261,6 +361,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -273,6 +381,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:deny-blocked",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-blocked",
@@ -287,6 +397,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -299,6 +417,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:deny-outside",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-outside",
@@ -313,6 +433,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -325,6 +453,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:write-ok-root",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-ok-root",
@@ -339,6 +469,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -351,6 +489,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:write-ok-deep",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-ok-deep",
@@ -365,6 +505,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -377,6 +525,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:write-blocked",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-blocked",
@@ -391,6 +541,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -403,6 +561,8 @@
     "errno": 1,
     "expectation_id": "adv:struct_nested:write-outside",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-outside",
@@ -417,6 +577,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -429,6 +597,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:allow-tmp",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-tmp",
@@ -443,6 +613,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -455,6 +633,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:deny-private",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-private",
@@ -469,6 +649,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -481,6 +669,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:allow-subpath",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-read*",
     "probe_name": "allow-subpath",
@@ -495,6 +685,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -507,6 +705,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:deny-dotdot",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "probe_name": "deny-dotdot",
@@ -521,6 +721,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -533,6 +741,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:write-tmp",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-tmp",
@@ -547,6 +757,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -559,6 +777,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:write-private",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-private",
@@ -573,6 +793,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -585,6 +813,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:write-subpath",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "file-write*",
     "probe_name": "write-subpath",
@@ -599,6 +829,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -611,6 +849,8 @@
     "errno": 1,
     "expectation_id": "adv:path_edges:write-dotdot",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "probe_name": "write-dotdot",
@@ -625,6 +865,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -636,6 +884,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "mach-lookup",
     "probe_name": "allow-cfprefsd",
@@ -650,6 +900,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -661,6 +919,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_simple_allow:deny-bogus",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "mach-lookup",
     "probe_name": "deny-bogus",
@@ -675,6 +935,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -686,6 +954,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "mach-lookup",
     "probe_name": "allow-cfprefsd",
@@ -700,6 +970,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -711,6 +989,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_simple_variants:deny-bogus",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "mach-lookup",
     "probe_name": "deny-bogus",
@@ -725,6 +1005,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -736,6 +1024,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "mach-lookup",
     "probe_name": "allow-cfprefsd-local",
@@ -750,6 +1040,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -761,6 +1059,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_local_literal:deny-bogus-local",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "mach-lookup",
     "probe_name": "deny-bogus-local",
@@ -775,6 +1075,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -786,6 +1094,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "mach-lookup",
     "probe_name": "allow-cfprefsd-local",
@@ -800,6 +1110,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -811,6 +1129,8 @@
     "errno": 1,
     "expectation_id": "adv:mach_local_regex:deny-bogus-local",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "mach-lookup",
     "probe_name": "deny-bogus-local",
@@ -825,6 +1145,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -840,6 +1168,8 @@
     "errno": 1,
     "expectation_id": "adv:net_outbound_allow:tcp-loopback",
     "expected": "allow",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": false,
     "operation": "network-outbound",
     "probe_name": "tcp-loopback",
@@ -854,6 +1184,14 @@
   },
   {
     "actual": "deny",
+    "apply_report": {
+      "api": "sandbox_apply",
+      "err_class": "errno_eperm",
+      "err_class_source": "legacy_stderr_regex:errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": null
+    },
     "command": [
       "book/api/SBPL-wrapper/wrapper",
       "--blob",
@@ -869,6 +1207,8 @@
     "errno": 1,
     "expectation_id": "adv:net_outbound_deny:tcp-loopback",
     "expected": "deny",
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "network-outbound",
     "probe_name": "tcp-loopback",

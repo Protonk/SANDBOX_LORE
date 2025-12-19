@@ -15,6 +15,8 @@ from .events import (
     normalize_runtime_results,
     normalize_from_paths,
     write_normalized_events,
+    normalize_metadata_runner_results,
+    write_metadata_runner_normalized_events,
     serialize_observation,
 )
 from .mappings import (
@@ -46,6 +48,10 @@ from .pipeline import (
     run_from_expected_matrix,
     promote_runtime_cut,
 )
+from .projections import (
+    CalloutVsSyscallRow,
+    callout_vs_syscall_comparison,
+)
 
 __all__ = [
     "WORLD_ID",
@@ -55,6 +61,8 @@ __all__ = [
     "normalize_runtime_results",
     "normalize_from_paths",
     "write_normalized_events",
+    "normalize_metadata_runner_results",
+    "write_metadata_runner_normalized_events",
     "serialize_observation",
     "RUNTIME_LOG_SCHEMA",
     "RUNTIME_MAPPING_SCHEMA",
@@ -79,4 +87,6 @@ __all__ = [
     "load_events_from_index",
     "run_from_expected_matrix",
     "promote_runtime_cut",
+    "CalloutVsSyscallRow",
+    "callout_vs_syscall_comparison",
 ]

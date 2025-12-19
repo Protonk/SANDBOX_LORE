@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <mach/mach.h>
 #include <servers/bootstrap.h>
-#include <sandbox.h>
+#include "../../api/runtime/tool_markers.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,6 +67,92 @@ static char *read_file_to_buf(const char *path) {
     return buf;
 }
 
+static void maybe_seatbelt_callout(const char *stage, const char *operation, int filter_type, const char *argument) {
+    const char *enabled = getenv(SANDBOX_LORE_ENV_SEATBELT_CALLOUT);
+    if (!enabled || strcmp(enabled, "1") != 0) return;
+    if (!operation || !argument) return;
+
+    int token_kr = 0;
+    audit_token_t token;
+    if (sbl_get_self_audit_token(&token, &token_kr) != 0) {
+        sbl_emit_seatbelt_callout(
+            stage,
+            operation,
+            filter_type,
+            argument,
+            -1,
+            0,
+            "TASK_AUDIT_TOKEN unavailable",
+            0,
+            "token_unavailable",
+            token_kr,
+            "task_info_failed",
+            filter_type,
+            1
+        );
+        return;
+    }
+    sbl_sandbox_check_by_audit_token_fn fn = sbl_load_sandbox_check_by_audit_token();
+    if (!fn) {
+        sbl_emit_seatbelt_callout(
+            stage,
+            operation,
+            filter_type,
+            argument,
+            -2,
+            ENOSYS,
+            "sandbox_check_by_audit_token missing",
+            0,
+            "symbol_missing",
+            token_kr,
+            "ok",
+            filter_type,
+            1
+        );
+        return;
+    }
+    if (!sbl_filter_type_is_string_arg(filter_type)) {
+        sbl_emit_seatbelt_callout(
+            stage,
+            operation,
+            filter_type,
+            argument,
+            -2,
+            ENOTSUP,
+            "unsupported filter type (string-arg only)",
+            0,
+            "unsupported_filter_type",
+            token_kr,
+            "ok",
+            filter_type,
+            1
+        );
+        return;
+    }
+
+    int no_report_used = 0;
+    const char *no_report_reason = NULL;
+    int type_used = sbl_sb_check_type_with_no_report(filter_type, &no_report_used, &no_report_reason);
+    errno = 0;
+    int rc = fn(&token, operation, type_used, argument);
+    int err = errno;
+    sbl_emit_seatbelt_callout(
+        stage,
+        operation,
+        filter_type,
+        argument,
+        rc,
+        err,
+        NULL,
+        no_report_used,
+        no_report_reason,
+        token_kr,
+        "ok",
+        type_used,
+        1
+    );
+}
+
 int main(int argc, char **argv) {
     if (argc < 5) {
         fprintf(stderr, "usage: %s <sbpl_path> <allowed_path> <denied_path> <mach_service>\n", argv[0]);
@@ -84,20 +170,29 @@ int main(int argc, char **argv) {
     }
 
     char *err = NULL;
-    int rc = sandbox_init(profile, 0, &err);
+    sbl_apply_report_t report = sbl_sandbox_init_with_markers(profile, 0, &err, sbpl_path);
+    int rc = report.rc;
     free(profile);
     if (rc != 0) {
         fprintf(stderr, "sandbox_init failed: %s\n", err ? err : "unknown");
-        sandbox_free_error(err);
+        if (err) {
+            sandbox_free_error(err);
+        }
         return 4;
     }
+    if (err) {
+        sandbox_free_error(err);
+    }
 
+    maybe_seatbelt_callout("pre_allowed_read", "file-read*", 0, allowed_path);
     int allowed_rc = read_file(allowed_path);
+    maybe_seatbelt_callout("pre_denied_read", "file-read*", 0, denied_path);
     int denied_rc = read_file(denied_path);
     int allowed_errno = allowed_rc < 0 ? -allowed_rc : 0;
     int denied_errno = denied_rc < 0 ? -denied_rc : 0;
 
     int kr = 0;
+    maybe_seatbelt_callout("pre_mach_lookup", "mach-lookup", 5, mach_service);
     mach_lookup(mach_service, &kr);
 
     printf("{\"sandbox_init\":%d,", rc);

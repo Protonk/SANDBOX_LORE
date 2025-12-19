@@ -21,6 +21,8 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, Tuple
 
+from book.api.runtime import events as runtime_events
+
 ROOT = Path(__file__).resolve().parents[4]
 RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
@@ -242,6 +244,35 @@ def summarize_field2(field2_ir: Dict[str, Any]) -> Dict[str, Any]:
     unknown_nodes = field2_ir.get("unknown_nodes", {})
     return {"profiles": summary, "unknown_nodes": unknown_nodes}
 
+def extract_runtime_profile_from_command(cmd: Any) -> str | None:
+    if not isinstance(cmd, list) or not cmd:
+        return None
+    argv0 = cmd[0]
+    if not isinstance(argv0, str):
+        return None
+
+    base = argv0.rsplit("/", 1)[-1]
+    if base == "wrapper":
+        if len(cmd) >= 3 and cmd[1] in {"--sbpl", "--blob"} and isinstance(cmd[2], str):
+            return cmd[2]
+        return None
+
+    if base in {"sandbox_runner", "sandbox_reader", "sandbox_writer"}:
+        if len(cmd) >= 2 and isinstance(cmd[1], str):
+            return cmd[1]
+        return None
+
+    if base == "sandbox-exec":
+        try:
+            idx = cmd.index("-f")
+        except ValueError:
+            return None
+        if idx + 1 < len(cmd) and isinstance(cmd[idx + 1], str):
+            return cmd[idx + 1]
+        return None
+
+    return None
+
 
 def main() -> None:
     run_smoke_validation()
@@ -255,15 +286,16 @@ def main() -> None:
     impact_map: Dict[str, Any] = load_json(IMPACT_MAP) if IMPACT_MAP.exists() else {}
     world_id = load_baseline_world()
 
+    expected_matrix_doc = runtime_ir.get("expected_matrix") or {}
+    events = list(runtime_ir.get("events") or [])
+
     # Merge in runtime-adversarial expected/results for additional runtime-backed ops (e.g., network-outbound).
     if ADV_EXPECTED.exists():
         adv_expected = load_json(ADV_EXPECTED)
-        runtime_ir.setdefault("expected_matrix", {}).setdefault("profiles", {}).update(
-            (adv_expected.get("profiles") or {})
-        )
+        expected_matrix_doc.setdefault("profiles", {}).update((adv_expected.get("profiles") or {}))
     if ADV_RESULTS.exists():
-        adv_results = load_json(ADV_RESULTS)
-        runtime_ir.setdefault("results", {}).update(adv_results)
+        adv_obs = runtime_events.normalize_from_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id) if ADV_EXPECTED.exists() else []
+        events.extend([runtime_events.serialize_observation(o) for o in adv_obs])
 
     extra_jobs = set()
     if ADV_EXPECTED.exists() or ADV_RESULTS.exists() or ADV_MISMATCH.exists():
@@ -274,12 +306,15 @@ def main() -> None:
     scenarios, profiles, expectation_index, disallowed = build_from_story(story_doc, coverage_doc, impact_map)
     # Preserve runtime_profile paths from validation IR, but drive actual results from runtime_story.
     profiles_meta: Dict[str, Dict[str, Any]] = {}
-    for profile, entry in (runtime_ir.get("results") or {}).items():
-        probes = entry.get("probes") or []
-        if probes:
-            cmd = probes[0].get("command") or []
-            if len(cmd) >= 2:
-                profiles_meta[profile] = {"runtime_profile": cmd[1]}
+    for ev in events:
+        if not isinstance(ev, dict):
+            continue
+        profile_id = ev.get("profile_id")
+        if not profile_id or profile_id in profiles_meta:
+            continue
+        runtime_profile = extract_runtime_profile_from_command(ev.get("command"))
+        if runtime_profile:
+            profiles_meta[profile_id] = {"runtime_profile": runtime_profile}
 
     field2_summary = summarize_field2(field2_ir)
 
@@ -300,7 +335,6 @@ def main() -> None:
         str(ADV_RESULTS.relative_to(ROOT)),
     ]
 
-    expected_matrix_doc = runtime_ir.get("expected_matrix") or {}
     classified_matrix, classification_summary = classify_expected(expected_matrix_doc, expectation_index)
 
     mapping = {

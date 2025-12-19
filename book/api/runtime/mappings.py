@@ -128,7 +128,12 @@ def build_scenario_summaries(
     """
 
     expected_idx: Dict[str, Dict[str, Any]] = {}
+    profile_family: Dict[str, str] = {}
     for profile_id, rec in (expectations.get("profiles") or {}).items():
+        family = rec.get("family")
+        if not family and ":" in profile_id:
+            family = profile_id.split(":", 1)[0]
+        profile_family[profile_id] = family or "unknown"
         for probe in rec.get("probes") or []:
             eid = probe.get("expectation_id") or runtime_events.derive_expectation_id(
                 profile_id, probe.get("operation"), probe.get("target")
@@ -143,24 +148,103 @@ def build_scenario_summaries(
             }
 
     scenarios: Dict[str, Dict[str, Any]] = {}
+    hist_overall = {
+        "total": 0,
+        "stages": {"apply": 0, "bootstrap": 0, "probe": 0},
+        "blocked": {"total": 0, "by_stage": {}, "by_kind": {}},
+        "probe": {"total": 0, "allow": 0, "deny": 0, "mismatches": 0},
+    }
+    hist_by_family: Dict[str, Dict[str, Any]] = {}
+
+    def _hist_for(family: str) -> Dict[str, Any]:
+        return hist_by_family.setdefault(
+            family,
+            {
+                "total": 0,
+                "stages": {"apply": 0, "bootstrap": 0, "probe": 0},
+                "blocked": {"total": 0, "by_stage": {}, "by_kind": {}},
+                "probe": {"total": 0, "allow": 0, "deny": 0, "mismatches": 0},
+            },
+        )
+
+    def _bump(d: Dict[str, Any], key: str, amount: int = 1) -> None:
+        d[key] = int(d.get(key, 0)) + amount
+
     for obs in observations:
         resolved_world = world_id or obs.world_id
+        family = profile_family.get(obs.profile_id) or ("unknown" if ":" not in obs.profile_id else obs.profile_id.split(":", 1)[0])
+        for hist in (hist_overall, _hist_for(family)):
+            hist["total"] += 1
+
+            stage = obs.failure_stage or "probe"
+            if stage not in {"apply", "bootstrap", "probe"}:
+                stage = "probe"
+            hist["stages"][stage] = int(hist["stages"].get(stage, 0)) + 1
+
+            if stage in {"apply", "bootstrap"}:
+                blocked = hist["blocked"]
+                blocked["total"] += 1
+                _bump(blocked["by_stage"], stage)
+                if obs.failure_kind:
+                    _bump(blocked["by_kind"], obs.failure_kind)
+            else:
+                probe_hist = hist["probe"]
+                probe_hist["total"] += 1
+                if obs.actual == "allow":
+                    probe_hist["allow"] += 1
+                elif obs.actual == "deny":
+                    probe_hist["deny"] += 1
+                if obs.match is False:
+                    probe_hist["mismatches"] += 1
+
         scenario = scenarios.setdefault(
             obs.scenario_id,
             {
                 "world_id": resolved_world,
                 "profile_id": obs.profile_id,
                 "expectations": [],
-                "results": {"total": 0, "matches": 0, "mismatches": 0, "status": "partial"},
+                "results": {
+                    "total": 0,
+                    "matches": 0,
+                    "mismatches": 0,
+                    "total_including_blocked": 0,
+                    "blocked": {"total": 0, "by_stage": {}, "by_kind": {}},
+                    "status": "partial",
+                },
                 "mismatches": [],
                 "impact": None,
             },
         )
-        scenario["results"]["total"] += 1
-        if obs.match:
-            scenario["results"]["matches"] += 1
+        scenario["results"]["total_including_blocked"] += 1
+
+        failure_stage = obs.failure_stage or "probe"
+        if failure_stage in {"apply", "bootstrap"}:
+            blocked = scenario["results"]["blocked"]
+            blocked["total"] += 1
+            by_stage = blocked["by_stage"]
+            by_stage[failure_stage] = int(by_stage.get(failure_stage, 0)) + 1
+            if obs.failure_kind:
+                by_kind = blocked["by_kind"]
+                by_kind[obs.failure_kind] = int(by_kind.get(obs.failure_kind, 0)) + 1
         else:
-            scenario["results"]["mismatches"] += 1
+            scenario["results"]["total"] += 1
+            if obs.match:
+                scenario["results"]["matches"] += 1
+            else:
+                scenario["results"]["mismatches"] += 1
+
+        if not obs.match:
+            mismatch_type = "filter_diff"
+            if failure_stage == "apply":
+                mismatch_type = "apply_gate"
+            elif failure_stage == "bootstrap" and obs.failure_kind == "bootstrap_deny_process_exec":
+                mismatch_type = "bootstrap_deny_process_exec"
+            elif failure_stage == "bootstrap":
+                mismatch_type = "bootstrap_failed"
+            elif obs.expected == "allow" and obs.actual == "deny":
+                mismatch_type = "unexpected_deny"
+            elif obs.expected == "deny" and obs.actual == "allow":
+                mismatch_type = "unexpected_allow"
             scenario["mismatches"].append(
                 {
                     "expectation_id": obs.expectation_id,
@@ -168,6 +252,9 @@ def build_scenario_summaries(
                     "actual": obs.actual,
                     "operation": obs.operation,
                     "target": obs.target,
+                    "failure_stage": obs.failure_stage,
+                    "failure_kind": obs.failure_kind,
+                    "mismatch_type": mismatch_type,
                     "violation_summary": obs.violation_summary,
                     "stderr": obs.stderr,
                 }
@@ -180,7 +267,10 @@ def build_scenario_summaries(
         matches = body["results"]["matches"]
         total = body["results"]["total"]
         mismatches = body["results"]["mismatches"]
-        if total and mismatches == 0:
+        blocked_total = (body["results"].get("blocked") or {}).get("total", 0)
+        if total == 0 and blocked_total:
+            body["results"]["status"] = "blocked"
+        elif total and mismatches == 0:
             body["results"]["status"] = "ok"
         elif total and matches > 0:
             body["results"]["status"] = "partial"
@@ -189,7 +279,11 @@ def build_scenario_summaries(
         body["scenario_id"] = scenario_id
 
     meta = make_metadata(world_id or runtime_events.WORLD_ID, status="partial", notes="scenario-level runtime summaries")
-    return {"meta": meta, "scenarios": scenarios}
+    return {
+        "meta": meta,
+        "phase_histograms": {"overall": hist_overall, "by_family": hist_by_family},
+        "scenarios": scenarios,
+    }
 
 
 def write_scenario_mapping(doc: Mapping[str, Any], out_path: Path) -> Path:
@@ -221,35 +315,48 @@ def build_op_summaries(
                 "probes": 0,
                 "matches": 0,
                 "mismatches": 0,
+                "probes_including_blocked": 0,
+                "blocked": {"total": 0, "by_stage": {}, "by_kind": {}},
                 "examples": [],
                 "scenarios": set(),
             },
         )
-        entry["probes"] += 1
+        entry["probes_including_blocked"] += 1
         entry["scenarios"].add(obs.scenario_id)
-        if obs.match:
-            entry["matches"] += 1
+        if (obs.failure_stage or "probe") in {"apply", "bootstrap"}:
+            blocked = entry["blocked"]
+            blocked["total"] += 1
+            stage = obs.failure_stage or "unknown"
+            by_stage = blocked["by_stage"]
+            by_stage[stage] = int(by_stage.get(stage, 0)) + 1
+            if obs.failure_kind:
+                by_kind = blocked["by_kind"]
+                by_kind[obs.failure_kind] = int(by_kind.get(obs.failure_kind, 0)) + 1
         else:
-            entry["mismatches"] += 1
-            entry.setdefault("mismatch_details", []).append(
-                {
-                    "scenario_id": obs.scenario_id,
-                    "expectation_id": obs.expectation_id,
-                    "expected": obs.expected,
-                    "actual": obs.actual,
-                    "target": obs.target,
-                }
-            )
-        if len(entry["examples"]) < 5:
-            entry["examples"].append(
-                {
-                    "scenario_id": obs.scenario_id,
-                    "expectation_id": obs.expectation_id,
-                    "expected": obs.expected,
-                    "actual": obs.actual,
-                    "match": obs.match,
-                }
-            )
+            entry["probes"] += 1
+            if obs.match:
+                entry["matches"] += 1
+            else:
+                entry["mismatches"] += 1
+                entry.setdefault("mismatch_details", []).append(
+                    {
+                        "scenario_id": obs.scenario_id,
+                        "expectation_id": obs.expectation_id,
+                        "expected": obs.expected,
+                        "actual": obs.actual,
+                        "target": obs.target,
+                    }
+                )
+            if len(entry["examples"]) < 5:
+                entry["examples"].append(
+                    {
+                        "scenario_id": obs.scenario_id,
+                        "expectation_id": obs.expectation_id,
+                        "expected": obs.expected,
+                        "actual": obs.actual,
+                        "match": obs.match,
+                    }
+                )
 
     for op_name, entry in ops.items():
         entry["scenarios"] = sorted(entry["scenarios"])

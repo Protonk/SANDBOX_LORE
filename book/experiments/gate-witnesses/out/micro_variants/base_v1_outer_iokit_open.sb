@@ -1,0 +1,2 @@
+(version 1)
+(allow iokit-open (apply-message-filter (deny iokit-external-method)))

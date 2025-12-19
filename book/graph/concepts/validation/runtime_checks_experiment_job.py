@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from book.api.path_utils import find_repo_root, to_repo_relative
+from book.api.runtime import events as runtime_events
 from book.graph.concepts.validation import registry
 from book.graph.concepts.validation.registry import ValidationJob
 
@@ -34,7 +35,20 @@ def run_runtime_job():
     expected_matrix = json.loads(EXPECTED_MATRIX.read_text()) if EXPECTED_MATRIX.exists() else {}
 
     STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    IR_PATH.write_text(json.dumps({"host": meta.get("os", {}), "results": results, "expected_matrix": expected_matrix}, indent=2))
+    observations = runtime_events.normalize_runtime_results(expected_matrix, results)
+    IR_PATH.write_text(
+        json.dumps(
+            {
+                "world_id": expected_matrix.get("world_id") or runtime_events.WORLD_ID,
+                "host": meta.get("os", {}),
+                "expected_matrix": expected_matrix,
+                "raw_results": results,
+                "events": [runtime_events.serialize_observation(o) for o in observations],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
 
     payload = {
         "job_id": "experiment:runtime-checks",
@@ -42,8 +56,8 @@ def run_runtime_job():
         "host": meta.get("os", {}),
         "inputs": [rel(RUNTIME_RESULTS)],
         "outputs": [rel(IR_PATH)],
-        "metrics": {"entries": len(results) if isinstance(results, list) else 1},
-        "notes": "Normalized runtime_results into shared IR.",
+        "metrics": {"events": len(observations)},
+        "notes": "Normalized runtime_results into contract-shaped runtime events for this world.",
         "tags": ["experiment:runtime-checks", "experiment", "runtime", "smoke"],
     }
     STATUS_PATH.write_text(json.dumps(payload, indent=2))

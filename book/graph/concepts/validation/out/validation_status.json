@@ -108,12 +108,12 @@
         "golden"
       ],
       "hashes": {
-        "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json": "cb7444bb72e8d1147cbc5ed3d3bb18c170e51aa5e0f842004202cb65dca40f54",
-        "book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "0c93792fff2c0eba899edde1f1c2f4b59cbf0da3847e025aedcb98f4a6d2f028"
+        "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json": "75c759eed6a98f5a3417a9d7637f3f595ea889aaf3e958f440f247b3a4d59f46",
+        "book/graph/concepts/validation/out/experiments/runtime-checks/status.json": "19567aab55a7d4453f30ea621b449d57267ad1ef4b3b26921cb70dff1bbfecc9"
       },
-      "notes": "Normalized runtime_results into shared IR.",
+      "notes": "Normalized runtime_results into contract-shaped runtime events for this world.",
       "metrics": {
-        "entries": 1
+        "events": 26
       },
       "change": "unchanged"
     },

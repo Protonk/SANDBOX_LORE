@@ -18,11 +18,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple
 
 from book.api.path_utils import find_repo_root, relativize_command, to_repo_relative
 from book.api.profile_tools.identity import baseline_world_id
@@ -55,6 +56,11 @@ JAIL_ENV_PROBE_PATH = OUT_DIR / "jail_env_probe.json"
 JAIL_RUNTIME_RESULTS_PATH = OUT_DIR / "jail_runtime_results.json"
 JAIL_ENTITLEMENTS_PATH = OUT_DIR / "jail_entitlements.json"
 JAIL_PARITY_SUMMARY_PATH = OUT_DIR / "jail_parity_summary.json"
+
+LOG_STREAM_PREDICATE_SANDBOXD_AMFID = (
+    '(process == "kernel" AND (eventMessage CONTAINS[c] "Sandbox:" OR eventMessage CONTAINS[c] "deny("))'
+    ' OR (process == "sandboxd") OR (process == "amfid")'
+)
 
 
 _SHA256_CACHE: Dict[str, str] = {}
@@ -157,6 +163,7 @@ def _deterministic_run_id() -> str:
 def _capture_under_jail(
     *,
     stage_root: Path,
+    capture_root: Optional[Path] = None,
     attempt_id: str,
     command: List[str],
     timeout_s: float = 15.0,
@@ -168,13 +175,14 @@ def _capture_under_jail(
     writes evidence to files and polls for a done marker.
     """
 
-    jail_out = stage_root / "jail_out"
+    jail_out = capture_root or (stage_root / "jail_out")
     mkdir_error = _mkdir(jail_out)
     if mkdir_error is not None:
         return {
             "classification": "harness_error",
             "failure_kind": "HOST_STAGE_ROOT_UNWRITABLE",
             "stage_root": str(stage_root),
+            "capture_root": str(jail_out),
             "attempt_id": attempt_id,
             "mkdir_error": mkdir_error,
         }
@@ -231,6 +239,7 @@ def _capture_under_jail(
 
     host_fs: Dict[str, Any] = {
         "stage_root": _stat_path(stage_root),
+        "capture_root": _stat_path(jail_out),
         "command0": _stat_path(command0) if command0 is not None else None,
         "stdout_path": _stat_path(stdout_path),
         "stderr_path": _stat_path(stderr_path),
@@ -241,6 +250,7 @@ def _capture_under_jail(
     capture = {
         "attempt_id": attempt_id,
         "stage_root": str(stage_root),
+        "capture_root": str(jail_out),
         "stdout_path": str(stdout_path),
         "stderr_path": str(stderr_path),
         "rc_path": str(rc_path),
@@ -257,7 +267,7 @@ def _capture_under_jail(
         return {
             "classification": "blocked",
             "failure_kind": "JAIL_LAUNCH_TIMEOUT",
-            "command": command,
+            "command": relativize_command(command, REPO_ROOT),
             "jail_launch": launch,
             "capture": capture,
         }
@@ -278,7 +288,7 @@ def _capture_under_jail(
         return {
             "classification": "blocked",
             "failure_kind": blocked_reason,
-            "command": command,
+            "command": relativize_command(command, REPO_ROOT),
             "exit_code": rc,
             "jail_launch": launch,
             "capture": capture,
@@ -286,7 +296,7 @@ def _capture_under_jail(
 
     return {
         "classification": "executed",
-        "command": command,
+        "command": relativize_command(command, REPO_ROOT),
         "exit_code": rc,
         "jail_launch": launch,
         "capture": capture,
@@ -565,12 +575,18 @@ def _stage_binaries(stage_root: Path) -> Dict[str, Any]:
             "sha256_dest": None,
         }
         try:
-            shutil.copy2(spec.src_path, dest)
             entry["sha256_src"] = _sha256_path(spec.src_path)
+            shutil.copy2(spec.src_path, dest)
             entry["sha256_dest"] = _sha256_path(dest)
             entry["chmod_error"] = _chmod_plus_x(dest)
         except Exception as exc:
             entry["copy_error"] = f"{type(exc).__name__}: {exc}"
+            if dest.exists():
+                entry["dest_exists"] = True
+                try:
+                    entry["sha256_dest"] = _sha256_path(dest)
+                except Exception as sha_exc:
+                    entry["sha256_dest_error"] = f"{type(sha_exc).__name__}: {sha_exc}"
         staged["binaries"][spec.id] = entry
 
     return staged
@@ -581,7 +597,104 @@ def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2) + "\n")
 
 
-def _stage_discovery_matrix(*, stage_root: Path, run_id: str) -> Dict[str, Any]:
+def _with_log_stream_capture(
+    *,
+    artifact_path: Path,
+    predicate: str,
+    pre_s: float,
+    post_s: float,
+    action: Callable[[], Dict[str, Any]],
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """
+    Best-effort capture of a short `log stream` window around `action`.
+
+    This is used to discriminate "blocked at exec" by capturing sandboxd/amfid logs,
+    rather than inferring from shell exit codes alone.
+    """
+
+    log_cmd = ["/usr/bin/log", "stream", "--style", "compact", "--predicate", predicate, "--info", "--debug"]
+
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    start_ts = time.time()
+    proc: Optional[subprocess.Popen] = None
+    log_meta: Dict[str, Any] = {
+        "command": log_cmd,
+        "predicate": predicate,
+        "path": to_repo_relative(artifact_path, REPO_ROOT),
+        "start_ts": start_ts,
+        "end_ts": None,
+        "exit_code": None,
+        "stderr": None,
+        "error": None,
+    }
+
+    try:
+        with artifact_path.open("w") as fh:
+            proc = subprocess.Popen(log_cmd, stdout=fh, stderr=subprocess.PIPE, text=True)
+            time.sleep(pre_s)
+            result = action()
+            time.sleep(post_s)
+            proc.terminate()
+            try:
+                _, stderr_text = proc.communicate(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                _, stderr_text = proc.communicate(timeout=2)
+            log_meta["stderr"] = stderr_text
+            log_meta["exit_code"] = proc.returncode
+            log_meta["end_ts"] = time.time()
+            log_meta["size"] = _stat_path(artifact_path).get("size")
+            return result, log_meta
+    except Exception as exc:
+        log_meta["error"] = f"{type(exc).__name__}: {exc}"
+        # If logging fails, still run the action so we don't block the witness.
+        result = action()
+        log_meta["end_ts"] = time.time()
+        return result, log_meta
+    finally:
+        if proc is not None and proc.poll() is None:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+
+
+def _capture_under_jail_with_logs(
+    *,
+    stage_root: Path,
+    capture_root: Optional[Path] = None,
+    attempt_id: str,
+    command: List[str],
+    log_label: str,
+    timeout_s: float,
+    predicate: str = LOG_STREAM_PREDICATE_SANDBOXD_AMFID,
+    pre_s: float = 0.2,
+    post_s: float = 1.5,
+) -> Dict[str, Any]:
+    log_path = OUT_DIR / f"jail_logs_{log_label}_{_deterministic_run_id()}.log"
+
+    def run() -> Dict[str, Any]:
+        return _capture_under_jail(
+            stage_root=stage_root,
+            capture_root=capture_root,
+            attempt_id=attempt_id,
+            command=command,
+            timeout_s=timeout_s,
+        )
+
+    result, log_meta = _with_log_stream_capture(
+        artifact_path=log_path,
+        predicate=predicate,
+        pre_s=pre_s,
+        post_s=post_s,
+        action=run,
+    )
+    if isinstance(result, dict):
+        result["log_capture"] = log_meta
+    return result
+
+
+def _stage_discovery_matrix(*, stage_root: Path, capture_root: Optional[Path] = None, run_id: str) -> Dict[str, Any]:
     """
     Small, explicit discovery matrix: path × operation(stat/open/exec).
 
@@ -606,7 +719,9 @@ def _stage_discovery_matrix(*, stage_root: Path, run_id: str) -> Dict[str, Any]:
 
         if key == "repo_checkout":
             entry["exec_binary"] = str(file_probe_src)
+            entry["exec_binary_repo"] = to_repo_relative(file_probe_src, REPO_ROOT)
             entry["open_target"] = str(repo_open_target)
+            entry["open_target_repo"] = to_repo_relative(repo_open_target, REPO_ROOT)
         elif key == "stage_root":
             test_file = root / f"sbl_jail_discovery_{run_id}.txt"
             try:
@@ -634,18 +749,22 @@ def _stage_discovery_matrix(*, stage_root: Path, run_id: str) -> Dict[str, Any]:
 
         entry["ops"]["stat"] = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id=f"discovery.{key}.stat",
             command=["/bin/ls", "-ld", str(root)],
         )
         entry["ops"]["open"] = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id=f"discovery.{key}.open",
             command=["/bin/cat", entry["open_target"]],
         )
         entry["ops"]["exec"] = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id=f"discovery.{key}.exec",
-            command=[entry["exec_binary"], "read", entry["open_target"]],
+            # Exec-only: file_probe exits with usage when no args are provided.
+            command=[entry["exec_binary"]],
         )
 
         matrix["roots"][key] = entry
@@ -653,11 +772,146 @@ def _stage_discovery_matrix(*, stage_root: Path, run_id: str) -> Dict[str, Any]:
     return matrix
 
 
+def _exec_gate_matrix(
+    *,
+    stage_root: Path,
+    capture_root: Optional[Path] = None,
+    run_id: str,
+    staged: Mapping[str, Path],
+) -> Dict[str, Any]:
+    """
+    Tight discriminant matrix for exec gating under the jail.
+
+    The goal is to answer one key question with evidence: does *any* non-in-place executable
+    run under the jail? This lets us discriminate identity/signature gates vs
+    location/writable-location gates.
+    """
+
+    doc: Dict[str, Any] = {"run_id": run_id, "prep": {}, "tests": {}, "summary": {}}
+
+    relocated_true = stage_root / f"relocated_true_{run_id}"
+    relocated_prep: Dict[str, Any] = {"src": "/usr/bin/true", "dest": str(relocated_true), "sha256_src": None}
+    try:
+        relocated_prep["sha256_src"] = _sha256_path(Path("/usr/bin/true"))
+    except Exception as exc:
+        relocated_prep["sha256_src_error"] = f"{type(exc).__name__}: {exc}"
+    if relocated_true.exists():
+        relocated_prep["existing_dest"] = True
+        relocated_prep["copy_skipped"] = True
+        try:
+            relocated_prep["sha256_dest"] = _sha256_path(relocated_true)
+        except Exception as sha_exc:
+            relocated_prep["sha256_dest_error"] = f"{type(sha_exc).__name__}: {sha_exc}"
+    else:
+        try:
+            shutil.copy2("/usr/bin/true", relocated_true)
+            relocated_prep["sha256_dest"] = _sha256_path(relocated_true)
+            relocated_prep["chmod_error"] = _chmod_plus_x(relocated_true)
+        except Exception as exc:
+            relocated_prep["copy_error"] = f"{type(exc).__name__}: {exc}"
+    doc["prep"]["relocated_true"] = relocated_prep
+
+    # System binary in place (baseline sanity): /usr/bin/true
+    doc["tests"]["system_in_place_true"] = _capture_under_jail(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.system_in_place_true",
+        command=["/usr/bin/true"],
+        timeout_s=6.0,
+    )
+
+    # System binary relocated into the container stage root.
+    doc["tests"]["system_relocated_true"] = _capture_under_jail_with_logs(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.system_relocated_true",
+        command=[str(relocated_true)],
+        log_label="exec_gate_relocated_true",
+        timeout_s=6.0,
+    )
+
+    # Staged probe helpers (exec-only): run with missing args to avoid confounding I/O.
+    doc["tests"]["staged_file_probe_usage"] = _capture_under_jail_with_logs(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.staged_file_probe_usage",
+        command=[str(staged["file_probe"])],
+        log_label="exec_gate_file_probe_usage",
+        timeout_s=6.0,
+    )
+    doc["tests"]["staged_mach_probe_usage"] = _capture_under_jail(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.staged_mach_probe_usage",
+        command=[str(staged["mach_probe"])],
+        timeout_s=6.0,
+    )
+
+    # Trivial locally-signed / unsigned Mach-Os (these may also exercise network, but we only
+    # care about "exec started" vs "blocked at exec" here).
+    doc["tests"]["staged_entitlement_sample"] = _capture_under_jail(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.staged_entitlement_sample",
+        command=[str(staged["entitlement_sample"])],
+        timeout_s=6.0,
+    )
+    doc["tests"]["staged_entitlement_sample_unsigned"] = _capture_under_jail(
+        stage_root=stage_root,
+        capture_root=capture_root,
+        attempt_id="gate.staged_entitlement_sample_unsigned",
+        command=[str(staged["entitlement_sample_unsigned"])],
+        timeout_s=6.0,
+    )
+
+    def is_executed(key: str) -> bool:
+        rec = doc["tests"].get(key)
+        return isinstance(rec, dict) and rec.get("classification") == "executed"
+
+    summary: Dict[str, Any] = {
+        "system_in_place_executed": is_executed("system_in_place_true"),
+        "system_relocated_executed": is_executed("system_relocated_true"),
+        "staged_file_probe_executed": is_executed("staged_file_probe_usage"),
+        "staged_mach_probe_executed": is_executed("staged_mach_probe_usage"),
+        "staged_entitlement_sample_executed": is_executed("staged_entitlement_sample"),
+        "staged_entitlement_sample_unsigned_executed": is_executed("staged_entitlement_sample_unsigned"),
+    }
+
+    summary["any_non_in_place_exec_executed"] = bool(
+        summary["system_relocated_executed"]
+        or summary["staged_file_probe_executed"]
+        or summary["staged_mach_probe_executed"]
+        or summary["staged_entitlement_sample_executed"]
+        or summary["staged_entitlement_sample_unsigned_executed"]
+    )
+    summary["required_probe_helpers_executed"] = bool(summary["staged_file_probe_executed"] and summary["staged_mach_probe_executed"])
+
+    failure_kind: Optional[str] = None
+    relocated_prep = doc.get("prep", {}).get("relocated_true", {}) if isinstance(doc.get("prep"), dict) else {}
+    relocated_available = bool(isinstance(relocated_prep, dict) and Path(str(relocated_prep.get("dest") or "")).exists())
+
+    if not summary["required_probe_helpers_executed"]:
+        if not relocated_available:
+            # Without a relocated system-binary test we can't discriminate identity vs location.
+            failure_kind = "EXEC_GATE_RELOCATED_SYSTEM_TEST_UNAVAILABLE"
+        elif summary["system_relocated_executed"]:
+            failure_kind = "EXEC_GATE_STAGED_PROBES_DENIED"
+        else:
+            failure_kind = "EXEC_GATE_LOCATION_OR_WRITABLE_DENIED"
+
+    summary["proceed"] = failure_kind is None
+    summary["failure_kind"] = failure_kind
+    doc["summary"] = summary
+    return doc
+
+
 def main() -> int:
     run_id = _deterministic_run_id()
+    session_id = f"{int(time.time())}-{os.getpid()}"
     meta = {
         "world_id": WORLD_ID,
         "run_id": run_id,
+        "session_id": session_id,
         "entitlement_jail": {
             "path": to_repo_relative(ENTITLEMENT_JAIL, REPO_ROOT),
             "sha256": _sha256_path(ENTITLEMENT_JAIL) if ENTITLEMENT_JAIL.exists() else None,
@@ -694,6 +948,7 @@ def main() -> int:
     bootstrap_timeout_s = 8.0
     for cand in candidate_stage_roots:
         stage_root = Path(cand["path"])
+        capture_root = stage_root / "jail_out" / session_id
         mkdir_error = _mkdir(stage_root)
         attempt: Dict[str, Any] = {"candidate": cand, "mkdir_error": mkdir_error, "probes": {}}
         if mkdir_error is not None:
@@ -702,6 +957,7 @@ def main() -> int:
 
         env_res = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id="env.env",
             command=["/usr/bin/env"],
             timeout_s=bootstrap_timeout_s,
@@ -715,12 +971,14 @@ def main() -> int:
 
         id_res = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id="env.id",
             command=["/usr/bin/id", "-a"],
             timeout_s=bootstrap_timeout_s,
         )
         pwd_res = _capture_under_jail(
             stage_root=stage_root,
+            capture_root=capture_root,
             attempt_id="env.pwd",
             command=["/bin/pwd"],
             timeout_s=bootstrap_timeout_s,
@@ -782,9 +1040,39 @@ def main() -> int:
 
     stage_info = _stage_binaries(stage_root)
     staged = staged_destinations(stage_root, REPO_ROOT)
-    env_probe_doc["stage_discovery"] = _stage_discovery_matrix(stage_root=stage_root, run_id=run_id)
+    capture_root = stage_root / "jail_out" / session_id
+    env_probe_doc["exec_gate"] = _exec_gate_matrix(stage_root=stage_root, capture_root=capture_root, run_id=run_id, staged=staged)
+    env_probe_doc["stage_discovery"] = _stage_discovery_matrix(stage_root=stage_root, capture_root=capture_root, run_id=run_id)
     _write_json(JAIL_ENV_PROBE_PATH, env_probe_doc)
     print(f"[+] wrote {to_repo_relative(JAIL_ENV_PROBE_PATH, REPO_ROOT)}")
+
+    exec_gate = env_probe_doc.get("exec_gate") if isinstance(env_probe_doc, dict) else None
+    exec_gate_summary = (exec_gate.get("summary") if isinstance(exec_gate, dict) else None) or {}
+    exec_gate_failure = exec_gate_summary.get("failure_kind") if isinstance(exec_gate_summary, dict) else None
+    if exec_gate_failure:
+        runtime_doc = {
+            "meta": meta,
+            "status": "blocked",
+            "failure_kind": exec_gate_failure,
+            "env_probe": to_repo_relative(JAIL_ENV_PROBE_PATH, REPO_ROOT),
+            "stage_root": str(stage_root),
+            "stage_info": stage_info,
+            "variants": {},
+        }
+        _write_json(JAIL_RUNTIME_RESULTS_PATH, runtime_doc)
+        print(f"[+] wrote {to_repo_relative(JAIL_RUNTIME_RESULTS_PATH, REPO_ROOT)}")
+
+        ent_doc = _extract_parent_and_child_entitlements(stage_root)
+        ent_doc["meta"] = meta
+        _write_json(JAIL_ENTITLEMENTS_PATH, ent_doc)
+        print(f"[+] wrote {to_repo_relative(JAIL_ENTITLEMENTS_PATH, REPO_ROOT)}")
+
+        _write_json(
+            JAIL_PARITY_SUMMARY_PATH,
+            {"meta": meta, "status": "blocked", "failure_kind": exec_gate_failure},
+        )
+        print(f"[+] wrote {to_repo_relative(JAIL_PARITY_SUMMARY_PATH, REPO_ROOT)}")
+        return 2
 
     container_dir = stage_root / "container"
     container_mkdir_error = _mkdir(container_dir)
@@ -805,7 +1093,7 @@ def main() -> int:
         smoke_write_error = f"{type(exc).__name__}: {exc}"
 
     smoke_cmd = [str(staged["file_probe"]), "read", str(smoke_path)]
-    smoke = _capture_under_jail(stage_root=stage_root, attempt_id="smoke.file_probe_read", command=smoke_cmd)
+    smoke = _capture_under_jail(stage_root=stage_root, capture_root=capture_root, attempt_id="smoke.file_probe_read", command=smoke_cmd)
     smoke_norm = _normalize_probe_outcome("file_read", smoke) if smoke.get("classification") == "executed" else None
     smoke_record = {"raw": smoke, "normalized": smoke_norm, "smoke_write_error": smoke_write_error}
 
@@ -832,7 +1120,7 @@ def main() -> int:
             for test in tests:
                 pid = str(test["id"])
                 cmd = list(test["command"])  # type: ignore[list-item]
-                raw = _capture_under_jail(stage_root=stage_root, attempt_id=f"{variant}.{pid}", command=cmd)
+                raw = _capture_under_jail(stage_root=stage_root, capture_root=capture_root, attempt_id=f"{variant}.{pid}", command=cmd)
                 norm = _normalize_probe_outcome(pid, raw) if raw.get("classification") == "executed" else {"probe_id": pid, "classification": raw.get("classification"), "decision": None}
                 variant_results[pid] = {"raw": raw, "normalized": norm}
             variants[variant] = variant_results
