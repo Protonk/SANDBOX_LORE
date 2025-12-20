@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 import subprocess
 import shutil
 from pathlib import Path
@@ -144,16 +145,69 @@ def main() -> int:
     CONTAINER_DIR.mkdir(parents=True, exist_ok=True)
     FILE_PROBE_TARGET.write_text("entitlement-diff runtime file\n")
 
+    preflight_enabled = os.environ.get("SANDBOX_LORE_PREFLIGHT") != "0"
+    preflight_force = os.environ.get("SANDBOX_LORE_PREFLIGHT_FORCE") == "1"
+
     results: Dict[str, Dict[str, object]] = {}
     for profile_name, paths in PROFILES.items():
         blob = paths["blob"]
         sb_path = paths["sb"]
+        preflight_record = None
+        preflight_blocked = False
+        if preflight_enabled:
+            try:
+                from book.tools.preflight import preflight as preflight_mod  # type: ignore
+
+                rec_obj = preflight_mod.preflight_path(sb_path)
+                preflight_record = rec_obj.to_json()
+                if (
+                    preflight_record.get("classification") == "likely_apply_gated_for_harness_identity"
+                    and not preflight_force
+                ):
+                    preflight_blocked = True
+            except Exception:
+                preflight_record = None
+                preflight_blocked = False
         profile_results: Dict[str, object] = {
             "profile_blob": to_repo_relative(blob, REPO_ROOT),
             "profile_sbpl": to_repo_relative(sb_path, REPO_ROOT),
         }
+        if preflight_record is not None:
+            profile_results["preflight"] = preflight_record
         for test in TESTS:
-            probe_res = run_probe(blob, test["command"])  # type: ignore[arg-type]
+            if preflight_blocked:
+                digest = _sha256_path(WRAPPER)
+                runner_info = {
+                    "entrypoint": "SBPL-wrapper",
+                    "apply_model": "exec_wrapper",
+                    "apply_timing": "pre_exec",
+                    "entrypoint_path": to_repo_relative(WRAPPER, REPO_ROOT),
+                    "entrypoint_sha256": digest,
+                    "tool_build_id": digest,
+                }
+                runtime_result = {
+                    "status": "blocked",
+                    "errno": None,
+                    "runtime_result_schema_version": rt_contract.CURRENT_RUNTIME_RESULT_SCHEMA_VERSION,
+                    "tool_marker_schema_version": rt_contract.CURRENT_TOOL_MARKER_SCHEMA_VERSION,
+                    "failure_stage": "preflight",
+                    "failure_kind": "preflight_apply_gate_signature",
+                    "apply_report": None,
+                    "runner_info": runner_info,
+                    "seatbelt_callouts": None,
+                }
+                probe_res: Dict[str, object] = {
+                    "command": [],
+                    "exit_code": None,
+                    "stdout": "",
+                    "stderr": "",
+                    "status": "blocked",
+                    "runtime_result": runtime_result,
+                    "preflight": preflight_record,
+                    "notes": "preflight blocked: known apply-gate signature",
+                }
+            else:
+                probe_res = run_probe(blob, test["command"])  # type: ignore[arg-type]
             profile_results[test["id"]] = {"wrapper": probe_res}
         results[profile_name] = profile_results
 

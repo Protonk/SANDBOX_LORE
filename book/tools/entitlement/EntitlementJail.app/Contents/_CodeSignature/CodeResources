@@ -5,7 +5,116 @@
 	<key>files</key>
 	<dict/>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>MacOS/xpc-probe-client</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			jth6ICtJGQ7xROdu2OaLi4uGJEs=
+			</data>
+			<key>requirement</key>
+			<string>identifier "xpc-probe-client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>MacOS/xpc-quarantine-client</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			1KJcuo543PzKlgIJ+XFxYThfrPk=
+			</data>
+			<key>requirement</key>
+			<string>identifier "xpc-quarantine-client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/ProbeService_bookmarks_app_scope.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			JjpPsS0szCNFzP98MI+8Hhrobug=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.ProbeService_bookmarks_app_scope" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/ProbeService_downloads_rw.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			43xA+9qXe230nWADsxVYEIEoTLE=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.ProbeService_downloads_rw" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/ProbeService_minimal.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			mHjt/CkfvaAENQLPJDXA3dZVWSg=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.ProbeService_minimal" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/ProbeService_net_client.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			GU3qmbAheUWZz3HvOP7Xhys4lyE=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.ProbeService_net_client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/ProbeService_user_selected_executable.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			1AgwdsBL+eXfz1Td26uHwfXhIi8=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.ProbeService_user_selected_executable" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/QuarantineLab_bookmarks_app_scope.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			dWkjADxn262RhWE3Wfwn8edUqQA=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.QuarantineLab_bookmarks_app_scope" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/QuarantineLab_default.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			5deNs3qY8HodG1cfbLaGNuZZzqg=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.QuarantineLab_default" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/QuarantineLab_downloads_rw.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			IwvF55H1DstfoecqoL+zkiYq9fQ=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.QuarantineLab_downloads_rw" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/QuarantineLab_net_client.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			dH5NY4FztWiDfFvFS8kgKqf/QlI=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.QuarantineLab_net_client" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+		<key>XPCServices/QuarantineLab_user_selected_executable.xpc</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			d18Y7ZTlezCdtL3qk3h4KvMlbCU=
+			</data>
+			<key>requirement</key>
+			<string>identifier "com.yourteam.entitlement-jail.QuarantineLab_user_selected_executable" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "42D369QV8E"</string>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>

@@ -3,18 +3,21 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleExecutable</key>
-  <string>entitlement-jail</string>
+  <string>QuarantineLab_default</string>
   <key>CFBundleIdentifier</key>
-  <string>com.yourteam.entitlement-jail</string>
+  <string>com.yourteam.entitlement-jail.QuarantineLab_default</string>
   <key>CFBundleName</key>
-  <string>EntitlementJail</string>
+  <string>QuarantineLab_default</string>
   <key>CFBundlePackageType</key>
-  <string>APPL</string>
+  <string>XPC!</string>
   <key>CFBundleShortVersionString</key>
   <string>1.0</string>
   <key>CFBundleVersion</key>
   <string>1</string>
-  <key>LSMinimumSystemVersion</key>
-  <string>14.0</string>
+  <key>XPCService</key>
+  <dict>
+    <key>ServiceType</key>
+    <string>Application</string>
+  </dict>
 </dict>
 </plist>
