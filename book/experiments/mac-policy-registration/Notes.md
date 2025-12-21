@@ -51,3 +51,23 @@
   - `python3 book/api/ghidra/run_task.py sandbox-kext-adrp-ldr-got-scan --process-existing --project-name sandbox_kext_14.4.1-23E224 --exec --script-args auth_got 32 all` → `0` matches (`dumps/ghidra/out/14.4.1-23E224/sandbox-kext-adrp-ldr-got-scan/adrp_ldr_scan.json`).
 - Normalized address values to signed 64-bit when calling `toAddr` in `kernel_adrp_ldr_scan.py`; reran `sandbox-kext-adrp-ldr-got-scan` with `auth_got 32 all` and still saw `0` matches (`adrp_seen: 3452`, `ldr_literal_seen: 0`, `truncated_bases: 1508`, `got_block_mode: auth_got`).
 - Reran `sandbox-kext-mac-policy-register` with `flow indirect-all all`: `target_count: 4`, `call_site_count: 0`, `indirect_call_sites: 0`, `got_block_mode: auth_got+auth_ptr+got`, `got_entries: 332`.
+
+## Stub + GOT join attempt
+
+- Block disasm sweep for "stub" matched zero blocks; sandbox kext block names do not include `stub`. Reran with `text` to cover `__text` (`sandbox-kext-block-disasm`), scanning one executable block (`dumps/ghidra/out/14.4.1-23E224/sandbox-kext-block-disasm/disasm_report.json`).
+- Added `kernel_stub_got_map.py` and task `sandbox-kext-stub-got-map` to map ADRP+LDR stub sequences to GOT entries; run over `text` blocks with lookahead 6 yields `0` matches (`adrp_seen: 3648`, `match_count: 0`).
+- Joined stub map with `otool -Iv` indirect symbols via `match_stub_got.py`; `stub_targets.json` reports `match_count: 0`, `target_count: 0`.
+- Reran `sandbox-kext-mac-policy-register` with `stub-targets=.../stub_targets.json` plus `flow indirect-all all`; still `call_site_count: 0`, `stub_target_count: 0`.
+- Extended `kernel_stub_got_map.py` with BLR/BR backtracking (register dataflow + MOV alias); reran `sandbox-kext-stub-got-map` over all exec blocks with `lookahead 16`:
+  - `branch_seen: 647`, `branch_hits: 0`, `adrp_seen: 3648`, `match_count: 0`.
+  - `stub_got_map.json` still empty; `stub_targets.json` still `target_count: 0`.
+- `match_stub_got.py` needs `PYTHONPATH=$PWD`; a first run without PYTHONPATH raised `ModuleNotFoundError: book`, then reran successfully.
+- `mac_policy_register_scan.py` now normalizes signed addresses and follows MOV/MOVK aliasing in `_resolve_reg_value`; reran `sandbox-kext-mac-policy-register` with stub targets and still `call_site_count: 0`, `indirect_call_sites: 0`.
+- Ran `sandbox-kext-arm-const-base-scan` over `__auth_got` range (`0x-1fff7b382e0` → `0x-1fff7b37981`) with `lookahead 16 all`: `adrp_seen: 0`, `matches add:0 ldr:0` (`arm_const_base_scan.json`).
+- Added `kernel_got_ref_sweep.py` + task `sandbox-kext-got-ref-sweep`; ran with `with_refs_only=1` and then full `all`:
+  - `got_ref_sweep.json`: `entries=332`, `with_refs=32`, `got_block_mode=auth_got+auth_ptr+got`.
+  - auth_got entries for `_mac_policy_register` (`0x-1fff7b38158`) and `_amfi_register_mac_policy` (`0x-1fff7b38250`) have `ref_count: 0` (no callers).
+- Added `kernel_got_load_sweep.py` + task `sandbox-kext-got-load-sweep` to scan code for GOT loads.
+  - Track A (refs-only, target_only set): `hits=0` (`ref_hits: 0`, `literal_hits: 0`, `computed_hits: 0`) for the target auth_got entries.
+  - Track B (lookback 32, target_only set): still `hits=0` across 65,548 instructions scanned (`got_load_sweep.json`).
+- Full sweep (no target_only filter) yields `total_hits: 766` (all direct refs; `computed_hits: 0`, `literal_hits: 0`), almost entirely in `__got` (`__got: 765`, `__auth_ptr: 1`, `__auth_got: 0`).

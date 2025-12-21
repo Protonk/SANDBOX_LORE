@@ -27,11 +27,44 @@ from ghidra.program.model.scalar import Scalar
 from ghidra.program.model.lang import Register
 
 _RUN_CALLED = False
+MASK64 = 0xFFFFFFFFFFFFFFFFL
+SIGN_BIT = 0x8000000000000000L
 
 
 def _ensure_out_dir(path):
     if not os.path.isdir(path):
         os.makedirs(path)
+
+
+def _s64(val):
+    try:
+        v = long(val) & MASK64
+    except Exception:
+        return None
+    if v & SIGN_BIT:
+        return v - (1 << 64)
+    return v
+
+
+def _format_addr(value):
+    if value is None:
+        return None
+    if value < 0:
+        return "0x-%x" % abs(value)
+    return "0x%x" % value
+
+
+def _parse_hex_address(text):
+    value = str(text).strip().lower()
+    if value.startswith("0x-"):
+        return -int(value[3:], 16)
+    if value.startswith("-0x"):
+        return -int(value[3:], 16)
+    if value.startswith("0x"):
+        parsed = int(value, 16)
+        return _s64(parsed)
+    parsed = int(value, 0)
+    return _s64(parsed)
 
 
 def _sandbox_blocks():
@@ -76,10 +109,10 @@ def _adrp_page(instr):
     imm = _scalar(ops[0])
     if imm is None:
         return []
-    inst_addr = instr.getAddress().getOffset()
-    inst_page = inst_addr & ~0xFFF
+    inst_addr = _s64(instr.getAddress().getOffset())
+    inst_page = _s64(inst_addr & ~0xFFF)
     # Try both interpretations (imm already shifted vs page offset)
-    return [inst_page + imm, inst_page + (imm << 12)]
+    return [_s64(inst_page + imm), _s64(inst_page + (imm << 12))]
 
 
 def _same_base_reg(adrp_instr, other_instr):
@@ -121,8 +154,13 @@ def run():
             return
         out_dir = args[0]
         build_id = args[1]
-        start_addr = int(args[2], 16)
-        end_addr = int(args[3], 16)
+        start_addr = _parse_hex_address(args[2])
+        end_addr = _parse_hex_address(args[3])
+        if start_addr is None or end_addr is None:
+            print("invalid range args: %s %s" % (args[2], args[3]))
+            return
+        if start_addr > end_addr:
+            start_addr, end_addr = end_addr, start_addr
         lookahead = 8
         scan_all = False
         for extra in args[4:]:
@@ -164,14 +202,14 @@ def run():
                     imm = _scalar(nxt.getOpObjects(2)[0])
                     if imm is None:
                         continue
-                    target = base_page + imm if nxt.getMnemonicString().upper() == "ADD" else base_page - imm
+                    target = _s64(base_page + imm) if nxt.getMnemonicString().upper() == "ADD" else _s64(base_page - imm)
                     if start_addr <= target <= end_addr:
                         func = func_mgr.getFunctionContaining(instr.getAddress())
                         matches["adrp_add"].append(
                             {
-                                "adrp": "0x%x" % instr.getAddress().getOffset(),
-                                "add_sub": "0x%x" % nxt.getAddress().getOffset(),
-                                "target": "0x%x" % target,
+                                "adrp": _format_addr(_s64(instr.getAddress().getOffset())),
+                                "add_sub": _format_addr(_s64(nxt.getAddress().getOffset())),
+                                "target": _format_addr(target),
                                 "function": func.getName() if func else None,
                                 "add_sub_inst": str(nxt),
                             }
@@ -182,8 +220,8 @@ def run():
                     func = func_mgr.getFunctionContaining(instr.getAddress())
                     matches["adrp_ldr"].append(
                         {
-                            "adrp": "0x%x" % instr.getAddress().getOffset(),
-                            "ldr": "0x%x" % nxt.getAddress().getOffset(),
+                            "adrp": _format_addr(_s64(instr.getAddress().getOffset())),
+                            "ldr": _format_addr(_s64(nxt.getAddress().getOffset())),
                             "ldr_inst": str(nxt),
                             "function": func.getName() if func else None,
                         }
@@ -191,12 +229,19 @@ def run():
         meta = {
             "build_id": build_id,
             "program": currentProgram.getName(),
-            "range_start": "0x%x" % start_addr,
-            "range_end": "0x%x" % end_addr,
+            "range_start": _format_addr(start_addr),
+            "range_end": _format_addr(end_addr),
             "lookahead": lookahead,
             "scan_all_blocks": scan_all,
             "adrp_seen": total_adrp,
-            "block_filter": [{"name": b.getName(), "start": "0x%x" % b.getStart().getOffset(), "end": "0x%x" % b.getEnd().getOffset()} for b in blocks],
+            "block_filter": [
+                {
+                    "name": b.getName(),
+                    "start": _format_addr(_s64(b.getStart().getOffset())),
+                    "end": _format_addr(_s64(b.getEnd().getOffset())),
+                }
+                for b in blocks
+            ],
         }
         with open(os.path.join(out_dir, "arm_const_base_scan.json"), "w") as f:
             json.dump({"meta": meta, "matches": matches}, f, indent=2, sort_keys=True)

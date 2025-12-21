@@ -139,6 +139,12 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="kernel_collection",
         description="Locate mac_policy_register call sites and recover arg pointers in the KC.",
     ),
+    "kernel-block-disasm": TaskConfig(
+        name="kernel-block-disasm",
+        script="kernel_block_disasm.py",
+        import_target="kernel",
+        description="Disassemble across matching KC memory blocks (prepares follow-on scans).",
+    ),
     "kernel-addr-lookup": TaskConfig(
         name="kernel-addr-lookup",
         script="kernel_addr_lookup.py",
@@ -193,6 +199,30 @@ TASKS: Dict[str, TaskConfig] = {
         import_target="sandbox_kext",
         description="Locate mac_policy_register call sites inside sandbox_kext.bin.",
     ),
+    "sandbox-kext-block-disasm": TaskConfig(
+        name="sandbox-kext-block-disasm",
+        script="kernel_block_disasm.py",
+        import_target="sandbox_kext",
+        description="Disassemble across matching sandbox kext blocks (e.g., __stubs).",
+    ),
+    "sandbox-kext-stub-got-map": TaskConfig(
+        name="sandbox-kext-stub-got-map",
+        script="kernel_stub_got_map.py",
+        import_target="sandbox_kext",
+        description="Map sandbox kext stubs to GOT entries (auth_got/auth_ptr/got).",
+    ),
+    "sandbox-kext-got-ref-sweep": TaskConfig(
+        name="sandbox-kext-got-ref-sweep",
+        script="kernel_got_ref_sweep.py",
+        import_target="sandbox_kext",
+        description="Define GOT entries and collect references in sandbox_kext.",
+    ),
+    "sandbox-kext-got-load-sweep": TaskConfig(
+        name="sandbox-kext-got-load-sweep",
+        script="kernel_got_load_sweep.py",
+        import_target="sandbox_kext",
+        description="Scan code for GOT loads or direct refs in sandbox_kext.",
+    ),
     "kernel-imm-search": TaskConfig(
         name="kernel-imm-search",
         script="kernel_imm_search.py",
@@ -204,6 +234,12 @@ TASKS: Dict[str, TaskConfig] = {
         script="kernel_arm_const_base_scan.py",
         import_target="kernel",
         description="Scan ADRP base materializations into a target address range.",
+    ),
+    "sandbox-kext-arm-const-base-scan": TaskConfig(
+        name="sandbox-kext-arm-const-base-scan",
+        script="kernel_arm_const_base_scan.py",
+        import_target="sandbox_kext",
+        description="Scan ADRP base materializations into a target address range in sandbox_kext.",
     ),
     "kernel-field2-mask-scan": TaskConfig(
         name="kernel-field2-mask-scan",

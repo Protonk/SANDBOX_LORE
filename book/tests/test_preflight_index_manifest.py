@@ -52,6 +52,15 @@ def _discover_examples_sbpl() -> set[str]:
     return out
 
 
+def _discover_tools_sbpl() -> set[str]:
+    out: set[str] = set()
+    root = ROOT / "book" / "tools" / "sbpl" / "corpus"
+    for p in root.rglob("*.sb"):
+        if p.is_file():
+            out.add(str(p.relative_to(ROOT)))
+    return out
+
+
 def _discover_book_blobs() -> set[str]:
     out: set[str] = set()
     root = ROOT / "book"
@@ -62,7 +71,13 @@ def _discover_book_blobs() -> set[str]:
 
 
 def _discover_inventory() -> set[str]:
-    return _discover_profiles_sbpl() | _discover_experiments_sbpl() | _discover_examples_sbpl() | _discover_book_blobs()
+    return (
+        _discover_profiles_sbpl()
+        | _discover_experiments_sbpl()
+        | _discover_examples_sbpl()
+        | _discover_tools_sbpl()
+        | _discover_book_blobs()
+    )
 
 
 def test_preflight_index_manifest_covers_current_inventory_and_is_current():

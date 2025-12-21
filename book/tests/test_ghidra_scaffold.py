@@ -11,6 +11,7 @@ class ScaffoldCommandTests(unittest.TestCase):
             build_id="unit",
             base=Path("/tmp/unit_base"),
             kernel=Path("/tmp/unit_base/kernel.kc"),
+            kernel_collection=Path("/tmp/unit_base/kernel_collection.kc"),
             sandbox_kext=Path("/tmp/unit_base/sandbox.kext"),
             userland=Path("/tmp/unit_base/userland.dylib"),
             profiles_dir=Path("/tmp/unit_base/profiles"),

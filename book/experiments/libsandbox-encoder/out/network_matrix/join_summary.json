@@ -89,6 +89,27 @@
         "0": 1
       }
     },
+    "pair_dp_all_inet_tcp_vs_order2": {
+      "a": "pair_dp_all_inet_tcp",
+      "b": "pair_dp_all_inet_tcp_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "intent": "Clause order check for a (domain+proto) require-all form.",
+      "pair_id": "pair_dp_all_inet_tcp_vs_order2",
+      "structural_role_counts": {
+        "record_header_byte": 2,
+        "u16_field_byte": 2
+      },
+      "tag_known_counts": {
+        "a_known": 4,
+        "b_known": 4
+      },
+      "u16_index_counts": {
+        "0": 2
+      }
+    },
     "pair_dp_all_inet_tcp_vs_system_tcp": {
       "a": "pair_dp_all_inet_tcp",
       "b": "pair_dp_all_system_tcp",
@@ -187,6 +208,27 @@
       },
       "u16_index_counts": {
         "0": 1
+      }
+    },
+    "pair_dt_all_inet_stream_vs_order2": {
+      "a": "pair_dt_all_inet_stream",
+      "b": "pair_dt_all_inet_stream_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "intent": "Clause order check for a (domain+type) require-all form.",
+      "pair_id": "pair_dt_all_inet_stream_vs_order2",
+      "structural_role_counts": {
+        "record_header_byte": 2,
+        "u16_field_byte": 2
+      },
+      "tag_known_counts": {
+        "a_known": 4,
+        "b_known": 4
+      },
+      "u16_index_counts": {
+        "0": 2
       }
     },
     "pair_dt_all_inet_stream_vs_system_stream": {
@@ -296,6 +338,27 @@
       },
       "u16_index_counts": {
         "0": 1
+      }
+    },
+    "pair_tp_all_stream_tcp_vs_order2": {
+      "a": "pair_tp_all_stream_tcp",
+      "b": "pair_tp_all_stream_tcp_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "intent": "Clause order check for a (type+proto) require-all form.",
+      "pair_id": "pair_tp_all_stream_tcp_vs_order2",
+      "structural_role_counts": {
+        "record_header_byte": 2,
+        "u16_field_byte": 2
+      },
+      "tag_known_counts": {
+        "a_known": 4,
+        "b_known": 4
+      },
+      "u16_index_counts": {
+        "0": 2
       }
     },
     "pair_tp_all_stream_tcp_vs_stream_256": {
@@ -683,8 +746,8 @@
   },
   "totals": {
     "outside_nodes": 216,
-    "record_header_byte": 263,
-    "u16_field_byte": 777
+    "record_header_byte": 269,
+    "u16_field_byte": 783
   },
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 }

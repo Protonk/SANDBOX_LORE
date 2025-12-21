@@ -430,6 +430,144 @@
       "pair_id": "pair_dt_all_inet_stream_vs_inet_dgram"
     },
     {
+      "a": "pair_dt_all_inet_stream",
+      "b": "pair_dt_all_inet_stream_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "diff_spans": [
+        {
+          "end_exclusive": 411,
+          "len": 2,
+          "start": 409
+        },
+        {
+          "end_exclusive": 419,
+          "len": 2,
+          "start": 417
+        }
+      ],
+      "diffs": [
+        {
+          "a_byte": 11,
+          "b_byte": 12,
+          "offset": 409,
+          "record": {
+            "fields_u16": [
+              2,
+              2,
+              7
+            ],
+            "kind": 11,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 2,
+          "b_byte": 1,
+          "offset": 410,
+          "record": {
+            "fields_u16": [
+              2,
+              2,
+              7
+            ],
+            "kind": 11,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 12,
+          "b_byte": 11,
+          "offset": 417,
+          "record": {
+            "fields_u16": [
+              1,
+              6,
+              7
+            ],
+            "kind": 12,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 1,
+          "b_byte": 2,
+          "offset": 418,
+          "record": {
+            "fields_u16": [
+              1,
+              6,
+              7
+            ],
+            "kind": 12,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        }
+      ],
+      "intent": "Clause order check for a (domain+type) require-all form.",
+      "lengths": {
+        "a": 492,
+        "b": 492
+      },
+      "pair_id": "pair_dt_all_inet_stream_vs_order2"
+    },
+    {
       "a": "pair_dt_any_inet_stream",
       "b": "pair_dt_any_system_stream",
       "diff_byte_count": 1,
@@ -710,6 +848,144 @@
         "b": 492
       },
       "pair_id": "pair_dp_all_inet_tcp_vs_inet_256"
+    },
+    {
+      "a": "pair_dp_all_inet_tcp",
+      "b": "pair_dp_all_inet_tcp_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "diff_spans": [
+        {
+          "end_exclusive": 411,
+          "len": 2,
+          "start": 409
+        },
+        {
+          "end_exclusive": 419,
+          "len": 2,
+          "start": 417
+        }
+      ],
+      "diffs": [
+        {
+          "a_byte": 11,
+          "b_byte": 13,
+          "offset": 409,
+          "record": {
+            "fields_u16": [
+              2,
+              2,
+              7
+            ],
+            "kind": 11,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 2,
+          "b_byte": 6,
+          "offset": 410,
+          "record": {
+            "fields_u16": [
+              2,
+              2,
+              7
+            ],
+            "kind": 11,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 13,
+          "b_byte": 11,
+          "offset": 417,
+          "record": {
+            "fields_u16": [
+              6,
+              6,
+              7
+            ],
+            "kind": 13,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 6,
+          "b_byte": 2,
+          "offset": 418,
+          "record": {
+            "fields_u16": [
+              6,
+              6,
+              7
+            ],
+            "kind": 13,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        }
+      ],
+      "intent": "Clause order check for a (domain+proto) require-all form.",
+      "lengths": {
+        "a": 492,
+        "b": 492
+      },
+      "pair_id": "pair_dp_all_inet_tcp_vs_order2"
     },
     {
       "a": "pair_dp_any_inet_tcp",
@@ -1070,6 +1346,144 @@
         "b": 492
       },
       "pair_id": "pair_tp_all_stream_tcp_vs_stream_256"
+    },
+    {
+      "a": "pair_tp_all_stream_tcp",
+      "b": "pair_tp_all_stream_tcp_order2",
+      "diff_byte_count": 4,
+      "diff_counts_by_section": {
+        "nodes:records": 4
+      },
+      "diff_spans": [
+        {
+          "end_exclusive": 411,
+          "len": 2,
+          "start": 409
+        },
+        {
+          "end_exclusive": 419,
+          "len": 2,
+          "start": 417
+        }
+      ],
+      "diffs": [
+        {
+          "a_byte": 12,
+          "b_byte": 13,
+          "offset": 409,
+          "record": {
+            "fields_u16": [
+              1,
+              2,
+              7
+            ],
+            "kind": 12,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 1,
+          "b_byte": 6,
+          "offset": 410,
+          "record": {
+            "fields_u16": [
+              1,
+              2,
+              7
+            ],
+            "kind": 12,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 408,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 13,
+          "b_byte": 12,
+          "offset": 417,
+          "record": {
+            "fields_u16": [
+              6,
+              6,
+              7
+            ],
+            "kind": 13,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "within_record_offset": 1
+          },
+          "section": "nodes:records"
+        },
+        {
+          "a_byte": 6,
+          "b_byte": 1,
+          "offset": 418,
+          "record": {
+            "fields_u16": [
+              6,
+              6,
+              7
+            ],
+            "kind": 13,
+            "layout": {
+              "edge_fields": [
+                0,
+                1
+              ],
+              "filter_id_field": null,
+              "payload_fields": [
+                2
+              ]
+            },
+            "record_start": 416,
+            "tag": 0,
+            "u16_index": 0,
+            "within_record_offset": 2
+          },
+          "section": "nodes:records"
+        }
+      ],
+      "intent": "Clause order check for a (type+proto) require-all form.",
+      "lengths": {
+        "a": 492,
+        "b": 492
+      },
+      "pair_id": "pair_tp_all_stream_tcp_vs_order2"
     },
     {
       "a": "pair_tp_any_stream_tcp",

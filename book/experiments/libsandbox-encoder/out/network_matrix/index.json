@@ -971,6 +971,66 @@
       }
     },
     {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_inet_stream_order2.sb.bin",
+      "compile": {
+        "length": 492,
+        "profile_type": 0
+      },
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8,
+        "words16_u16le": [
+          0,
+          8,
+          190,
+          0,
+          0,
+          0,
+          0,
+          7
+        ]
+      },
+      "op_entries_u16": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        7
+      ],
+      "record_count": 54,
+      "sbpl": "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_all_inet_stream_order2.sb",
+      "sections": {
+        "literal_pool": {
+          "end": 492,
+          "len": 26,
+          "start": 466
+        },
+        "nodes": {
+          "end": 466,
+          "len": 434,
+          "remainder_after_parse": 2,
+          "start": 32
+        },
+        "op_table": {
+          "end": 32,
+          "len": 16,
+          "start": 16
+        },
+        "preamble_len": 16
+      },
+      "spec_id": "pair_dt_all_inet_stream_order2",
+      "tag_counts": {
+        "0": 6,
+        "1": 2,
+        "3": 1,
+        "6": 15,
+        "7": 30
+      }
+    },
+    {
       "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_system_stream.sb.bin",
       "compile": {
         "length": 492,
@@ -1322,6 +1382,66 @@
         "preamble_len": 16
       },
       "spec_id": "pair_dp_all_inet_tcp",
+      "tag_counts": {
+        "0": 6,
+        "1": 2,
+        "3": 1,
+        "6": 15,
+        "7": 30
+      }
+    },
+    {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_tcp_order2.sb.bin",
+      "compile": {
+        "length": 492,
+        "profile_type": 0
+      },
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8,
+        "words16_u16le": [
+          0,
+          8,
+          190,
+          0,
+          0,
+          0,
+          0,
+          7
+        ]
+      },
+      "op_entries_u16": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        7
+      ],
+      "record_count": 54,
+      "sbpl": "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_inet_tcp_order2.sb",
+      "sections": {
+        "literal_pool": {
+          "end": 492,
+          "len": 26,
+          "start": 466
+        },
+        "nodes": {
+          "end": 466,
+          "len": 434,
+          "remainder_after_parse": 2,
+          "start": 32
+        },
+        "op_table": {
+          "end": 32,
+          "len": 16,
+          "start": 16
+        },
+        "preamble_len": 16
+      },
+      "spec_id": "pair_dp_all_inet_tcp_order2",
       "tag_counts": {
         "0": 6,
         "1": 2,
@@ -1802,6 +1922,66 @@
         "preamble_len": 16
       },
       "spec_id": "pair_tp_all_stream_tcp",
+      "tag_counts": {
+        "0": 6,
+        "1": 2,
+        "3": 1,
+        "6": 15,
+        "7": 30
+      }
+    },
+    {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_tcp_order2.sb.bin",
+      "compile": {
+        "length": 492,
+        "profile_type": 0
+      },
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8,
+        "words16_u16le": [
+          0,
+          8,
+          190,
+          0,
+          0,
+          0,
+          0,
+          7
+        ]
+      },
+      "op_entries_u16": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        6,
+        7
+      ],
+      "record_count": 54,
+      "sbpl": "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_stream_tcp_order2.sb",
+      "sections": {
+        "literal_pool": {
+          "end": 492,
+          "len": 26,
+          "start": 466
+        },
+        "nodes": {
+          "end": 466,
+          "len": 434,
+          "remainder_after_parse": 2,
+          "start": 32
+        },
+        "op_table": {
+          "end": 32,
+          "len": 16,
+          "start": 16
+        },
+        "preamble_len": 16
+      },
+      "spec_id": "pair_tp_all_stream_tcp_order2",
       "tag_counts": {
         "0": 6,
         "1": 2,
@@ -2462,6 +2642,12 @@
       "pair_id": "pair_dt_all_inet_stream_vs_inet_dgram"
     },
     {
+      "a": "pair_dt_all_inet_stream",
+      "b": "pair_dt_all_inet_stream_order2",
+      "intent": "Clause order check for a (domain+type) require-all form.",
+      "pair_id": "pair_dt_all_inet_stream_vs_order2"
+    },
+    {
       "a": "pair_dt_any_inet_stream",
       "b": "pair_dt_any_system_stream",
       "intent": "Domain delta inside a (domain+type) require-any form.",
@@ -2490,6 +2676,12 @@
       "b": "pair_dp_all_inet_256",
       "intent": "Attempt to witness a non-zero high byte for proto inside a (domain+proto) require-all form (TCP vs numeric 256).",
       "pair_id": "pair_dp_all_inet_tcp_vs_inet_256"
+    },
+    {
+      "a": "pair_dp_all_inet_tcp",
+      "b": "pair_dp_all_inet_tcp_order2",
+      "intent": "Clause order check for a (domain+proto) require-all form.",
+      "pair_id": "pair_dp_all_inet_tcp_vs_order2"
     },
     {
       "a": "pair_dp_any_inet_tcp",
@@ -2526,6 +2718,12 @@
       "b": "pair_tp_all_stream_256",
       "intent": "Attempt to witness a non-zero high byte for proto inside a (type+proto) require-all form (TCP vs numeric 256).",
       "pair_id": "pair_tp_all_stream_tcp_vs_stream_256"
+    },
+    {
+      "a": "pair_tp_all_stream_tcp",
+      "b": "pair_tp_all_stream_tcp_order2",
+      "intent": "Clause order check for a (type+proto) require-all form.",
+      "pair_id": "pair_tp_all_stream_tcp_vs_order2"
     },
     {
       "a": "pair_tp_any_stream_tcp",

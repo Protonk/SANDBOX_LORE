@@ -73,10 +73,16 @@ Recover the sandbox/mac_policy_conf and mac_policy_ops (plus registration site) 
   - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-mac-policy-register/registration_sites.json`
   - `dumps/ghidra/out/14.4.1-23E224/kernel-mac-policy-register/registration_sites.json`
   - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-adrp-add-scan/adrp_add_scan.json`
-  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-adrp-ldr-scan/adrp_ldr_scan.json`
+- `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-adrp-ldr-scan/adrp_ldr_scan.json`
   - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-adrp-ldr-got-scan/adrp_ldr_scan.json`
   - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-data-define/data_refs.json`
+  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-block-disasm/disasm_report.json`
+  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-stub-got-map/stub_got_map.json`
+  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-arm-const-base-scan/arm_const_base_scan.json`
+  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-got-ref-sweep/got_ref_sweep.json`
+  - `dumps/ghidra/out/14.4.1-23E224/sandbox-kext-got-load-sweep/got_load_sweep.json`
   - `book/experiments/mac-policy-registration/out/otool_indirect_symbols.txt`
+  - `book/experiments/mac-policy-registration/out/stub_targets.json`
 
 ## Status
 - Rebuilt sandbox kext from `BootKernelCollection.kc` via `rebuild_sandbox_kext.py` (LC_FILESET_ENTRY `com.apple.security.sandbox`), fixing load-command offsets and producing an arm64e Mach-O (~90 MB) suitable for Ghidra import. Script now supports `--all-matching` (enumerate/rebuild fileset names containing sandbox/seatbelt); this world only exposes `com.apple.security.sandbox` (also emitted as `sandbox_kext_com_apple_security_sandbox.bin`).
@@ -101,6 +107,12 @@ Recover the sandbox/mac_policy_conf and mac_policy_ops (plus registration site) 
 - `otool -Iv` shows the authenticated GOT entries for `_amfi_register_mac_policy` (`0xfffffe00084c7ea8`) and `_mac_policy_register` (`0xfffffe00084c80a0`) inside `__DATA_CONST,__auth_got`, but ADRP+ADD/ADRP+LDR scans and data-define/XREF checks report no callers.
 - The indirect-call scan now dumps `auth_got+auth_ptr+got` entries (332 total; no mac_policy symbol names) and still reports `indirect_call_sites: 0`.
 - Signed-address normalization in the ADRP+LDR auth_got sweep still yields `0` hits (`adrp_seen: 3452`, `ldr_literal_seen: 0`, `truncated_bases: 1508`).
+- A stub→GOT scan over exec blocks (no `__stubs` blocks present in this kext) reports `0` matches (`adrp_seen: 3648`, `branch_seen: 647`, `branch_hits: 0`), so no stub targets match the otool indirect symbols. The joined stub target list is empty (`stub_targets.json`, `target_count: 0`).
+- The BLR/BR register-dataflow path (MOV/MOVK aliasing + signed address normalization) still yields `call_site_count: 0` and `indirect_call_sites: 0`.
+- ADRP base scan for the `__auth_got` range (`sandbox-kext-arm-const-base-scan`) reports no ADRP bases in that range (`adrp_seen: 0`, `matches add:0 ldr:0`).
+- GOT reference sweep over `__auth_got/__auth_ptr/__got` defines 332 entries and finds 32 with any refs; the auth_got entries for `_mac_policy_register` and `_amfi_register_mac_policy` have `ref_count: 0` (`got_ref_sweep.json`).
+- GOT load sweep (`sandbox-kext-got-load-sweep`) finds zero direct refs or computed loads to the target auth_got entries, even with lookback 32 (`got_load_sweep.json`, `total_hits: 0` for the target-only scan).
+- A full GOT load sweep (no target filter) yields 766 direct refs, all into `__got`/`__auth_ptr` and none into `__auth_got` (`__got: 765`, `__auth_ptr: 1`, `__auth_got: 0`), so the target auth_got entries remain unreferenced.
 - Status: `blocked` for static-only registration-site recovery until stub/GOT resolution (or authenticated indirect-call tracing) is implemented.
 
 ## Runbook (registration-site scan, static)
@@ -111,6 +123,38 @@ export PYTHONPATH=$PWD
 
 python3 book/api/ghidra/run_task.py sandbox-kext-mac-policy-register \
   --process-existing --project-name sandbox_kext_14.4.1-23E224 --exec --script-args flow indirect-all all
+
+python3 book/api/ghidra/run_task.py sandbox-kext-block-disasm \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args text 4 0 1
+python3 book/api/ghidra/run_task.py sandbox-kext-stub-got-map \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args all 16 1
+
+PYTHONPATH=$PWD python3 book/experiments/mac-policy-registration/match_stub_got.py \
+  --build-id 14.4.1-23E224 \
+  --stub-map dumps/ghidra/out/14.4.1-23E224/sandbox-kext-stub-got-map/stub_got_map.json \
+  --otool book/experiments/mac-policy-registration/out/otool_indirect_symbols.txt \
+  --out book/experiments/mac-policy-registration/out/stub_targets.json
+python3 book/api/ghidra/run_task.py sandbox-kext-mac-policy-register \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args flow indirect-all all stub-targets=book/experiments/mac-policy-registration/out/stub_targets.json
+
+python3 book/api/ghidra/run_task.py sandbox-kext-arm-const-base-scan \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args 0x-1fff7b382e0 0x-1fff7b37981 16 all
+
+python3 book/api/ghidra/run_task.py sandbox-kext-got-ref-sweep \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args all
+
+python3 book/api/ghidra/run_task.py sandbox-kext-got-load-sweep \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args 32 all target_only=0x-1fff7b38158,0x-1fff7b38250
+
+python3 book/api/ghidra/run_task.py sandbox-kext-got-load-sweep \
+  --process-existing --project-name sandbox_kext_14.4.1-23E224 --no-analysis --exec \
+  --script-args 32 all
 python3 book/api/ghidra/run_task.py kernel-mac-policy-register \
   --process-existing --project-name sandbox_14.4.1-23E224_kc --no-analysis --exec
 

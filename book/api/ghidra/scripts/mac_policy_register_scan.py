@@ -9,6 +9,7 @@ Flags:
   indirect | scan-indirect   scan BLR/BLRAA call sites via __auth_got/__auth_ptr/__got
   indirect-all               include all indirect call sites (ignore query filter)
   all | scan-all             scan all blocks (skip sandbox-only filtering)
+  stub-targets=<json>        include explicit stub targets from match_stub_got.py output
 Defaults:
   query substrings = ["mac_policy_register", "mac_policy"]
 
@@ -26,6 +27,7 @@ from ghidra.program.model.mem import MemoryAccessException
 from ghidra.program.model.scalar import Scalar
 
 MASK64 = 0xFFFFFFFFFFFFFFFFL
+SIGN_BIT = 0x8000000000000000L
 _RUN = False
 
 
@@ -37,6 +39,45 @@ def _ensure_dir(path):
 def _u64(val):
     try:
         return long(val) & MASK64
+    except Exception:
+        return None
+
+
+def _s64(val):
+    try:
+        v = long(val) & MASK64
+    except Exception:
+        return None
+    if v & SIGN_BIT:
+        return v - (1 << 64)
+    return v
+
+
+def _format_addr(value):
+    if value is None:
+        return None
+    if value < 0:
+        return "0x-%x" % abs(value)
+    return "0x%x" % value
+
+
+def _parse_hex_address(value):
+    if value is None:
+        return None
+    if isinstance(value, (int, long)):
+        return int(value)
+    text = str(value).strip().lower()
+    if text.startswith("0x-"):
+        return -int(text[3:], 16)
+    if text.startswith("-0x"):
+        return -int(text[3:], 16)
+    if text.startswith("0x"):
+        value = int(text, 16)
+        if value & SIGN_BIT:
+            return value - (1 << 64)
+        return value
+    try:
+        return int(text, 0)
     except Exception:
         return None
 
@@ -99,7 +140,7 @@ def _first_address_operand(instr):
     for i in range(instr.getNumOperands()):
         for obj in instr.getOpObjects(i):
             if isinstance(obj, Address):
-                return obj.getOffset()
+                return _s64(obj.getOffset())
     return None
 
 
@@ -158,13 +199,13 @@ def _read_ptr(memory, addr):
     if addr is None or addr == 0:
         return None
     try:
-        return _u64(memory.getLong(toAddr(addr)))
+        return _u64(memory.getLong(toAddr(_s64(addr))))
     except (MemoryAccessException, Exception):
         return None
 
 
 def _result_value(value, source, instr=None):
-    out = {"value": "0x%x" % value, "source": source, "_value_int": value}
+    out = {"value": _format_addr(value), "source": source, "_value_int": value}
     if instr is not None:
         out["instruction"] = instr.toString()
     return out
@@ -185,16 +226,16 @@ def _resolve_reg_value(start_instr, reg_name, memory, max_back=40, depth=2):
             if base is None:
                 return {"value": None, "source": "adrp_no_addr", "instruction": instr.toString()}
             if pending:
-                value = _u64(base + pending["delta"])
+                value = _s64(base + pending["delta"])
                 if pending["kind"] == "ldr":
                     loaded = _read_ptr(memory, value)
                     res = _result_value(value, "%s+ldr" % mnemonic.lower(), instr)
-                    res["mem_addr"] = "0x%x" % value
+                    res["mem_addr"] = _format_addr(value)
                     if loaded is not None:
-                        res["loaded_value"] = "0x%x" % loaded
+                        res["loaded_value"] = _format_addr(loaded)
                     return res
                 return _result_value(value, "%s+%s" % (mnemonic.lower(), pending["kind"]), instr)
-            return _result_value(_u64(base), mnemonic.lower(), instr)
+            return _result_value(_s64(base), mnemonic.lower(), instr)
         if mnemonic in ("ADD", "SUB"):
             src_reg = _first_register_operand(instr, 1)
             scalar = _first_scalar_operand(instr)
@@ -210,7 +251,7 @@ def _resolve_reg_value(start_instr, reg_name, memory, max_back=40, depth=2):
                     base_val = _resolve_reg_value(instr.getPrevious(), src_norm, memory, max_back, depth - 1)
                     base_int = base_val.get("_value_int") if base_val else None
                     if base_int is not None:
-                        value = _u64(base_int + sign * scalar)
+                        value = _s64(base_int + sign * scalar)
                         res = _result_value(value, "%s+%s" % (base_val.get("source"), mnemonic.lower()), instr)
                         return res
         if mnemonic.startswith("LDR") or mnemonic.startswith("LDRA") or mnemonic.startswith("LDUR"):
@@ -227,31 +268,34 @@ def _resolve_reg_value(start_instr, reg_name, memory, max_back=40, depth=2):
                     base_val = _resolve_reg_value(instr.getPrevious(), base_norm, memory, max_back, depth - 1)
                     base_int = base_val.get("_value_int") if base_val else None
                     if base_int is not None:
-                        mem_addr = _u64(base_int + offset)
+                        mem_addr = _s64(base_int + offset)
                         loaded = _read_ptr(memory, mem_addr)
                         res = _result_value(mem_addr, "base+ldr", instr)
-                        res["mem_addr"] = "0x%x" % mem_addr
+                        res["mem_addr"] = _format_addr(mem_addr)
                         if loaded is not None:
-                            res["loaded_value"] = "0x%x" % loaded
+                            res["loaded_value"] = _format_addr(loaded)
                         res["base_reg"] = base_norm
                         res["base_source"] = base_val.get("source")
                         return res
             addr = _first_address_operand(instr)
             if addr is not None:
-                mem_addr = _u64(addr)
+                mem_addr = _s64(addr)
                 loaded = _read_ptr(memory, mem_addr)
                 res = _result_value(mem_addr, "ldr_literal", instr)
-                res["mem_addr"] = "0x%x" % mem_addr
+                res["mem_addr"] = _format_addr(mem_addr)
                 if loaded is not None:
-                    res["loaded_value"] = "0x%x" % loaded
+                    res["loaded_value"] = _format_addr(loaded)
                 return res
-        if mnemonic in ("MOV", "MOVZ", "MOVK"):
+        if mnemonic in ("MOV", "MOVZ", "MOVK", "MOVN", "ORR"):
             scalar = _first_scalar_operand(instr)
             if scalar is not None:
-                return _result_value(_u64(scalar), mnemonic.lower(), instr)
+                return _result_value(_s64(scalar), mnemonic.lower(), instr)
             src_reg = _first_register_operand(instr, 1)
             if src_reg:
-                return {"value": None, "source": "mov:%s" % _normalize_reg(src_reg), "instruction": instr.toString()}
+                reg_name = _normalize_reg(src_reg)
+                instr = instr.getPrevious()
+                steps += 1
+                continue
         return {"value": None, "source": mnemonic.lower(), "instruction": instr.toString()}
     return {"value": None, "source": "unresolved", "scan_limit": max_back}
 
@@ -263,7 +307,7 @@ def _clean_result(result, memory):
     value_int = result.pop("_value_int", None)
     if value_int is not None:
         try:
-            block = memory.getBlock(toAddr(value_int))
+            block = memory.getBlock(toAddr(_s64(value_int)))
             result["value_block"] = block.getName() if block else None
         except Exception:
             result["value_block"] = None
@@ -272,7 +316,7 @@ def _clean_result(result, memory):
 
 def _addr_in_blocks(addr, blocks):
     try:
-        a = toAddr(addr)
+        a = toAddr(_s64(addr))
     except Exception:
         return None
     for blk in blocks:
@@ -285,7 +329,7 @@ def _symbols_at_address(symtab, addr):
     names = []
     libs = []
     try:
-        sym_iter = symtab.getSymbols(toAddr(addr))
+        sym_iter = symtab.getSymbols(toAddr(_s64(addr)))
     except Exception:
         sym_iter = []
     for sym in sym_iter:
@@ -313,14 +357,14 @@ def _dump_got_entries(blocks, symtab, memory):
         while addr <= limit and not monitor.isCancelled():
             names, libs = _symbols_at_address(symtab, addr)
             entry = {
-                "address": "0x%x" % addr,
+                "address": _format_addr(_s64(addr)),
                 "block": blk.getName(),
                 "symbol_names": names,
                 "symbol_libraries": libs,
             }
             val = _read_ptr(memory, addr)
             if val is not None:
-                entry["pointer_value"] = "0x%x" % val
+                entry["pointer_value"] = _format_addr(_s64(val))
             entries.append(entry)
             addr += 8
     return entries
@@ -345,11 +389,12 @@ def _collect_target_symbols(substrings):
         block = memory.getBlock(addr)
         entry = {
             "name": name,
-            "address": "0x%x" % addr.getOffset(),
-            "_address_offset": addr.getOffset(),
+            "address": _format_addr(_s64(addr.getOffset())),
+            "_address_offset": _s64(addr.getOffset()),
             "symbol_type": sym.getSymbolType().toString(),
             "external": external,
             "block": block.getName() if block else None,
+            "kind": "symbol",
         }
         if external_loc:
             entry["library"] = external_loc.getLibraryName()
@@ -371,6 +416,44 @@ def _collect_target_symbols(substrings):
         _maybe_add(sym, external_loc=None, external=False)
 
     return targets
+
+
+def _load_stub_targets(path):
+    try:
+        with open(path, "r") as fh:
+            data = json.load(fh)
+    except Exception as exc:
+        return [], str(exc)
+    targets = data.get("targets") or data.get("matches") or []
+    return targets, None
+
+
+def _target_from_stub(stub, memory):
+    addr = _parse_hex_address(stub.get("address") or stub.get("stub_address"))
+    if addr is None:
+        return None
+    block = None
+    try:
+        block = memory.getBlock(toAddr(_s64(addr)))
+    except Exception:
+        block = None
+    entry = {
+        "name": stub.get("name") or stub.get("got_symbol") or "stub_target",
+        "address": _format_addr(addr),
+        "_address_offset": addr,
+        "symbol_type": "Stub",
+        "external": False,
+        "block": block.getName() if block else stub.get("stub_block"),
+        "kind": "stub",
+        "got_address": stub.get("got_address"),
+        "got_symbol": stub.get("got_symbol"),
+        "got_index": stub.get("got_index"),
+        "stub_kind": stub.get("stub_kind") or stub.get("kind"),
+        "stub_adrp": stub.get("stub_adrp") or stub.get("adrp"),
+        "stub_ldr": stub.get("stub_ldr") or stub.get("ldr"),
+        "stub_branch": stub.get("stub_branch") or stub.get("branch"),
+    }
+    return entry
 
 
 def _collect_call_sites(targets, max_back, depth, flow_scan, addr_set):
@@ -416,6 +499,9 @@ def _collect_call_sites(targets, max_back, depth, flow_scan, addr_set):
                     "target_name": target["name"],
                     "target_address": target["address"],
                     "target_library": target.get("library"),
+                    "target_kind": target.get("kind"),
+                    "target_got_address": target.get("got_address"),
+                    "target_got_symbol": target.get("got_symbol"),
                     "reference_type": rtype.getName(),
                     "function": {
                         "name": func.getName() if func else None,
@@ -458,6 +544,9 @@ def _collect_call_sites(targets, max_back, depth, flow_scan, addr_set):
                             "target_name": target["name"],
                             "target_address": target["address"],
                             "target_library": target.get("library"),
+                            "target_kind": target.get("kind"),
+                            "target_got_address": target.get("got_address"),
+                            "target_got_symbol": target.get("got_symbol"),
                             "reference_type": "flow",
                             "function": {
                                 "name": func.getName() if func else None,
@@ -554,8 +643,12 @@ def run():
         indirect_scan = False
         indirect_all = False
         scan_all = False
+        stub_targets_path = None
         for item in args[2:]:
             val = item.lower()
+            if val.startswith("stub-targets=") or val.startswith("stub_targets="):
+                stub_targets_path = item.split("=", 1)[1]
+                continue
             if val in ("flow", "scan-flows"):
                 flow_scan = True
                 continue
@@ -582,6 +675,14 @@ def run():
         addr_set = _block_set(blocks)
 
         targets = _collect_target_symbols(substrings)
+        stub_targets = []
+        stub_error = None
+        if stub_targets_path:
+            stub_targets, stub_error = _load_stub_targets(stub_targets_path)
+            for stub in stub_targets:
+                entry = _target_from_stub(stub, currentProgram.getMemory())
+                if entry:
+                    targets.append(entry)
         call_sites, flow_hits = _collect_call_sites(targets, max_back=40, depth=2, flow_scan=flow_scan, addr_set=addr_set)
         clean_targets = []
         for target in targets:
@@ -608,6 +709,9 @@ def run():
             "indirect_all": indirect_all,
             "indirect_call_sites": len(indirect_sites),
             "scan_all_blocks": scan_all,
+            "stub_targets_path": stub_targets_path,
+            "stub_target_count": len(stub_targets),
+            "stub_target_error": stub_error,
             "got_block_mode": got_mode if got_blocks else None,
             "scan_limits": {"max_back": 40, "depth": 2},
         }

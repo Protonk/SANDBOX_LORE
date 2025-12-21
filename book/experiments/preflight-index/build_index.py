@@ -81,6 +81,13 @@ def _discover_examples_sbpl() -> List[Path]:
     return sorted([p for p in root.rglob("*.sb") if p.is_file()])
 
 
+def _discover_tools_sbpl() -> List[Path]:
+    root = REPO_ROOT / "book" / "tools" / "sbpl" / "corpus"
+    if not root.exists():
+        return []
+    return sorted([p for p in root.rglob("*.sb") if p.is_file()])
+
+
 def _discover_book_blobs() -> List[Path]:
     root = REPO_ROOT / "book"
     if not root.exists():
@@ -96,6 +103,7 @@ def discover_inputs() -> List[InputRef]:
     - profiles_sbpl: book/profiles/**/*.sb
     - experiments_sbpl: book/experiments/**/*.sb (excluding out/)
     - examples_sbpl: book/examples/**/*.sb
+    - tools_sbpl: book/tools/sbpl/corpus/**/*.sb
     - book_blobs: book/**/*.sb.bin
     """
 
@@ -106,6 +114,8 @@ def discover_inputs() -> List[InputRef]:
         by_path.setdefault(p.resolve(), set()).add("experiments_sbpl")
     for p in _discover_examples_sbpl():
         by_path.setdefault(p.resolve(), set()).add("examples_sbpl")
+    for p in _discover_tools_sbpl():
+        by_path.setdefault(p.resolve(), set()).add("tools_sbpl")
     for p in _discover_book_blobs():
         by_path.setdefault(p.resolve(), set()).add("book_blobs")
 
@@ -148,6 +158,7 @@ def build_manifest(inputs: Sequence[InputRef]) -> Dict[str, Any]:
             "profiles_sbpl": "book/profiles/**/*.sb",
             "experiments_sbpl": "book/experiments/**/*.sb (excluding out/)",
             "examples_sbpl": "book/examples/**/*.sb",
+            "tools_sbpl": "book/tools/sbpl/corpus/**/*.sb",
             "book_blobs": "book/**/*.sb.bin",
         },
         "records": records,

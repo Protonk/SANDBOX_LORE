@@ -1,33 +1,38 @@
 {
   "counts": {
     "by_classification": {
-      "likely_apply_gated_for_harness_identity": 22,
-      "no_known_apply_gate_signature": 452
+      "likely_apply_gated_for_harness_identity": 26,
+      "no_known_apply_gate_signature": 513
     },
     "by_input_kind": {
-      "sbpl_blob_path": 262,
-      "sbpl_path": 212
+      "sbpl_blob_path": 265,
+      "sbpl_path": 274
     },
     "by_signature": {
       "apply_gate_blob_digest": 22,
-      "null": 452
+      "deny_message_filter": 4,
+      "null": 513
     },
     "by_source": {
       "book_blobs": {
         "likely_apply_gated_for_harness_identity": 22,
-        "no_known_apply_gate_signature": 240
+        "no_known_apply_gate_signature": 243
       },
       "examples_sbpl": {
         "no_known_apply_gate_signature": 3
       },
       "experiments_sbpl": {
-        "no_known_apply_gate_signature": 198
+        "no_known_apply_gate_signature": 201
       },
       "profiles_sbpl": {
         "no_known_apply_gate_signature": 11
+      },
+      "tools_sbpl": {
+        "likely_apply_gated_for_harness_identity": 4,
+        "no_known_apply_gate_signature": 55
       }
     },
-    "total_records": 474
+    "total_records": 539
   },
   "digest_groups": {
     "apply_gate_blob_digest": [
@@ -138,7 +143,11 @@
       "book/graph/concepts/validation/out/experiments/gate-witnesses/forensics/blastdoor/minimal_failing.sb.bin",
       "book/graph/concepts/validation/out/experiments/gate-witnesses/forensics/com.apple.CoreGraphics.CGPDFService/minimal_failing.sb.bin",
       "book/graph/concepts/validation/out/experiments/gate-witnesses/forensics/mach_bootstrap_deny_message_send/minimal_failing.sb.bin",
-      "book/graph/mappings/runtime/decoded_blobs/sys_airlock.sb.bin"
+      "book/graph/mappings/runtime/decoded_blobs/sys_airlock.sb.bin",
+      "book/tools/sbpl/corpus/gate-witness/airlock/minimal_failing.sb",
+      "book/tools/sbpl/corpus/gate-witness/blastdoor/minimal_failing.sb",
+      "book/tools/sbpl/corpus/gate-witness/com.apple.CoreGraphics.CGPDFService/minimal_failing.sb",
+      "book/tools/sbpl/corpus/gate-witness/mach_bootstrap_deny_message_send/minimal_failing.sb"
     ],
     "no_known_apply_gate_signature": [
       "book/examples/apple-scheme/profiles/demo.sb",
@@ -269,6 +278,7 @@
       "book/experiments/libsandbox-encoder/out/network_matrix/domain_af_system.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_256.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_tcp.sb.bin",
+      "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_tcp_order2.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_udp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_system_tcp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_any_inet_256.sb.bin",
@@ -277,6 +287,7 @@
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_any_system_tcp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_inet_dgram.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_inet_stream.sb.bin",
+      "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_inet_stream_order2.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_system_stream.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_any_inet_dgram.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_any_inet_stream.sb.bin",
@@ -284,6 +295,7 @@
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_dgram_tcp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_256.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_tcp.sb.bin",
+      "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_tcp_order2.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_udp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_any_dgram_tcp.sb.bin",
       "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_any_stream_256.sb.bin",
@@ -318,6 +330,7 @@
       "book/experiments/libsandbox-encoder/sb/network_matrix/domain_af_system.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_inet_256.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_inet_tcp.sb",
+      "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_inet_tcp_order2.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_inet_udp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_all_system_tcp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_any_inet_256.sb",
@@ -326,6 +339,7 @@
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dp_any_system_tcp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_all_inet_dgram.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_all_inet_stream.sb",
+      "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_all_inet_stream_order2.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_all_system_stream.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_any_inet_dgram.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_dt_any_inet_stream.sb",
@@ -333,6 +347,7 @@
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_dgram_tcp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_stream_256.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_stream_tcp.sb",
+      "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_stream_tcp_order2.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_all_stream_udp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_any_dgram_tcp.sb",
       "book/experiments/libsandbox-encoder/sb/network_matrix/pair_tp_any_stream_256.sb",
@@ -592,7 +607,62 @@
       "book/profiles/golden-triple/strict_1.sb",
       "book/profiles/golden-triple/strict_1.sb.bin",
       "book/profiles/textedit/application.sb",
-      "book/profiles/textedit/textedit-specialized.sb"
+      "book/profiles/textedit/textedit-specialized.sb",
+      "book/tools/sbpl/corpus/baseline/allow_all.sb",
+      "book/tools/sbpl/corpus/baseline/deny_all.sb",
+      "book/tools/sbpl/corpus/baseline/sample.sb",
+      "book/tools/sbpl/corpus/baseline/variant1.sb",
+      "book/tools/sbpl/corpus/gate-witness/airlock/passing_neighbor.sb",
+      "book/tools/sbpl/corpus/gate-witness/blastdoor/passing_neighbor.sb",
+      "book/tools/sbpl/corpus/gate-witness/com.apple.CoreGraphics.CGPDFService/passing_neighbor.sb",
+      "book/tools/sbpl/corpus/gate-witness/mach_bootstrap_deny_message_send/passing_neighbor.sb",
+      "book/tools/sbpl/corpus/golden-triple/bucket4_v1_read.sb",
+      "book/tools/sbpl/corpus/golden-triple/bucket5_v11_read_subpath.sb",
+      "book/tools/sbpl/corpus/golden-triple/metafilter_any.sb",
+      "book/tools/sbpl/corpus/golden-triple/strict_1.sb",
+      "book/tools/sbpl/corpus/network-matrix/domain_af_inet.sb",
+      "book/tools/sbpl/corpus/network-matrix/domain_af_system.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_tcp_order2.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_all_system_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dp_any_system_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_dgram.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_stream.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_stream_order2.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_all_system_stream.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_any_inet_dgram.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_any_inet_stream.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_dt_any_system_stream.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_all_dgram_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_tcp_order2.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_any_dgram_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/proto_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/proto_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/proto_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_inet_dgram_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_inet_stream_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_inet_stream_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_system_stream_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_tcp_order2.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_all_udp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_any_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_any_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_nested_256.sb",
+      "book/tools/sbpl/corpus/network-matrix/triple_nested_tcp.sb",
+      "book/tools/sbpl/corpus/network-matrix/type_sock_dgram.sb",
+      "book/tools/sbpl/corpus/network-matrix/type_sock_stream.sb"
     ]
   },
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"

@@ -753,6 +753,52 @@
       "type": 1
     },
     {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_inet_stream_order2.sb.bin",
+      "conflicts": [],
+      "domain": 2,
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8
+      },
+      "proto": null,
+      "sources": {
+        "domain": [
+          {
+            "blob_offset": 416,
+            "record": {
+              "kind": 11,
+              "tag": 0,
+              "u16": [
+                2,
+                6,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind11,u16[0]",
+            "value": 2
+          }
+        ],
+        "type": [
+          {
+            "blob_offset": 408,
+            "record": {
+              "kind": 12,
+              "tag": 0,
+              "u16": [
+                1,
+                2,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind12,u16[0]",
+            "value": 1
+          }
+        ]
+      },
+      "spec_id": "pair_dt_all_inet_stream_order2",
+      "type": 1
+    },
+    {
       "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dt_all_system_stream.sb.bin",
       "conflicts": [],
       "domain": 32,
@@ -1026,6 +1072,52 @@
         ]
       },
       "spec_id": "pair_dp_all_inet_tcp",
+      "type": null
+    },
+    {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_dp_all_inet_tcp_order2.sb.bin",
+      "conflicts": [],
+      "domain": 2,
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8
+      },
+      "proto": 6,
+      "sources": {
+        "domain": [
+          {
+            "blob_offset": 416,
+            "record": {
+              "kind": 11,
+              "tag": 0,
+              "u16": [
+                2,
+                6,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind11,u16[0]",
+            "value": 2
+          }
+        ],
+        "proto": [
+          {
+            "blob_offset": 408,
+            "record": {
+              "kind": 13,
+              "tag": 0,
+              "u16": [
+                6,
+                2,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind13,u16[0]",
+            "value": 6
+          }
+        ]
+      },
+      "spec_id": "pair_dp_all_inet_tcp_order2",
       "type": null
     },
     {
@@ -1394,6 +1486,52 @@
         ]
       },
       "spec_id": "pair_tp_all_stream_tcp",
+      "type": 1
+    },
+    {
+      "blob": "book/experiments/libsandbox-encoder/out/network_matrix/pair_tp_all_stream_tcp_order2.sb.bin",
+      "conflicts": [],
+      "domain": null,
+      "header": {
+        "format_variant": "modern-heuristic",
+        "op_count": 8
+      },
+      "proto": 6,
+      "sources": {
+        "proto": [
+          {
+            "blob_offset": 408,
+            "record": {
+              "kind": 13,
+              "tag": 0,
+              "u16": [
+                6,
+                2,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind13,u16[0]",
+            "value": 6
+          }
+        ],
+        "type": [
+          {
+            "blob_offset": 416,
+            "record": {
+              "kind": 12,
+              "tag": 0,
+              "u16": [
+                1,
+                6,
+                7
+              ]
+            },
+            "source": "pairwise:tag0,kind12,u16[0]",
+            "value": 1
+          }
+        ]
+      },
+      "spec_id": "pair_tp_all_stream_tcp_order2",
       "type": 1
     },
     {

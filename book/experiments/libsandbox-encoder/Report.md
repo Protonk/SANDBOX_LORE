@@ -87,6 +87,7 @@ Current strongest witnesses live in `out/network_matrix/blob_diffs.json`:
 - Pairwise combined forms (domain+type / domain+proto / type+proto; both `require-all` and `require-any`) show argument deltas in a different structural role: the varying arg lands in `u16_index=0` for a `tag=0` record whose kind byte matches the argument family (`0x0b`/`0x0c`/`0x0d` for domain/type/proto); see the `pair_*` diff pairs in `out/network_matrix/blob_diffs.json` and the rollups in `out/network_matrix/join_summary.json`.
 - Pairwise combined proto high-byte witness: the `pair_*_tcp_vs_*_256` pairs flip both bytes of the same `u16_index=0` slot (`within_record_offset=2/3`), matching a 16-bit proto value.
 - For the witnessed triple forms, domain/type/proto values live in the record header bytes: interpret `(tag,kind)` as a little-endian u16 value. Small values change only the tag byte (`within_record_offset=0`) because kind stays `0`; the proto 256 witness also flips the kind byte (`within_record_offset=1`) to carry the high byte; see `triple_*_tcp_vs_*_256` and `out/network_matrix/join_summary.json`.
+- Order-variant require-all pairs (`pair_dt_all_inet_stream_order2`, `pair_dp_all_inet_tcp_order2`, `pair_tp_all_stream_tcp_order2`) are included as cross-checks; their diffs span multiple bytes and are excluded from the small-diff join scoring (see `out/network_matrix/join_hypotheses.json`).
 
 This is sufficient to treat “network arg bytes are serialized into the compiled blob (nodes section)” as an experiment-local, world-scoped fact, and it provides a concrete join point for Phase B’s `_emit_network` disassembly.
 
@@ -111,18 +112,19 @@ The matrix now has explicit high-byte witnesses for proto in:
 - pairwise combined forms (`pair_*_tcp_vs_*_256`), and
 - triple combined forms (`triple_*_tcp_vs_*_256`).
 
-### How we plan to do it (static-first)
+### How we did it (static-first, current)
 
-- Re-run the Phase A network matrix pipeline to keep `out/network_matrix/*` current and to protect against accidental drift in probes/layout assumptions.
-- Extend the SBPL specimen matrix with a small set of new cases designed to falsify common confounders (pairwise combos, isolated triple variations, combinator/nesting/order variants).
-- Add an experiment-local join analyzer that:
-  - anchors on the diff offsets in `out/network_matrix/blob_diffs.json`,
-  - emits a normalized record keyed by `(spec_id, diff_offset)` with local byte windows and 8-byte boundary context, and
-  - attempts both interpretations explicitly (“arg bytes live inside a node record field” vs “arg bytes live in a separate packed condition-data slice that the current record-walk is misclassifying”).
-- Use the analyzer output to evaluate a small set of structural hypotheses across the whole matrix and select the *single* hypothesis that predicts all observed deltas without special-casing.
-- Once the mapping is stable, update `out/encoder_sites.json` so `_emit_network` has an evidence-backed, byte-level join to the compiled blob.
-- Gate the join with a guardrail test so future decoder/layout changes cannot silently break the mapping.
-- Keep the experiment-local blob oracle (`oracle_network_matrix.py`) in sync with the matrix and guard it with tests (so Phase B work can treat it as a reliable check).
+- Re-ran the Phase A network matrix pipeline to keep `out/network_matrix/*` current and to protect against accidental drift in probes/layout assumptions.
+- Extended the SBPL specimen matrix with order-variant require-all pairs for domain+type, domain+proto, and type+proto.
+- Added an experiment-local join analyzer (`analyze_network_join.py`) that scores small-diff pairs and emits `out/network_matrix/join_hypotheses.json`.
+- Used the analyzer output to score join hypotheses; the small-diff pairs are consistent across the single, pairwise, and triple patterns on this world (status `ok` in `join_hypotheses.json`).
+- Updated `out/encoder_sites.json` so `_emit_network` points at the join hypothesis summary alongside the diff/join artifacts.
+- Added an experiment-local guardrail (`check_network_join.py`) that fails if the join hypotheses report violations.
+- Kept the experiment-local blob oracle (`oracle_network_matrix.py`) in sync with the matrix (updated `out/network_matrix/oracle_tuples.json`).
+
+### Promotion proposal (when you want to harden this join)
+
+- Promote the join hypothesis summary into shared tooling only after another round of evidence (additional specimens or a second host baseline), then consider wiring the guardrail into `book/tests/` and updating shared decoder/oracle docs to cite the stable join.
 
 ## Phase B — artifacts and partial findings
 
@@ -131,6 +133,7 @@ The matrix now has explicit high-byte witnesses for proto in:
   - `_emit_network` emits three items (domain/type/proto) via `_emit` with widths {1,1,2} after padding to an 8-byte boundary when needed.
   - `_record_condition_data` threads emitted data into a per-op list/table (shape still under exploration).
   - The builder’s mutable buffer handle is consistently addressed at `builder+0xe98` across encoder helpers; `_compile` calls `_sb_mutable_buffer_make_immutable` on that handle.
+- Join hypothesis summary: `out/network_matrix/join_hypotheses.json` (experiment-local scoring) with guardrail `check_network_join.py`.
 - Static RE excerpts (world-scoped, but interpretation remains partial):
   - `out/static_re/emit_network.otool.txt`
   - `out/static_re/emit.otool.txt`
@@ -151,6 +154,8 @@ These are **static** witnesses from the dyld slice for this world; they do not e
   - `python3 book/experiments/libsandbox-encoder/run_network_matrix.py`
   - `python3 book/experiments/libsandbox-encoder/diff_network_matrix.py`
   - `python3 book/experiments/libsandbox-encoder/join_network_matrix.py`
+  - `python3 book/experiments/libsandbox-encoder/analyze_network_join.py`
+  - `python3 book/experiments/libsandbox-encoder/check_network_join.py`
   - `python3 book/experiments/libsandbox-encoder/oracle_network_matrix.py` (HISTORICAL)
   - `python -m book.api.profile_tools oracle network-matrix --manifest book/experiments/libsandbox-encoder/sb/network_matrix/MANIFEST.json --blob-dir book/experiments/libsandbox-encoder/out/network_matrix` (maintained oracle)
 
