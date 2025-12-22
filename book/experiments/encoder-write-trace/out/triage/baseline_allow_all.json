@@ -67,18 +67,24 @@
   "dyld_reachability": false,
   "hook_attempt": "hw_breakpoint",
   "hook_error": null,
-  "hook_hit_count": 223,
+  "hook_hit_count": 226,
   "hook_status": "ok",
   "hw_breakpoint": {
     "attempted": true,
     "bcr_value": "0x1e7",
     "breakpoint_index": 0,
     "breakpoint_set_ok": true,
+    "chunk_size": 1024,
     "debug_state_ok": true,
     "error": null,
     "exception_port_ok": true,
     "handler_thread_ok": true,
     "port_ok": true,
+    "prev_behavior": null,
+    "prev_flavor": null,
+    "prev_handler_ok": false,
+    "ring_dropped": 0,
+    "ring_size": 4096,
     "threads_armed": 1,
     "threads_scanned": 1
   },
@@ -137,5 +143,5 @@
   "vm_copy_restore_end_ok": false,
   "vm_copy_restore_ok": false,
   "vm_copy_start_ok": false,
-  "write_records": 223
+  "write_records": 226
 }

@@ -1,5 +1,11 @@
 {
   "fixup_counts": {
+    "cache_level_counts": {
+      "0": 1560,
+      "1": 12,
+      "2": 2735,
+      "3": 12
+    },
     "max_chain_len": 79,
     "page_coverage": {
       "__DATA": {
@@ -15,8 +21,45 @@
         "pages_with_fixups": 521
       }
     },
+    "page_start_mode_counts": {
+      "multi_count": 0,
+      "multi_sentinel": 0,
+      "single": 586
+    },
     "pointer_format_counts": {
       "8": 4319
+    },
+    "resolved_counts": {
+      "resolved_in_entry": 3844,
+      "resolved_in_exec": 732,
+      "resolved_outside": 451,
+      "unresolved_unknown_base": 24
+    },
+    "resolved_counts_by_cache_level": {
+      "0": {
+        "resolved_in_entry": 1117,
+        "resolved_in_exec": 28,
+        "resolved_outside": 443,
+        "unresolved_unknown_base": 0
+      },
+      "1": {
+        "resolved_in_entry": 0,
+        "resolved_in_exec": 0,
+        "resolved_outside": 0,
+        "unresolved_unknown_base": 12
+      },
+      "2": {
+        "resolved_in_entry": 2727,
+        "resolved_in_exec": 704,
+        "resolved_outside": 8,
+        "unresolved_unknown_base": 0
+      },
+      "3": {
+        "resolved_in_entry": 0,
+        "resolved_in_exec": 0,
+        "resolved_outside": 0,
+        "unresolved_unknown_base": 12
+      }
     },
     "segment_counts": {
       "__DATA": 142,
@@ -25,10 +68,49 @@
     "total_fixups": 4319
   },
   "meta": {
+    "base_pointer_inference": {
+      "base0": 18446741874803752960,
+      "coverage_metric": "resolved_in_entry/total",
+      "levels": {
+        "0": {
+          "base_candidate": 18446741874803752960,
+          "chosen_base": 18446741874803752960,
+          "coverage": 0.716025641025641,
+          "coverage_hits": 1117,
+          "coverage_total": 1560,
+          "status": "seed"
+        },
+        "1": {
+          "base_candidate": 18446741874803752960,
+          "chosen_base": null,
+          "coverage": 0.08333333333333333,
+          "coverage_hits": 1,
+          "coverage_total": 12,
+          "status": "unresolved"
+        },
+        "2": {
+          "base_candidate": 18446741874803752960,
+          "chosen_base": 18446741874803752960,
+          "coverage": 0.9970749542961609,
+          "coverage_hits": 2727,
+          "coverage_total": 2735,
+          "status": "inferred_base0"
+        },
+        "3": {
+          "base_candidate": 18446741874803752960,
+          "chosen_base": null,
+          "coverage": 0.0,
+          "coverage_hits": 0,
+          "coverage_total": 12,
+          "status": "unresolved"
+        }
+      },
+      "threshold": 0.95
+    },
     "base_pointers": {
       "0": 18446741874803752960,
       "1": null,
-      "2": null,
+      "2": 18446741874803752960,
       "3": null
     },
     "build_id": "14.4.1-23E224",
@@ -48,14 +130,54 @@
         "target_bits": 30
       }
     },
-    "fixups_dataoff": 104251392,
-    "fixups_datasize": 1884,
+    "fixups_dataoff": {
+      "decoded": {
+        "cache_level": 0,
+        "is_auth": true,
+        "next_delta": 0,
+        "target": 30978584
+      },
+      "fileoff": 10731520,
+      "next_offset": 0,
+      "page_chain_start": 0,
+      "page_index": 0,
+      "page_start": 0,
+      "pointer_format": 8,
+      "raw": 9228157111489835544,
+      "segment_index": 2,
+      "segment_name": "__DATA_CONST",
+      "vmaddr": 18446741874814484480
+    },
+    "fixups_datasize": {
+      "decoded": {
+        "cache_level": 0,
+        "is_auth": true,
+        "next_delta": 3245,
+        "target": 22219032
+      },
+      "fileoff": 11059200,
+      "next_offset": 12980,
+      "page_chain_start": 0,
+      "page_index": 20,
+      "page_start": 0,
+      "pointer_format": 8,
+      "raw": 9228083087719729432,
+      "segment_index": 2,
+      "segment_name": "__DATA_CONST",
+      "vmaddr": 18446741874814812160
+    },
     "fixups_jsonl": "book/experiments/mac-policy-registration/out/kc_fixups.jsonl",
     "fixups_version": 0,
     "imports_count": 0,
     "imports_format": 1,
     "imports_offset": 1884,
     "kc_path": "dumps/Sandbox-private/14.4.1-23E224/kernel/BootKernelCollection.kc",
+    "page_start_modes": {
+      "multi_count": "page_start points to list with count prefix",
+      "multi_sentinel": "page_start points to list with 0xFFFF sentinel",
+      "single": "page_start is direct chain offset",
+      "status": "under_exploration"
+    },
     "starts_offset": 28,
     "symbols_format": 0,
     "symbols_offset": 1884,

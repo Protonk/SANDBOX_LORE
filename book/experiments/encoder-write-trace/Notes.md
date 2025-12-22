@@ -24,3 +24,8 @@
 - Added a hardware-breakpoint hook (Mach exception port + ARM_DEBUG_STATE64) and a new `hw_breakpoint` mode.
 - Generated `harness/mach_exc_server.c` and `harness/mach_exc_server.h` via `mig` from `mach_exc.defs` to back the exception server.
 - Ran `run_trace.py --mode hw_breakpoint --only-id baseline_allow_all --allow-zero-hits`; hook armed successfully and recorded 271 write records in `out/traces/baseline_allow_all.jsonl` with `hook_status: ok` in triage.
+- Hardened `hw_breakpoint` handling with exception forwarding, a ring-buffer write queue, and a background flush thread to keep the exception handler minimal (no stdio/malloc/locks in the hot path).
+- Added `mach_exc_user.c`/`.h` and updated `harness/build_interposer.sh` to link the forwarding stubs.
+- A strict PC == target filter caused `SIGTRAP` aborts during `baseline_allow_all` compilation; adjusted the PC comparison to tolerate the next-instruction address (`target+4`) for AArch64 debug exceptions.
+- Ran `run_trace.py --mode hw_breakpoint --only-id baseline_allow_all` after the PC adjustment; trace emitted 226 records and completed without abort.
+- Ran `analyze_trace.py` and `check_trace_join.py`; outputs written to `out/trace_analysis.json` and `out/trace_join_check.json` (join check skipped network pairs because only `baseline_allow_all` is present in the trace manifest).

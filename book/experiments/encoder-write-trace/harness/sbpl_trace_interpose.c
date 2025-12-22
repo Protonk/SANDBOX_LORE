@@ -12,12 +12,14 @@
 #include <mach/mach_error.h>
 #include <mach/mach_vm.h>
 #include <mach/vm_region.h>
+#include <mach/exc.h>
 #include <mach/arm/thread_status.h>
 #include <mach/arm/exception.h>
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
 #include <ctype.h>
 #include "mach_exc_server.h"
+#include "mach_exc_user.h"
 #if defined(__arm64e__)
 #include <ptrauth.h>
 #endif
@@ -32,13 +34,34 @@ static const char *g_trace_mode = NULL;
 static uint64_t g_seq = 0;
 static __thread int g_in_hook = 0;
 static const char *k_target_symbol = "_sb_mutable_buffer_write";
-static pthread_mutex_t g_hw_lock = PTHREAD_MUTEX_INITIALIZER;
 static mach_port_t g_hw_exception_port = MACH_PORT_NULL;
 static int g_hw_server_running = 0;
 static int g_hw_break_index = 0;
 static uint64_t g_hw_bcr_value = 0;
 static int g_hw_step_active = 0;
 static uint64_t g_hw_target_addr = 0;
+static mach_port_t g_hw_prev_port = MACH_PORT_NULL;
+static exception_behavior_t g_hw_prev_behavior = 0;
+static thread_state_flavor_t g_hw_prev_flavor = 0;
+static int g_hw_prev_valid = 0;
+
+#define HW_RING_SIZE 4096
+#define HW_CHUNK_SIZE 1024
+
+struct hw_ring_entry {
+    uint32_t ready;
+    uint32_t len;
+    uint64_t seq;
+    void *buf;
+    uint64_t cursor;
+    uint8_t bytes[HW_CHUNK_SIZE];
+};
+
+static struct hw_ring_entry g_hw_ring[HW_RING_SIZE];
+static volatile uint64_t g_hw_ring_write = 0;
+static volatile uint64_t g_hw_ring_read = 0;
+static volatile uint64_t g_hw_ring_dropped = 0;
+static int g_hw_flush_running = 0;
 
 typedef void (*sb_write_fn)(void *buf, uint64_t cursor, const void *data, uint64_t len);
 static sb_write_fn g_original = NULL;
@@ -177,11 +200,10 @@ static void triage_emit(
     const char *hook_error
 );
 
-static void emit_record(void *buf, uint64_t cursor, const void *data, uint64_t len) {
+static void emit_record_bytes(uint64_t seq, void *buf, uint64_t cursor, const uint8_t *data, uint64_t len) {
     if (!g_trace_fp) {
         return;
     }
-    uint64_t seq = ++g_seq;
     fprintf(g_trace_fp, "{\"seq\":%llu,", (unsigned long long)seq);
     fputs("\"input\":", g_trace_fp);
     json_escape(g_trace_fp, g_trace_input);
@@ -189,8 +211,84 @@ static void emit_record(void *buf, uint64_t cursor, const void *data, uint64_t l
     fprintf(g_trace_fp, "\"cursor\":%llu,", (unsigned long long)cursor);
     fprintf(g_trace_fp, "\"len\":%llu,", (unsigned long long)len);
     fputs("\"bytes_hex\":\"", g_trace_fp);
-    emit_hex(g_trace_fp, (const uint8_t *)data, len);
+    emit_hex(g_trace_fp, data, len);
     fputs("\"}\n", g_trace_fp);
+}
+
+static int hw_ring_push_chunk(void *buf, uint64_t cursor, const uint8_t *data, uint32_t len) {
+    uint64_t idx = __atomic_fetch_add(&g_hw_ring_write, 1, __ATOMIC_RELAXED);
+    uint64_t read = __atomic_load_n(&g_hw_ring_read, __ATOMIC_ACQUIRE);
+    if (idx - read >= HW_RING_SIZE) {
+        __atomic_fetch_add(&g_hw_ring_dropped, 1, __ATOMIC_RELAXED);
+        return 0;
+    }
+    struct hw_ring_entry *entry = &g_hw_ring[idx % HW_RING_SIZE];
+    entry->ready = 0;
+    entry->len = len;
+    entry->seq = __atomic_add_fetch(&g_seq, 1, __ATOMIC_RELAXED);
+    entry->buf = buf;
+    entry->cursor = cursor;
+    if (len > 0) {
+        memcpy(entry->bytes, data, len);
+    }
+    __atomic_store_n(&entry->ready, 1, __ATOMIC_RELEASE);
+    return 1;
+}
+
+static int hw_ring_enqueue(void *buf, uint64_t cursor, const uint8_t *data, uint64_t len) {
+    if (!data && len > 0) {
+        return 0;
+    }
+    if (len == 0) {
+        return hw_ring_push_chunk(buf, cursor, data, 0);
+    }
+    uint64_t offset = 0;
+    int pushed = 0;
+    while (offset < len) {
+        uint32_t chunk = (uint32_t)((len - offset) > HW_CHUNK_SIZE ? HW_CHUNK_SIZE : (len - offset));
+        if (!hw_ring_push_chunk(buf, cursor + offset, data + offset, chunk)) {
+            break;
+        }
+        offset += chunk;
+        pushed++;
+    }
+    return pushed;
+}
+
+static int hw_flush_ring(void) {
+    int wrote = 0;
+    while (1) {
+        uint64_t read = __atomic_load_n(&g_hw_ring_read, __ATOMIC_ACQUIRE);
+        uint64_t write = __atomic_load_n(&g_hw_ring_write, __ATOMIC_ACQUIRE);
+        if (read >= write) {
+            break;
+        }
+        struct hw_ring_entry *entry = &g_hw_ring[read % HW_RING_SIZE];
+        if (!__atomic_load_n(&entry->ready, __ATOMIC_ACQUIRE)) {
+            break;
+        }
+        trace_open();
+        if (g_trace_fp) {
+            pthread_mutex_lock(&g_trace_lock);
+            emit_record_bytes(entry->seq, entry->buf, entry->cursor, entry->bytes, entry->len);
+            pthread_mutex_unlock(&g_trace_lock);
+        }
+        entry->ready = 0;
+        __atomic_store_n(&g_hw_ring_read, read + 1, __ATOMIC_RELEASE);
+        wrote++;
+    }
+    return wrote;
+}
+
+static void *hw_flush_thread(void *arg) {
+    (void)arg;
+    while (__atomic_load_n(&g_hw_flush_running, __ATOMIC_ACQUIRE)) {
+        if (hw_flush_ring() == 0) {
+            usleep(1000);
+        }
+    }
+    hw_flush_ring();
+    return NULL;
 }
 
 static void sbpl_trace_write_hook(void *buf, uint64_t cursor, const void *data, uint64_t len) {
@@ -206,7 +304,8 @@ static void sbpl_trace_write_hook(void *buf, uint64_t cursor, const void *data, 
     trace_open();
     if (g_trace_fp) {
         pthread_mutex_lock(&g_trace_lock);
-        emit_record(buf, cursor, data, len);
+        uint64_t seq = __atomic_add_fetch(&g_seq, 1, __ATOMIC_RELAXED);
+        emit_record_bytes(seq, buf, cursor, (const uint8_t *)data, len);
         pthread_mutex_unlock(&g_trace_lock);
     }
     if (real) {
@@ -336,10 +435,16 @@ struct hw_breakpoint_report {
     int exception_port_ok;
     int debug_state_ok;
     int breakpoint_set_ok;
+    int prev_handler_ok;
     int threads_scanned;
     int threads_armed;
     int breakpoint_index;
     uint64_t bcr_value;
+    uint64_t ring_dropped;
+    uint32_t ring_size;
+    uint32_t chunk_size;
+    int prev_behavior;
+    int prev_flavor;
     char error[256];
 };
 
@@ -487,7 +592,9 @@ static int hw_breakpoint_update_state(
     mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
     kern_return_t kr = thread_get_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg, &count);
     if (kr != KERN_SUCCESS) {
-        snprintf(err, err_len, "thread_get_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        if (err && err_len > 0) {
+            snprintf(err, err_len, "thread_get_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        }
         return 0;
     }
     if (enable) {
@@ -503,7 +610,9 @@ static int hw_breakpoint_update_state(
     }
     kr = thread_set_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg, count);
     if (kr != KERN_SUCCESS) {
-        snprintf(err, err_len, "thread_set_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        if (err && err_len > 0) {
+            snprintf(err, err_len, "thread_set_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        }
         return 0;
     }
     return 1;
@@ -513,7 +622,9 @@ static int hw_breakpoint_update_state(
     (void)bcr_value;
     (void)enable;
     (void)single_step;
-    snprintf(err, err_len, "hardware breakpoints unavailable on this architecture");
+    if (err && err_len > 0) {
+        snprintf(err, err_len, "hardware breakpoints unavailable on this architecture");
+    }
     return 0;
 #endif
 }
@@ -534,6 +645,10 @@ static int install_hw_breakpoint(
         memset(report, 0, sizeof(*report));
         report->attempted = 1;
         report->breakpoint_index = g_hw_break_index;
+        report->ring_size = HW_RING_SIZE;
+        report->chunk_size = HW_CHUNK_SIZE;
+        report->prev_behavior = -1;
+        report->prev_flavor = -1;
     }
     if (!target) {
         snprintf(err, err_len, "target address unavailable");
@@ -587,23 +702,71 @@ static int install_hw_breakpoint(
         report->handler_thread_ok = 1;
     }
 
+    if (!__atomic_load_n(&g_hw_flush_running, __ATOMIC_ACQUIRE)) {
+        __atomic_store_n(&g_hw_flush_running, 1, __ATOMIC_RELEASE);
+        pthread_t flush_thr;
+        int rc = pthread_create(&flush_thr, NULL, hw_flush_thread, NULL);
+        if (rc != 0) {
+            __atomic_store_n(&g_hw_flush_running, 0, __ATOMIC_RELEASE);
+            snprintf(err, err_len, "pthread_create(flush) failed: %s", strerror(rc));
+            if (report) {
+                snprintf(report->error, sizeof(report->error), "pthread_create(flush) failed: %s", strerror(rc));
+            }
+            return 0;
+        }
+        pthread_detach(flush_thr);
+    }
+
     thread_t thread = mach_thread_self();
-    kr = thread_set_exception_ports(
+    exception_mask_t masks[1] = {0};
+    mach_msg_type_number_t mask_count = 1;
+    exception_handler_t handlers[1] = {MACH_PORT_NULL};
+    exception_behavior_t behaviors[1] = {0};
+    thread_state_flavor_t flavors[1] = {0};
+    if (g_hw_prev_valid && g_hw_prev_port != MACH_PORT_NULL) {
+        mach_port_deallocate(mach_task_self(), g_hw_prev_port);
+    }
+    g_hw_prev_port = MACH_PORT_NULL;
+    g_hw_prev_behavior = 0;
+    g_hw_prev_flavor = 0;
+    g_hw_prev_valid = 0;
+
+    kr = thread_swap_exception_ports(
         thread,
         EXC_MASK_BREAKPOINT,
         g_hw_exception_port,
         EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
-        ARM_THREAD_STATE64
+        ARM_THREAD_STATE64,
+        masks,
+        &mask_count,
+        handlers,
+        behaviors,
+        flavors
     );
     if (kr != KERN_SUCCESS) {
-        snprintf(err, err_len, "thread_set_exception_ports failed: %s", mach_err_str(kr));
+        snprintf(err, err_len, "thread_swap_exception_ports failed: %s", mach_err_str(kr));
         if (report) {
-            snprintf(report->error, sizeof(report->error), "thread_set_exception_ports failed: %s", mach_err_str(kr));
+            snprintf(report->error, sizeof(report->error), "thread_swap_exception_ports failed: %s", mach_err_str(kr));
         }
         return 0;
     }
     if (report) {
         report->exception_port_ok = 1;
+    }
+    for (mach_msg_type_number_t i = 0; i < mask_count; i++) {
+        if (masks[i] & EXC_MASK_BREAKPOINT) {
+            g_hw_prev_port = handlers[i];
+            g_hw_prev_behavior = behaviors[i];
+            g_hw_prev_flavor = flavors[i];
+            g_hw_prev_valid = (handlers[i] != MACH_PORT_NULL);
+            if (report && g_hw_prev_valid) {
+                report->prev_handler_ok = 1;
+                report->prev_behavior = (int)g_hw_prev_behavior;
+                report->prev_flavor = (int)g_hw_prev_flavor;
+            }
+        } else if (handlers[i] != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), handlers[i]);
+        }
     }
 
     g_hw_bcr_value = hw_breakpoint_control();
@@ -622,7 +785,9 @@ static int install_hw_breakpoint(
         report->breakpoint_set_ok = 1;
         report->threads_scanned = 1;
         report->threads_armed = 1;
+        report->ring_dropped = __atomic_load_n(&g_hw_ring_dropped, __ATOMIC_ACQUIRE);
     }
+    __atomic_store_n(&g_hw_step_active, 0, __ATOMIC_RELAXED);
     return 1;
 #else
     snprintf(err, err_len, "hardware breakpoints unsupported on this architecture");
@@ -633,28 +798,63 @@ static int install_hw_breakpoint(
 #endif
 }
 
-static void hw_emit_record_from_thread(thread_t thread) {
+static int hw_read_thread_state(thread_t thread, arm_thread_state64_t *out) {
 #if defined(__arm64__) || defined(__aarch64__)
-    arm_thread_state64_t ts;
+    if (!out) {
+        return 0;
+    }
     mach_msg_type_number_t count = ARM_THREAD_STATE64_COUNT;
-    kern_return_t kr = thread_get_state(thread, ARM_THREAD_STATE64, (thread_state_t)&ts, &count);
-    if (kr != KERN_SUCCESS) {
-        return;
-    }
-    void *buf = (void *)(uintptr_t)ARM_TS_X(ts, 0);
-    uint64_t cursor = (uint64_t)ARM_TS_X(ts, 1);
-    const void *data = (const void *)(uintptr_t)ARM_TS_X(ts, 2);
-    uint64_t len = (uint64_t)ARM_TS_X(ts, 3);
-
-    trace_open();
-    if (g_trace_fp) {
-        pthread_mutex_lock(&g_trace_lock);
-        emit_record(buf, cursor, data, len);
-        pthread_mutex_unlock(&g_trace_lock);
-    }
+    kern_return_t kr = thread_get_state(thread, ARM_THREAD_STATE64, (thread_state_t)out, &count);
+    return (kr == KERN_SUCCESS);
 #else
     (void)thread;
+    (void)out;
+    return 0;
 #endif
+}
+
+static void hw_capture_from_state(const arm_thread_state64_t *ts) {
+#if defined(__arm64__) || defined(__aarch64__)
+    if (!ts) {
+        return;
+    }
+    void *buf = (void *)(uintptr_t)ARM_TS_X((*ts), 0);
+    uint64_t cursor = (uint64_t)ARM_TS_X((*ts), 1);
+    const uint8_t *data = (const uint8_t *)(uintptr_t)ARM_TS_X((*ts), 2);
+    uint64_t len = (uint64_t)ARM_TS_X((*ts), 3);
+    hw_ring_enqueue(buf, cursor, data, len);
+#else
+    (void)ts;
+#endif
+}
+
+static kern_return_t hw_forward_exception(
+    mach_port_t thread,
+    mach_port_t task,
+    exception_type_t exception,
+    mach_exception_data_t code,
+    mach_msg_type_number_t codeCnt
+) {
+    if (!g_hw_prev_valid || g_hw_prev_port == MACH_PORT_NULL) {
+        return KERN_FAILURE;
+    }
+    exception_behavior_t behavior = g_hw_prev_behavior;
+    exception_behavior_t base = behavior & ~MACH_EXCEPTION_CODES;
+    if (base != EXCEPTION_DEFAULT) {
+        return KERN_FAILURE;
+    }
+    if (behavior & MACH_EXCEPTION_CODES) {
+        return mach_exception_raise(g_hw_prev_port, thread, task, exception, code, codeCnt);
+    }
+    exception_data_type_t local_code[2] = {0, 0};
+    mach_msg_type_number_t count = codeCnt;
+    if (count > 2) {
+        count = 2;
+    }
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        local_code[i] = (exception_data_type_t)code[i];
+    }
+    return exception_raise(g_hw_prev_port, thread, task, exception, local_code, count);
 }
 
 kern_return_t catch_mach_exception_raise(
@@ -668,33 +868,71 @@ kern_return_t catch_mach_exception_raise(
     (void)exception_port;
     (void)code;
     (void)codeCnt;
-    if (exception != EXC_BREAKPOINT) {
+    int is_breakpoint_exc = (exception == EXC_BREAKPOINT);
+    int is_step_exc = (exception == EXC_BREAKPOINT || exception == EXC_SOFTWARE);
+    if (!is_breakpoint_exc && !is_step_exc) {
+        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
         if (thread != MACH_PORT_NULL) {
             mach_port_deallocate(mach_task_self(), thread);
         }
         if (task != MACH_PORT_NULL) {
             mach_port_deallocate(mach_task_self(), task);
         }
-        return KERN_FAILURE;
+        return forward;
     }
 
-    pthread_mutex_lock(&g_hw_lock);
-    int step_active = g_hw_step_active;
-    if (!step_active) {
-        hw_emit_record_from_thread(thread);
-        g_hw_step_active = 1;
+    arm_thread_state64_t ts;
+    int has_state = hw_read_thread_state(thread, &ts);
+    if (!has_state) {
+        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
+        if (thread != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), thread);
+        }
+        if (task != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), task);
+        }
+        return forward;
+    }
+    uint64_t pc = ARM_TS_PC(ts);
+    uint64_t pc_aligned = pc & ~0x3ULL;
+    int step_active = __atomic_load_n(&g_hw_step_active, __ATOMIC_RELAXED);
+    int is_target = (pc_aligned == g_hw_target_addr) ||
+                    (pc_aligned == (g_hw_target_addr + 4));
+    if (!is_target && !step_active) {
+        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
+        if (thread != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), thread);
+        }
+        if (task != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), task);
+        }
+        return forward;
+    }
+
+    if (step_active && !is_step_exc) {
+        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
+        if (thread != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), thread);
+        }
+        if (task != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), task);
+        }
+        return forward;
+    }
+
+    if (!step_active && is_target) {
+        hw_capture_from_state(&ts);
+        __atomic_store_n(&g_hw_step_active, 1, __ATOMIC_RELAXED);
     } else {
-        g_hw_step_active = 0;
+        __atomic_store_n(&g_hw_step_active, 0, __ATOMIC_RELAXED);
     }
 
-    char err_buf[256] = {0};
     int ok = 0;
     if (step_active) {
-        ok = hw_breakpoint_update_state(thread, g_hw_target_addr, g_hw_bcr_value, 1, 0, err_buf, sizeof(err_buf));
+        ok = hw_breakpoint_update_state(thread, g_hw_target_addr, g_hw_bcr_value, 1, 0, NULL, 0);
     } else {
-        ok = hw_breakpoint_update_state(thread, 0, g_hw_bcr_value, 0, 1, err_buf, sizeof(err_buf));
+        ok = hw_breakpoint_update_state(thread, 0, g_hw_bcr_value, 0, 1, NULL, 0);
     }
-    pthread_mutex_unlock(&g_hw_lock);
 
     if (thread != MACH_PORT_NULL) {
         mach_port_deallocate(mach_task_self(), thread);
@@ -961,12 +1199,28 @@ static void triage_emit(
         fprintf(g_triage_fp, ",\"exception_port_ok\":%s", hw->exception_port_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"debug_state_ok\":%s", hw->debug_state_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"breakpoint_set_ok\":%s", hw->breakpoint_set_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"prev_handler_ok\":%s", hw->prev_handler_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"threads_scanned\":%d", hw->threads_scanned);
         fprintf(g_triage_fp, ",\"threads_armed\":%d", hw->threads_armed);
         fprintf(g_triage_fp, ",\"breakpoint_index\":%d", hw->breakpoint_index);
         fputs(",\"bcr_value\":", g_triage_fp);
         if (hw->bcr_value) {
             fprintf(g_triage_fp, "\"0x%llx\"", (unsigned long long)hw->bcr_value);
+        } else {
+            fputs("null", g_triage_fp);
+        }
+        fprintf(g_triage_fp, ",\"ring_size\":%u", hw->ring_size);
+        fprintf(g_triage_fp, ",\"chunk_size\":%u", hw->chunk_size);
+        fprintf(g_triage_fp, ",\"ring_dropped\":%llu", (unsigned long long)hw->ring_dropped);
+        fputs(",\"prev_behavior\":", g_triage_fp);
+        if (hw->prev_handler_ok) {
+            fprintf(g_triage_fp, "%d", hw->prev_behavior);
+        } else {
+            fputs("null", g_triage_fp);
+        }
+        fputs(",\"prev_flavor\":", g_triage_fp);
+        if (hw->prev_handler_ok) {
+            fprintf(g_triage_fp, "%d", hw->prev_flavor);
         } else {
             fputs("null", g_triage_fp);
         }

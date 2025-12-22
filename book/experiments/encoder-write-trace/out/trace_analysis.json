@@ -1,0 +1,134 @@
+{
+  "entries": [
+    {
+      "best": {
+        "buf": "0x600002450750",
+        "conflicts": 0,
+        "coverage": 410,
+        "cursor_mode": "cursor_as_offset",
+        "match": {
+          "kind": "gapped"
+        },
+        "modes": [
+          {
+            "_score": 1,
+            "buf": "0x600002450750",
+            "conflicts": 0,
+            "coverage": 410,
+            "cursor_mode": "cursor_as_offset",
+            "match": {
+              "kind": "gapped"
+            },
+            "overlaps": 22,
+            "reconstructed_len": 416,
+            "write_count": 204
+          },
+          {
+            "buf": "0x600002450750",
+            "conflicts": 0,
+            "coverage": 410,
+            "cursor_mode": "cursor_as_ptr",
+            "match": {
+              "kind": "gapped"
+            },
+            "overlaps": 22,
+            "reconstructed_len": 416,
+            "write_count": 204
+          }
+        ],
+        "overlaps": 22,
+        "reconstructed_len": 416,
+        "write_count": 204
+      },
+      "blob": "book/experiments/encoder-write-trace/out/blobs/baseline_allow_all.sb.bin",
+      "buffers": [
+        {
+          "_score": 0,
+          "buf": "0x600002440510",
+          "conflicts": 0,
+          "coverage": 21,
+          "cursor_mode": "cursor_as_offset",
+          "match": {
+            "kind": "none"
+          },
+          "modes": [
+            {
+              "_score": 0,
+              "buf": "0x600002440510",
+              "conflicts": 0,
+              "coverage": 21,
+              "cursor_mode": "cursor_as_offset",
+              "match": {
+                "kind": "none"
+              },
+              "overlaps": 1,
+              "reconstructed_len": 21,
+              "write_count": 22
+            },
+            {
+              "buf": "0x600002440510",
+              "conflicts": 0,
+              "coverage": 21,
+              "cursor_mode": "cursor_as_ptr",
+              "match": {
+                "kind": "none"
+              },
+              "overlaps": 1,
+              "reconstructed_len": 21,
+              "write_count": 22
+            }
+          ],
+          "overlaps": 1,
+          "reconstructed_len": 21,
+          "write_count": 22
+        },
+        {
+          "_score": 1,
+          "buf": "0x600002450750",
+          "conflicts": 0,
+          "coverage": 410,
+          "cursor_mode": "cursor_as_offset",
+          "match": {
+            "kind": "gapped"
+          },
+          "modes": [
+            {
+              "_score": 1,
+              "buf": "0x600002450750",
+              "conflicts": 0,
+              "coverage": 410,
+              "cursor_mode": "cursor_as_offset",
+              "match": {
+                "kind": "gapped"
+              },
+              "overlaps": 22,
+              "reconstructed_len": 416,
+              "write_count": 204
+            },
+            {
+              "buf": "0x600002450750",
+              "conflicts": 0,
+              "coverage": 410,
+              "cursor_mode": "cursor_as_ptr",
+              "match": {
+                "kind": "gapped"
+              },
+              "overlaps": 22,
+              "reconstructed_len": 416,
+              "write_count": 204
+            }
+          ],
+          "overlaps": 22,
+          "reconstructed_len": 416,
+          "write_count": 204
+        }
+      ],
+      "id": "baseline_allow_all",
+      "sbpl": "book/tools/sbpl/corpus/baseline/allow_all.sb",
+      "trace": "book/experiments/encoder-write-trace/out/traces/baseline_allow_all.jsonl",
+      "trace_records": 226
+    }
+  ],
+  "manifest": "book/experiments/encoder-write-trace/out/manifest.json",
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+}

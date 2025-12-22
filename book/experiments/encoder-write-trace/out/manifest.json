@@ -12,7 +12,7 @@
       "id": "baseline_allow_all",
       "sbpl": "book/tools/sbpl/corpus/baseline/allow_all.sb",
       "trace": "book/experiments/encoder-write-trace/out/traces/baseline_allow_all.jsonl",
-      "trace_records": 223,
+      "trace_records": 226,
       "triage": "book/experiments/encoder-write-trace/out/triage/baseline_allow_all.json"
     }
   ],

@@ -738,6 +738,150 @@ def _select_unique_resolved(candidates):
     return None
 
 
+def _dispatcher_context_from_table(table_addr, target_func_addr, listing, memory, fixups_map, window=0x200, max_back=60):
+    if table_addr is None:
+        return []
+    ref_mgr = currentProgram.getReferenceManager()
+    func_mgr = currentProgram.getFunctionManager()
+    results = []
+    try:
+        table_obj = toAddr(_s64(table_addr))
+    except Exception:
+        return results
+    for ref in ref_mgr.getReferencesTo(table_obj):
+        try:
+            if not ref.getReferenceType().isData():
+                continue
+        except Exception:
+            continue
+        func = func_mgr.getFunctionContaining(ref.getFromAddress())
+        if not func:
+            continue
+        instr_iter = listing.getInstructions(func.getBody(), True)
+        while instr_iter.hasNext() and not monitor.isCancelled():
+            instr = instr_iter.next()
+            mnem = instr.getMnemonicString().upper()
+            if not (mnem.startswith("BLR") or mnem.startswith("BLRA")):
+                continue
+            reg_name = _first_register_operand(instr, 0)
+            if not reg_name:
+                continue
+            res = _resolve_reg_value(
+                instr.getPrevious(),
+                reg_name,
+                memory,
+                max_back=max_back,
+                depth=2,
+                func_body=func.getBody(),
+            )
+            mem_addr = res.get("mem_addr")
+            loaded_value = res.get("loaded_value")
+            if mem_addr is None:
+                continue
+            if abs(_s64(mem_addr) - _s64(table_addr)) > window:
+                continue
+            ptr_info = _resolve_pointer_at(mem_addr, loaded_value, fixups_map, memory)
+            target_resolved = ptr_info.get("resolved")
+            if target_func_addr is not None and target_resolved is not None:
+                if _s64(target_resolved) != _s64(target_func_addr):
+                    continue
+            x0_info = _resolve_callsite_argument(func, instr.getAddress(), 1, listing, memory, max_back=max_back)
+            results.append(
+                {
+                    "dispatcher_function": {
+                        "name": func.getName(),
+                        "entry": _format_addr(_s64(func.getEntryPoint().getOffset())),
+                    },
+                    "call_site": _format_addr(_s64(instr.getAddress().getOffset())),
+                    "callee_reg": reg_name,
+                    "table_addr": _format_addr(_s64(table_addr)),
+                    "mem_addr": _format_addr(_s64(mem_addr)),
+                    "pointer": ptr_info,
+                    "x0_resolution": x0_info,
+                }
+            )
+    return results
+
+
+def _dispatcher_context_from_candidates(candidates, table_addrs, listing, memory, fixups_map, max_back=60):
+    if not candidates or not table_addrs:
+        return []
+    try:
+        table_min = min(table_addrs)
+        table_max = max(table_addrs)
+    except Exception:
+        return []
+    func_mgr = currentProgram.getFunctionManager()
+    results = []
+    for cand in candidates:
+        call_site_text = cand.get("call_site")
+        caller_entry = (cand.get("caller_function") or {}).get("entry")
+        if not call_site_text or not caller_entry:
+            continue
+        call_site_val = _parse_hex(call_site_text)
+        caller_entry_val = _parse_hex(caller_entry)
+        if call_site_val is None or caller_entry_val is None:
+            continue
+        try:
+            call_addr = toAddr(_s64(call_site_val))
+            func = func_mgr.getFunctionAt(toAddr(_s64(caller_entry_val)))
+        except Exception:
+            func = None
+        if not func:
+            continue
+        instr = listing.getInstructionAt(call_addr)
+        if not instr:
+            continue
+        mnem = instr.getMnemonicString().upper()
+        if not (mnem.startswith("BLR") or mnem.startswith("BLRA")):
+            continue
+        reg_name = _first_register_operand(instr, 0)
+        if not reg_name:
+            continue
+        res = _resolve_reg_value(
+            instr.getPrevious(),
+            reg_name,
+            memory,
+            max_back=max_back,
+            depth=2,
+            func_body=func.getBody(),
+        )
+        mem_addr = res.get("mem_addr")
+        if mem_addr is None:
+            continue
+        mem_val = _s64(mem_addr)
+        if mem_val < table_min or mem_val > table_max:
+            continue
+        ptr_info = _resolve_pointer_at(mem_addr, res.get("loaded_value"), fixups_map, memory)
+        x0_info = _resolve_callsite_argument(func, instr.getAddress(), 1, listing, memory, max_back=max_back)
+        results.append(
+            {
+                "dispatcher_function": {
+                    "name": func.getName(),
+                    "entry": _format_addr(_s64(func.getEntryPoint().getOffset())),
+                },
+                "call_site": _format_addr(_s64(instr.getAddress().getOffset())),
+                "callee_reg": reg_name,
+                "table_range": {"start": _format_addr(table_min), "end": _format_addr(table_max)},
+                "mem_addr": _format_addr(mem_val),
+                "pointer": ptr_info,
+                "x0_resolution": x0_info,
+            }
+        )
+    return results
+
+
+def _resolve_context_base(ctx, memory, fixups_map):
+    res = ctx.get("x0_resolution") or {}
+    if res.get("mem_addr") is not None:
+        return _resolve_pointer_at(res.get("mem_addr"), res.get("loaded_value"), fixups_map, memory).get(
+            "resolved"
+        )
+    if res.get("value") is not None:
+        return _resolve_pointer_at(None, res.get("value"), fixups_map, memory).get("resolved")
+    return None
+
+
 def _resolve_base_from_data_refs(target_func, delta, memory, fixups_map, window=0x40):
     if target_func is None or delta is None:
         return {"candidates": [], "chosen": None}
@@ -991,6 +1135,41 @@ def _recover_fields_from_stores(call_instr, base_addr, base_reg, base_offset, me
                                 value_info["data_ref_base_resolved"] = _format_addr(chosen)
                                 value_info["resolved"] = resolved
                                 value_info["pointer"] = _resolve_pointer_at(None, resolved, fixups_map, memory)
+                            if value_info.get("data_ref_passthrough_candidates") and listing:
+                                dispatcher_context = []
+                                ref_addrs = set()
+                                for cand in value_info.get("data_ref_passthrough_candidates"):
+                                    ref_addr = cand.get("ref_addr")
+                                    ref_val = _parse_hex(ref_addr) if ref_addr else None
+                                    if ref_val is not None:
+                                        ref_addrs.add(ref_val)
+                                dispatcher_context = _dispatcher_context_from_candidates(
+                                    candidates,
+                                    sorted(ref_addrs),
+                                    listing,
+                                    memory,
+                                    fixups_map,
+                                    max_back=max_back,
+                                )
+                                if dispatcher_context:
+                                    value_info["dispatcher_context"] = dispatcher_context
+                                    dispatcher_bases = []
+                                    for ctx in dispatcher_context:
+                                        base = _resolve_context_base(ctx, memory, fixups_map)
+                                        if base is not None:
+                                            dispatcher_bases.append(base)
+                                    if dispatcher_bases:
+                                        unique = sorted(set(dispatcher_bases))
+                                        value_info["dispatcher_base_candidates"] = [
+                                            _format_addr(base) for base in unique
+                                        ]
+                                        if len(unique) == 1 and delta is not None:
+                                            resolved = _s64(unique[0] + delta)
+                                            value_info["dispatcher_base_resolved"] = _format_addr(unique[0])
+                                            value_info["resolved"] = resolved
+                                            value_info["pointer"] = _resolve_pointer_at(
+                                                None, resolved, fixups_map, memory
+                                            )
                 string_val = _read_cstring(memory, resolved)
                 if field_name in ("mpc_name", "mpc_fullname") and not _looks_like_string(string_val):
                     scan_limit = max_back * 3 if max_back else 300
@@ -1171,38 +1350,110 @@ def _is_exec_addr(memory, addr):
     return bool(blk and blk.isExecute())
 
 
-def _ops_owner_histogram(ops_addr, memory, entries, fixups_map, scan_bytes=0x800):
+def _ops_owner_histogram(ops_addr, memory, entries, fixups_map, max_scan_bytes=0x4000, zero_cachelines=4, min_scan_bytes=0x200):
     if ops_addr is None:
         return None
-    slots = int(scan_bytes // 8)
+    cacheline_bytes = 64
+    slots_per_line = cacheline_bytes // 8
+    max_lines = max_scan_bytes // cacheline_bytes
+    slots = max_lines * slots_per_line
     hist = {}
     resolved_ptrs = 0
     exec_ptrs = 0
-    for idx in range(slots):
-        slot_addr = _s64(ops_addr + (idx * 8))
-        raw = _read_ptr(memory, slot_addr)
-        ptr_info = _resolve_pointer_at(slot_addr, raw, fixups_map, memory)
-        resolved = ptr_info.get("resolved")
-        if resolved is None:
-            continue
-        resolved_ptrs += 1
-        if not _is_exec_addr(memory, resolved):
-            continue
-        exec_ptrs += 1
-        owner = _find_entry(entries, resolved)
-        if owner:
-            hist[owner] = hist.get(owner, 0) + 1
+    raw_nonzero = 0
+    zero_lines = 0
+    seen_value = False
+    scanned_bytes = 0
+    stop_reason = None
+    for line_idx in range(max_lines):
+        line_has_value = False
+        for slot_idx in range(slots_per_line):
+            slot_addr = _s64(ops_addr + (line_idx * cacheline_bytes) + (slot_idx * 8))
+            raw = _read_ptr(memory, slot_addr)
+            if raw not in (None, 0):
+                raw_nonzero += 1
+                line_has_value = True
+            ptr_info = _resolve_pointer_at(slot_addr, raw, fixups_map, memory)
+            resolved = ptr_info.get("resolved")
+            if resolved is None:
+                continue
+            line_has_value = True
+            resolved_ptrs += 1
+            if not _is_exec_addr(memory, resolved):
+                continue
+            exec_ptrs += 1
+            owner = _find_entry(entries, resolved)
+            if owner:
+                hist[owner] = hist.get(owner, 0) + 1
+        scanned_bytes = (line_idx + 1) * cacheline_bytes
+        if not line_has_value:
+            zero_lines += 1
+        else:
+            zero_lines = 0
+            seen_value = True
+        if scanned_bytes >= min_scan_bytes and zero_lines >= zero_cachelines and seen_value:
+            stop_reason = "zero_cachelines"
+            break
     top = None
     if hist:
         top = max(hist.items(), key=lambda item: item[1])[0]
     return {
-        "scan_bytes": scan_bytes,
+        "max_scan_bytes": max_scan_bytes,
+        "scanned_bytes": scanned_bytes,
+        "min_scan_bytes": min_scan_bytes,
+        "zero_cachelines": zero_cachelines,
+        "stop_reason": stop_reason,
         "slots": slots,
+        "raw_nonzero": raw_nonzero,
         "resolved_ptrs": resolved_ptrs,
         "exec_ptrs": exec_ptrs,
         "owner_histogram": hist,
         "owner_top": top,
     }
+
+
+def _classify_addr(memory, addr):
+    if addr is None:
+        return "unknown"
+    try:
+        blk = memory.getBlock(toAddr(_s64(addr)))
+    except Exception:
+        return "unknown"
+    if not blk:
+        return "unknown"
+    if blk.isExecute():
+        return "exec"
+    if blk.isWrite():
+        return "data"
+    return "other"
+
+
+def _ops_slot_dump(ops_addr, memory, fixups_map, limit=32, max_scan_bytes=0x4000):
+    if ops_addr is None:
+        return None
+    slots_per_line = 8
+    max_lines = max_scan_bytes // 64
+    rows = []
+    for line_idx in range(max_lines):
+        for slot_idx in range(slots_per_line):
+            slot_addr = _s64(ops_addr + (line_idx * 64) + (slot_idx * 8))
+            raw = _read_ptr(memory, slot_addr)
+            ptr_info = _resolve_pointer_at(slot_addr, raw, fixups_map, memory)
+            resolved = ptr_info.get("resolved")
+            if raw in (None, 0) and not ptr_info.get("fixup"):
+                continue
+            rows.append(
+                {
+                    "slot_addr": _format_addr(slot_addr),
+                    "raw": _format_addr(_s64(raw)),
+                    "resolved": _format_addr(resolved),
+                    "classification": _classify_addr(memory, resolved),
+                    "pointer": ptr_info,
+                }
+            )
+            if len(rows) >= limit:
+                return rows
+    return rows
 
 
 def run():
@@ -1394,6 +1645,7 @@ def run():
 
             reconstructed = None
             needs_reconstruct = False
+            rec_fields = None
             if not mpc_fields:
                 needs_reconstruct = True
             else:
@@ -1498,6 +1750,8 @@ def run():
                 hist = _ops_owner_histogram(ops_resolved, memory, entries, fixups_map)
                 mpc_fields["ops_owner_histogram"] = hist
                 mpc_fields["mpc_ops_owner"] = hist.get("owner_top") if hist else None
+                if mpc_fields.get("mpc_name") in ("AMFI", "mcxalr") or (hist and hist.get("exec_ptrs") == 0):
+                    mpc_fields["ops_slot_dump"] = _ops_slot_dump(ops_resolved, memory, fixups_map)
 
             caller_entry = _find_entry(entries, _s64(call_addr_val))
 

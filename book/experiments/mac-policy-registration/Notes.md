@@ -185,3 +185,14 @@
 - Re-ran `kernel-mac-policy-register-instances` with the refreshed fixups map.
 - Ops-owner sampling now uses fixup-aware + PAC-canonicalized pointer handling; results remain empty for `AMFI` and `mcxalr` ops tables (no executable targets in the first 0x800 bytes).
 - ASP ops reconstruction path is implemented but finds no dominating stores into the ops table region (no `x0 + 0x98 + off` stores before the registration call).
+
+## KC fixups inference + ops attribution (base-pointer coverage)
+
+- Extended `kc_truth_layer.py` with a fixups pre-pass and base-pointer inference:
+  - cache_level 2 now inherits base pointer 0 via coverage (`2727/2735` fixups resolve into fileset entry ranges; threshold 0.95).
+  - cache_level 1/3 remain unresolved (12 fixups each; coverage <= 0.083); `unresolved_unknown_base: 24`.
+  - New resolved counts: `resolved_in_entry: 3844`, `resolved_in_exec: 732`, `resolved_outside: 451` (see `kc_fixups_summary.json`).
+- Updated `kernel_mac_policy_register_instances.py`:
+  - ops-owner scan now stops only after seeing values and scans up to 0x4000 bytes; `ops_slot_dump` uses the same window.
+  - AMFI/mcxalr now have non-zero exec-pointer counts in ops histograms; owners still map to `com.apple.driver.AppleTrustedAccessory` for all non-ASP policies.
+- Dispatcher-context pass for ASP now uses call-site candidates + table-range filtering; no dispatcher-context matches returned, so ASP `mpc_ops` remains unresolved.

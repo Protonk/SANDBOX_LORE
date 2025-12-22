@@ -147,7 +147,8 @@ Recover the sandbox/mac_policy_conf and mac_policy_ops (plus registration site) 
 ### KC truth layer (fileset + chained fixups, partial)
 - BootKernelCollection is `MH_FILESET` with 355 fileset entries and 7 top-level segments (`kc_fileset_index.json`).
 - Top-level `LC_DYLD_CHAINED_FIXUPS` parsed (`fixups_version: 0`, `imports_count: 0`) with pointer_format `8` only; full chain walking (next*4) yields 4,319 fixups across `__DATA_CONST` (4,177) and `__DATA` (142), with max chain length 79 and per-page coverage recorded (`kc_fixups_summary.json` + `kc_fixups.jsonl`).
-- Fixup decoding now records `resolved_unsigned = base_pointers[cache_level] + target` when a base pointer is known. The base pointer for cache_level 0 is the KC min segment vmaddr; other cache levels remain unknown. Status: **under exploration** until base_pointers are validated against additional witnesses.
+- Fixup decoding now records `resolved_unsigned = base_pointers[cache_level] + target` when a base pointer is known. Base pointer inference now assigns cache_level 2 to base0 using coverage against fileset entry ranges (`2727/2735` fixups; threshold 0.95). cache_level 1/3 remain unresolved (12 fixups each).
+- Resolved counts after inference: `resolved_in_entry: 3844`, `resolved_in_exec: 732`, `resolved_outside: 451`, `unresolved_unknown_base: 24` (all from cache_level 1/3). Status: **under exploration** until base_pointers are validated against additional witnesses.
 
 ### String-anchored mac_policy_register hunt (partial)
 - `kernel-collection-string-call-sites` with queries `Security policy loaded` and `mac_policy_register failed` finds 4 string hits, 4 referencing functions, and 53 call sites (`string_call_sites.json`).
@@ -166,7 +167,8 @@ Recover the sandbox/mac_policy_conf and mac_policy_ops (plus registration site) 
 - Inferred `mpo_policy_init` offsets in this build are `0x398` and `0x3a0`; init pointers resolve for `Sandbox` and `Quarantine` but are NULL or unresolved for the remaining policies.
 - `mpc_ops` remains unresolved for `ASP`: the ops pointer is derived as `x0 + 0x98` (`relative_to_mpc_base: -0xa78` recorded), and the only caller is an indirect init entry with a DATA ref to a function-pointer table in `__text`; no writable data pointers were found adjacent to that table, so the base address still appears runtime-only.
 - An ops-table reconstruction pass (stores to `[x0 + 0x98 + off]`) currently yields no entries for ASP, suggesting the ops table is populated elsewhere or via indirect calls.
-- Ops-owner attribution now uses ops-table sampling (`ops_owner_histogram` + `mpc_ops_owner`) rather than init-hook ownership, with fixup-aware + PAC-canonicalized pointer handling; for policies with resolved ops pointers, the sampled owners point to `com.apple.driver.AppleTrustedAccessory`. `AMFI` and `mcxalr` still have no executable pointers in the first 0x800 bytes of their ops tables (status: partial).
+- Ops-owner attribution now uses ops-table sampling (`ops_owner_histogram` + `mpc_ops_owner`) rather than init-hook ownership, with fixup-aware + PAC-canonicalized pointer handling and a 0x4000-byte window. `AMFI`, `mcxalr`, and `AppleImage4` now show executable ops pointers in the sampled window; all non-ASP policies still map to `com.apple.driver.AppleTrustedAccessory` as the dominant owner (status: partial).
+- Dispatcher-context recovery for ASP now uses call-site candidates + table-range filtering; no dispatcher-context matches were found, so ASP `mpc_ops` remains unresolved.
 - Status: **partial**; policy identity is now recovered for all sites, but some ops/init pointers remain unresolved and fixups coverage is still under exploration.
 
 ### AMFI pivot (static, blocked)

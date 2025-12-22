@@ -19,6 +19,8 @@ does **not** interpret kernel semantics or runtime policy decisions.
   - `harness/sbpl_trace_interpose.c` (triage + hook strategies)
   - Entry-text trampoline patch derived from unslid address + runtime slide
   - `harness/build_interposer.sh` (build script)
+  - `harness/mach_exc_server.c` / `harness/mach_exc_server.h` (MIG server stubs)
+  - `harness/mach_exc_user.c` / `harness/mach_exc_user.h` (exception forwarding stubs)
   - `compile_one.py` / `run_trace.py` (runner)
 - Outputs (under `out/`):
   - `triage/*.json` (hook triage per input)
@@ -34,15 +36,17 @@ does **not** interpret kernel semantics or runtime policy decisions.
 - Interposer build: `book/experiments/encoder-write-trace/out/interposer/sbpl_trace_interpose.dylib`.
 - Baseline compile smoke: `book/experiments/encoder-write-trace/out/blobs/_debug.sb.bin`.
 - Trace outputs: `book/experiments/encoder-write-trace/out/traces/baseline_allow_all.jsonl` (hardware-breakpoint run).
+- Join analysis: `book/experiments/encoder-write-trace/out/trace_analysis.json`.
+- Join cross-check: `book/experiments/encoder-write-trace/out/trace_join_check.json`.
 
 ## Status
 
 - Status: **partial**.
 - Earlier dyld interpose load failed with `symbol not found in flat namespace '__sb_mutable_buffer_write'`,
   which suggests (but does not prove) the write routine is not exported/bindable.
-- The harness now records triage metadata (including callsite reachability) and supports
-  dynamic interpose (if exported/bindable) or address-based patching, but no new traces
-  have been produced yet.
+- The harness records triage metadata (including callsite reachability) and supports
+  dynamic interpose (if exported/bindable), address-based patching, or hardware-breakpoint
+  tracing for internal callsites.
 - A patch-mode viability run computed the runtime address and UUID match but failed to
   patch text pages with `mprotect failed: Permission denied`, yielding zero write hits.
   The patch path now falls back to `mach_vm_protect(..., VM_PROT_COPY)` but still fails
@@ -55,8 +59,13 @@ does **not** interpret kernel semantics or runtime policy decisions.
   skipped_immutable`) rather than attempting to write text pages.
 - A hardware-breakpoint hook (Mach exception port + ARM_DEBUG_STATE64) now produces
   write records without modifying text. The baseline run (`baseline_allow_all`) yields
-  `hook_hit_count: 271` in `book/experiments/encoder-write-trace/out/triage/baseline_allow_all.json`
-  with a corresponding JSONL trace file.
+  226 write records in `book/experiments/encoder-write-trace/out/traces/baseline_allow_all.jsonl`
+  with `hook_status: ok` in `book/experiments/encoder-write-trace/out/triage/baseline_allow_all.json`.
+- `trace_analysis.json` reconstructs 416 bytes across 204 writes for the best buffer
+  (`coverage: 410`, `match.kind: gapped`), with both cursor interpretations reporting
+  the same best score for the baseline input.
+- `trace_join_check.json` reports `status: ok` but skips all network-matrix pairs
+  because only `baseline_allow_all` is present in the trace manifest.
 
 ## Running / refreshing
 
@@ -83,6 +92,9 @@ or `--mode hw_breakpoint` when patching is blocked by region max-protection.
   in `out/triage/baseline_allow_all.json` is the current witness.
 - The hardware-breakpoint hook currently arms the current thread; if compilation
   migrates to other threads, additional thread coverage may be required.
+- The breakpoint PC check accepts the target address and the next instruction
+  (`target+4`) to accommodate debug exception PC semantics; this is still tied to
+  the target callsite but should be validated against additional inputs.
 - Callsite reachability is inferred from the indirect-symbol table (`otool -Iv`)
   on the extracted libsandbox image; this is a partial proxy for dyld bind tables.
 - dyld_info exports/imports are recorded as a convenience signal; the extracted
@@ -107,5 +119,5 @@ or `--mode hw_breakpoint` when patching is blocked by region max-protection.
   reachability metadata in `out/triage/`.
 - If the symbol is exported/bindable, try `--mode dynamic`; otherwise provide a
   stable address/offset and run `--mode patch`.
-- Once a hook works, re-enable the trace pipeline and regenerate the planned
-  outputs (`manifest.json`, `trace_analysis.json`, `trace_join_check.json`).
+- Once more inputs are traced, rerun `analyze_trace.py` and `check_trace_join.py`
+  to extend join coverage beyond the baseline manifest.
