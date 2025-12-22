@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import platform
@@ -19,7 +20,10 @@ from book.api.path_utils import ensure_absolute, find_repo_root, relativize_comm
 from book.api.profile_tools.identity import baseline_world_id  # type: ignore
 
 TARGET_SYMBOL = "_sb_mutable_buffer_write"
+SECONDARY_SYMBOL = "_sb_mutable_buffer_make_immutable"
 DEFAULT_BIND_IMAGE = Path("book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib")
+RETRY_SIGNALS = {int(signal.SIGSEGV), int(signal.SIGTRAP)}
+DEFAULT_RETRIES = 1
 
 
 def _load_inputs(path: Path) -> Mapping[str, Any]:
@@ -36,6 +40,36 @@ def _write_json(path: Path, payload: Any) -> None:
 
 def _run_tool(cmd: List[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(cmd, capture_output=True, text=True)
+
+
+def _trim_text(value: str, limit: int = 4096) -> str:
+    trimmed = value.strip()
+    if len(trimmed) <= limit:
+        return trimmed
+    return trimmed[:limit] + "...(truncated)"
+
+
+def _signal_from_returncode(returncode: int) -> Optional[int]:
+    if returncode < 0:
+        return -returncode
+    return None
+
+
+def _signal_name(signal_number: Optional[int]) -> Optional[str]:
+    if signal_number is None:
+        return None
+    try:
+        return signal.Signals(signal_number).name
+    except ValueError:
+        return f"SIG{signal_number}"
+
+
+def _normalize_params(raw: Any) -> Optional[Dict[str, str]]:
+    if raw is None:
+        return None
+    if isinstance(raw, Mapping):
+        return {str(k): str(v) for k, v in raw.items()}
+    raise ValueError("compile params must be a JSON object mapping string keys to string values")
 
 
 def _parse_nm_scope(output: str, symbol: str) -> Dict[str, Any]:
@@ -248,8 +282,10 @@ def _analyze_bind_tables(
     nm_result = _run_tool(["nm", "-m", str(image_path)])
     if nm_result.returncode == 0:
         analysis["nm"] = _parse_nm_scope(nm_result.stdout, symbol)
+        analysis["nm_secondary"] = _parse_nm_scope(nm_result.stdout, SECONDARY_SYMBOL)
     else:
         analysis["nm"] = {"scope": "unavailable", "error": nm_result.stderr.strip() or "nm failed"}
+        analysis["nm_secondary"] = {"scope": "unavailable", "error": nm_result.stderr.strip() or "nm failed"}
 
     otool_result = _run_tool(["otool", "-Iv", str(image_path)])
     if otool_result.returncode == 0:
@@ -317,6 +353,8 @@ def _augment_triage(
     *,
     mode: str,
     require_hits: bool,
+    compile_info: Optional[Mapping[str, Any]] = None,
+    stats: Optional[Mapping[str, Any]] = None,
 ) -> None:
     payload: Dict[str, Any] = {}
     if triage_path.exists():
@@ -329,11 +367,26 @@ def _augment_triage(
     payload["bind_analysis"] = dict(bind_analysis)
     payload["write_records"] = trace_records
     payload["hook_hit_count"] = trace_records
+    compile_status = None
+    if compile_info:
+        payload["compile"] = {
+            "status": compile_info.get("status"),
+            "attempts": compile_info.get("attempts"),
+            "retries_used": compile_info.get("retries_used"),
+            "returncode": compile_info.get("returncode"),
+            "signal": compile_info.get("signal"),
+            "error": compile_info.get("error"),
+        }
+        compile_status = payload["compile"].get("status")
+    if stats:
+        payload["hw_breakpoint_stats"] = dict(stats)
     if bind_analysis.get("caller_has_bind_record") is None:
         payload["dyld_reachability"] = None
     else:
         payload["dyld_reachability"] = bool(bind_analysis.get("caller_has_bind_record"))
-    if mode != "triage":
+    if compile_status and compile_status != "ok":
+        payload["reachability_validation"] = "compile_failed"
+    elif mode != "triage":
         if trace_records > 0:
             payload["reachability_validation"] = "ok"
         elif hook_status == "ok":
@@ -345,6 +398,8 @@ def _augment_triage(
         else:
             payload["reachability_validation"] = "no_hits"
     _write_json(triage_path, payload)
+    if compile_status and compile_status != "ok":
+        return
     if mode != "triage" and require_hits and trace_records == 0:
         if hook_status == "ok":
             raise RuntimeError("hook applied but no write records observed; callsite likely unreachable")
@@ -363,16 +418,21 @@ def _run_compile(
     compile_script: Path,
     sbpl_path: Path,
     trace_path: Path,
+    stats_path: Path,
     out_blob: Path,
     *,
+    compile_mode: str,
+    compile_params: Optional[Dict[str, str]],
     mode: str,
     write_addr: Optional[str],
     write_unslid: Optional[str],
     write_uuid: Optional[str],
     write_offset: Optional[str],
+    immutable_unslid: Optional[str],
     sandbox_path: Optional[str],
     dyld_shared_region: Optional[str],
     triage_path: Path,
+    retries: int,
 ) -> Dict[str, Any]:
     env = dict(os.environ)
     env["DYLD_INSERT_LIBRARIES"] = str(interposer)
@@ -380,10 +440,13 @@ def _run_compile(
     env["SBPL_TRACE_INPUT"] = to_repo_relative(sbpl_path, repo_root)
     env["SBPL_TRACE_MODE"] = mode
     env["SBPL_TRACE_TRIAGE_OUT"] = str(triage_path)
+    env["SBPL_TRACE_STATS_OUT"] = str(stats_path)
     if write_addr:
         env["SBPL_WRITE_ADDR"] = write_addr
     if write_unslid:
         env["SBPL_WRITE_UNSLID"] = write_unslid
+    if immutable_unslid:
+        env["SBPL_WRITE_IMMUTABLE_UNSLID"] = immutable_unslid
     if write_uuid:
         env["SBPL_WRITE_UUID_EXPECTED"] = write_uuid
     if write_offset:
@@ -393,17 +456,102 @@ def _run_compile(
     if dyld_shared_region:
         env["DYLD_SHARED_REGION"] = dyld_shared_region
 
-    cmd = [sys.executable, str(compile_script), "--input", str(sbpl_path), "--out-blob", str(out_blob)]
-    try:
-        result = subprocess.run(cmd, env=env, cwd=repo_root, capture_output=True, text=True, check=True)
-    except subprocess.CalledProcessError as exc:
-        stderr = (exc.stderr or "").strip()
+    cmd = [
+        sys.executable,
+        str(compile_script),
+        "--input",
+        str(sbpl_path),
+        "--out-blob",
+        str(out_blob),
+        "--compile-mode",
+        compile_mode,
+    ]
+    if compile_params is not None:
+        cmd.extend(["--params", json.dumps(compile_params, sort_keys=True)])
+    attempts_log: List[Dict[str, Any]] = []
+    attempts = 0
+    retry_limit = max(0, retries)
+    while True:
+        attempts += 1
+        if attempts > 1:
+            for path in (trace_path, triage_path, stats_path, out_blob):
+                if path.exists():
+                    path.unlink()
+        result = subprocess.run(cmd, env=env, cwd=repo_root, capture_output=True, text=True)
+        returncode = result.returncode
+        signal_number = _signal_from_returncode(returncode)
+        signal_name = _signal_name(signal_number)
+        attempt_entry: Dict[str, Any] = {
+            "attempt": attempts,
+            "returncode": returncode,
+            "signal": signal_name,
+        }
+        stderr = _trim_text(result.stderr or "")
+        if stderr:
+            attempt_entry["stderr"] = stderr
+        stdout = result.stdout.strip()
+        parsed = None
+        parsed_error = None
+        parsed_status = None
+        if stdout:
+            try:
+                parsed = json.loads(stdout)
+                if isinstance(parsed, Mapping):
+                    parsed_status = parsed.get("status")
+            except json.JSONDecodeError as exc:
+                parsed_error = f"compile output JSON parse failed: {exc}"
+                attempt_entry["stdout"] = _trim_text(result.stdout or "")
+        if returncode == 0 and parsed_status == "error":
+            attempt_entry["error"] = parsed.get("error") if isinstance(parsed, Mapping) else "compile returned error status"
+            if parsed is not None:
+                attempt_entry["output"] = parsed
+            attempts_log.append(attempt_entry)
+            break
+        if returncode == 0:
+            if not stdout:
+                attempt_entry["error"] = "compile script produced no JSON output"
+                attempts_log.append(attempt_entry)
+                break
+            if parsed_error:
+                attempt_entry["error"] = parsed_error
+                attempts_log.append(attempt_entry)
+                break
+            payload = {
+                "status": "ok",
+                "attempts": attempts,
+                "retries_used": attempts - 1,
+                "returncode": returncode,
+                "signal": signal_name,
+                "output": parsed,
+            }
+            if attempts_log:
+                payload["attempts_log"] = attempts_log
+            return payload
         detail = f": {stderr}" if stderr else ""
-        raise RuntimeError(f"compile failed for {to_repo_relative(sbpl_path, repo_root)}{detail}") from exc
-    stdout = result.stdout.strip()
-    if not stdout:
-        raise RuntimeError("compile script produced no JSON output")
-    return json.loads(stdout)
+        if parsed_status == "error" and isinstance(parsed, Mapping):
+            attempt_entry["error"] = parsed.get("error") or parsed.get("error_stage") or "compile reported error"
+            attempt_entry["output"] = parsed
+        elif parsed_error:
+            attempt_entry["error"] = parsed_error
+        else:
+            attempt_entry["error"] = f"compile failed for {to_repo_relative(sbpl_path, repo_root)}{detail}"
+        attempts_log.append(attempt_entry)
+        if signal_number is not None and signal_number in RETRY_SIGNALS and attempts <= retry_limit + 1:
+            continue
+        break
+    payload = {
+        "status": "error",
+        "attempts": attempts,
+        "retries_used": attempts - 1,
+        "returncode": attempts_log[-1].get("returncode") if attempts_log else None,
+        "signal": attempts_log[-1].get("signal") if attempts_log else None,
+        "error": attempts_log[-1].get("error") if attempts_log else None,
+    }
+    if attempts_log and isinstance(attempts_log[-1].get("output"), Mapping):
+        payload["output"] = attempts_log[-1]["output"]
+    if attempts_log:
+        payload["attempts_log"] = attempts_log
+    return payload
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -469,6 +617,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Allow hook modes to proceed even when zero write records are observed",
     )
     ap.add_argument(
+        "--retries",
+        type=int,
+        default=DEFAULT_RETRIES,
+        help="Retries for compile subprocess on SIGSEGV/SIGTRAP",
+    )
+    ap.add_argument(
         "--only-id",
         default=None,
         help="Run only the input with this id",
@@ -507,7 +661,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         uuid_host_path=dyld_fallback,
     )
     auto_unslid: Optional[str] = None
+    auto_immutable_unslid: Optional[str] = None
     write_unslid = args.write_unslid
+    immutable_unslid: Optional[str] = None
     write_uuid = args.write_uuid
     uuid_info = bind_analysis.get("uuid")
     extracted_uuid = None
@@ -524,15 +680,27 @@ def main(argv: Optional[List[str]] = None) -> int:
                 write_unslid = candidate
                 if not write_uuid:
                     write_uuid = extracted_uuid
+    if args.mode in ("patch", "hw_breakpoint"):
+        nm_secondary = bind_analysis.get("nm_secondary")
+        if isinstance(nm_secondary, Mapping):
+            candidate = nm_secondary.get("address")
+            if isinstance(candidate, str) and extracted_uuid:
+                auto_immutable_unslid = candidate
+                immutable_unslid = candidate
 
     traces_dir = out_dir / "traces"
     blobs_dir = out_dir / "blobs"
     triage_dir = out_dir / "triage"
+    stats_dir = out_dir / "stats"
     traces_dir.mkdir(parents=True, exist_ok=True)
     blobs_dir.mkdir(parents=True, exist_ok=True)
     triage_dir.mkdir(parents=True, exist_ok=True)
+    stats_dir.mkdir(parents=True, exist_ok=True)
 
     entries: List[Dict[str, Any]] = []
+    compile_ok = 0
+    compile_error = 0
+    compile_retries = 0
     for entry in inputs.get("inputs", []):
         if not isinstance(entry, Mapping):
             continue
@@ -544,14 +712,32 @@ def main(argv: Optional[List[str]] = None) -> int:
             continue
 
         sbpl_path = ensure_absolute(Path(sbpl_rel), repo_root)
+        compile_config = entry.get("compile")
+        compile_mode = "file"
+        compile_params = None
+        if isinstance(compile_config, Mapping):
+            mode = compile_config.get("mode")
+            if isinstance(mode, str):
+                compile_mode = mode
+            compile_params = _normalize_params(compile_config.get("params"))
+        else:
+            mode = entry.get("compile_mode")
+            if isinstance(mode, str):
+                compile_mode = mode
+            compile_params = _normalize_params(entry.get("params"))
+        if compile_mode not in ("file", "string"):
+            raise ValueError(f"unsupported compile mode for {entry_id}: {compile_mode}")
         trace_path = traces_dir / f"{entry_id}.jsonl"
         out_blob = blobs_dir / f"{entry_id}.sb.bin"
         triage_path = triage_dir / f"{entry_id}.json"
+        stats_path = stats_dir / f"{entry_id}.stats.json"
 
         if trace_path.exists():
             trace_path.unlink()
         if triage_path.exists():
             triage_path.unlink()
+        if stats_path.exists():
+            stats_path.unlink()
 
         compile_result = _run_compile(
             repo_root,
@@ -559,26 +745,51 @@ def main(argv: Optional[List[str]] = None) -> int:
             compile_script,
             sbpl_path,
             trace_path,
+            stats_path,
             out_blob,
+            compile_mode=compile_mode,
+            compile_params=compile_params,
             mode=args.mode,
             write_addr=args.write_addr,
             write_unslid=write_unslid,
             write_uuid=write_uuid,
             write_offset=args.write_offset,
+            immutable_unslid=immutable_unslid,
             sandbox_path=args.sandbox_path,
             dyld_shared_region=args.dyld_shared_region,
             triage_path=triage_path,
+            retries=args.retries,
         )
         trace_records = 0
         if trace_path.exists():
             trace_records = sum(1 for line in trace_path.read_text().splitlines() if line.strip())
+        stats_payload = None
+        if stats_path.exists():
+            try:
+                stats_payload = json.loads(stats_path.read_text())
+            except Exception:
+                stats_payload = None
         _augment_triage(
             triage_path,
             bind_analysis,
             trace_records,
             mode=args.mode,
             require_hits=not args.allow_zero_hits and args.mode != "triage",
+            compile_info=compile_result,
+            stats=stats_payload,
         )
+        compile_status = compile_result.get("status")
+        if compile_status == "ok":
+            compile_ok += 1
+        else:
+            compile_error += 1
+        retries_used = compile_result.get("retries_used")
+        if isinstance(retries_used, int):
+            compile_retries += retries_used
+
+        trace_present = trace_path.exists()
+        stats_present = stats_path.exists()
+        triage_present = triage_path.exists()
 
         entries.append(
             {
@@ -587,8 +798,19 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "trace": to_repo_relative(trace_path, repo_root),
                 "blob": to_repo_relative(out_blob, repo_root),
                 "triage": to_repo_relative(triage_path, repo_root),
+                "stats": to_repo_relative(stats_path, repo_root),
                 "trace_records": trace_records,
                 "compile": compile_result,
+                "compile_config": {
+                    "mode": compile_mode,
+                    "params": compile_params,
+                },
+                "trace_integrity": {
+                    "trace_present": trace_present,
+                    "stats_present": stats_present,
+                    "triage_present": triage_present,
+                    "compile_status": compile_status,
+                },
             }
         )
 
@@ -610,6 +832,8 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "DYLD_INSERT_LIBRARIES": to_repo_relative(interposer, repo_root),
                 "SBPL_TRACE_MODE": args.mode,
             },
+            "retries": args.retries,
+            "retry_signals": sorted(signal.Signals(sig).name for sig in RETRY_SIGNALS),
         },
     }
     if args.only_id:
@@ -622,6 +846,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     elif args.mode in ("patch", "hw_breakpoint") and not args.write_addr and not args.write_offset and not args.write_unslid:
         if not extracted_uuid:
             manifest["trace_harness"]["write_unslid_source"] = "skipped_uuid_missing"
+    if immutable_unslid:
+        manifest["trace_harness"]["env"]["SBPL_WRITE_IMMUTABLE_UNSLID"] = immutable_unslid
+        manifest["trace_harness"]["immutable_unslid_source"] = "nm" if auto_immutable_unslid else "cli"
     if write_uuid:
         manifest["trace_harness"]["env"]["SBPL_WRITE_UUID_EXPECTED"] = write_uuid
     if args.dyld_shared_region:
@@ -638,6 +865,9 @@ def main(argv: Optional[List[str]] = None) -> int:
             "traces": len(entries),
             "blobs": len(entries),
             "triage": len(entries),
+            "compile_ok": compile_ok,
+            "compile_error": compile_error,
+            "compile_retries": compile_retries,
         },
     }
 

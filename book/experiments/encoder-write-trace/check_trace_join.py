@@ -24,8 +24,15 @@ def _write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def _best_trace_map(analysis: Mapping[str, Any]) -> Dict[str, Dict[str, int]]:
-    out: Dict[str, Dict[str, int]] = {}
+def _range_contains(ranges: List[List[int]], offset: int) -> bool:
+    for start, end in ranges:
+        if start <= offset < end:
+            return True
+    return False
+
+
+def _best_trace_map(analysis: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    out: Dict[str, Dict[str, Any]] = {}
     for entry in analysis.get("entries", []):
         if not isinstance(entry, Mapping):
             continue
@@ -34,16 +41,77 @@ def _best_trace_map(analysis: Mapping[str, Any]) -> Dict[str, Dict[str, int]]:
         if not isinstance(entry_id, str) or not isinstance(best, Mapping):
             continue
         match = best.get("match")
-        if not isinstance(match, Mapping):
-            continue
-        kind = match.get("kind")
-        if kind not in {"full", "subset"}:
-            continue
-        blob_offset = match.get("blob_offset", 0)
-        length = best.get("reconstructed_len")
-        if not isinstance(blob_offset, int) or not isinstance(length, int):
-            continue
-        out[entry_id] = {"blob_offset": blob_offset, "length": length}
+        kind = match.get("kind") if isinstance(match, Mapping) else None
+        best_blob_offset = match.get("blob_offset", 0) if isinstance(match, Mapping) else 0
+        best_length = best.get("reconstructed_len")
+        best_candidate: Optional[Dict[str, Any]] = None
+        if isinstance(best_length, int) and isinstance(best_blob_offset, int):
+            if kind in {"full", "subset"}:
+                best_candidate = {
+                    "blob_offset": best_blob_offset,
+                    "length": best_length,
+                    "witnessed_ranges": [[0, best_length]],
+                    "coverage_kind": kind,
+                    "join_source": "best_match",
+                }
+            elif kind == "gapped":
+                alignment = best.get("alignment")
+                if isinstance(alignment, Mapping):
+                    base = alignment.get("base_offset")
+                    length = alignment.get("window_len")
+                    ranges = alignment.get("witnessed_ranges")
+                    if isinstance(base, int) and isinstance(length, int) and isinstance(ranges, list):
+                        best_candidate = {
+                            "blob_offset": base,
+                            "length": length,
+                            "witnessed_ranges": ranges,
+                            "coverage_kind": kind,
+                            "join_source": "best_match",
+                        }
+
+        gapped_best: Optional[Dict[str, Any]] = None
+        for buf in entry.get("buffers", []):
+            if not isinstance(buf, Mapping):
+                continue
+            alignment = buf.get("alignment")
+            if not isinstance(alignment, Mapping):
+                continue
+            base = alignment.get("base_offset")
+            length = alignment.get("window_len")
+            ranges = alignment.get("witnessed_ranges")
+            witnessed = alignment.get("witnessed_bytes", 0)
+            if not isinstance(base, int) or not isinstance(length, int) or not isinstance(ranges, list):
+                continue
+            candidate = {
+                "blob_offset": base,
+                "length": length,
+                "witnessed_ranges": ranges,
+                "coverage_kind": "gapped",
+                "join_source": "gapped_alignment",
+                "witnessed_bytes": int(witnessed) if isinstance(witnessed, int) else 0,
+            }
+            if gapped_best is None:
+                gapped_best = candidate
+            else:
+                best_witnessed = int(gapped_best.get("witnessed_bytes", 0))
+                if candidate["witnessed_bytes"] > best_witnessed:
+                    gapped_best = candidate
+                elif candidate["witnessed_bytes"] == best_witnessed:
+                    if candidate["length"] > gapped_best.get("length", 0):
+                        gapped_best = candidate
+
+        join_candidate = best_candidate
+        if gapped_best:
+            if not join_candidate:
+                join_candidate = gapped_best
+            else:
+                join_len = int(join_candidate.get("length", 0))
+                if gapped_best["length"] > join_len:
+                    join_candidate = gapped_best
+
+        if join_candidate:
+            join_candidate.pop("witnessed_bytes", None)
+            out[entry_id] = join_candidate
     return out
 
 
@@ -83,8 +151,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     network_diffs = _load_json(network_path)
 
     missing: List[Dict[str, Any]] = []
+    hits: List[Dict[str, Any]] = []
     checked_pairs = 0
     checked_diffs = 0
+    witnessed_diffs = 0
+    inferred_diffs = 0
     skipped_pairs: List[str] = []
 
     for pair in network_diffs.get("pairs", []):
@@ -124,6 +195,26 @@ def main(argv: Optional[List[str]] = None) -> int:
                             "trace_window": {"start": start, "end_exclusive": end},
                         }
                     )
+                    continue
+                cursor = offset - start
+                coverage = "inferred"
+                ranges = trace.get("witnessed_ranges", [])
+                if isinstance(ranges, list) and ranges:
+                    if _range_contains(ranges, cursor):
+                        coverage = "witnessed"
+                hits.append(
+                    {
+                        "pair_id": pair_id,
+                        "side": side,
+                        "offset": offset,
+                        "coverage": coverage,
+                        "trace_window": {"start": start, "end_exclusive": end},
+                    }
+                )
+                if coverage == "witnessed":
+                    witnessed_diffs += 1
+                else:
+                    inferred_diffs += 1
 
     status = "ok" if not missing else "partial"
     payload = {
@@ -134,14 +225,19 @@ def main(argv: Optional[List[str]] = None) -> int:
         "counts": {
             "pairs_checked": checked_pairs,
             "diffs_checked": checked_diffs,
+            "diffs_witnessed": witnessed_diffs,
+            "diffs_inferred": inferred_diffs,
             "missing": len(missing),
             "pairs_skipped": len(skipped_pairs),
         },
+        "hits": hits,
         "missing": missing,
         "pairs_skipped": skipped_pairs,
         "notes": [
             "This guardrail only checks offsets for inputs present in the trace manifest.",
             "Offsets are evaluated against the traced buffer window chosen by the analysis step.",
+            "Coverage is labeled witnessed when the offset falls inside a traced byte range; inferred when it falls inside the aligned window but outside the traced ranges.",
+            "When a gapped alignment offers wider coverage than the best subset/full match, the join window is taken from the gapped alignment.",
         ],
     }
     _write_json(out_path, payload)

@@ -122,6 +122,25 @@ The matrix now has explicit high-byte witnesses for proto in:
 - Added an experiment-local guardrail (`check_network_join.py`) that fails if the join hypotheses report violations.
 - Kept the experiment-local blob oracle (`oracle_network_matrix.py`) in sync with the matrix (updated `out/network_matrix/oracle_tuples.json`).
 
+### Trace-backed join (encoder-write-trace)
+
+We can now tie encoder write events to blob offsets directly, without relying on static RE alone. Using the hardware‑breakpoint tracer, we ran a minimal network‑matrix subset plus a baseline and produced:
+
+- `out/network_matrix/encoder_write_join.json` — per‑spec join windows (base offset, window length, witnessed vs hole ranges).
+- `out/network_matrix/encoder_write_events.jsonl` — write_event → blob_offset spans (no payload bytes).
+
+Findings (compile‑only, still partial):
+
+- All traced network‑matrix specs align to gapped windows (lengths 484/492/500) with a consistent `[394,400)` hole; the baseline `allow_all` aligns to a 416‑byte window with the same hole.
+- `book/experiments/encoder-write-trace/out/trace_join_check.json` reports `pairs_checked: 35` with `missing: 40`; the missing offsets (484–491) are confined to “single vs combined” diff pairs (domain/proto/type vs their pair/triple forms), indicating the combined‑form deltas still sit beyond the traced window end for the single‑arg cases.
+
+These artifacts give a second, independent witness for where encoder writes land in the compiled blob for the network‑matrix specimens, but they do **not** resolve kernel semantics or eliminate the remaining join gaps for combined‑form diffs.
+
+Additional follow‑ups:
+
+- Added a secondary hardware breakpoint on `_sb_mutable_buffer_make_immutable`; stats now include `immutable_hits` and `immutable_buf`, but the immutable buffer pointer does not match the write‑event buffer addresses and the missing offsets remain unchanged.
+- Added `out/network_matrix/encoder_write_record_map.json`, which maps trace windows to stride‑8 record boundaries (`within_record_offset` counts) using `out/network_matrix/index.json`. This provides a structural “which record bytes are touched” view without asserting semantics.
+
 ### Promotion proposal (when you want to harden this join)
 
 - Promote the join hypothesis summary into shared tooling only after another round of evidence (additional specimens or a second host baseline), then consider wiring the guardrail into `book/tests/` and updating shared decoder/oracle docs to cite the stable join.

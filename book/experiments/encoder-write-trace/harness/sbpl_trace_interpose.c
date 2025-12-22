@@ -34,23 +34,30 @@ static const char *g_trace_mode = NULL;
 static uint64_t g_seq = 0;
 static __thread int g_in_hook = 0;
 static const char *k_target_symbol = "_sb_mutable_buffer_write";
+static const char *k_immutable_symbol = "_sb_mutable_buffer_make_immutable";
 static mach_port_t g_hw_exception_port = MACH_PORT_NULL;
 static int g_hw_server_running = 0;
 static int g_hw_break_index = 0;
+static int g_hw_break_index_secondary = 1;
 static uint64_t g_hw_bcr_value = 0;
-static int g_hw_step_active = 0;
 static uint64_t g_hw_target_addr = 0;
+static uint64_t g_hw_target_addr_secondary = 0;
 static mach_port_t g_hw_prev_port = MACH_PORT_NULL;
 static exception_behavior_t g_hw_prev_behavior = 0;
 static thread_state_flavor_t g_hw_prev_flavor = 0;
 static int g_hw_prev_valid = 0;
+static int g_hw_arm_running = 0;
+static int g_hw_monitor_running = 0;
 
 #define HW_RING_SIZE 4096
 #define HW_CHUNK_SIZE 1024
+#define HW_THREAD_MAX 128
 
 struct hw_ring_entry {
     uint32_t ready;
     uint32_t len;
+    uint32_t reported_len;
+    uint32_t chunk_offset;
     uint64_t seq;
     void *buf;
     uint64_t cursor;
@@ -61,13 +68,45 @@ static struct hw_ring_entry g_hw_ring[HW_RING_SIZE];
 static volatile uint64_t g_hw_ring_write = 0;
 static volatile uint64_t g_hw_ring_read = 0;
 static volatile uint64_t g_hw_ring_dropped = 0;
+static volatile uint64_t g_hw_capture_truncated = 0;
+static volatile uint64_t g_hw_break_hits = 0;
+static volatile uint64_t g_hw_step_hits = 0;
+static volatile uint64_t g_hw_forwarded = 0;
+static volatile uint64_t g_hw_unknown_break_hits = 0;
+static volatile uint64_t g_hw_immutable_hits = 0;
+static volatile uint64_t g_hw_immutable_buf = 0;
+static volatile uint64_t g_hw_thread_overflow = 0;
+static volatile uint64_t g_hw_arm_failures = 0;
+static volatile uint64_t g_hw_rescans = 0;
+static volatile uint64_t g_hw_threads_scanned = 0;
+static volatile uint64_t g_hw_threads_armed = 0;
 static int g_hw_flush_running = 0;
+
+struct hw_thread_entry {
+    mach_port_t thread;
+    uint32_t step_active;
+    uint32_t armed;
+};
+
+static struct hw_thread_entry g_hw_threads[HW_THREAD_MAX];
 
 typedef void (*sb_write_fn)(void *buf, uint64_t cursor, const void *data, uint64_t len);
 static sb_write_fn g_original = NULL;
 
 struct patch_report;
 struct hw_breakpoint_report;
+
+static int hw_breakpoint_update_state(
+    thread_t thread,
+    uint64_t addr_primary,
+    uint64_t addr_secondary,
+    uint64_t bcr_value,
+    int enable_primary,
+    int enable_secondary,
+    int single_step,
+    char *err,
+    size_t err_len
+);
 
 struct dyld_interpose_tuple {
     const void *replacement;
@@ -200,7 +239,16 @@ static void triage_emit(
     const char *hook_error
 );
 
-static void emit_record_bytes(uint64_t seq, void *buf, uint64_t cursor, const uint8_t *data, uint64_t len) {
+static void emit_record_bytes(
+    uint64_t seq,
+    void *buf,
+    uint64_t cursor,
+    const uint8_t *data,
+    uint64_t len,
+    uint64_t reported_len,
+    uint64_t chunk_offset,
+    int include_chunk_fields
+) {
     if (!g_trace_fp) {
         return;
     }
@@ -210,12 +258,23 @@ static void emit_record_bytes(uint64_t seq, void *buf, uint64_t cursor, const ui
     fprintf(g_trace_fp, ",\"buf\":\"0x%llx\",", (unsigned long long)(uintptr_t)buf);
     fprintf(g_trace_fp, "\"cursor\":%llu,", (unsigned long long)cursor);
     fprintf(g_trace_fp, "\"len\":%llu,", (unsigned long long)len);
+    if (include_chunk_fields) {
+        fprintf(g_trace_fp, "\"reported_len\":%llu,", (unsigned long long)reported_len);
+        fprintf(g_trace_fp, "\"chunk_offset\":%llu,", (unsigned long long)chunk_offset);
+    }
     fputs("\"bytes_hex\":\"", g_trace_fp);
     emit_hex(g_trace_fp, data, len);
     fputs("\"}\n", g_trace_fp);
 }
 
-static int hw_ring_push_chunk(void *buf, uint64_t cursor, const uint8_t *data, uint32_t len) {
+static int hw_ring_push_chunk(
+    void *buf,
+    uint64_t cursor,
+    const uint8_t *data,
+    uint32_t len,
+    uint32_t reported_len,
+    uint32_t chunk_offset
+) {
     uint64_t idx = __atomic_fetch_add(&g_hw_ring_write, 1, __ATOMIC_RELAXED);
     uint64_t read = __atomic_load_n(&g_hw_ring_read, __ATOMIC_ACQUIRE);
     if (idx - read >= HW_RING_SIZE) {
@@ -225,6 +284,8 @@ static int hw_ring_push_chunk(void *buf, uint64_t cursor, const uint8_t *data, u
     struct hw_ring_entry *entry = &g_hw_ring[idx % HW_RING_SIZE];
     entry->ready = 0;
     entry->len = len;
+    entry->reported_len = reported_len;
+    entry->chunk_offset = chunk_offset;
     entry->seq = __atomic_add_fetch(&g_seq, 1, __ATOMIC_RELAXED);
     entry->buf = buf;
     entry->cursor = cursor;
@@ -240,17 +301,20 @@ static int hw_ring_enqueue(void *buf, uint64_t cursor, const uint8_t *data, uint
         return 0;
     }
     if (len == 0) {
-        return hw_ring_push_chunk(buf, cursor, data, 0);
+        return hw_ring_push_chunk(buf, cursor, data, 0, 0, 0);
     }
     uint64_t offset = 0;
     int pushed = 0;
     while (offset < len) {
         uint32_t chunk = (uint32_t)((len - offset) > HW_CHUNK_SIZE ? HW_CHUNK_SIZE : (len - offset));
-        if (!hw_ring_push_chunk(buf, cursor + offset, data + offset, chunk)) {
+        if (!hw_ring_push_chunk(buf, cursor + offset, data + offset, chunk, (uint32_t)len, (uint32_t)offset)) {
             break;
         }
         offset += chunk;
         pushed++;
+    }
+    if (offset < len) {
+        __atomic_fetch_add(&g_hw_capture_truncated, 1, __ATOMIC_RELAXED);
     }
     return pushed;
 }
@@ -270,7 +334,16 @@ static int hw_flush_ring(void) {
         trace_open();
         if (g_trace_fp) {
             pthread_mutex_lock(&g_trace_lock);
-            emit_record_bytes(entry->seq, entry->buf, entry->cursor, entry->bytes, entry->len);
+            emit_record_bytes(
+                entry->seq,
+                entry->buf,
+                entry->cursor,
+                entry->bytes,
+                entry->len,
+                entry->reported_len,
+                entry->chunk_offset,
+                1
+            );
             pthread_mutex_unlock(&g_trace_lock);
         }
         entry->ready = 0;
@@ -291,6 +364,173 @@ static void *hw_flush_thread(void *arg) {
     return NULL;
 }
 
+static void hw_write_stats(void) {
+    const char *path = getenv("SBPL_TRACE_STATS_OUT");
+    if (!path || !*path) {
+        return;
+    }
+    FILE *fp = fopen(path, "w");
+    if (!fp) {
+        return;
+    }
+    fprintf(fp, "{");
+    fprintf(fp, "\"ring_dropped\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_ring_dropped, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"capture_truncated\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_capture_truncated, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"break_hits\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_break_hits, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"step_hits\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_step_hits, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"forwarded\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_forwarded, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"unknown_break_hits\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_unknown_break_hits, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"immutable_hits\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_immutable_hits, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"immutable_buf\":\"0x%llx\",", (unsigned long long)__atomic_load_n(&g_hw_immutable_buf, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"thread_overflow\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_thread_overflow, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"arm_failures\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_arm_failures, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"rescans\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_rescans, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"threads_scanned_total\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_threads_scanned, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"threads_armed_total\":%llu,", (unsigned long long)__atomic_load_n(&g_hw_threads_armed, __ATOMIC_ACQUIRE));
+    fprintf(fp, "\"ring_size\":%u,", HW_RING_SIZE);
+    fprintf(fp, "\"chunk_size\":%u", HW_CHUNK_SIZE);
+    fprintf(fp, "}\n");
+    fclose(fp);
+}
+
+static int hw_thread_index(mach_port_t thread, int create, int *created) {
+    if (created) {
+        *created = 0;
+    }
+    for (int i = 0; i < HW_THREAD_MAX; i++) {
+        mach_port_t current = __atomic_load_n(&g_hw_threads[i].thread, __ATOMIC_ACQUIRE);
+        if (current == thread) {
+            return i;
+        }
+        if (current == MACH_PORT_NULL && create) {
+            mach_port_t expected = MACH_PORT_NULL;
+            if (__atomic_compare_exchange_n(
+                    &g_hw_threads[i].thread,
+                    &expected,
+                    thread,
+                    0,
+                    __ATOMIC_ACQ_REL,
+                    __ATOMIC_RELAXED)) {
+                __atomic_store_n(&g_hw_threads[i].step_active, 0, __ATOMIC_RELEASE);
+                __atomic_store_n(&g_hw_threads[i].armed, 0, __ATOMIC_RELEASE);
+                if (created) {
+                    *created = 1;
+                }
+                return i;
+            }
+        }
+    }
+    if (create) {
+        __atomic_fetch_add(&g_hw_thread_overflow, 1, __ATOMIC_RELAXED);
+    }
+    return -1;
+}
+
+static int hw_thread_step_active(mach_port_t thread, int *known) {
+    int idx = hw_thread_index(thread, 0, NULL);
+    if (idx < 0) {
+        if (known) {
+            *known = 0;
+        }
+        return 0;
+    }
+    if (known) {
+        *known = 1;
+    }
+    return (int)__atomic_load_n(&g_hw_threads[idx].step_active, __ATOMIC_ACQUIRE);
+}
+
+static void hw_thread_set_step_active(mach_port_t thread, int active) {
+    int idx = hw_thread_index(thread, 1, NULL);
+    if (idx < 0) {
+        return;
+    }
+    __atomic_store_n(&g_hw_threads[idx].step_active, active ? 1u : 0u, __ATOMIC_RELEASE);
+}
+
+static void hw_thread_mark_armed(mach_port_t thread) {
+    int idx = hw_thread_index(thread, 1, NULL);
+    if (idx < 0) {
+        return;
+    }
+    __atomic_store_n(&g_hw_threads[idx].armed, 1u, __ATOMIC_RELEASE);
+}
+
+static int hw_arm_thread(thread_t thread) {
+#if defined(__arm64__) || defined(__aarch64__)
+    if (!hw_breakpoint_update_state(
+            thread,
+            g_hw_target_addr,
+            g_hw_target_addr_secondary,
+            g_hw_bcr_value,
+            1,
+            g_hw_target_addr_secondary ? 1 : 0,
+            0,
+            NULL,
+            0)) {
+        __atomic_fetch_add(&g_hw_arm_failures, 1, __ATOMIC_RELAXED);
+        return 0;
+    }
+    hw_thread_mark_armed(thread);
+    return 1;
+#else
+    (void)thread;
+    return 0;
+#endif
+}
+
+static void hw_arm_all_threads(void) {
+#if defined(__arm64__) || defined(__aarch64__)
+    thread_act_array_t threads = NULL;
+    mach_msg_type_number_t count = 0;
+    kern_return_t kr = task_threads(mach_task_self(), &threads, &count);
+    if (kr != KERN_SUCCESS) {
+        __atomic_fetch_add(&g_hw_arm_failures, 1, __ATOMIC_RELAXED);
+        return;
+    }
+    __atomic_fetch_add(&g_hw_threads_scanned, count, __ATOMIC_RELAXED);
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        if (hw_arm_thread(threads[i])) {
+            __atomic_fetch_add(&g_hw_threads_armed, 1, __ATOMIC_RELAXED);
+        }
+        mach_port_deallocate(mach_task_self(), threads[i]);
+    }
+    vm_deallocate(mach_task_self(), (vm_address_t)threads, count * sizeof(thread_t));
+#else
+    (void)0;
+#endif
+}
+
+static void hw_disable_all_threads(void) {
+#if defined(__arm64__) || defined(__aarch64__)
+    thread_act_array_t threads = NULL;
+    mach_msg_type_number_t count = 0;
+    kern_return_t kr = task_threads(mach_task_self(), &threads, &count);
+    if (kr != KERN_SUCCESS) {
+        return;
+    }
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        hw_breakpoint_update_state(threads[i], 0, 0, g_hw_bcr_value, 0, 0, 0, NULL, 0);
+        mach_port_deallocate(mach_task_self(), threads[i]);
+    }
+    vm_deallocate(mach_task_self(), (vm_address_t)threads, count * sizeof(thread_t));
+#else
+    (void)0;
+#endif
+}
+
+static void *hw_arm_monitor_thread(void *arg) {
+    (void)arg;
+    __atomic_store_n(&g_hw_monitor_running, 1, __ATOMIC_RELEASE);
+    while (__atomic_load_n(&g_hw_arm_running, __ATOMIC_ACQUIRE)) {
+        hw_arm_all_threads();
+        __atomic_fetch_add(&g_hw_rescans, 1, __ATOMIC_RELAXED);
+        usleep(10000);
+    }
+    __atomic_store_n(&g_hw_monitor_running, 0, __ATOMIC_RELEASE);
+    return NULL;
+}
+
 static void sbpl_trace_write_hook(void *buf, uint64_t cursor, const void *data, uint64_t len) {
     sb_write_fn real = g_original;
     if (g_in_hook) {
@@ -305,7 +545,7 @@ static void sbpl_trace_write_hook(void *buf, uint64_t cursor, const void *data, 
     if (g_trace_fp) {
         pthread_mutex_lock(&g_trace_lock);
         uint64_t seq = __atomic_add_fetch(&g_seq, 1, __ATOMIC_RELAXED);
-        emit_record_bytes(seq, buf, cursor, (const uint8_t *)data, len);
+        emit_record_bytes(seq, buf, cursor, (const uint8_t *)data, len, len, 0, 0);
         pthread_mutex_unlock(&g_trace_lock);
     }
     if (real) {
@@ -433,14 +673,31 @@ struct hw_breakpoint_report {
     int port_ok;
     int handler_thread_ok;
     int exception_port_ok;
+    int exception_scope_task;
     int debug_state_ok;
     int breakpoint_set_ok;
+    int secondary_set_ok;
     int prev_handler_ok;
     int threads_scanned;
     int threads_armed;
     int breakpoint_index;
+    int secondary_index;
     uint64_t bcr_value;
+    uint64_t target_addr;
+    uint64_t secondary_addr;
     uint64_t ring_dropped;
+    uint64_t capture_truncated;
+    uint64_t break_hits;
+    uint64_t step_hits;
+    uint64_t forwarded;
+    uint64_t unknown_break_hits;
+    uint64_t immutable_hits;
+    uint64_t immutable_buf;
+    uint64_t thread_overflow;
+    uint64_t arm_failures;
+    uint64_t rescans;
+    uint64_t threads_scanned_total;
+    uint64_t threads_armed_total;
     uint32_t ring_size;
     uint32_t chunk_size;
     int prev_behavior;
@@ -580,9 +837,11 @@ static uint64_t hw_breakpoint_control(void) {
 
 static int hw_breakpoint_update_state(
     thread_t thread,
-    uint64_t addr,
+    uint64_t addr_primary,
+    uint64_t addr_secondary,
     uint64_t bcr_value,
-    int enable,
+    int enable_primary,
+    int enable_secondary,
     int single_step,
     char *err,
     size_t err_len
@@ -597,11 +856,17 @@ static int hw_breakpoint_update_state(
         }
         return 0;
     }
-    if (enable) {
-        ARM_DBG_BVR(dbg, g_hw_break_index) = addr;
+    if (enable_primary) {
+        ARM_DBG_BVR(dbg, g_hw_break_index) = addr_primary;
         ARM_DBG_BCR(dbg, g_hw_break_index) = bcr_value;
     } else {
         ARM_DBG_BCR(dbg, g_hw_break_index) = 0;
+    }
+    if (enable_secondary && addr_secondary) {
+        ARM_DBG_BVR(dbg, g_hw_break_index_secondary) = addr_secondary;
+        ARM_DBG_BCR(dbg, g_hw_break_index_secondary) = bcr_value;
+    } else {
+        ARM_DBG_BCR(dbg, g_hw_break_index_secondary) = 0;
     }
     if (single_step) {
         ARM_DBG_MDSCR(dbg) |= 0x1;
@@ -618,9 +883,11 @@ static int hw_breakpoint_update_state(
     return 1;
 #else
     (void)thread;
-    (void)addr;
+    (void)addr_primary;
+    (void)addr_secondary;
     (void)bcr_value;
-    (void)enable;
+    (void)enable_primary;
+    (void)enable_secondary;
     (void)single_step;
     if (err && err_len > 0) {
         snprintf(err, err_len, "hardware breakpoints unavailable on this architecture");
@@ -637,6 +904,7 @@ static void *hw_exception_server(void *arg) {
 
 static int install_hw_breakpoint(
     void *target,
+    void *target_secondary,
     struct hw_breakpoint_report *report,
     char *err,
     size_t err_len
@@ -645,11 +913,28 @@ static int install_hw_breakpoint(
         memset(report, 0, sizeof(*report));
         report->attempted = 1;
         report->breakpoint_index = g_hw_break_index;
+        report->secondary_index = g_hw_break_index_secondary;
         report->ring_size = HW_RING_SIZE;
         report->chunk_size = HW_CHUNK_SIZE;
         report->prev_behavior = -1;
         report->prev_flavor = -1;
     }
+    memset(g_hw_threads, 0, sizeof(g_hw_threads));
+    __atomic_store_n(&g_hw_ring_write, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_ring_read, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_ring_dropped, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_capture_truncated, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_break_hits, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_step_hits, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_forwarded, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_unknown_break_hits, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_immutable_hits, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_immutable_buf, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_thread_overflow, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_arm_failures, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_rescans, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_threads_scanned, 0, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_hw_threads_armed, 0, __ATOMIC_RELAXED);
     if (!target) {
         snprintf(err, err_len, "target address unavailable");
         if (report) {
@@ -717,7 +1002,6 @@ static int install_hw_breakpoint(
         pthread_detach(flush_thr);
     }
 
-    thread_t thread = mach_thread_self();
     exception_mask_t masks[1] = {0};
     mach_msg_type_number_t mask_count = 1;
     exception_handler_t handlers[1] = {MACH_PORT_NULL};
@@ -731,8 +1015,8 @@ static int install_hw_breakpoint(
     g_hw_prev_flavor = 0;
     g_hw_prev_valid = 0;
 
-    kr = thread_swap_exception_ports(
-        thread,
+    kr = task_swap_exception_ports(
+        mach_task_self(),
         EXC_MASK_BREAKPOINT,
         g_hw_exception_port,
         EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
@@ -744,14 +1028,15 @@ static int install_hw_breakpoint(
         flavors
     );
     if (kr != KERN_SUCCESS) {
-        snprintf(err, err_len, "thread_swap_exception_ports failed: %s", mach_err_str(kr));
+        snprintf(err, err_len, "task_swap_exception_ports failed: %s", mach_err_str(kr));
         if (report) {
-            snprintf(report->error, sizeof(report->error), "thread_swap_exception_ports failed: %s", mach_err_str(kr));
+            snprintf(report->error, sizeof(report->error), "task_swap_exception_ports failed: %s", mach_err_str(kr));
         }
         return 0;
     }
     if (report) {
         report->exception_port_ok = 1;
+        report->exception_scope_task = 1;
     }
     for (mach_msg_type_number_t i = 0; i < mask_count; i++) {
         if (masks[i] & EXC_MASK_BREAKPOINT) {
@@ -774,20 +1059,46 @@ static int install_hw_breakpoint(
         report->bcr_value = g_hw_bcr_value;
     }
     g_hw_target_addr = (uint64_t)(uintptr_t)target;
-    if (!hw_breakpoint_update_state(thread, (uint64_t)(uintptr_t)target, g_hw_bcr_value, 1, 0, err, err_len)) {
-        if (report) {
-            snprintf(report->error, sizeof(report->error), "%s", err);
+    g_hw_target_addr_secondary = (uint64_t)(uintptr_t)target_secondary;
+    if (report) {
+        report->target_addr = g_hw_target_addr;
+        report->secondary_addr = g_hw_target_addr_secondary;
+    }
+    hw_arm_all_threads();
+    if (!__atomic_load_n(&g_hw_arm_running, __ATOMIC_ACQUIRE)) {
+        __atomic_store_n(&g_hw_arm_running, 1, __ATOMIC_RELEASE);
+        pthread_t arm_thr;
+        int rc = pthread_create(&arm_thr, NULL, hw_arm_monitor_thread, NULL);
+        if (rc != 0) {
+            __atomic_store_n(&g_hw_arm_running, 0, __ATOMIC_RELEASE);
+            snprintf(err, err_len, "pthread_create(arm_monitor) failed: %s", strerror(rc));
+            if (report) {
+                snprintf(report->error, sizeof(report->error), "pthread_create(arm_monitor) failed: %s", strerror(rc));
+            }
+            return 0;
         }
-        return 0;
+        pthread_detach(arm_thr);
     }
     if (report) {
-        report->debug_state_ok = 1;
-        report->breakpoint_set_ok = 1;
-        report->threads_scanned = 1;
-        report->threads_armed = 1;
+        report->threads_scanned = (int)__atomic_load_n(&g_hw_threads_scanned, __ATOMIC_ACQUIRE);
+        report->threads_armed = (int)__atomic_load_n(&g_hw_threads_armed, __ATOMIC_ACQUIRE);
+        report->debug_state_ok = (report->threads_armed > 0);
+        report->breakpoint_set_ok = (report->threads_armed > 0);
+        report->secondary_set_ok = (g_hw_target_addr_secondary && report->threads_armed > 0) ? 1 : 0;
         report->ring_dropped = __atomic_load_n(&g_hw_ring_dropped, __ATOMIC_ACQUIRE);
+        report->capture_truncated = __atomic_load_n(&g_hw_capture_truncated, __ATOMIC_ACQUIRE);
+        report->break_hits = __atomic_load_n(&g_hw_break_hits, __ATOMIC_ACQUIRE);
+        report->step_hits = __atomic_load_n(&g_hw_step_hits, __ATOMIC_ACQUIRE);
+        report->forwarded = __atomic_load_n(&g_hw_forwarded, __ATOMIC_ACQUIRE);
+        report->unknown_break_hits = __atomic_load_n(&g_hw_unknown_break_hits, __ATOMIC_ACQUIRE);
+        report->immutable_hits = __atomic_load_n(&g_hw_immutable_hits, __ATOMIC_ACQUIRE);
+        report->immutable_buf = __atomic_load_n(&g_hw_immutable_buf, __ATOMIC_ACQUIRE);
+        report->thread_overflow = __atomic_load_n(&g_hw_thread_overflow, __ATOMIC_ACQUIRE);
+        report->arm_failures = __atomic_load_n(&g_hw_arm_failures, __ATOMIC_ACQUIRE);
+        report->rescans = __atomic_load_n(&g_hw_rescans, __ATOMIC_ACQUIRE);
+        report->threads_scanned_total = __atomic_load_n(&g_hw_threads_scanned, __ATOMIC_ACQUIRE);
+        report->threads_armed_total = __atomic_load_n(&g_hw_threads_armed, __ATOMIC_ACQUIRE);
     }
-    __atomic_store_n(&g_hw_step_active, 0, __ATOMIC_RELAXED);
     return 1;
 #else
     snprintf(err, err_len, "hardware breakpoints unsupported on this architecture");
@@ -826,6 +1137,31 @@ static void hw_capture_from_state(const arm_thread_state64_t *ts) {
 #else
     (void)ts;
 #endif
+}
+
+static void hw_capture_immutable_from_state(const arm_thread_state64_t *ts) {
+#if defined(__arm64__) || defined(__aarch64__)
+    if (!ts) {
+        return;
+    }
+    void *buf = (void *)(uintptr_t)ARM_TS_X((*ts), 0);
+    __atomic_store_n(&g_hw_immutable_buf, (uint64_t)(uintptr_t)buf, __ATOMIC_RELEASE);
+#else
+    (void)ts;
+#endif
+}
+
+static int hw_pc_matches(uint64_t pc, uint64_t target) {
+    if (!target) {
+        return 0;
+    }
+    if (pc == target) {
+        return 1;
+    }
+    if (pc == target + 4) {
+        return 1;
+    }
+    return 0;
 }
 
 static kern_return_t hw_forward_exception(
@@ -868,9 +1204,8 @@ kern_return_t catch_mach_exception_raise(
     (void)exception_port;
     (void)code;
     (void)codeCnt;
-    int is_breakpoint_exc = (exception == EXC_BREAKPOINT);
-    int is_step_exc = (exception == EXC_BREAKPOINT || exception == EXC_SOFTWARE);
-    if (!is_breakpoint_exc && !is_step_exc) {
+    if (exception != EXC_BREAKPOINT || codeCnt < 1) {
+        __atomic_fetch_add(&g_hw_forwarded, 1, __ATOMIC_RELAXED);
         kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
         if (thread != MACH_PORT_NULL) {
             mach_port_deallocate(mach_task_self(), thread);
@@ -881,24 +1216,10 @@ kern_return_t catch_mach_exception_raise(
         return forward;
     }
 
-    arm_thread_state64_t ts;
-    int has_state = hw_read_thread_state(thread, &ts);
-    if (!has_state) {
-        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
-        if (thread != MACH_PORT_NULL) {
-            mach_port_deallocate(mach_task_self(), thread);
-        }
-        if (task != MACH_PORT_NULL) {
-            mach_port_deallocate(mach_task_self(), task);
-        }
-        return forward;
-    }
-    uint64_t pc = ARM_TS_PC(ts);
-    uint64_t pc_aligned = pc & ~0x3ULL;
-    int step_active = __atomic_load_n(&g_hw_step_active, __ATOMIC_RELAXED);
-    int is_target = (pc_aligned == g_hw_target_addr) ||
-                    (pc_aligned == (g_hw_target_addr + 4));
-    if (!is_target && !step_active) {
+    int created = 0;
+    int idx = hw_thread_index(thread, 1, &created);
+    if (idx < 0) {
+        __atomic_fetch_add(&g_hw_forwarded, 1, __ATOMIC_RELAXED);
         kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
         if (thread != MACH_PORT_NULL) {
             mach_port_deallocate(mach_task_self(), thread);
@@ -909,29 +1230,57 @@ kern_return_t catch_mach_exception_raise(
         return forward;
     }
 
-    if (step_active && !is_step_exc) {
-        kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
-        if (thread != MACH_PORT_NULL) {
-            mach_port_deallocate(mach_task_self(), thread);
-        }
-        if (task != MACH_PORT_NULL) {
-            mach_port_deallocate(mach_task_self(), task);
-        }
-        return forward;
+    uint64_t subcode = 0;
+    if (codeCnt > 1) {
+        subcode = (uint64_t)code[1];
     }
-
-    if (!step_active && is_target) {
-        hw_capture_from_state(&ts);
-        __atomic_store_n(&g_hw_step_active, 1, __ATOMIC_RELAXED);
-    } else {
-        __atomic_store_n(&g_hw_step_active, 0, __ATOMIC_RELAXED);
-    }
+    int step_active = (int)__atomic_load_n(&g_hw_threads[idx].step_active, __ATOMIC_ACQUIRE);
+    int is_break_hit = step_active ? 0 : 1;
+    int is_step_hit = step_active ? 1 : 0;
+    (void)subcode;
 
     int ok = 0;
-    if (step_active) {
-        ok = hw_breakpoint_update_state(thread, g_hw_target_addr, g_hw_bcr_value, 1, 0, NULL, 0);
+    if (is_break_hit) {
+        arm_thread_state64_t ts;
+        int has_state = hw_read_thread_state(thread, &ts);
+        if (!has_state) {
+            __atomic_fetch_add(&g_hw_forwarded, 1, __ATOMIC_RELAXED);
+            kern_return_t forward = hw_forward_exception(thread, task, exception, code, codeCnt);
+            if (thread != MACH_PORT_NULL) {
+                mach_port_deallocate(mach_task_self(), thread);
+            }
+            if (task != MACH_PORT_NULL) {
+                mach_port_deallocate(mach_task_self(), task);
+            }
+            return forward;
+        }
+        uint64_t pc = (uint64_t)ARM_TS_PC(ts);
+        int matched_primary = hw_pc_matches(pc, g_hw_target_addr);
+        int matched_secondary = hw_pc_matches(pc, g_hw_target_addr_secondary);
+        if (matched_secondary && !matched_primary) {
+            hw_capture_immutable_from_state(&ts);
+            __atomic_fetch_add(&g_hw_immutable_hits, 1, __ATOMIC_RELAXED);
+        } else if (matched_primary) {
+            hw_capture_from_state(&ts);
+            __atomic_fetch_add(&g_hw_break_hits, 1, __ATOMIC_RELAXED);
+        } else {
+            __atomic_fetch_add(&g_hw_unknown_break_hits, 1, __ATOMIC_RELAXED);
+        }
+        __atomic_store_n(&g_hw_threads[idx].step_active, 1, __ATOMIC_RELEASE);
+        ok = hw_breakpoint_update_state(thread, 0, 0, g_hw_bcr_value, 0, 0, 1, NULL, 0);
     } else {
-        ok = hw_breakpoint_update_state(thread, 0, g_hw_bcr_value, 0, 1, NULL, 0);
+        __atomic_fetch_add(&g_hw_step_hits, 1, __ATOMIC_RELAXED);
+        __atomic_store_n(&g_hw_threads[idx].step_active, 0, __ATOMIC_RELEASE);
+        ok = hw_breakpoint_update_state(
+            thread,
+            g_hw_target_addr,
+            g_hw_target_addr_secondary,
+            g_hw_bcr_value,
+            1,
+            g_hw_target_addr_secondary ? 1 : 0,
+            0,
+            NULL,
+            0);
     }
 
     if (thread != MACH_PORT_NULL) {
@@ -1197,21 +1546,53 @@ static void triage_emit(
         fprintf(g_triage_fp, ",\"port_ok\":%s", hw->port_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"handler_thread_ok\":%s", hw->handler_thread_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"exception_port_ok\":%s", hw->exception_port_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"exception_scope\":");
+        if (hw->exception_scope_task) {
+            json_escape(g_triage_fp, "task");
+        } else {
+            json_escape(g_triage_fp, "thread");
+        }
         fprintf(g_triage_fp, ",\"debug_state_ok\":%s", hw->debug_state_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"breakpoint_set_ok\":%s", hw->breakpoint_set_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"prev_handler_ok\":%s", hw->prev_handler_ok ? "true" : "false");
         fprintf(g_triage_fp, ",\"threads_scanned\":%d", hw->threads_scanned);
         fprintf(g_triage_fp, ",\"threads_armed\":%d", hw->threads_armed);
+        fprintf(g_triage_fp, ",\"threads_scanned_total\":%llu", (unsigned long long)hw->threads_scanned_total);
+        fprintf(g_triage_fp, ",\"threads_armed_total\":%llu", (unsigned long long)hw->threads_armed_total);
         fprintf(g_triage_fp, ",\"breakpoint_index\":%d", hw->breakpoint_index);
+        fprintf(g_triage_fp, ",\"secondary_index\":%d", hw->secondary_index);
         fputs(",\"bcr_value\":", g_triage_fp);
         if (hw->bcr_value) {
             fprintf(g_triage_fp, "\"0x%llx\"", (unsigned long long)hw->bcr_value);
         } else {
             fputs("null", g_triage_fp);
         }
+        fprintf(g_triage_fp, ",\"secondary_set_ok\":%s", hw->secondary_set_ok ? "true" : "false");
+        fputs(",\"target_addr\":", g_triage_fp);
+        if (hw->target_addr) {
+            fprintf(g_triage_fp, "\"0x%llx\"", (unsigned long long)hw->target_addr);
+        } else {
+            fputs("null", g_triage_fp);
+        }
+        fputs(",\"secondary_addr\":", g_triage_fp);
+        if (hw->secondary_addr) {
+            fprintf(g_triage_fp, "\"0x%llx\"", (unsigned long long)hw->secondary_addr);
+        } else {
+            fputs("null", g_triage_fp);
+        }
         fprintf(g_triage_fp, ",\"ring_size\":%u", hw->ring_size);
         fprintf(g_triage_fp, ",\"chunk_size\":%u", hw->chunk_size);
         fprintf(g_triage_fp, ",\"ring_dropped\":%llu", (unsigned long long)hw->ring_dropped);
+        fprintf(g_triage_fp, ",\"capture_truncated\":%llu", (unsigned long long)hw->capture_truncated);
+        fprintf(g_triage_fp, ",\"break_hits\":%llu", (unsigned long long)hw->break_hits);
+        fprintf(g_triage_fp, ",\"step_hits\":%llu", (unsigned long long)hw->step_hits);
+        fprintf(g_triage_fp, ",\"forwarded\":%llu", (unsigned long long)hw->forwarded);
+        fprintf(g_triage_fp, ",\"unknown_break_hits\":%llu", (unsigned long long)hw->unknown_break_hits);
+        fprintf(g_triage_fp, ",\"immutable_hits\":%llu", (unsigned long long)hw->immutable_hits);
+        fprintf(g_triage_fp, ",\"immutable_buf\":\"0x%llx\"", (unsigned long long)hw->immutable_buf);
+        fprintf(g_triage_fp, ",\"thread_overflow\":%llu", (unsigned long long)hw->thread_overflow);
+        fprintf(g_triage_fp, ",\"arm_failures\":%llu", (unsigned long long)hw->arm_failures);
+        fprintf(g_triage_fp, ",\"rescans\":%llu", (unsigned long long)hw->rescans);
         fputs(",\"prev_behavior\":", g_triage_fp);
         if (hw->prev_handler_ok) {
             fprintf(g_triage_fp, "%d", hw->prev_behavior);
@@ -1667,6 +2048,26 @@ static void install_hook(void) {
         target_source = "env_offset";
     }
 
+    void *immutable_target_addr = NULL;
+    const char *immutable_addr_env = getenv("SBPL_WRITE_IMMUTABLE_ADDR");
+    const char *immutable_unslid_env = getenv("SBPL_WRITE_IMMUTABLE_UNSLID");
+    const char *immutable_offset_env = getenv("SBPL_WRITE_IMMUTABLE_OFFSET");
+    uint64_t immutable_addr = 0;
+    uint64_t immutable_unslid = 0;
+    int immutable_unslid_known = 0;
+    if (parse_u64(immutable_unslid_env, &immutable_unslid)) {
+        immutable_unslid_known = 1;
+    }
+    if (parse_u64(immutable_addr_env, &immutable_addr)) {
+        immutable_target_addr = (void *)(uintptr_t)immutable_addr;
+    } else if (immutable_unslid_known) {
+        if (unslid_allowed && slide_known) {
+            immutable_target_addr = (void *)(uintptr_t)(immutable_unslid + (uint64_t)image_slide);
+        }
+    } else if (parse_u64(immutable_offset_env, &immutable_addr) && sandbox_base) {
+        immutable_target_addr = (void *)((uintptr_t)sandbox_base + immutable_addr);
+    }
+
     const int interpose_available = (dyld_dynamic_interpose != NULL);
     const char *hook_attempt = "none";
     const char *hook_status = "skipped";
@@ -1733,7 +2134,7 @@ static void install_hook(void) {
             patch.target_runtime_addr = target_addr;
             record_region_info((mach_vm_address_t)(uintptr_t)target_addr, &patch);
             char err_buf[256] = {0};
-            if (install_hw_breakpoint(target_addr, &hw, err_buf, sizeof(err_buf))) {
+            if (install_hw_breakpoint(target_addr, immutable_target_addr, &hw, err_buf, sizeof(err_buf))) {
                 hook_status = "ok";
             } else {
                 hook_status = "failed";
@@ -1778,4 +2179,31 @@ static void install_hook(void) {
 
 __attribute__((constructor)) static void sbpl_trace_init(void) {
     install_hook();
+}
+
+__attribute__((destructor)) static void sbpl_trace_shutdown(void) {
+#if defined(__arm64__) || defined(__aarch64__)
+    __atomic_store_n(&g_hw_arm_running, 0, __ATOMIC_RELEASE);
+#endif
+    __atomic_store_n(&g_hw_flush_running, 0, __ATOMIC_RELEASE);
+    hw_disable_all_threads();
+    hw_write_stats();
+    if (g_hw_prev_valid && g_hw_prev_port != MACH_PORT_NULL) {
+        task_set_exception_ports(
+            mach_task_self(),
+            EXC_MASK_BREAKPOINT,
+            g_hw_prev_port,
+            g_hw_prev_behavior,
+            g_hw_prev_flavor
+        );
+        mach_port_deallocate(mach_task_self(), g_hw_prev_port);
+        g_hw_prev_port = MACH_PORT_NULL;
+        g_hw_prev_valid = 0;
+    }
+    if (g_hw_exception_port != MACH_PORT_NULL) {
+        mach_port_mod_refs(mach_task_self(), g_hw_exception_port, MACH_PORT_RIGHT_SEND, -1);
+        mach_port_mod_refs(mach_task_self(), g_hw_exception_port, MACH_PORT_RIGHT_RECEIVE, -1);
+        g_hw_exception_port = MACH_PORT_NULL;
+    }
+    hw_flush_ring();
 }

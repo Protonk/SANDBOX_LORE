@@ -4,7 +4,7 @@ Derive mac_policy_register call sites from string-anchored call-site scan output
 
 Inputs:
 - string_call_sites.json (from kernel-collection-string-call-sites)
-- kc_fileset_index.json (fileset entries + vmaddr spans)
+- kc_fileset_index.json (fileset entries + segment interval map)
 
 Outputs:
 - mac_policy_register_call_sites.json
@@ -49,6 +49,16 @@ def _s64(value: int) -> int:
 def _load_entries(index_path: Path) -> List[Tuple[int, int, str]]:
     data = json.loads(index_path.read_text())
     entries = []
+    intervals = data.get("segment_intervals")
+    if intervals:
+        for interval in intervals:
+            start = interval.get("start")
+            end = interval.get("end")
+            entry_id = interval.get("entry_id")
+            if start is None or end is None:
+                continue
+            entries.append((_s64(int(start)), _s64(int(end)), entry_id))
+        return sorted(entries, key=lambda item: item[0])
     for entry in data.get("entries", []):
         span = entry.get("vmaddr_span") or {}
         start = span.get("start")

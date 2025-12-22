@@ -88,9 +88,9 @@ def _load_json(path):
         return json.load(fh)
 
 
-def _load_fixups_map(path):
+def _load_fixups_map(path, mode="full"):
     fixups = {}
-    if not path:
+    if not path or mode == "skip":
         return fixups
     with open(path, "r") as fh:
         for line in fh:
@@ -102,8 +102,16 @@ def _load_fixups_map(path):
             except Exception:
                 continue
             vmaddr = rec.get("vmaddr")
+            if vmaddr is None and "v" in rec:
+                vmaddr = rec.get("v")
             if vmaddr is None:
                 continue
+            if "r" in rec and "resolved_unsigned" not in rec:
+                rec = {
+                    "vmaddr": vmaddr,
+                    "resolved_unsigned": rec.get("r"),
+                    "decoded": rec.get("decoded"),
+                }
             fixups[int(vmaddr)] = rec
     return fixups
 
@@ -112,15 +120,37 @@ def _load_entries(path):
     if not path:
         return []
     data = _load_json(path)
-    entries = []
+    intervals = []
+    for interval in data.get("segment_intervals", []):
+        start = interval.get("start")
+        end = interval.get("end")
+        if start is None or end is None:
+            continue
+        intervals.append(
+            {
+                "start": _s64(long(start)),
+                "end": _s64(long(end)),
+                "entry_id": interval.get("entry_id"),
+                "segment_name": interval.get("segment_name"),
+            }
+        )
+    if intervals:
+        return sorted(intervals, key=lambda item: item["start"])
     for entry in data.get("entries", []):
         span = entry.get("vmaddr_span") or {}
         start = span.get("start")
         end = span.get("end")
         if start is None or end is None:
             continue
-        entries.append((_s64(long(start)), _s64(long(end)), entry.get("entry_id")))
-    return sorted(entries, key=lambda item: item[0])
+        intervals.append(
+            {
+                "start": _s64(long(start)),
+                "end": _s64(long(end)),
+                "entry_id": entry.get("entry_id"),
+                "segment_name": None,
+            }
+        )
+    return sorted(intervals, key=lambda item: item["start"])
 
 
 def _find_entry(entries, vmaddr):
@@ -128,16 +158,33 @@ def _find_entry(entries, vmaddr):
         return None
     lo = 0
     hi = len(entries) - 1
+    match_idx = None
     while lo <= hi:
         mid = (lo + hi) // 2
-        start, end, entry_id = entries[mid]
+        start = entries[mid]["start"]
+        end = entries[mid]["end"]
         if vmaddr < start:
             hi = mid - 1
         elif vmaddr >= end:
             lo = mid + 1
         else:
-            return entry_id
-    return None
+            match_idx = mid
+            break
+    if match_idx is None:
+        return None
+    matches = [entries[match_idx]]
+    idx = match_idx - 1
+    while idx >= 0 and entries[idx]["end"] > vmaddr:
+        if entries[idx]["start"] <= vmaddr < entries[idx]["end"]:
+            matches.append(entries[idx])
+        idx -= 1
+    idx = match_idx + 1
+    while idx < len(entries) and entries[idx]["start"] <= vmaddr:
+        if entries[idx]["start"] <= vmaddr < entries[idx]["end"]:
+            matches.append(entries[idx])
+        idx += 1
+    matches = sorted(matches, key=lambda item: item["end"] - item["start"])
+    return matches[0].get("entry_id")
 
 
 def _read_ptr(memory, addr):
@@ -468,6 +515,7 @@ def _resolve_reg_value(start_instr, reg_name, memory, max_back=40, depth=2, func
                             "delta": sign * scalar,
                         }
         if mnemonic.startswith("LDR") or mnemonic.startswith("LDRA") or mnemonic.startswith("LDUR") or mnemonic.startswith("LDP"):
+            base_val = None
             base_reg, offset = _ldr_base_offset(instr)
             offset = offset or 0
             if mnemonic.startswith("LDP"):
@@ -738,6 +786,14 @@ def _select_unique_resolved(candidates):
     return None
 
 
+def _ref_is_data_or_read(ref):
+    try:
+        ref_type = ref.getReferenceType()
+    except Exception:
+        return False
+    return ref_type.isData() or ref_type.isRead()
+
+
 def _dispatcher_context_from_table(table_addr, target_func_addr, listing, memory, fixups_map, window=0x200, max_back=60):
     if table_addr is None:
         return []
@@ -749,10 +805,7 @@ def _dispatcher_context_from_table(table_addr, target_func_addr, listing, memory
     except Exception:
         return results
     for ref in ref_mgr.getReferencesTo(table_obj):
-        try:
-            if not ref.getReferenceType().isData():
-                continue
-        except Exception:
+        if not _ref_is_data_or_read(ref):
             continue
         func = func_mgr.getFunctionContaining(ref.getFromAddress())
         if not func:
@@ -871,6 +924,188 @@ def _dispatcher_context_from_candidates(candidates, table_addrs, listing, memory
     return results
 
 
+def _scan_dispatchers_for_table(table_addrs, listing, memory, fixups_map, max_back=60, max_funcs=200):
+    if not table_addrs:
+        return []
+    try:
+        table_min = min(table_addrs)
+        table_max = max(table_addrs)
+    except Exception:
+        return []
+    ref_mgr = currentProgram.getReferenceManager()
+    func_mgr = currentProgram.getFunctionManager()
+    funcs = []
+    seen_funcs = set()
+    for addr in table_addrs:
+        try:
+            addr_obj = toAddr(_s64(addr))
+        except Exception:
+            continue
+        for ref in ref_mgr.getReferencesTo(addr_obj):
+            if not _ref_is_data_or_read(ref):
+                continue
+            func = func_mgr.getFunctionContaining(ref.getFromAddress())
+            if not func:
+                continue
+            key = _s64(func.getEntryPoint().getOffset())
+            if key in seen_funcs:
+                continue
+            seen_funcs.add(key)
+            funcs.append(func)
+            if len(funcs) >= max_funcs:
+                break
+        if len(funcs) >= max_funcs:
+            break
+    results = []
+    for func in funcs:
+        instr_iter = listing.getInstructions(func.getBody(), True)
+        while instr_iter.hasNext() and not monitor.isCancelled():
+            instr = instr_iter.next()
+            mnem = instr.getMnemonicString().upper()
+            if not (mnem.startswith("BLR") or mnem.startswith("BLRA")):
+                continue
+            reg_name = _first_register_operand(instr, 0)
+            if not reg_name:
+                continue
+            res = _resolve_reg_value(
+                instr.getPrevious(),
+                reg_name,
+                memory,
+                max_back=max_back,
+                depth=2,
+                func_body=func.getBody(),
+            )
+            match = False
+            mem_addr = res.get("mem_addr")
+            if mem_addr is not None:
+                mem_val = _s64(mem_addr)
+                if table_min <= mem_val <= table_max:
+                    match = True
+            else:
+                base_reg = res.get("base_reg")
+                delta = res.get("delta")
+                if base_reg and delta is not None:
+                    base_res = _resolve_reg_value(
+                        instr.getPrevious(),
+                        base_reg,
+                        memory,
+                        max_back=max_back,
+                        depth=2,
+                        func_body=func.getBody(),
+                    )
+                    base_val = base_res.get("value") if base_res else None
+                    if base_val is not None:
+                        base_val = _s64(base_val)
+                        if table_min - 0x200 <= base_val <= table_max + 0x200:
+                            match = True
+                            mem_addr = _s64(base_val + delta)
+            if not match:
+                continue
+            x0_info = _resolve_callsite_argument(func, instr.getAddress(), 1, listing, memory, max_back=max_back)
+            results.append(
+                {
+                    "dispatcher_function": {
+                        "name": func.getName(),
+                        "entry": _format_addr(_s64(func.getEntryPoint().getOffset())),
+                    },
+                    "source": "table_scan",
+                    "call_site": _format_addr(_s64(instr.getAddress().getOffset())),
+                    "callee_reg": reg_name,
+                    "mem_addr": _format_addr(_s64(mem_addr)) if mem_addr is not None else None,
+                    "x0_resolution": x0_info,
+                    "table_range": {"start": _format_addr(_s64(table_min)), "end": _format_addr(_s64(table_max))},
+                    "target_resolution": res,
+                }
+            )
+    return results
+
+
+def _scan_dispatchers_global(target_func_addr, table_addrs, listing, memory, fixups_map, max_back=60, max_hits=80):
+    if not table_addrs:
+        return []
+    try:
+        table_min = min(table_addrs)
+        table_max = max(table_addrs)
+    except Exception:
+        return []
+    if max_back > 60:
+        max_back = 60
+    func_mgr = currentProgram.getFunctionManager()
+    results = []
+    instr_iter = listing.getInstructions(True)
+    while instr_iter.hasNext() and not monitor.isCancelled():
+        instr = instr_iter.next()
+        mnem = instr.getMnemonicString().upper()
+        if not (mnem.startswith("BLR") or mnem.startswith("BLRA")):
+            continue
+        reg_name = _first_register_operand(instr, 0)
+        if not reg_name:
+            continue
+        func = func_mgr.getFunctionContaining(instr.getAddress())
+        res = _resolve_reg_value(
+            instr.getPrevious(),
+            reg_name,
+            memory,
+            max_back=max_back,
+            depth=2,
+            func_body=func.getBody() if func else None,
+        )
+        match = False
+        mem_addr = res.get("mem_addr")
+        ptr_info = None
+        if mem_addr is not None:
+            mem_val = _s64(mem_addr)
+            if table_min <= mem_val <= table_max:
+                match = True
+            ptr_info = _resolve_pointer_at(mem_val, res.get("loaded_value"), fixups_map, memory)
+            target_resolved = ptr_info.get("resolved")
+            if target_func_addr is not None and target_resolved is not None:
+                if _s64(target_resolved) == _s64(target_func_addr):
+                    match = True
+        else:
+            base_reg = res.get("base_reg")
+            delta = res.get("delta")
+            if base_reg and delta is not None:
+                base_res = _resolve_reg_value(
+                    instr.getPrevious(),
+                    base_reg,
+                    memory,
+                    max_back=max_back,
+                    depth=2,
+                    func_body=func.getBody() if func else None,
+                )
+                base_val = base_res.get("value") if base_res else None
+                if base_val is not None:
+                    base_val = _s64(base_val)
+                    if table_min - 0x200 <= base_val <= table_max + 0x200:
+                        match = True
+                        mem_addr = _s64(base_val + delta)
+        if not match:
+            continue
+        x0_info = _resolve_callsite_argument(func, instr.getAddress(), 1, listing, memory, max_back=max_back)
+        results.append(
+            {
+                "dispatcher_function": {
+                    "name": func.getName() if func else None,
+                    "entry": _format_addr(_s64(func.getEntryPoint().getOffset()))
+                    if func
+                    else None,
+                },
+                "source": "global_scan",
+                "call_site": _format_addr(_s64(instr.getAddress().getOffset())),
+                "callee_reg": reg_name,
+                "mem_addr": _format_addr(_s64(mem_addr)) if mem_addr is not None else None,
+                "x0_resolution": x0_info,
+                "table_range": {"start": _format_addr(_s64(table_min)), "end": _format_addr(_s64(table_max))},
+                "target_resolution": res,
+                "pointer": ptr_info,
+            }
+        )
+        if len(results) >= max_hits:
+            break
+    return results
+
+
 def _resolve_context_base(ctx, memory, fixups_map):
     res = ctx.get("x0_resolution") or {}
     if res.get("mem_addr") is not None:
@@ -880,6 +1115,138 @@ def _resolve_context_base(ctx, memory, fixups_map):
     if res.get("value") is not None:
         return _resolve_pointer_at(None, res.get("value"), fixups_map, memory).get("resolved")
     return None
+
+
+def _resolve_arg_value(resolution, memory, fixups_map):
+    if not resolution:
+        return None, None
+    if resolution.get("mem_addr") is not None:
+        ptr_info = _resolve_pointer_at(
+            resolution.get("mem_addr"), resolution.get("loaded_value"), fixups_map, memory
+        )
+        return ptr_info.get("resolved"), ptr_info
+    if resolution.get("value") is not None:
+        ptr_info = _resolve_pointer_at(None, resolution.get("value"), fixups_map, memory)
+        return ptr_info.get("resolved"), ptr_info
+    return None, None
+
+
+def _scan_stores_before_call(call_instr, base_regs, offsets, memory, fixups_map, max_back=120):
+    base_set = {_normalize_reg(reg) for reg in base_regs if reg}
+    offset_set = {int(off) for off in offsets if off is not None}
+    results = []
+    instr = call_instr.getPrevious() if call_instr else None
+    steps = 0
+    while instr and steps < max_back and not monitor.isCancelled():
+        for store in _store_operands(instr):
+            base = store.get("base")
+            offset = store.get("offset") or 0
+            if base_set and _normalize_reg(base) not in base_set:
+                continue
+            if offset_set and int(offset) not in offset_set:
+                continue
+            value_info = _resolve_store_value(instr, store.get("reg"), memory, fixups_map, max_back=max_back)
+            results.append(
+                {
+                    "instruction": instr.toString(),
+                    "store_base": base,
+                    "store_offset": offset,
+                    "store_reg": store.get("reg"),
+                    "store_value": value_info,
+                }
+            )
+        instr = instr.getPrevious()
+        steps += 1
+    return results
+
+
+def _trace_asp_context(
+    asp_func,
+    call_addr,
+    mpc_offset,
+    mpc_ops_offset,
+    listing,
+    memory,
+    fixups_map,
+    max_back=200,
+    max_callers=40,
+):
+    trace = {"direct_stores": [], "callers": []}
+    if asp_func and call_addr:
+        call_instr = listing.getInstructionAt(call_addr)
+        offsets = [
+            mpc_offset,
+            mpc_offset + 8,
+            mpc_offset + (mpc_ops_offset or 0x20),
+            0x98,
+        ]
+        store_back = max_back if max_back <= 80 else 80
+        trace["direct_stores"] = _scan_stores_before_call(
+            call_instr,
+            ["x19", "x0"],
+            offsets,
+            memory,
+            fixups_map,
+            max_back=store_back,
+        )
+    if not asp_func:
+        return trace
+    ref_mgr = currentProgram.getReferenceManager()
+    func_mgr = currentProgram.getFunctionManager()
+    caller_count = 0
+    for ref in ref_mgr.getReferencesTo(asp_func.getEntryPoint()):
+        try:
+            if not ref.getReferenceType().isCall():
+                continue
+        except Exception:
+            continue
+        if caller_count >= max_callers:
+            break
+        call_site = ref.getFromAddress()
+        caller_func = func_mgr.getFunctionContaining(call_site)
+        arg_res = _resolve_callsite_argument(caller_func, call_site, 1, listing, memory, max_back=max_back)
+        base_val, base_ptr = _resolve_arg_value(arg_res, memory, fixups_map)
+        stores = []
+        if caller_func:
+            call_instr = listing.getInstructionAt(call_site)
+            offsets = [
+                mpc_offset,
+                mpc_offset + 8,
+                mpc_offset + (mpc_ops_offset or 0x20),
+                0x98,
+            ]
+            store_back = max_back if max_back <= 80 else 80
+            stores = _scan_stores_before_call(
+                call_instr,
+                ["x0", "x19"],
+                offsets,
+                memory,
+                fixups_map,
+                max_back=store_back,
+            )
+        resolved_addrs = {}
+        if base_val is not None:
+            resolved_addrs = {
+                "x0_base": _format_addr(base_val),
+                "mpc_base": _format_addr(_s64(base_val + mpc_offset)),
+                "mpc_ops_addr": _format_addr(_s64(base_val + 0x98)),
+                "mpc_ops_field": _format_addr(_s64(base_val + mpc_offset + (mpc_ops_offset or 0x20))),
+            }
+        trace["callers"].append(
+            {
+                "call_site": _format_addr(_s64(call_site.getOffset())),
+                "caller_function": {
+                    "name": caller_func.getName() if caller_func else None,
+                    "entry": _format_addr(_s64(caller_func.getEntryPoint().getOffset())) if caller_func else None,
+                },
+                "arg_resolution": arg_res,
+                "arg_pointer": base_ptr,
+                "resolved_addrs": resolved_addrs,
+                "stores": stores,
+            }
+        )
+        caller_count += 1
+    return trace
 
 
 def _resolve_base_from_data_refs(target_func, delta, memory, fixups_map, window=0x40):
@@ -1059,9 +1426,9 @@ def _resolve_store_value(instr, src_reg, memory, fixups_map, max_back=40):
     return info
 
 
-def _recover_fields_from_stores(call_instr, base_addr, base_reg, base_offset, memory, fixups_map, caller_func=None, listing=None, max_back=200):
+def _recover_fields_from_stores(call_instr, base_addr, base_reg, base_offset, memory, fixups_map, caller_func=None, listing=None, max_back=200, mpc_ops_offset=0x20):
     fields = {}
-    field_offsets = {0x0: "mpc_name", 0x8: "mpc_fullname", 0x20: "mpc_ops"}
+    field_offsets = {0x0: "mpc_name", 0x8: "mpc_fullname", int(mpc_ops_offset): "mpc_ops"}
     instr = call_instr.getPrevious()
     steps = 0
     while instr and steps < max_back and not monitor.isCancelled():
@@ -1139,18 +1506,70 @@ def _recover_fields_from_stores(call_instr, base_addr, base_reg, base_offset, me
                                 dispatcher_context = []
                                 ref_addrs = set()
                                 for cand in value_info.get("data_ref_passthrough_candidates"):
-                                    ref_addr = cand.get("ref_addr")
-                                    ref_val = _parse_hex(ref_addr) if ref_addr else None
-                                    if ref_val is not None:
-                                        ref_addrs.add(ref_val)
-                                dispatcher_context = _dispatcher_context_from_candidates(
-                                    candidates,
-                                    sorted(ref_addrs),
-                                    listing,
-                                    memory,
-                                    fixups_map,
-                                    max_back=max_back,
-                                )
+                                    for key in ("ref_addr", "slot_addr"):
+                                        ref_addr = cand.get(key)
+                                        ref_val = _parse_hex(ref_addr) if ref_addr else None
+                                        if ref_val is not None:
+                                            ref_addrs.add(ref_val)
+                                if ref_addrs:
+                                    ref_addrs_sorted = sorted(ref_addrs)
+                                    dispatcher_context = _dispatcher_context_from_candidates(
+                                        candidates,
+                                        ref_addrs_sorted,
+                                        listing,
+                                        memory,
+                                        fixups_map,
+                                        max_back=max_back,
+                                    )
+                                    if not dispatcher_context and caller_func:
+                                        caller_entry = _s64(caller_func.getEntryPoint().getOffset())
+                                        for ref_addr in ref_addrs_sorted:
+                                            dispatcher_context.extend(
+                                                _dispatcher_context_from_table(
+                                                    ref_addr,
+                                                    caller_entry,
+                                                    listing,
+                                                    memory,
+                                                    fixups_map,
+                                                    window=0x200,
+                                                    max_back=max_back,
+                                                )
+                                            )
+                                    if not dispatcher_context and caller_func:
+                                        for ref_addr in ref_addrs_sorted:
+                                            dispatcher_context.extend(
+                                                _dispatcher_context_from_table(
+                                                    ref_addr,
+                                                    None,
+                                                    listing,
+                                                    memory,
+                                                    fixups_map,
+                                                    window=0x200,
+                                                    max_back=max_back,
+                                                )
+                                            )
+                                    if not dispatcher_context:
+                                        dispatcher_context.extend(
+                                            _scan_dispatchers_for_table(
+                                                ref_addrs_sorted,
+                                                listing,
+                                                memory,
+                                                fixups_map,
+                                                max_back=max_back,
+                                            )
+                                        )
+                                    if not dispatcher_context and caller_func:
+                                        caller_entry = _s64(caller_func.getEntryPoint().getOffset())
+                                        dispatcher_context.extend(
+                                            _scan_dispatchers_global(
+                                                caller_entry,
+                                                ref_addrs_sorted,
+                                                listing,
+                                                memory,
+                                                fixups_map,
+                                                max_back=max_back,
+                                            )
+                                        )
                                 if dispatcher_context:
                                     value_info["dispatcher_context"] = dispatcher_context
                                     dispatcher_bases = []
@@ -1194,6 +1613,59 @@ def _recover_fields_from_stores(call_instr, base_addr, base_reg, base_offset, me
         instr = instr.getPrevious()
         steps += 1
     return fields
+
+
+def _recover_global_store_value(target_addr, listing, memory, fixups_map, max_refs=200, max_back=80):
+    if target_addr is None:
+        return {"candidates": [], "chosen": None}
+    ref_mgr = currentProgram.getReferenceManager()
+    candidates = []
+    try:
+        target_obj = toAddr(_s64(target_addr))
+    except Exception:
+        return {"candidates": [], "chosen": None}
+    refs = ref_mgr.getReferencesTo(target_obj)
+    count = 0
+    for ref in refs:
+        if count >= max_refs:
+            break
+        try:
+            if not ref.getReferenceType().isWrite():
+                continue
+        except Exception:
+            continue
+        instr = listing.getInstructionAt(ref.getFromAddress())
+        if not instr:
+            continue
+        count += 1
+        for store in _store_operands(instr):
+            src_reg = store.get("reg")
+            base_reg = store.get("base")
+            store_off = store.get("offset") or 0
+            if not src_reg:
+                continue
+            base_match = None
+            base_res = _resolve_reg_value(instr.getPrevious(), base_reg, memory, max_back=40, depth=2)
+            base_val = base_res.get("value") if base_res else None
+            if base_val is not None:
+                base_match = (_s64(base_val + store_off) == _s64(target_addr))
+            value_info = _resolve_store_value(instr, src_reg, memory, fixups_map, max_back=max_back)
+            resolved = value_info.get("resolved")
+            candidates.append(
+                {
+                    "store_instruction": instr.toString(),
+                    "store_base": base_reg,
+                    "store_offset": store_off,
+                    "store_addr_match": base_match,
+                    "store_value": value_info,
+                    "resolved": _format_addr(resolved),
+                    "resolved_value": resolved,
+                }
+            )
+    resolved_vals = [c.get("resolved_value") for c in candidates if c.get("resolved_value") is not None]
+    unique = sorted(set(resolved_vals))
+    chosen = unique[0] if len(unique) == 1 else None
+    return {"candidates": candidates, "chosen": chosen}
 
 
 def _recover_ops_from_stores(call_instr, ops_base_reg, ops_base_offset, memory, fixups_map, entries, max_back=800, scan_bytes=0x800):
@@ -1283,8 +1755,9 @@ def _trace_load_offset(varnode, depth=6):
     return None
 
 
-def _find_ops_init_offsets(func):
-    offsets = set()
+def _derive_ops_offsets(func):
+    mpc_ops_offsets = set()
+    ops_offsets = set()
     high = _get_high_function(func)
     if high is not None:
         ops_iter = high.getPcodeOps()
@@ -1303,10 +1776,16 @@ def _find_ops_init_offsets(func):
             if offset is None or base_var is None:
                 continue
             base_load = _trace_load_offset(base_var, depth=6)
-            if base_load and base_load.get("offset") == 0x20:
-                offsets.add(offset)
-    if offsets:
-        return sorted(list(offsets))
+            if base_load and base_load.get("offset") is not None:
+                mpc_ops_offsets.add(base_load.get("offset"))
+                ops_offsets.add(offset)
+    if mpc_ops_offsets and len(mpc_ops_offsets) <= 2:
+        return {
+            "mpc_ops_offsets": sorted(list(mpc_ops_offsets)),
+            "mpo_policy_init_offsets": sorted(list(ops_offsets)),
+        }
+    if mpc_ops_offsets:
+        mpc_ops_offsets = set()
 
     # Fallback: instruction-level tracking inside mac_policy_register.
     listing = currentProgram.getListing()
@@ -1314,6 +1793,9 @@ def _find_ops_init_offsets(func):
     mpc_regs = set(["x0"])
     ops_regs = set()
     reg_to_offset = {}
+    mpc_ops_offsets = set()
+    ops_reg_to_mpc_offset = {}
+    reg_to_mpc_offset = {}
     while instr_iter.hasNext() and not monitor.isCancelled():
         instr = instr_iter.next()
         mnem = instr.getMnemonicString().upper()
@@ -1329,15 +1811,23 @@ def _find_ops_init_offsets(func):
             dst = _first_register_operand(instr, 0)
             base, off = _ldr_base_offset(instr)
             off = off or 0
-            if base in mpc_regs and off == 0x20 and dst:
+            if base in mpc_regs and dst:
                 ops_regs.add(dst)
+                ops_reg_to_mpc_offset[dst] = off
             if base in ops_regs and dst:
                 reg_to_offset[dst] = off
+                if base in ops_reg_to_mpc_offset:
+                    reg_to_mpc_offset[dst] = ops_reg_to_mpc_offset[base]
         if mnem.startswith("BLR"):
             target = _first_register_operand(instr, 0)
             if target in reg_to_offset:
-                offsets.add(reg_to_offset[target])
-    return sorted(list(offsets))
+                ops_offsets.add(reg_to_offset[target])
+                if target in reg_to_mpc_offset:
+                    mpc_ops_offsets.add(reg_to_mpc_offset[target])
+    return {
+        "mpc_ops_offsets": sorted(list(mpc_ops_offsets)),
+        "mpo_policy_init_offsets": sorted(list(ops_offsets)),
+    }
 
 
 def _is_exec_addr(memory, addr):
@@ -1350,7 +1840,7 @@ def _is_exec_addr(memory, addr):
     return bool(blk and blk.isExecute())
 
 
-def _ops_owner_histogram(ops_addr, memory, entries, fixups_map, max_scan_bytes=0x4000, zero_cachelines=4, min_scan_bytes=0x200):
+def _ops_owner_histogram(ops_addr, memory, entries, fixups_map, max_scan_bytes=0x6000, zero_cachelines=4, min_scan_bytes=0x200):
     if ops_addr is None:
         return None
     cacheline_bytes = 64
@@ -1428,7 +1918,7 @@ def _classify_addr(memory, addr):
     return "other"
 
 
-def _ops_slot_dump(ops_addr, memory, fixups_map, limit=32, max_scan_bytes=0x4000):
+def _ops_slot_dump(ops_addr, memory, fixups_map, limit=32, max_scan_bytes=0x6000):
     if ops_addr is None:
         return None
     slots_per_line = 8
@@ -1471,6 +1961,7 @@ def run():
         build_id = args[1]
         call_sites_path = None
         fixups_path = None
+        fixups_mode = "full"
         fileset_index_path = None
         mac_policy_register_addr = None
         max_back = 40
@@ -1482,6 +1973,8 @@ def run():
                 continue
             if low.startswith("fixups="):
                 fixups_path = val.split("=", 1)[1]
+            if low.startswith("fixups-mode=") or low.startswith("fixups_mode="):
+                fixups_mode = val.split("=", 1)[1]
                 continue
             if low.startswith("fileset-index=") or low.startswith("fileset_index="):
                 fileset_index_path = val.split("=", 1)[1]
@@ -1501,7 +1994,7 @@ def run():
 
         _ensure_out_dir(out_dir)
         call_sites = _load_json(call_sites_path)
-        fixups_map = _load_fixups_map(fixups_path)
+        fixups_map = _load_fixups_map(fixups_path, mode=fixups_mode)
         entries = _load_entries(fileset_index_path)
 
         memory = currentProgram.getMemory()
@@ -1519,9 +2012,13 @@ def run():
             if mac_policy_func:
                 mac_policy_func = mac_policy_func[0]
 
-        mpo_policy_init_offsets = []
+        derived_ops_offsets = {"mpc_ops_offsets": [], "mpo_policy_init_offsets": []}
         if mac_policy_func:
-            mpo_policy_init_offsets = _find_ops_init_offsets(mac_policy_func)
+            derived_ops_offsets = _derive_ops_offsets(mac_policy_func)
+        mpc_ops_offsets = derived_ops_offsets.get("mpc_ops_offsets") or []
+        mpo_policy_init_offsets = derived_ops_offsets.get("mpo_policy_init_offsets") or []
+        mpc_ops_offset = mpc_ops_offsets[0] if len(mpc_ops_offsets) == 1 else None
+        mpc_ops_offset_used = mpc_ops_offset if mpc_ops_offset is not None else 0x20
 
         results = []
         for call in call_sites.get("call_sites", []):
@@ -1588,14 +2085,14 @@ def run():
                 fullname_addr = _s64(_read_ptr(memory, mpc_addr + 0x8))
                 labelnames_addr = _s64(_read_ptr(memory, mpc_addr + 0x10))
                 labelcount = _read_u32(memory, mpc_addr + 0x18)
-                ops_addr = _s64(_read_ptr(memory, mpc_addr + 0x20))
+                ops_addr = _s64(_read_ptr(memory, mpc_addr + mpc_ops_offset_used))
                 loadtime_flags = _read_u32(memory, mpc_addr + 0x28)
                 runtime_flags = _read_u32(memory, mpc_addr + 0x2C)
 
                 name_info = _resolve_pointer_at(mpc_addr + 0x0, name_addr, fixups_map, memory)
                 fullname_info = _resolve_pointer_at(mpc_addr + 0x8, fullname_addr, fixups_map, memory)
                 labelnames_info = _resolve_pointer_at(mpc_addr + 0x10, labelnames_addr, fixups_map, memory)
-                ops_info = _resolve_pointer_at(mpc_addr + 0x20, ops_addr, fixups_map, memory)
+                ops_info = _resolve_pointer_at(mpc_addr + mpc_ops_offset_used, ops_addr, fixups_map, memory)
 
                 mpc_fields = {
                     "mpc_addr": _format_addr(mpc_addr),
@@ -1607,11 +2104,31 @@ def run():
                     "mpc_labelname_count": labelcount,
                     "mpc_ops_ptr": ops_info,
                     "mpc_ops_fileset_entry": _find_entry(entries, ops_info.get("resolved")),
+                    "mpc_ops_offset": mpc_ops_offset_used,
                     "mpc_loadtime_flags": loadtime_flags,
                     "mpc_runtime_flags": runtime_flags,
                     "mpc_name": _read_cstring(memory, name_info.get("resolved")),
                     "mpc_fullname": _read_cstring(memory, fullname_info.get("resolved")),
                 }
+
+                if ops_info.get("resolved") is None and mpc_addr is not None:
+                    global_store = _recover_global_store_value(
+                        _s64(mpc_addr + mpc_ops_offset_used),
+                        listing,
+                        memory,
+                        fixups_map,
+                        max_back=max_back * 2,
+                    )
+                    mpc_fields["mpc_ops_global_stores"] = global_store
+                    chosen = global_store.get("chosen")
+                    if chosen is not None:
+                        mpc_fields["mpc_ops_ptr"] = {
+                            "raw": None,
+                            "resolved": _s64(chosen),
+                            "fixup": None,
+                            "status": "global_store",
+                        }
+                        mpc_fields["mpc_ops_fileset_entry"] = _find_entry(entries, _s64(chosen))
 
                 if labelcount is not None and labelcount > 0 and labelcount < 64:
                     labelnames = []
@@ -1650,8 +2167,7 @@ def run():
                 needs_reconstruct = True
             else:
                 if not mpc_fields.get("mpc_name") and not mpc_fields.get("mpc_fullname"):
-                    if not (mpc_fields.get("mpc_ops_ptr") or {}).get("resolved"):
-                        needs_reconstruct = True
+                    needs_reconstruct = True
             if needs_reconstruct:
                 rec_fields = _recover_fields_from_stores(
                     instr,
@@ -1663,6 +2179,7 @@ def run():
                     caller_func=caller_func,
                     listing=listing,
                     max_back=max_back,
+                    mpc_ops_offset=mpc_ops_offset_used,
                 )
                 if rec_fields:
                     reconstructed = {
@@ -1755,6 +2272,27 @@ def run():
 
             caller_entry = _find_entry(entries, _s64(call_addr_val))
 
+            asp_trace = None
+            if mpc_fields and (
+                mpc_fields.get("mpc_fullname") == "Apple System Policy" or mpc_fields.get("mpc_name") == "ASP"
+            ):
+                mpc_offset_val = None
+                if reconstructed:
+                    base_info = reconstructed.get("base") or {}
+                    mpc_offset_val = base_info.get("offset")
+                if mpc_offset_val is None:
+                    mpc_offset_val = 0xB10
+                asp_trace = _trace_asp_context(
+                    caller_func,
+                    call_addr,
+                    int(mpc_offset_val),
+                    int(mpc_ops_offset_used),
+                    listing,
+                    memory,
+                    fixups_map,
+                    max_back=max_back,
+                )
+
             results.append(
                 {
                     "call_site": {
@@ -1772,6 +2310,7 @@ def run():
                     "mpc_reconstructed": reconstructed,
                     "ops_reconstructed": ops_reconstructed,
                     "ops_reconstructed_owner": ops_reconstructed_owner,
+                    "asp_context_trace": asp_trace,
                 }
             )
 
@@ -1785,6 +2324,8 @@ def run():
                 "mac_policy_register": {
                     "address": _format_addr(_s64(_parse_hex(mac_policy_register_addr))) if mac_policy_register_addr else None,
                     "name": mac_policy_func.getName() if mac_policy_func else None,
+                    "mpc_ops_offset": mpc_ops_offset,
+                    "mpc_ops_offsets": mpc_ops_offsets,
                     "mpo_policy_init_offsets": mpo_policy_init_offsets,
                 },
                 "scan_limits": {"max_back": max_back},

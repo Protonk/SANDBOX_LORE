@@ -37,6 +37,155 @@ def _hex_to_bytes(value: str) -> bytes:
     return bytes.fromhex(value)
 
 
+def _merge_ranges(ranges: Iterable[Tuple[int, int]]) -> List[Tuple[int, int]]:
+    merged: List[Tuple[int, int]] = []
+    for start, end in sorted(ranges):
+        if not merged:
+            merged.append((start, end))
+            continue
+        last_start, last_end = merged[-1]
+        if start <= last_end:
+            merged[-1] = (last_start, max(last_end, end))
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def _ranges_complement(ranges: Iterable[Tuple[int, int]], window_len: int) -> List[Tuple[int, int]]:
+    holes: List[Tuple[int, int]] = []
+    pos = 0
+    for start, end in _merge_ranges(ranges):
+        if start > pos:
+            holes.append((pos, start))
+        pos = max(pos, end)
+    if pos < window_len:
+        holes.append((pos, window_len))
+    return holes
+
+
+def _normalize_writes(
+    writes: Iterable[Tuple[int, bytes]],
+    *,
+    cursor_mode: str,
+) -> Tuple[int, List[Tuple[int, bytes]]]:
+    writes_list = list(writes)
+    cursors = [cursor for cursor, _ in writes_list]
+    base = 0
+    if cursor_mode == "cursor_as_ptr" and cursors:
+        base = min(cursors)
+    normalized = [(cursor - base, data) for cursor, data in writes_list]
+    return base, normalized
+
+
+def _find_all(haystack: bytes, needle: bytes) -> Iterable[int]:
+    if not needle:
+        return []
+    start = 0
+    out: List[int] = []
+    while True:
+        pos = haystack.find(needle, start)
+        if pos == -1:
+            break
+        out.append(pos)
+        start = pos + 1
+    return out
+
+
+def _align_gapped(
+    writes: Iterable[Tuple[int, bytes]],
+    *,
+    cursor_mode: str,
+    blob: bytes,
+    window_len: int,
+) -> Optional[Dict[str, Any]]:
+    if not blob or window_len <= 0:
+        return None
+    _, normalized = _normalize_writes(writes, cursor_mode=cursor_mode)
+    if not normalized:
+        return None
+
+    candidates: Dict[int, Dict[str, int]] = {}
+    min_len_used: Optional[int] = None
+    for min_len in (4, 3, 2, 1):
+        candidates.clear()
+        for cursor, data in normalized:
+            if len(data) < min_len:
+                continue
+            bases_for_write = set()
+            for pos in _find_all(blob, data):
+                base = pos - cursor
+                if base < 0:
+                    continue
+                if base + window_len > len(blob):
+                    continue
+                bases_for_write.add(base)
+            for base in bases_for_write:
+                stats = candidates.setdefault(base, {"support_writes": 0, "support_bytes": 0})
+                stats["support_writes"] += 1
+                stats["support_bytes"] += len(data)
+        if candidates:
+            min_len_used = min_len
+            break
+
+    if not candidates:
+        return None
+
+    best_base: Optional[int] = None
+    best_writes = -1
+    best_bytes = -1
+    for base, stats in candidates.items():
+        writes = stats["support_writes"]
+        bytes_len = stats["support_bytes"]
+        if writes > best_writes or (writes == best_writes and bytes_len > best_bytes):
+            best_base = base
+            best_writes = writes
+            best_bytes = bytes_len
+    if best_base is None:
+        return None
+
+    witnessed_ranges: List[Tuple[int, int]] = []
+    aligned_writes = 0
+    mismatched_writes = 0
+    for cursor, data in normalized:
+        if not data:
+            continue
+        start = best_base + cursor
+        end = start + len(data)
+        if start < 0 or end > len(blob):
+            mismatched_writes += 1
+            continue
+        if blob[start:end] == data:
+            witnessed_ranges.append((cursor, cursor + len(data)))
+            aligned_writes += 1
+        else:
+            mismatched_writes += 1
+
+    merged = _merge_ranges(witnessed_ranges)
+    witnessed_bytes = sum(end - start for start, end in merged)
+    holes = _ranges_complement(merged, window_len)
+    candidates_sorted = sorted(
+        (
+            {"base_offset": base, **stats}
+            for base, stats in candidates.items()
+        ),
+        key=lambda item: (item["support_writes"], item["support_bytes"]),
+        reverse=True,
+    )
+    return {
+        "base_offset": best_base,
+        "window_len": window_len,
+        "support_writes": best_writes,
+        "support_bytes": best_bytes,
+        "aligned_writes": aligned_writes,
+        "mismatched_writes": mismatched_writes,
+        "witnessed_bytes": witnessed_bytes,
+        "witnessed_ranges": merged,
+        "hole_ranges": holes,
+        "min_payload_len": min_len_used,
+        "candidates": candidates_sorted[:5],
+    }
+
+
 def _reconstruct(
     writes: Iterable[Tuple[int, bytes]],
     *,
@@ -115,10 +264,15 @@ def _score_match(kind: str) -> int:
     return {"full": 4, "subset": 3, "superset": 2, "gapped": 1, "none": 0}.get(kind, 0)
 
 
-def _select_best(modes: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+def _select_best(modes: List[Dict[str, Any]], preferred_buf: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    if preferred_buf:
+        filtered = [mode for mode in modes if mode.get("buf") == preferred_buf]
+        if filtered:
+            modes = filtered
     best: Optional[Dict[str, Any]] = None
     for mode in modes:
-        kind = mode.get("match", {}).get("kind") if isinstance(mode.get("match"), Mapping) else "none"
+        match = mode.get("match")
+        kind = match.get("kind") if isinstance(match, Mapping) else "none"
         score = _score_match(str(kind))
         if best is None:
             best = mode
@@ -129,6 +283,24 @@ def _select_best(modes: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
             best = mode
             best["_score"] = score
         elif score == best_score:
+            if kind == "gapped":
+                best_match = best.get("match")
+                best_kind = best_match.get("kind") if isinstance(best_match, Mapping) else "none"
+                if best_kind == "gapped":
+                    alignment = mode.get("alignment") if isinstance(mode.get("alignment"), Mapping) else {}
+                    best_alignment = best.get("alignment") if isinstance(best.get("alignment"), Mapping) else {}
+                    support = (
+                        int(alignment.get("support_writes", 0)),
+                        int(alignment.get("support_bytes", 0)),
+                    )
+                    best_support = (
+                        int(best_alignment.get("support_writes", 0)),
+                        int(best_alignment.get("support_bytes", 0)),
+                    )
+                    if support > best_support:
+                        best = mode
+                        best["_score"] = score
+                        continue
             if int(mode.get("reconstructed_len", 0)) > int(best.get("reconstructed_len", 0)):
                 best = mode
                 best["_score"] = score
@@ -173,6 +345,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         sbpl_rel = entry.get("sbpl")
         trace_rel = entry.get("trace")
         blob_rel = entry.get("blob")
+        stats_rel = entry.get("stats")
+        compile_info = entry.get("compile") if isinstance(entry.get("compile"), Mapping) else {}
+        trace_integrity = entry.get("trace_integrity") if isinstance(entry.get("trace_integrity"), Mapping) else {}
+        compile_status = None
+        compile_error = None
+        if isinstance(compile_info, Mapping):
+            compile_status = compile_info.get("status")
+            compile_error = compile_info.get("error")
+            if not compile_error and isinstance(compile_info.get("output"), Mapping):
+                compile_error = compile_info["output"].get("error")
+        if compile_status is None and isinstance(trace_integrity, Mapping):
+            compile_status = trace_integrity.get("compile_status")
         if not isinstance(entry_id, str):
             continue
         if not isinstance(trace_rel, str) or not isinstance(blob_rel, str):
@@ -181,6 +365,19 @@ def main(argv: Optional[List[str]] = None) -> int:
         trace_path = ensure_absolute(trace_rel, repo_root)
         blob_path = ensure_absolute(blob_rel, repo_root)
         blob_bytes = blob_path.read_bytes() if blob_path.exists() else b""
+
+        immutable_buffer = None
+        if isinstance(stats_rel, str):
+            stats_path = ensure_absolute(stats_rel, repo_root)
+            if stats_path.exists():
+                try:
+                    stats_payload = _load_json(stats_path)
+                except Exception:
+                    stats_payload = None
+                if isinstance(stats_payload, Mapping):
+                    imm = stats_payload.get("immutable_buf")
+                    if isinstance(imm, str) and imm.startswith("0x"):
+                        immutable_buffer = imm
 
         records = _load_jsonl(trace_path)
         by_buf: Dict[str, List[Tuple[int, bytes]]] = {}
@@ -209,6 +406,15 @@ def main(argv: Optional[List[str]] = None) -> int:
                 reconstructed = rec.pop("reconstructed_bytes", None)
                 if isinstance(reconstructed, (bytes, bytearray)) and rec.get("match", {}).get("kind") != "gapped":
                     rec["match"] = _match_reconstruction(bytes(reconstructed), blob_bytes)
+                if rec.get("match", {}).get("kind") == "gapped":
+                    alignment = _align_gapped(
+                        writes_sorted,
+                        cursor_mode=mode,
+                        blob=blob_bytes,
+                        window_len=int(rec.get("reconstructed_len", 0)),
+                    )
+                    if alignment:
+                        rec["alignment"] = alignment
                 rec.update({"buf": buf, "write_count": len(writes_sorted)})
                 modes.append(rec)
 
@@ -218,7 +424,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 buffers_out.append(best_mode)
 
         if buffers_out:
-            best_buffer = _select_best(buffers_out)
+            best_buffer = _select_best(buffers_out, preferred_buf=immutable_buffer)
 
         entries_out.append(
             {
@@ -226,6 +432,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "sbpl": sbpl_rel,
                 "trace": trace_rel,
                 "blob": blob_rel,
+                "compile_status": compile_status,
+                "compile_error": compile_error,
+                "immutable_buffer": immutable_buffer,
                 "trace_records": len(records),
                 "buffers": buffers_out,
                 "best": best_buffer,

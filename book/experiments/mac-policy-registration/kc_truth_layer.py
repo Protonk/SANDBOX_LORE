@@ -3,15 +3,15 @@
 Build a KC "truth layer" by enumerating fileset entries and decoding chained fixups.
 
 Outputs (default under book/experiments/mac-policy-registration/out):
-- kc_fileset_index.json
+- kc_fileset_index.json (fileset entries + segment interval map)
 - kc_fixups_summary.json
-- kc_fixups.jsonl (one fixup record per line)
+- kc_fixups.jsonl (compact by default; use --fixups-mode lite/full for larger records)
 
 Notes:
-- Fixup decoding for pointer_format=8 is heuristic and should be treated as
-  partial/under exploration until validated against additional witnesses.
-- Base pointer inference uses coverage against fileset entry ranges; this is
-  a heuristic step and is explicitly marked under exploration in outputs.
+- Fixup decoding for pointer_format=8 follows the XNU field layout and chain
+  stepping (next*4). Any base-pointer inference beyond cache level 0 remains
+  under exploration until validated against additional witnesses.
+- Address mapping is done in KC on-disk vmaddr space (pre-adjust / slide=0).
 """
 
 from __future__ import annotations
@@ -34,6 +34,8 @@ LC_FILESET_ENTRY = 0x35
 LC_FILESET_ENTRY_REQ = 0x80000035
 LC_DYLD_CHAINED_FIXUPS = 0x80000034
 LINKEDIT_DATA_CMDS = {0x1D, 0x1E, 0x2F, 0x31, 0x34}
+DYLD_CHAINED_PTR_START_NONE = 0xFFFF
+DYLD_CHAINED_PTR_START_MULTI = 0x8000
 
 
 @dataclass
@@ -193,31 +195,101 @@ def _load_world_id(repo_root: Path) -> Optional[str]:
 def _decode_kernel_cache_ptr(raw: int) -> Dict[str, int | bool]:
     target = raw & 0x3FFFFFFF
     cache_level = (raw >> 30) & 0x3
-    next_delta = (raw >> 32) & 0xFFF
+    diversity = (raw >> 32) & 0xFFFF
+    addr_div = (raw >> 48) & 0x1
+    key = (raw >> 49) & 0x3
+    next_delta = (raw >> 51) & 0xFFF
     is_auth = (raw >> 63) & 0x1
     return {
         "target": target,
         "cache_level": cache_level,
+        "diversity": diversity,
+        "addr_div": addr_div,
+        "key": key,
         "next_delta": next_delta,
         "is_auth": bool(is_auth),
     }
 
 
-def _find_entry(entries_by_range: List[Tuple[int, int, str]], vmaddr: int) -> Optional[str]:
-    if not entries_by_range:
-        return None
+def _build_segment_intervals(
+    entries: List[Dict[str, object]],
+    overlap_limit: int = 20,
+    include_linkedit: bool = False,
+) -> Tuple[List[Dict[str, object]], List[Dict[str, object]], int, Dict[str, int]]:
+    intervals: List[Dict[str, object]] = []
+    skipped_counts: Dict[str, int] = {}
+    for entry in entries:
+        entry_id = entry.get("entry_id")
+        for seg in entry.get("segment_details") or []:
+            seg_name = seg.get("name")
+            if not include_linkedit and seg_name == "__LINKEDIT":
+                skipped_counts[seg_name] = skipped_counts.get(seg_name, 0) + 1
+                continue
+            start = seg.get("vmaddr")
+            end = seg.get("vmaddr_end")
+            if start is None or end is None or end <= start:
+                continue
+            intervals.append(
+                {
+                    "start": int(start),
+                    "end": int(end),
+                    "entry_id": entry_id,
+                    "segment_name": seg_name,
+                    "is_exec": bool(seg.get("is_exec_heuristic")),
+                }
+            )
+    intervals.sort(key=lambda item: item["start"])
+    overlaps: List[Dict[str, object]] = []
+    overlap_total = 0
+    for idx in range(1, len(intervals)):
+        prev = intervals[idx - 1]
+        cur = intervals[idx]
+        if cur["start"] < prev["end"]:
+            overlap_total += 1
+            if len(overlaps) < overlap_limit:
+                overlaps.append(
+                    {
+                        "prev": prev,
+                        "cur": cur,
+                    }
+                )
+            else:
+                continue
+    return intervals, overlaps, overlap_total, skipped_counts
+
+
+def _find_interval(intervals: List[Dict[str, object]], vmaddr: int) -> Tuple[Optional[Dict[str, object]], int]:
+    if not intervals:
+        return None, 0
     lo = 0
-    hi = len(entries_by_range) - 1
+    hi = len(intervals) - 1
+    match_idx = None
     while lo <= hi:
         mid = (lo + hi) // 2
-        start, end, entry_id = entries_by_range[mid]
+        start = intervals[mid]["start"]
+        end = intervals[mid]["end"]
         if vmaddr < start:
             hi = mid - 1
         elif vmaddr >= end:
             lo = mid + 1
         else:
-            return entry_id
-    return None
+            match_idx = mid
+            break
+    if match_idx is None:
+        return None, 0
+    matches = [intervals[match_idx]]
+    idx = match_idx - 1
+    while idx >= 0 and intervals[idx]["end"] > vmaddr:
+        if intervals[idx]["start"] <= vmaddr < intervals[idx]["end"]:
+            matches.append(intervals[idx])
+        idx -= 1
+    idx = match_idx + 1
+    while idx < len(intervals) and intervals[idx]["start"] <= vmaddr:
+        if intervals[idx]["start"] <= vmaddr < intervals[idx]["end"]:
+            matches.append(intervals[idx])
+        idx += 1
+    matches = sorted(matches, key=lambda item: item["end"] - item["start"])
+    return matches[0], len(matches)
 
 
 def _collect_fixups(
@@ -239,7 +311,8 @@ def _collect_fixups(
     page_coverage: Dict[str, Dict[str, int]] = {}
     max_chain_len = 0
     cache_level_counts: Dict[str, int] = {}
-    page_start_mode_counts = {"single": 0, "multi_count": 0, "multi_sentinel": 0}
+    page_start_mode_counts = {"single": 0, "multi": 0}
+    multi_start_pages: List[Dict[str, int]] = []
     fixups: List[Dict[str, object]] = []
 
     def _read_u16(offset: int) -> Optional[int]:
@@ -282,33 +355,20 @@ def _collect_fixups(
             )
 
             for page_index, page_start in enumerate(page_starts):
-                if page_start == 0xFFFF:
+                if page_start == DYLD_CHAINED_PTR_START_NONE:
                     continue
                 chain_offsets: List[int] = []
-                if page_start & 0x8000:
-                    list_off = page_start & 0x7FFF
-                    list_base = seg_off + list_off
-                    first = _read_u16(list_base)
-                    remaining = (len(fixups_data) - list_base) // 2
-                    if first is None:
-                        continue
-                    if 0 < first <= remaining - 1 and first < 0x400:
-                        page_start_mode_counts["multi_count"] += 1
-                        chain_count = first
-                        for idx in range(chain_count):
-                            off = _read_u16(list_base + 2 + idx * 2)
-                            if off is None or off == 0xFFFF:
-                                break
-                            chain_offsets.append(off)
-                    else:
-                        page_start_mode_counts["multi_sentinel"] += 1
-                        idx = 0
-                        while True:
-                            off = _read_u16(list_base + idx * 2)
-                            if off is None or off == 0xFFFF:
-                                break
-                            chain_offsets.append(off)
-                            idx += 1
+                if page_start & DYLD_CHAINED_PTR_START_MULTI:
+                    page_start_mode_counts["multi"] += 1
+                    if len(multi_start_pages) < 20:
+                        multi_start_pages.append(
+                            {
+                                "segment_index": seg_index,
+                                "page_index": page_index,
+                                "page_start": page_start,
+                            }
+                        )
+                    continue
                 else:
                     page_start_mode_counts["single"] += 1
                     chain_offsets.append(page_start)
@@ -373,12 +433,13 @@ def _collect_fixups(
         "max_chain_len": max_chain_len,
         "cache_level_counts": cache_level_counts,
         "page_start_mode_counts": page_start_mode_counts,
+        "multi_start_pages": multi_start_pages,
     }
 
 
 def _coverage_for_base(
     fixups: List[Dict[str, object]],
-    entries_by_range: List[Tuple[int, int, str]],
+    segment_intervals: List[Dict[str, object]],
     base_ptr: Optional[int],
     cache_level: int,
 ) -> Tuple[int, int]:
@@ -398,14 +459,14 @@ def _coverage_for_base(
             continue
         total += 1
         resolved = base_ptr + int(target)
-        if _find_entry(entries_by_range, resolved) is not None:
+        if _find_interval(segment_intervals, resolved)[0] is not None:
             hits += 1
     return hits, total
 
 
 def _infer_base_pointers(
     fixups: List[Dict[str, object]],
-    entries_by_range: List[Tuple[int, int, str]],
+    segment_intervals: List[Dict[str, object]],
     base_pointers: Dict[int, int | None],
     threshold: float = 0.95,
 ) -> Tuple[Dict[int, int | None], Dict[str, object]]:
@@ -414,7 +475,7 @@ def _infer_base_pointers(
     levels = sorted(inferred.keys())
     inference = {"threshold": threshold, "base0": base0, "coverage_metric": "resolved_in_entry/total", "levels": {}}
     for level in levels:
-        hits, total = _coverage_for_base(fixups, entries_by_range, base0, level)
+        hits, total = _coverage_for_base(fixups, segment_intervals, base0, level)
         coverage = (float(hits) / float(total)) if total else 0.0
         entry = {
             "coverage_hits": hits,
@@ -434,32 +495,31 @@ def _infer_base_pointers(
 
 def _write_fixups(
     fixups: List[Dict[str, object]],
-    entries_by_range: List[Tuple[int, int, str]],
+    segment_intervals: List[Dict[str, object]],
     entries_by_id: Dict[str, Dict[str, object]],
     base_pointers: Dict[int, int | None],
     out_path: Path,
+    mode: str = "full",
 ) -> Dict[str, object]:
     resolved_counts = {
         "resolved_in_entry": 0,
         "resolved_in_exec": 0,
         "resolved_outside": 0,
         "unresolved_unknown_base": 0,
+        "resolved_ambiguous": 0,
     }
     resolved_counts_by_cache_level: Dict[str, Dict[str, int]] = {}
 
-    def find_entry_segment(vmaddr: int) -> Tuple[Optional[str], Optional[bool]]:
-        entry_id = _find_entry(entries_by_range, vmaddr)
-        if not entry_id:
-            return None, None
-        entry = entries_by_id.get(entry_id) or {}
-        for seg in entry.get("segment_details") or []:
-            start = seg.get("vmaddr")
-            end = seg.get("vmaddr_end")
-            if start is None or end is None:
-                continue
-            if start <= vmaddr < end:
-                return entry_id, bool(seg.get("is_exec_heuristic"))
-        return entry_id, None
+    def find_entry_segment(vmaddr: int) -> Tuple[Optional[str], Optional[str], Optional[bool], int]:
+        match, count = _find_interval(segment_intervals, vmaddr)
+        if not match:
+            return None, None, None, 0
+        return (
+            match.get("entry_id"),
+            match.get("segment_name"),
+            bool(match.get("is_exec")) if match.get("is_exec") is not None else None,
+            count,
+        )
 
     def bump(level: Optional[int], key: str) -> None:
         if level is None:
@@ -471,6 +531,7 @@ def _write_fixups(
                 "resolved_in_exec": 0,
                 "resolved_outside": 0,
                 "unresolved_unknown_base": 0,
+                "resolved_ambiguous": 0,
             },
         )
         bucket[key] = bucket.get(key, 0) + 1
@@ -495,21 +556,48 @@ def _write_fixups(
                     resolved_counts["unresolved_unknown_base"] += 1
                     bump(int(cache_level) if cache_level is not None else None, "unresolved_unknown_base")
 
-            owner_entry = _find_entry(entries_by_range, int(rec["vmaddr"]))
-            record = dict(rec)
-            record.update(
-                {
+            owner_match, owner_count = _find_interval(segment_intervals, int(rec["vmaddr"]))
+            owner_entry = owner_match.get("entry_id") if owner_match else None
+            if mode == "compact":
+                record = {
+                    "v": rec["vmaddr"],
+                    "r": resolved_unsigned,
+                }
+            elif mode == "lite":
+                decoded_lite = {}
+                if pointer_format == 8:
+                    decoded_lite = {
+                        "target": decoded.get("target"),
+                        "cache_level": decoded.get("cache_level"),
+                        "is_auth": decoded.get("is_auth"),
+                    }
+                record = {
+                    "vmaddr": rec["vmaddr"],
+                    "pointer_format": pointer_format,
+                    "decoded": decoded_lite,
                     "resolved_guess": resolved_guess,
                     "resolved_unsigned": resolved_unsigned,
-                    "resolved_base": base_ptr,
-                    "owner_entry": owner_entry,
                 }
-            )
+            else:
+                record = dict(rec)
+                record.update(
+                    {
+                        "resolved_guess": resolved_guess,
+                        "resolved_unsigned": resolved_unsigned,
+                        "resolved_base": base_ptr,
+                        "owner_entry": owner_entry,
+                        "owner_segment": owner_match.get("segment_name") if owner_match else None,
+                        "owner_ambiguous": owner_count if owner_count > 1 else 0,
+                    }
+                )
             out.write(json.dumps(record) + "\n")
 
             if resolved_unsigned is None:
                 continue
-            entry_id, is_exec = find_entry_segment(resolved_unsigned)
+            entry_id, segment_name, is_exec, amb_count = find_entry_segment(resolved_unsigned)
+            if amb_count > 1:
+                resolved_counts["resolved_ambiguous"] += 1
+                bump(int(cache_level) if cache_level is not None else None, "resolved_ambiguous")
             if entry_id:
                 resolved_counts["resolved_in_entry"] += 1
                 bump(int(cache_level) if cache_level is not None else None, "resolved_in_entry")
@@ -530,6 +618,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build KC fileset + chained-fixups truth layer.")
     parser.add_argument("--build-id", default="14.4.1-23E224", help="Sandbox-private build ID.")
     parser.add_argument("--out-dir", default="book/experiments/mac-policy-registration/out", help="Output dir.")
+    parser.add_argument(
+        "--fixups-mode",
+        choices=("compact", "lite", "full"),
+        default="compact",
+        help="Write compact, lite, or full per-fixup records (default: compact).",
+    )
     args = parser.parse_args()
 
     repo_root = path_utils.find_repo_root()
@@ -566,9 +660,9 @@ def main() -> int:
             }
         )
 
-    entries_by_range = sorted(
-        [(e["vmaddr_span"]["start"], e["vmaddr_span"]["end"], e["entry_id"]) for e in entries_out],
-        key=lambda x: x[0],
+    segment_intervals, interval_overlaps, interval_overlap_total, interval_skipped = _build_segment_intervals(
+        entries_out,
+        include_linkedit=False,
     )
     entries_by_id = {e["entry_id"]: e for e in entries_out}
 
@@ -583,6 +677,13 @@ def main() -> int:
             "sizeofcmds": header.sizeofcmds,
             "segment_count": len(segments),
             "fileset_entry_count": len(entries_out),
+            "vmaddr_space": "kc_vmaddr_pre_adjust",
+            "vmaddr_space_note": "Static on-disk vmaddr values (slide=0) used for all address mapping.",
+            "segment_interval_count": len(segment_intervals),
+            "segment_interval_overlap_count": len(interval_overlaps),
+            "segment_interval_overlap_total": interval_overlap_total,
+            "segment_interval_excluded_segments": interval_skipped,
+            "segment_interval_policy": "exclude __LINKEDIT (shared range across entries)",
         },
         "segments": [
             {
@@ -595,6 +696,8 @@ def main() -> int:
             for seg in segments
         ],
         "entries": entries_out,
+        "segment_intervals": segment_intervals,
+        "segment_interval_overlaps": interval_overlaps,
     }
 
     fileset_index_path = out_dir / "kc_fileset_index.json"
@@ -627,20 +730,37 @@ def main() -> int:
     )
     fixups = collected.pop("fixups")
 
-    base_pointers, base_inference = _infer_base_pointers(
-        fixups,
-        entries_by_range,
-        base_pointers,
-        threshold=0.95,
-    )
+    cache_level_counts = collected.get("cache_level_counts", {}) or {}
+    cache_total = sum(int(val) for val in cache_level_counts.values()) if cache_level_counts else 0
+    cache_zero = int(cache_level_counts.get("0") or 0)
+    cache_nonzero = cache_total - cache_zero
+    cache_nonzero_fraction = (float(cache_nonzero) / cache_total) if cache_total else 0.0
+    cache_nonzero_dominates = cache_total > 0 and cache_nonzero > cache_zero
+    if cache_nonzero_dominates:
+        base_inference = {
+            "status": "skipped_sanity_gate",
+            "cache_level_counts": cache_level_counts,
+            "cache_nonzero_fraction": cache_nonzero_fraction,
+            "note": "Non-zero cache_level dominates; skipping inference pending fixups decode validation.",
+        }
+        for level in (1, 2, 3):
+            base_pointers[level] = None
+    else:
+        base_pointers, base_inference = _infer_base_pointers(
+            fixups,
+            segment_intervals,
+            base_pointers,
+            threshold=0.95,
+        )
 
     fixups_out_path = out_dir / "kc_fixups.jsonl"
     resolved_summary = _write_fixups(
         fixups=fixups,
-        entries_by_range=entries_by_range,
+        segment_intervals=segment_intervals,
         entries_by_id=entries_by_id,
         base_pointers=base_pointers,
         out_path=fixups_out_path,
+        mode=args.fixups_mode,
     )
     fixups_summary = dict(collected)
     fixups_summary.update(resolved_summary)
@@ -648,6 +768,25 @@ def main() -> int:
     fixups_version, starts_offset, imports_offset, symbols_offset, imports_count, imports_format, symbols_format = struct.unpack_from(
         "<IIIIIII", fixups_data, 0
     )
+    resolved_counts = resolved_summary.get("resolved_counts") or {}
+    total_fixups = int(fixups_summary.get("total_fixups") or 0)
+    sanity = {
+        "pointer_format_counts": fixups_summary.get("pointer_format_counts") or {},
+        "cache_level_counts": cache_level_counts,
+        "cache_nonzero_fraction": cache_nonzero_fraction,
+        "cache_nonzero_dominates": cache_nonzero_dominates,
+        "page_start_mode_counts": fixups_summary.get("page_start_mode_counts") or {},
+        "multi_start_pages_count": len(fixups_summary.get("multi_start_pages") or []),
+        "resolved_counts": resolved_counts,
+    }
+    if total_fixups:
+        sanity["resolved_in_entry_fraction"] = float(resolved_counts.get("resolved_in_entry") or 0) / total_fixups
+        sanity["resolved_in_exec_fraction"] = float(resolved_counts.get("resolved_in_exec") or 0) / total_fixups
+        sanity["resolved_outside_fraction"] = float(resolved_counts.get("resolved_outside") or 0) / total_fixups
+        sanity["unresolved_unknown_base_fraction"] = (
+            float(resolved_counts.get("unresolved_unknown_base") or 0) / total_fixups
+        )
+        sanity["resolved_ambiguous_fraction"] = float(resolved_counts.get("resolved_ambiguous") or 0) / total_fixups
     fixups_summary_out = {
         "meta": {
             "world_id": world_id,
@@ -663,26 +802,33 @@ def main() -> int:
             "imports_format": imports_format,
             "symbols_format": symbols_format,
             "fixups_jsonl": path_utils.to_repo_relative(fixups_out_path, repo_root),
+            "fixups_jsonl_mode": args.fixups_mode,
             "base_pointers": base_pointers,
             "base_pointer_inference": base_inference,
+            "vmaddr_space": "kc_vmaddr_pre_adjust",
+            "vmaddr_space_note": "All fixup vmaddr values are reported in KC on-disk address space (slide=0).",
+            "segment_interval_policy": "exclude __LINKEDIT (shared range across entries)",
             "decode_assumptions": {
                 "pointer_format_8": {
                     "target_bits": 30,
                     "cache_level_bits": [30, 31],
-                    "next_bits": [32, 43],
+                    "diversity_bits": [32, 47],
+                    "addr_div_bit": 48,
+                    "key_bits": [49, 50],
+                    "next_bits": [51, 62],
                     "next_scale": 4,
                     "resolved_guess": "base_pointers[cache_level] + target (when base_pointers is known)",
-                    "status": "under_exploration",
+                    "status": "partial",
                 }
             },
             "page_start_modes": {
                 "single": "page_start is direct chain offset",
-                "multi_count": "page_start points to list with count prefix",
-                "multi_sentinel": "page_start points to list with 0xFFFF sentinel",
-                "status": "under_exploration",
+                "multi": "page_start flagged as DYLD_CHAINED_PTR_START_MULTI (unexpected for BootKC)",
+                "status": "partial",
             },
         },
         "fixup_counts": fixups_summary,
+        "sanity": sanity,
     }
 
     fixups_summary_path = out_dir / "kc_fixups_summary.json"

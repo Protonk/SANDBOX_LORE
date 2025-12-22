@@ -1,9 +1,12 @@
 {
   "counts": {
-    "blobs": 1,
-    "inputs": 1,
-    "traces": 1,
-    "triage": 1
+    "blobs": 44,
+    "compile_error": 0,
+    "compile_ok": 44,
+    "compile_retries": 0,
+    "inputs": 44,
+    "traces": 44,
+    "triage": 44
   },
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 }

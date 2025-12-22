@@ -196,3 +196,66 @@
   - ops-owner scan now stops only after seeing values and scans up to 0x4000 bytes; `ops_slot_dump` uses the same window.
   - AMFI/mcxalr now have non-zero exec-pointer counts in ops histograms; owners still map to `com.apple.driver.AppleTrustedAccessory` for all non-ASP policies.
 - Dispatcher-context pass for ASP now uses call-site candidates + table-range filtering; no dispatcher-context matches returned, so ASP `mpc_ops` remains unresolved.
+
+## KC segment-interval attribution + ops recovery refresh
+
+- `kc_truth_layer.py` now builds a segment-interval map from each fileset entry’s `LC_SEGMENT_64` ranges (address space: KC on-disk vmaddrs, slide=0) and excludes `__LINKEDIT` from attribution.
+  - Overlap inspection: all overlaps were identical `__LINKEDIT` ranges shared across entries (354 overlaps); exclusion drops overlap_total to 0.
+  - New metadata: 1440 intervals, excluded `__LINKEDIT: 355`, `page_start_mode_counts` shows `multi: 0`, and `resolved_ambiguous: 0`.
+  - Resolved counts after inference unchanged: `resolved_in_entry: 3844`, `resolved_in_exec: 3801`, `resolved_outside: 451`, `unresolved_unknown_base: 24` (cache_level 1/3).
+- Re-ran `derive_mac_policy_call_sites.py`; the 7 call sites now map to distinct owner entries: `com.apple.security.AppleImage4`, `com.apple.driver.AppleMobileFileIntegrity`, `com.apple.security.quarantine`, `com.apple.AppleSystemPolicy`, `com.apple.iokit.EndpointSecurity`, `com.apple.security.sandbox`, `com.apple.kext.mcx.alr`.
+- `kernel_mac_policy_register_instances.py` updates:
+  - Derives `mpc_ops_offset = 0x20` and `mpo_policy_init` offsets `0x398/0x3a0` directly from `mac_policy_register`.
+  - Always reconstructs name/fullname if missing (even when ops are resolved).
+  - Adds global-store fallback for `mpc_ops` when static conf fields are zeroed.
+  - Ops-owner sampling window raised to 0x6000 bytes.
+- Reran `kernel-mac-policy-register-instances`; all 7 policies now have names/fullnames:
+  - `AppleImage4`, `AMFI`, `Quarantine`, `ASP`, `EndpointSecurity`, `Sandbox`, `mcxalr`.
+  - Ops owners now map to distinct entries (no AppleTrustedAccessory collapse): AppleImage4 → `com.apple.security.AppleImage4`, Quarantine → `com.apple.security.quarantine`, Sandbox → `com.apple.security.sandbox`, EndpointSecurity → `com.apple.kernel`, AMFI → `com.apple.kernel`, mcxalr → `com.apple.filesystems.msdosfs`.
+  - AMFI/mcxalr `mpc_ops` resolved via global-store fallback; ASP still unresolved (no dispatcher-context base recovered, `mpc_ops` remains `x0 + 0x98`).
+
+## ASP dispatcher-context scan (global BLR sweep)
+
+- Expanded dispatcher-context recovery to include read references and a global BLR/BLRA sweep (`_scan_dispatchers_global`, capped backtrace depth to 60); added `source` tags (`table_scan`, `global_scan`) to any dispatcher context hits.
+- Fixed `_resolve_reg_value` to avoid `base_val` unbound when resolving LDR chains; reran `kernel-mac-policy-register-instances` (~96s).
+- Result: no dispatcher-context matches for ASP; `dispatcher_context` remains empty and `mpc_ops` is still unresolved (`x0 + 0x98`).
+
+## Fixups sanity gate + ASP fixup signature scan
+
+- `kc_truth_layer.py` now emits `sanity` in `kc_fixups_summary.json` and skips base-pointer inference when non-zero cache levels dominate:
+  - `cache_level_counts`: `{0: 1560, 1: 12, 2: 2735, 3: 12}`; `cache_nonzero_fraction ≈ 0.639`, so inference is **skipped** (`status: skipped_sanity_gate`).
+  - `unresolved_unknown_base_fraction ≈ 0.639` after the gate, reflecting the same cache-level distribution.
+- New script `asp_conf_fixup_signature_scan.py` searches fixup slots for adjacent `(mpc_name, mpc_fullname)` pointers (ASP) and derives `mpc_base/x0_base/ops_base` when found.
+  - Run: `PYTHONPATH=$PWD python3 book/experiments/mac-policy-registration/asp_conf_fixup_signature_scan.py --fixups book/experiments/mac-policy-registration/out/kc_fixups.jsonl --fileset-index book/experiments/mac-policy-registration/out/kc_fileset_index.json --instances dumps/ghidra/out/14.4.1-23E224/kernel-mac-policy-register-instances/mac_policy_register_instances.json --out book/experiments/mac-policy-registration/out/asp_conf_fixup_candidates.json`
+  - Output: `status: no_adjacent_fixup_slots`, `name_ptr_matches: 0`, `fullname_ptr_matches: 0` (no static fixup slots resolved to the ASP strings under the current fixups gate).
+  - Re-run with `--allow-unresolved` (target-bit matching): `status.resolved = no_adjacent_fixup_slots`, `status.target = no_adjacent_target_slots` with zero target matches, so there is still no adjacent fixup-slot signature for ASP even without base-pointer resolution.
+
+## Fixups decode audit (chain stepping vs page boundaries)
+
+- New audit `kc_fixups_audit.py` checks whether `next_delta * 4` keeps chains within page boundaries using segment vmaddr + page_size:
+  - Run: `PYTHONPATH=$PWD python3 book/experiments/mac-policy-registration/kc_fixups_audit.py --fixups book/experiments/mac-policy-registration/out/kc_fixups.jsonl --fileset-index book/experiments/mac-policy-registration/out/kc_fileset_index.json --summary book/experiments/mac-policy-registration/out/kc_fixups_summary.json --out book/experiments/mac-policy-registration/out/kc_fixups_audit.json`
+  - Result: `next_out_of_page_fraction` is very high (`cache_level 0 ≈ 0.479`, `cache_level 2 ≈ 0.951`, `cache_level 1/3 = 1.0`), indicating the current chain walk is inconsistent with page boundaries. This suggests either the page-base mapping is wrong for the fixups segments or the decode assumptions are off; treat fixups decode as **under exploration** until this is resolved.
+
+## Fixups decode correction + re-audit (bit layout)
+
+- Corrected pointer_format 8 bit layout in `_decode_kernel_cache_ptr` to match the documented field order (diversity/addr_div/key precede `next_delta`), then re-ran `kc_truth_layer.py`:
+  - New `cache_level_counts`: `{0: 914488}` with `cache_nonzero_fraction = 0.0`; base-pointer inference is no longer gated and all fixups resolve under cache_level 0.
+  - `resolved_in_entry_fraction = 1.0`, `resolved_outside_fraction = 0.0` in `kc_fixups_summary.json`.
+- Re-ran `kc_fixups_audit.py` with the corrected fixups map:
+  - `next_out_of_page_fraction` is now `0.0` for cache_level 0, so chain stepping is consistent with page boundaries.
+- Re-ran `asp_conf_fixup_signature_scan.py --allow-unresolved` with the corrected fixups map:
+  - `status.resolved = no_adjacent_fixup_slots`, `status.target = no_adjacent_target_slots`, with zero matches.
+  - This is stronger evidence that ASP’s `mac_policy_conf` is not statically materialized in BootKC data (or not as adjacent name/fullname slots), rather than an artifact of fixups decoding.
+
+## kc_fixups size control (compact mode)
+
+- `kc_truth_layer.py` now defaults to `--fixups-mode compact`, emitting `kc_fixups.jsonl` with only `{v,r}` pairs to keep the file GitHub‑safe (~48MB).
+- Full fixup records are still available via `--fixups-mode full` for local audits; `kc_fixups_audit.py` requires full records and will refuse compact input.
+
+## ASP interprocedural store trace (x0 base) + fixups map OOM
+
+- Added `asp_context_trace` in `kernel_mac_policy_register_instances.py` to scan for stores to `x0/x19 + 0xb10/0xb18/0xb30` around the ASP `mac_policy_register` call and at direct callers (max 40 callers, 80-instruction backtrace).
+- Attempting to load the full corrected `kc_fixups.jsonl` inside Ghidra now throws `OutOfMemoryError` after several minutes; the 914k-entry fixups map is too large for the headless Jython heap.
+- Workaround: re-ran `kernel-mac-policy-register-instances` with `fixups-mode=skip` to avoid loading the fixups map (partial pointer resolution).
+  - Command: `PYTHONPATH=$PWD python3 book/api/ghidra/run_task.py kernel-mac-policy-register-instances --build 14.4.1-23E224 --project-name sandbox_14.4.1-23E224_kc --process-existing --no-analysis --exec --script-args call-sites=book/experiments/mac-policy-registration/out/mac_policy_register_call_sites.json fixups=book/experiments/mac-policy-registration/out/kc_fixups.jsonl fixups-mode=skip fileset-index=book/experiments/mac-policy-registration/out/kc_fileset_index.json mac-policy-register=0x-1fff729bb68 max-back=200`
+  - Result: `asp_context_trace` finds the same in-function stores (`str x8,[x19,#0xb10]`, `str x8,[x19,#0xb18]`, `str x20,[x19,#0xb30]` with `x20 = x0 + 0x98`) and a single direct caller with unresolved `x0` (source `func_boundary`), but still no concrete base value.

@@ -1,0 +1,181 @@
+{
+  "inputs": [
+    {
+      "id": "baseline_allow_all",
+      "sbpl": "book/tools/sbpl/corpus/baseline/allow_all.sb"
+    },
+    {
+      "id": "domain_af_inet",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/domain_af_inet.sb"
+    },
+    {
+      "id": "domain_af_system",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/domain_af_system.sb"
+    },
+    {
+      "id": "type_sock_stream",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/type_sock_stream.sb"
+    },
+    {
+      "id": "type_sock_dgram",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/type_sock_dgram.sb"
+    },
+    {
+      "id": "proto_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/proto_tcp.sb"
+    },
+    {
+      "id": "proto_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/proto_udp.sb"
+    },
+    {
+      "id": "proto_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/proto_256.sb"
+    },
+    {
+      "id": "triple_all_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_tcp.sb"
+    },
+    {
+      "id": "triple_all_inet_stream_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_inet_stream_256.sb"
+    },
+    {
+      "id": "triple_all_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_udp.sb"
+    },
+    {
+      "id": "triple_any_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_any_tcp.sb"
+    },
+    {
+      "id": "triple_any_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_any_256.sb"
+    },
+    {
+      "id": "triple_all_tcp_order2",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_tcp_order2.sb"
+    },
+    {
+      "id": "triple_nested_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_nested_tcp.sb"
+    },
+    {
+      "id": "triple_nested_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_nested_256.sb"
+    },
+    {
+      "id": "pair_dt_all_inet_stream",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_stream.sb"
+    },
+    {
+      "id": "pair_dt_all_inet_stream_order2",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_stream_order2.sb"
+    },
+    {
+      "id": "pair_dt_all_system_stream",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_all_system_stream.sb"
+    },
+    {
+      "id": "pair_dt_all_inet_dgram",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_all_inet_dgram.sb"
+    },
+    {
+      "id": "pair_dt_any_inet_stream",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_any_inet_stream.sb"
+    },
+    {
+      "id": "pair_dt_any_system_stream",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_any_system_stream.sb"
+    },
+    {
+      "id": "pair_dt_any_inet_dgram",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dt_any_inet_dgram.sb"
+    },
+    {
+      "id": "pair_dp_all_inet_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_tcp.sb"
+    },
+    {
+      "id": "pair_dp_all_inet_tcp_order2",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_tcp_order2.sb"
+    },
+    {
+      "id": "pair_dp_all_inet_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_256.sb"
+    },
+    {
+      "id": "pair_dp_all_system_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_all_system_tcp.sb"
+    },
+    {
+      "id": "pair_dp_all_inet_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_all_inet_udp.sb"
+    },
+    {
+      "id": "pair_dp_any_inet_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_tcp.sb"
+    },
+    {
+      "id": "pair_dp_any_inet_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_256.sb"
+    },
+    {
+      "id": "pair_dp_any_system_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_any_system_tcp.sb"
+    },
+    {
+      "id": "pair_dp_any_inet_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_dp_any_inet_udp.sb"
+    },
+    {
+      "id": "pair_tp_all_stream_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_tcp.sb"
+    },
+    {
+      "id": "pair_tp_all_stream_tcp_order2",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_tcp_order2.sb"
+    },
+    {
+      "id": "pair_tp_all_stream_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_256.sb"
+    },
+    {
+      "id": "pair_tp_all_dgram_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_all_dgram_tcp.sb"
+    },
+    {
+      "id": "pair_tp_all_stream_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_all_stream_udp.sb"
+    },
+    {
+      "id": "pair_tp_any_stream_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_tcp.sb"
+    },
+    {
+      "id": "pair_tp_any_stream_256",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_256.sb"
+    },
+    {
+      "id": "pair_tp_any_dgram_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_any_dgram_tcp.sb"
+    },
+    {
+      "id": "pair_tp_any_stream_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/pair_tp_any_stream_udp.sb"
+    },
+    {
+      "id": "triple_all_system_stream_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_system_stream_tcp.sb"
+    },
+    {
+      "id": "triple_all_inet_dgram_tcp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_inet_dgram_tcp.sb"
+    },
+    {
+      "id": "triple_all_inet_stream_udp",
+      "sbpl": "book/tools/sbpl/corpus/network-matrix/triple_all_inet_stream_udp.sb"
+    }
+  ],
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+}
