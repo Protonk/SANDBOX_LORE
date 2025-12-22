@@ -2393,6 +2393,66 @@ def _ops_owner_histogram(ops_addr, memory, entries, fixups_map, max_scan_bytes=0
     }
 
 
+def _ops_exec_slots(ops_addr, memory, entries, fixups_map, max_scan_bytes=0x6000, zero_cachelines=4, min_scan_bytes=0x200):
+    if ops_addr is None:
+        return None
+    cacheline_bytes = 64
+    slots_per_line = cacheline_bytes // 8
+    max_lines = max_scan_bytes // cacheline_bytes
+    slots = []
+    exec_ptrs = 0
+    resolved_ptrs = 0
+    raw_nonzero = 0
+    scanned_bytes = 0
+    zero_lines = 0
+    stop_reason = None
+    seen_value = False
+    for line_idx in range(max_lines):
+        line_has_value = False
+        for slot_idx in range(slots_per_line):
+            slot_addr = _s64(ops_addr + (line_idx * cacheline_bytes) + (slot_idx * 8))
+            raw = _read_ptr(memory, slot_addr)
+            if raw not in (None, 0):
+                raw_nonzero += 1
+                line_has_value = True
+                seen_value = True
+            ptr_info = _resolve_pointer_at(slot_addr, raw, fixups_map, memory)
+            resolved = ptr_info.get("resolved")
+            if resolved is not None:
+                resolved_ptrs += 1
+                line_has_value = True
+                seen_value = True
+            if resolved is None or not _is_exec_addr(memory, resolved):
+                continue
+            exec_ptrs += 1
+            slots.append(
+                {
+                    "slot_offset": _s64(slot_addr - ops_addr),
+                    "slot_addr": _format_addr(slot_addr),
+                    "resolved": _format_addr(resolved),
+                    "owner_entry": _find_entry(entries, resolved),
+                    "pointer": ptr_info,
+                }
+            )
+            line_has_value = True
+        scanned_bytes = (line_idx + 1) * cacheline_bytes
+        if not line_has_value:
+            zero_lines += 1
+        else:
+            zero_lines = 0
+        if seen_value and scanned_bytes >= min_scan_bytes and zero_lines >= zero_cachelines:
+            stop_reason = "zero_cachelines"
+            break
+    return {
+        "slots": slots,
+        "exec_ptrs": exec_ptrs,
+        "resolved_ptrs": resolved_ptrs,
+        "raw_nonzero": raw_nonzero,
+        "scanned_bytes": scanned_bytes,
+        "stop_reason": stop_reason,
+    }
+
+
 def _classify_addr(memory, addr):
     if addr is None:
         return "unknown"
@@ -2758,6 +2818,8 @@ def run():
                 hist = _ops_owner_histogram(ops_resolved, memory, entries, fixups_map)
                 mpc_fields["ops_owner_histogram"] = hist
                 mpc_fields["mpc_ops_owner"] = hist.get("owner_top") if hist else None
+                exec_slots = _ops_exec_slots(ops_resolved, memory, entries, fixups_map)
+                mpc_fields["ops_exec_slots"] = exec_slots
                 if mpc_fields.get("mpc_name") in ("AMFI", "mcxalr") or (hist and hist.get("exec_ptrs") == 0):
                     mpc_fields["ops_slot_dump"] = _ops_slot_dump(ops_resolved, memory, fixups_map)
 

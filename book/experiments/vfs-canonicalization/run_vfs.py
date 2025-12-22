@@ -331,12 +331,16 @@ def downconvert_runtime_results(normalized_events_path: Path) -> Path:
     simple: List[Dict[str, Any]] = []
     for event in events:
         requested_path = event.get("target")
+        stderr = event.get("stderr")
+        fd_path = _extract_fd_path(stderr)
+        observed_path = fd_path or requested_path
         simple.append(
             {
                 "profile_id": event.get("profile_id"),
                 "operation": event.get("operation"),
                 "requested_path": requested_path,
-                "observed_path": requested_path,
+                "observed_path": observed_path,
+                "observed_path_source": "fd_path" if fd_path else "requested_path",
                 "decision": event.get("actual"),
                 "errno": event.get("errno"),
                 "failure_stage": event.get("failure_stage"),
@@ -348,7 +352,7 @@ def downconvert_runtime_results(normalized_events_path: Path) -> Path:
                 "raw_log": {
                     "command": event.get("command"),
                     "stdout": event.get("stdout"),
-                    "stderr": event.get("stderr"),
+                    "stderr": stderr,
                 },
             }
         )
@@ -377,6 +381,15 @@ def _literal_candidates(s: str) -> set[str]:
         if body and not body.startswith("/"):
             out.add(f"/{body}")
     return out
+
+
+def _extract_fd_path(stderr: str | None) -> str | None:
+    if not stderr:
+        return None
+    for line in stderr.splitlines():
+        if line.startswith("F_GETPATH:"):
+            return line.split(":", 1)[1].strip() or None
+    return None
 
 
 def anchor_present(anchor: str, literals: set[str]) -> bool:
@@ -449,6 +462,7 @@ def decode_profiles(blobs: Dict[str, Path]) -> Path:
             )
         decode[profile_id] = {
             "anchors": anchors_info,
+            "literal_candidates": sorted(literal_set),
             "node_count": dec.get("node_count"),
             "tag_counts": dec.get("tag_counts"),
         }

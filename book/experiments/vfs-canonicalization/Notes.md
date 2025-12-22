@@ -9,3 +9,6 @@ Use this file for concise notes on commands, runs, and observations for the `/tm
 - Metadata canonicalization is now handled by `book/experiments/metadata-runner/`; metadata probes removed from this suite’s matrix.
 - Re-ran `python book/experiments/vfs-canonicalization/run_vfs.py` with `SANDBOX_LORE_SEATBELT_CALLOUT=1`; refreshed `out/` artifacts. Read/write patterns unchanged.
 - Added variant families for `/var/tmp`, `/etc`, firmlink spelling (`/System/Volumes/Data/private/tmp`), and an intermediate symlink path; re-ran `run_vfs.py` with seatbelt callouts. `/var/tmp` and `/etc` aliases remain denied under alias-only and both profiles; firmlink spelling normalizes to `/private/tmp`; intermediate symlink path remains denied in all profiles.
+- Added `F_GETPATH` emission to `sandbox_reader`/`sandbox_writer` and re-ran `run_vfs.py`. Successful `/tmp/*` and Data-volume `/System/Volumes/Data/private/tmp/*` opens report `observed_path` as `/private/tmp/*`; denied alias paths keep `observed_path` at the requested path because the FD never opens.
+- `decode_tmp_profiles.json` now records normalized `literal_candidates`; compiled blobs still carry the expected literal path strings for each profile family.
+- Preflight manifest already covers the new `vfs-canonicalization` SBPL sources and compiled blobs (no missing inputs for the added variants).

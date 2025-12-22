@@ -74,7 +74,7 @@ Signals:
     - decision (`allow` / `deny` / `error`),
     - errno (if any),
     - command output (stdout/stderr).
-  - Stored in `out/runtime_results.json` (simple array form) with `profile_id`, `operation`, `requested_path`, `observed_path`, `decision`, `errno`, `raw_log`.
+  - Stored in `out/runtime_results.json` (simple array form) with `profile_id`, `operation`, `requested_path`, `observed_path`, `observed_path_source`, `decision`, `errno`, `raw_log`.
 - **Logical expectations:**
   - For each `(profile_id, requested_path)` we record an initial expectation in `out/expected_matrix.json`. The base `/tmp` family encodes the observed canonicalization pattern (including the `/var/tmp` control), while the additional variants default to a literal-only baseline so mismatches are the signal.
 
@@ -124,7 +124,8 @@ These sketches are informal; tests will check that the actual JSONs obey the sam
       "profile_id": "vfs_tmp_only",
       "operation": "file-read*",
       "requested_path": "/tmp/foo",
-      "observed_path": "/tmp/foo", // or canonicalized form if available
+      "observed_path": "/private/tmp/foo", // from F_GETPATH if open succeeds
+      "observed_path_source": "fd_path", // or "requested_path" fallback
       "decision": "allow",
       "errno": 0,
       "raw_log": {

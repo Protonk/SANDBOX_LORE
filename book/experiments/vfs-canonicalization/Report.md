@@ -22,14 +22,15 @@ This experiment checks how alias/canonical path families behave structurally and
   - `out/expected_matrix_harness.json` – harness-compatible expected matrix (internal).
   - `out/harness/runtime_results.json` – raw runtime harness results (per-profile dict form).
   - `out/runtime_results.json` – simplified array of runtime observations (per scenario).
-  - `out/decode_tmp_profiles.json` – structural view of anchors/tags/field2 for all configured path pairs in each profile.
+  - `out/decode_tmp_profiles.json` – structural view of anchors/tags/field2 (plus literal candidates) for all configured path pairs in each profile.
   - `out/mismatch_summary.json` – coarse classification for the base `/tmp` family (canonicalization vs control).
 - **Observed vs canonicalized paths:**
-  - At this layer the harness does **not** expose the kernel’s canonical path; `observed_path` in `runtime_results.json` is set equal to `requested_path`. Canonicalization is inferred from behavior (which profiles allow which requests), not from string differences.
+  - The harness now emits `F_GETPATH` for successful opens; `observed_path` in `runtime_results.json` is sourced from that path string when available, and `observed_path_source` reports whether the value came from `fd_path` or from the `requested_path` fallback.
+  - For denied requests the FD never opens, so `F_GETPATH` is absent and `observed_path` remains the requested path; canonicalization for denied paths is still inferred from behavior.
 
 ## Structural observations
 
-From `out/decode_tmp_profiles.json`:
+From `out/decode_tmp_profiles.json` (anchors, tags, field2, and normalized literal candidates):
 
 - **Profile `vfs_tmp_only`**
   - Anchors present for `/tmp/foo`, `/tmp/bar`, `/tmp/nested/child`, `/var/tmp/canon`; canonical counterparts absent. Tag counts: `node_count = 53`, `tag_counts = {"4": 17, "5": 28, "3": 4, "1": 1, "0": 3}`.
@@ -47,6 +48,7 @@ Structural takeaways:
 - For `vfs_private_tmp_only`, canonical anchors are present; decoder also surfaces the alias `/tmp/...` anchors via normalized literal fragments.
 - For `vfs_both_paths`, alias and canonical anchors are present across the path set, matching the SBPL intent.
 - The same pattern holds across the added variants: alias-only profiles contain only their alias anchor (e.g., `/var/tmp/vfs_canon_probe`, `/etc/hosts`, `/private/tmp/vfs_linkdir/...`), canonical-only profiles contain only their canonical anchor, and the decoder does not collapse firmlink spellings into a single literal.
+- The `literal_candidates` lists include the expected full paths for each profile (plus type-byte-trimmed fragments); this confirms the compiled blobs carry the literal strings from SBPL rather than `subpath` filters for these probes (heuristic normalization only).
 
 These observations align with the broader structural story from `probe-op-structure` and `tag-layout-decode`: anchors are static graph literals, not automatically merged by the decoder when they differ by alias/canonical spellings.
 
@@ -56,24 +58,24 @@ From `out/runtime_results.json` (via `run_vfs.py` + `run_expected_matrix` on thi
 
 - **Base `/tmp` family**
   - `vfs_tmp_only` denies all alias and canonical requests across the path set for file-read* and file-write*.
-  - `vfs_private_tmp_only` allows all `/tmp/*` and `/private/tmp/*` requests (alias or canonical) but denies `/var/tmp/canon`; allows `/private/var/tmp/canon`.
+  - `vfs_private_tmp_only` allows all `/tmp/*` and `/private/tmp/*` requests (alias or canonical) but denies `/var/tmp/canon`; allows `/private/var/tmp/canon`. Successful `/tmp/*` requests report `observed_path` as `/private/tmp/*` via `F_GETPATH`.
   - `vfs_both_paths` matches `vfs_private_tmp_only`: all `/tmp/*` + `/private/tmp/*` allowed; `/var/tmp/canon` denied; `/private/var/tmp/canon` allowed.
 - **`/var/tmp` discriminator**
   - `vfs_var_tmp_alias_only` denies both `/var/tmp/vfs_canon_probe` and `/private/var/tmp/vfs_canon_probe`.
   - `vfs_var_tmp_private_only` allows `/private/var/tmp/vfs_canon_probe` but denies `/var/tmp/vfs_canon_probe`.
-  - `vfs_var_tmp_both` allows `/private/var/tmp/vfs_canon_probe` but still denies `/var/tmp/vfs_canon_probe`.
+  - `vfs_var_tmp_both` allows `/private/var/tmp/vfs_canon_probe` but still denies `/var/tmp/vfs_canon_probe`. Denied alias requests never open, so `observed_path` stays at the requested path.
 - **`/etc` read-only**
   - `vfs_etc_alias_only` denies both `/etc/hosts` and `/private/etc/hosts`.
   - `vfs_etc_private_only` allows `/private/etc/hosts` but denies `/etc/hosts`.
-  - `vfs_etc_both` allows `/private/etc/hosts` but still denies `/etc/hosts`.
+  - `vfs_etc_both` allows `/private/etc/hosts` but still denies `/etc/hosts`; alias requests never open, so `F_GETPATH` is unavailable there.
 - **Firmlink spelling (`/private/tmp` vs `/System/Volumes/Data/private/tmp`)**
-  - `vfs_firmlink_private_only` allows both spellings.
+  - `vfs_firmlink_private_only` allows both spellings; when requesting the Data spelling, `F_GETPATH` reports the canonical `/private/tmp/...` path.
   - `vfs_firmlink_data_only` denies both spellings.
   - `vfs_firmlink_both` allows both spellings.
 - **Intermediate symlink path**
   - `vfs_link_private_tmp_only` denies both the symlinked-in-path form and the direct `/private/var/tmp` path.
   - `vfs_link_var_tmp_only` allows only the direct `/private/var/tmp` path; the symlinked-in-path request is denied.
-  - `vfs_link_both` allows only the direct `/private/var/tmp` path; the symlinked-in-path request is still denied.
+  - `vfs_link_both` allows only the direct `/private/var/tmp` path; the symlinked-in-path request is still denied (no `F_GETPATH` for the denied path).
 
 All of these runs use the same harness and shim rules as `runtime-checks` and `runtime-adversarial`; the only degrees of freedom are which profile is applied and which path the reader attempts to open.
 
@@ -83,7 +85,7 @@ Within the scope of this experiment (file reads/writes on this host, these profi
 
 - **Effective enforcement path is `/private/tmp/...` for the `/tmp` path set.**
   - A profile that mentions only canonical `/private/tmp/*` paths (`vfs_private_tmp_only`) allows both `/tmp/*` and `/private/tmp/*` requests, and the harness reads the same contents in both cases.
-  - This is consistent with the OS canonicalizing `/tmp/*` to `/private/tmp/*` **before** the sandbox checks the literal.
+  - `F_GETPATH` on successful `/tmp/*` opens reports `/private/tmp/*`, which is a direct witness that the FD resolves to the canonical path before policy evaluation (partial only for allowed cases).
 
 - **A profile that mentions only `/tmp/*` does not match after canonicalization.**
   - `vfs_tmp_only` has evident `/tmp/*` anchors in the decoded graph, but both `/tmp/*` and `/private/tmp/*` requests are denied with `EPERM` from the helper.
@@ -99,7 +101,7 @@ Within the scope of this experiment (file reads/writes on this host, these profi
 
 - **Firmlink spelling is normalized to `/private/tmp` in this suite.**
   - The Data-volume spelling (`/System/Volumes/Data/private/tmp/...`) is allowed when `/private/tmp/...` is allowed, and is denied when only the Data spelling is allowed.
-  - This suggests canonicalization across the firmlink spelling boundary for `/private/tmp` on this host, but it is still **partial** (single path, single family).
+  - For successful opens of the Data spelling, `F_GETPATH` returns the `/private/tmp/...` path, which is a direct witness of normalization across the firmlink spelling boundary in this suite (still **partial**, single path family).
 
 - **Intermediate symlink paths do not match either literal.**
   - Requests via `/private/tmp/vfs_linkdir/to_var_tmp/...` are denied even when the profile explicitly allows that literal or allows the canonical `/private/var/tmp/...` path.
@@ -126,7 +128,7 @@ Scope and constraints:
 - World: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` only.
 - Operations: `file-read*` and `file-write*` via the existing runtime harness (plus `/etc/hosts` read-only).
 - Paths: base `/tmp/*` and `/private/tmp/*` set, `/var/tmp/canon` control, `/var/tmp/vfs_canon_probe`, `/etc/hosts`, `/System/Volumes/Data/private/tmp/vfs_firmlink_probe`, and the intermediate symlink path under `/private/tmp/vfs_linkdir/`.
-- Logging: the harness does **not** surface canonicalized path strings; `observed_path` equals `requested_path` in `runtime_results.json`. Canonicalization is inferred via behavior patterns (allow/deny) under controlled profiles, not via direct path logging.
+- Logging: the harness now captures `F_GETPATH` for successful opens; `observed_path` is the FD path and `observed_path_source` flags when that witness is available. Denied paths still lack canonicalized strings and remain inference-only.
 
 Non-claims and cautions:
 
@@ -145,4 +147,4 @@ What further probes would tell us (high-level expectations):
 - The limits: cases that do not canonicalize anchor the story and prevent overgeneralization.
 - A richer set of runtime-backed invariants (or bounded partial/brittle cases) that chapters and other experiments can safely cite.
 
-For a fresh agent, this experiment should be read as: **“Here is one narrow, well understood VFS behavior: on this host, the `/tmp` alias paths in this suite are enforced via the canonical `/private/tmp/*` literals, and profiles that mention only `/tmp` do not match after canonicalization; firmlink spellings of `/private/tmp` normalize back to `/private/tmp` in this suite; `/var/tmp`, `/etc`, and intermediate symlink paths remain partial.”** Further VFS work (other paths, operations, and profiles) should be modeled as separate experiments that point back to this one.***
+For a fresh agent, this experiment should be read as: **“Here is one narrow, well understood VFS behavior: on this host, the `/tmp` alias paths in this suite are enforced via the canonical `/private/tmp/*` literals, and profiles that mention only `/tmp` do not match after canonicalization; firmlink spellings of `/private/tmp` normalize back to `/private/tmp` in this suite; `/var/tmp`, `/etc`, and intermediate symlink paths remain partial.”** Further VFS work (other paths, operations, and profiles) should be modeled as separate experiments that point back to this one.

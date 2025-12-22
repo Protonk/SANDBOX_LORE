@@ -115,6 +115,18 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/bar",
+      "/foo",
+      "/nested/child",
+      "/tmp/",
+      "/var/tmp/canon",
+      "bar",
+      "foo",
+      "nested/child",
+      "tmp/",
+      "var/tmp/canon"
+    ],
     "node_count": 53,
     "tag_counts": {
       "4": 17,
@@ -242,6 +254,19 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/bar",
+      "/foo",
+      "/nested/child",
+      "/private/",
+      "/tmp/",
+      "/var/tmp/canon",
+      "bar",
+      "foo",
+      "nested/child",
+      "tmp/",
+      "var/tmp/canon"
     ],
     "node_count": 52,
     "tag_counts": {
@@ -381,6 +406,20 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/bar",
+      "/foo",
+      "/nested/child",
+      "/private/",
+      "/tmp/",
+      "/var/tmp/canon",
+      "bar",
+      "foo",
+      "nested/child",
+      "private/",
+      "tmp/",
+      "var/tmp/canon"
+    ],
     "node_count": 53,
     "tag_counts": {
       "4": 17,
@@ -498,6 +537,9 @@
         ]
       }
     ],
+    "literal_candidates": [
+      "/var/tmp/vfs_canon_probe"
+    ],
     "node_count": 52,
     "tag_counts": {
       "4": 17,
@@ -614,6 +656,9 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/private/var/tmp/vfs_canon_probe"
     ],
     "node_count": 52,
     "tag_counts": {
@@ -741,6 +786,12 @@
         ]
       }
     ],
+    "literal_candidates": [
+      "/private/var/tmp/vfs_canon_probe",
+      "/var/tmp/vfs_canon_probe",
+      "private/var/tmp/vfs_canon_probe",
+      "var/tmp/vfs_canon_probe"
+    ],
     "node_count": 53,
     "tag_counts": {
       "4": 17,
@@ -858,6 +909,9 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/etc/hosts"
+    ],
     "node_count": 52,
     "tag_counts": {
       "4": 17,
@@ -974,6 +1028,9 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/private/etc/hosts"
     ],
     "node_count": 52,
     "tag_counts": {
@@ -1101,6 +1158,12 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/etc/hosts",
+      "/private/etc/hosts",
+      "etc/hosts",
+      "private/etc/hosts"
+    ],
     "node_count": 53,
     "tag_counts": {
       "4": 17,
@@ -1218,6 +1281,9 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/private/tmp/vfs_firmlink_probe"
+    ],
     "node_count": 52,
     "tag_counts": {
       "4": 17,
@@ -1325,6 +1391,9 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/system/volumes/data/private/tmp/vfs_firmlink_probe"
     ],
     "node_count": 52,
     "tag_counts": {
@@ -1444,6 +1513,12 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/private/tmp/vfs_firmlink_probe",
+      "/system/volumes/data/private/tmp/vfs_firmlink_probe",
+      "private/tmp/vfs_firmlink_probe",
+      "system/volumes/data/private/tmp/vfs_firmlink_probe"
+    ],
     "node_count": 53,
     "tag_counts": {
       "4": 17,
@@ -1560,6 +1635,9 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/private/var/tmp/vfs_link_probe"
     ],
     "node_count": 52,
     "tag_counts": {
@@ -1678,6 +1756,9 @@
         "field2_values": []
       }
     ],
+    "literal_candidates": [
+      "/private/tmp/vfs_linkdir/to_var_tmp/vfs_link_probe"
+    ],
     "node_count": 52,
     "tag_counts": {
       "4": 17,
@@ -1793,6 +1874,13 @@
         "tags": [],
         "field2_values": []
       }
+    ],
+    "literal_candidates": [
+      "/private/",
+      "/tmp/vfs_linkdir/to_var_tmp/vfs_link_probe",
+      "/var/tmp/vfs_link_probe",
+      "tmp/vfs_linkdir/to_var_tmp/vfs_link_probe",
+      "var/tmp/vfs_link_probe"
     ],
     "node_count": 52,
     "tag_counts": {

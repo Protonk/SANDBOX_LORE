@@ -1,5 +1,7 @@
 #include "../../api/runtime_tools/native/tool_markers.h"
+#include <errno.h>
 #include <fcntl.h>
+#include <sys/syslimits.h>
 #include <unistd.h>
 
 /*
@@ -11,6 +13,15 @@
 
 static void usage(const char *prog) {
     fprintf(stderr, "Usage: %s <profile.sb> <path>\n", prog);
+}
+
+static void emit_fd_path(int fd) {
+    char pathbuf[PATH_MAX];
+    if (fcntl(fd, F_GETPATH, pathbuf) == 0) {
+        fprintf(stderr, "F_GETPATH:%s\n", pathbuf);
+    } else {
+        fprintf(stderr, "F_GETPATH_ERROR:%d\n", errno);
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -55,6 +66,7 @@ int main(int argc, char *argv[]) {
         perror("open target");
         return 2;
     }
+    emit_fd_path(fd);
     const char *line = "runtime-check\n";
     ssize_t nw = write(fd, line, strlen(line));
     if (nw < 0) {
