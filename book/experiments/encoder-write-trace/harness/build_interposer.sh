@@ -10,7 +10,8 @@ TMP_PATH="${OUT_PATH}.tmp"
 clang -dynamiclib \
   -Wl,-undefined,dynamic_lookup \
   -o "${TMP_PATH}" \
-  "${SCRIPT_DIR}/sbpl_trace_interpose.c"
+  "${SCRIPT_DIR}/sbpl_trace_interpose.c" \
+  "${SCRIPT_DIR}/mach_exc_server.c"
 
 mv -f "${TMP_PATH}" "${OUT_PATH}"
 echo "[+] wrote ${OUT_PATH}"

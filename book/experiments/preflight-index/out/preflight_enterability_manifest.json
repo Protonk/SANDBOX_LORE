@@ -497,6 +497,420 @@
       ]
     },
     {
+      "file_sha256": "19832eb9716a32459bee8398c8977fd1dfd575fa26606928f95728462a833c92",
+      "file_size": 416,
+      "path": "book/experiments/encoder-write-trace/out/blobs/baseline_allow_all.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "19832eb9716a32459bee8398c8977fd1dfd575fa26606928f95728462a833c92",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/baseline_allow_all.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "8d616ac17fc5a17cfd9fa203114120e9648c418e30abdc0f885cedcb577537c1",
+      "file_size": 493,
+      "path": "book/experiments/encoder-write-trace/out/blobs/baseline_deny_all.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "8d616ac17fc5a17cfd9fa203114120e9648c418e30abdc0f885cedcb577537c1",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/baseline_deny_all.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "39ba7734110cb41513a457e7a723778ce5a0461d6d7124665195568a3bf551a2",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/domain_af_inet.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "39ba7734110cb41513a457e7a723778ce5a0461d6d7124665195568a3bf551a2",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/domain_af_inet.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "1b717a085947fd34abc0ab2b6a511d09d65f7544615c7535f5e8a1a06c205fc4",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/domain_af_system.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "1b717a085947fd34abc0ab2b6a511d09d65f7544615c7535f5e8a1a06c205fc4",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/domain_af_system.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "64b8b3eb9c1bdd1df1cc98f260e12bb04e7c477140935db6a45e1d8c864f49f8",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_dp_all_inet_tcp.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "64b8b3eb9c1bdd1df1cc98f260e12bb04e7c477140935db6a45e1d8c864f49f8",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_dp_all_inet_tcp.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "2f0f0b7b89cdaeb7e80c405f7656001d9d241de7d03348398830a464b2be66c3",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_dp_all_inet_tcp_order2.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "2f0f0b7b89cdaeb7e80c405f7656001d9d241de7d03348398830a464b2be66c3",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_dp_all_inet_tcp_order2.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "874ef6d0c949f4e80e52b72deeec6956eee000f40d14ff427d46cff88028d08a",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_dt_all_inet_stream.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "874ef6d0c949f4e80e52b72deeec6956eee000f40d14ff427d46cff88028d08a",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_dt_all_inet_stream.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "bb62dc5971b06dd425dfd88a9faba94263bbf45b585853ee3f5667aac30e1aec",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_dt_all_inet_stream_order2.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "bb62dc5971b06dd425dfd88a9faba94263bbf45b585853ee3f5667aac30e1aec",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_dt_all_inet_stream_order2.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "7ac7298f3092230a8042d1f429fe5edf2d4c77c4ccd81015189818100b98f157",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_tp_all_stream_tcp.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "7ac7298f3092230a8042d1f429fe5edf2d4c77c4ccd81015189818100b98f157",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_tp_all_stream_tcp.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "dfb6048158014d726526c688b296f273134aff013889ef9e02ded4e0eade3ad3",
+      "file_size": 492,
+      "path": "book/experiments/encoder-write-trace/out/blobs/pair_tp_all_stream_tcp_order2.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "dfb6048158014d726526c688b296f273134aff013889ef9e02ded4e0eade3ad3",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/pair_tp_all_stream_tcp_order2.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "e12a807d1e4fa19562ede18236ee9e8ccd6dfa5f7c081a8c32d85e3a91aeff8a",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/proto_256.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "e12a807d1e4fa19562ede18236ee9e8ccd6dfa5f7c081a8c32d85e3a91aeff8a",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/proto_256.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "9ab862a8d0ab5b4d30a9e4da34198c6cac0155e525fcb7c2eb537c26a1a50ace",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/proto_tcp.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "9ab862a8d0ab5b4d30a9e4da34198c6cac0155e525fcb7c2eb537c26a1a50ace",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/proto_tcp.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "c58599b5013edf739f1a9e14fa117a398e5ef437109ddb8a2b2b5d307f41552f",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/proto_udp.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "c58599b5013edf739f1a9e14fa117a398e5ef437109ddb8a2b2b5d307f41552f",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/proto_udp.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "d32c94d51c93ae6b55c52b9ea2749e4b8180c2d143196663fd14706206669c40",
+      "file_size": 500,
+      "path": "book/experiments/encoder-write-trace/out/blobs/triple_all_inet_stream_256.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "d32c94d51c93ae6b55c52b9ea2749e4b8180c2d143196663fd14706206669c40",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/triple_all_inet_stream_256.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "13ac83c6ffea7232e86baff165f248f4314fd224ec1be863b7ca0d107e4a244b",
+      "file_size": 500,
+      "path": "book/experiments/encoder-write-trace/out/blobs/triple_all_tcp.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "13ac83c6ffea7232e86baff165f248f4314fd224ec1be863b7ca0d107e4a244b",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/triple_all_tcp.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "abe3bd21acac6779948b2af18c7212dc6d5a8acd93fd997ad26ded9b84c8ffd6",
+      "file_size": 500,
+      "path": "book/experiments/encoder-write-trace/out/blobs/triple_all_tcp_order2.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "abe3bd21acac6779948b2af18c7212dc6d5a8acd93fd997ad26ded9b84c8ffd6",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/triple_all_tcp_order2.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "b6c76984899144051a112f92fc1702ebdee01dead43808ae99bb4059addeb6d3",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/type_sock_dgram.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "b6c76984899144051a112f92fc1702ebdee01dead43808ae99bb4059addeb6d3",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/type_sock_dgram.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
+      "file_sha256": "b6db2c9546159b4814d4743f882da1a1975056ed5b90c0dfc795a2af62126940",
+      "file_size": 484,
+      "path": "book/experiments/encoder-write-trace/out/blobs/type_sock_stream.sb.bin",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [
+          {
+            "blob_sha256": "b6db2c9546159b4814d4743f882da1a1975056ed5b90c0dfc795a2af62126940",
+            "matched": false
+          }
+        ],
+        "input_kind": "sbpl_blob_path",
+        "input_ref": "book/experiments/encoder-write-trace/out/blobs/type_sock_stream.sb.bin",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "book_blobs"
+      ]
+    },
+    {
       "file_sha256": "34ff85552f29a6d6759b3bcf4f7cad643d3a92716c081fbe9d0c7f64f7b61a3c",
       "file_size": 1623,
       "path": "book/experiments/entitlement-diff/sb/appsandbox-baseline.sb",

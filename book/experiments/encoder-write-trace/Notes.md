@@ -21,3 +21,6 @@
 - Attempted a non-shared-cache helper by setting `SBPL_SANDBOX_PATH=book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib`; `ctypes.CDLL` failed with a code-signature error ("Trying to load an unsigned library").
 - Extracted a fresh libsandbox with `extract_dsc.swift` into a temporary directory and copied it to `book/experiments/encoder-write-trace/out/libsandbox/libsandbox.1.dylib`; `codesign --sign -` failed with `main executable failed strict validation` (same with `--options=linker-signed`).
 - Attempted DTrace pid-provider tracing (`dtrace -n pid$target:libsandbox.1.dylib::_sb_mutable_buffer_write:entry ...`); SIP blocked it with "DTrace requires additional privileges".
+- Added a hardware-breakpoint hook (Mach exception port + ARM_DEBUG_STATE64) and a new `hw_breakpoint` mode.
+- Generated `harness/mach_exc_server.c` and `harness/mach_exc_server.h` via `mig` from `mach_exc.defs` to back the exception server.
+- Ran `run_trace.py --mode hw_breakpoint --only-id baseline_allow_all --allow-zero-hits`; hook armed successfully and recorded 271 write records in `out/traces/baseline_allow_all.jsonl` with `hook_status: ok` in triage.

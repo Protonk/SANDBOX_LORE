@@ -33,11 +33,11 @@ does **not** interpret kernel semantics or runtime policy decisions.
 
 - Interposer build: `book/experiments/encoder-write-trace/out/interposer/sbpl_trace_interpose.dylib`.
 - Baseline compile smoke: `book/experiments/encoder-write-trace/out/blobs/_debug.sb.bin`.
-- Trace outputs (`out/manifest.json`, `out/traces/*.jsonl`) have not been produced yet.
+- Trace outputs: `book/experiments/encoder-write-trace/out/traces/baseline_allow_all.jsonl` (hardware-breakpoint run).
 
 ## Status
 
-- Status: **blocked**.
+- Status: **partial**.
 - Earlier dyld interpose load failed with `symbol not found in flat namespace '__sb_mutable_buffer_write'`,
   which suggests (but does not prove) the write routine is not exported/bindable.
 - The harness now records triage metadata (including callsite reachability) and supports
@@ -53,6 +53,10 @@ does **not** interpret kernel semantics or runtime policy decisions.
   and `max_has_write: false`, which is consistent with an immutable `__TEXT` mapping
   on this host. Patch mode now treats this as a terminal skip (`hook_status:
   skipped_immutable`) rather than attempting to write text pages.
+- A hardware-breakpoint hook (Mach exception port + ARM_DEBUG_STATE64) now produces
+  write records without modifying text. The baseline run (`baseline_allow_all`) yields
+  `hook_hit_count: 271` in `book/experiments/encoder-write-trace/out/triage/baseline_allow_all.json`
+  with a corresponding JSONL trace file.
 
 ## Running / refreshing
 
@@ -65,7 +69,8 @@ python3 book/experiments/encoder-write-trace/check_trace_join.py
 ```
 
 Note: triage mode records hook metadata under `out/triage/`. Traces require
-`--mode dynamic` (exported/bindable) or `--mode patch` with a known address/offset.
+`--mode dynamic` (exported/bindable), `--mode patch` with a known address/offset,
+or `--mode hw_breakpoint` when patching is blocked by region max-protection.
 
 ## Blockers / risks
 
@@ -76,6 +81,8 @@ Note: triage mode records hook metadata under `out/triage/`. Traces require
 - Address-based patching appears blocked by region max-protection (`r-x` without write)
   even after switching to W^X-correct protection changes. The Mach VM region metadata
   in `out/triage/baseline_allow_all.json` is the current witness.
+- The hardware-breakpoint hook currently arms the current thread; if compilation
+  migrates to other threads, additional thread coverage may be required.
 - Callsite reachability is inferred from the indirect-symbol table (`otool -Iv`)
   on the extracted libsandbox image; this is a partial proxy for dyld bind tables.
 - dyld_info exports/imports are recorded as a convenience signal; the extracted

@@ -22,6 +22,7 @@ not exported or dyld-bindable.
   - Dynamic interpose attempt only when the symbol is exported/bindable.
   - Entry-text patch hook for local symbols (unslid VM addr + runtime slide).
   - UUID gate for unslid addresses and optional `DYLD_SHARED_REGION` overrides.
+  - Hardware breakpoint hook (Mach exception port + ARM_DEBUG_STATE64) when patching is blocked.
 - Outputs under `out/`:
   - `triage/*.json` (hook triage per input)
   - `traces/*.jsonl` (write records)
@@ -40,7 +41,8 @@ not exported or dyld-bindable.
    the callsite (stub/bind vs internal/direct).
 4. If exported/bindable, try dynamic interpose; otherwise compute an address or
    image-relative offset and run patch mode.
-5. If patching is blocked by memory protections, capture the failure and
-   consider a DTrace or breakpoint-based tracer (compile-only).
+5. If patching is blocked by memory protections, use the hardware-breakpoint
+   hook (Mach exception port + ARM_DEBUG_STATE64) to trace writes without
+   modifying text.
 6. Analyze trace-to-blob joins and cross-check with network-matrix diffs.
 7. Update `Report.md` and `Notes.md` with results and limitations.

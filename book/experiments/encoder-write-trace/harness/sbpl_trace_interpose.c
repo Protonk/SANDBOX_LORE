@@ -12,9 +12,12 @@
 #include <mach/mach_error.h>
 #include <mach/mach_vm.h>
 #include <mach/vm_region.h>
+#include <mach/arm/thread_status.h>
+#include <mach/arm/exception.h>
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
 #include <ctype.h>
+#include "mach_exc_server.h"
 #if defined(__arm64e__)
 #include <ptrauth.h>
 #endif
@@ -29,11 +32,19 @@ static const char *g_trace_mode = NULL;
 static uint64_t g_seq = 0;
 static __thread int g_in_hook = 0;
 static const char *k_target_symbol = "_sb_mutable_buffer_write";
+static pthread_mutex_t g_hw_lock = PTHREAD_MUTEX_INITIALIZER;
+static mach_port_t g_hw_exception_port = MACH_PORT_NULL;
+static int g_hw_server_running = 0;
+static int g_hw_break_index = 0;
+static uint64_t g_hw_bcr_value = 0;
+static int g_hw_step_active = 0;
+static uint64_t g_hw_target_addr = 0;
 
 typedef void (*sb_write_fn)(void *buf, uint64_t cursor, const void *data, uint64_t len);
 static sb_write_fn g_original = NULL;
 
 struct patch_report;
+struct hw_breakpoint_report;
 
 struct dyld_interpose_tuple {
     const void *replacement;
@@ -150,6 +161,7 @@ static void triage_emit(
     int uuid_match_known,
     int uuid_match,
     const struct patch_report *patch,
+    const struct hw_breakpoint_report *hw,
     const char *mode,
     const char *sandbox_path_str,
     int sandbox_loaded,
@@ -211,6 +223,20 @@ static void sbpl_trace_write_hook(void *buf, uint64_t cursor, const void *data, 
 #define SBPL_ARCH "x86_64"
 #else
 #error "Unsupported architecture for encoder write trace hook"
+#endif
+
+#if defined(__DARWIN_UNIX03)
+#define ARM_TS_X(ts, idx) ((ts).__x[(idx)])
+#define ARM_TS_PC(ts) ((ts).__pc)
+#define ARM_DBG_BVR(ds, idx) ((ds).__bvr[(idx)])
+#define ARM_DBG_BCR(ds, idx) ((ds).__bcr[(idx)])
+#define ARM_DBG_MDSCR(ds) ((ds).__mdscr_el1)
+#else
+#define ARM_TS_X(ts, idx) ((ts).x[(idx)])
+#define ARM_TS_PC(ts) ((ts).pc)
+#define ARM_DBG_BVR(ds, idx) ((ds).bvr[(idx)])
+#define ARM_DBG_BCR(ds, idx) ((ds).bcr[(idx)])
+#define ARM_DBG_MDSCR(ds) ((ds).mdscr_el1)
 #endif
 
 #if defined(__arm64e__)
@@ -301,6 +327,20 @@ struct patch_report {
     char region_max_protection_flags[4];
     char pre_bytes_hex[SBPL_PATCH_SIZE * 2 + 1];
     char post_bytes_hex[SBPL_PATCH_SIZE * 2 + 1];
+};
+
+struct hw_breakpoint_report {
+    int attempted;
+    int port_ok;
+    int handler_thread_ok;
+    int exception_port_ok;
+    int debug_state_ok;
+    int breakpoint_set_ok;
+    int threads_scanned;
+    int threads_armed;
+    int breakpoint_index;
+    uint64_t bcr_value;
+    char error[256];
 };
 
 static void hex_encode(const uint8_t *data, size_t len, char *out, size_t out_len) {
@@ -425,6 +465,296 @@ static void record_region_info(mach_vm_address_t addr, struct patch_report *repo
     format_prot_flags(info.max_protection, report->region_max_protection_flags);
 }
 
+static uint64_t hw_breakpoint_control(void) {
+    // Best-effort AArch64 breakpoint control: enable + match in user/priv + full byte select.
+    const uint64_t enable = 1u;
+    const uint64_t priv = (0x3u << 1);
+    const uint64_t bas = (0xFu << 5);
+    return enable | priv | bas;
+}
+
+static int hw_breakpoint_update_state(
+    thread_t thread,
+    uint64_t addr,
+    uint64_t bcr_value,
+    int enable,
+    int single_step,
+    char *err,
+    size_t err_len
+) {
+#if defined(__arm64__) || defined(__aarch64__)
+    arm_debug_state64_t dbg;
+    mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
+    kern_return_t kr = thread_get_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg, &count);
+    if (kr != KERN_SUCCESS) {
+        snprintf(err, err_len, "thread_get_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        return 0;
+    }
+    if (enable) {
+        ARM_DBG_BVR(dbg, g_hw_break_index) = addr;
+        ARM_DBG_BCR(dbg, g_hw_break_index) = bcr_value;
+    } else {
+        ARM_DBG_BCR(dbg, g_hw_break_index) = 0;
+    }
+    if (single_step) {
+        ARM_DBG_MDSCR(dbg) |= 0x1;
+    } else {
+        ARM_DBG_MDSCR(dbg) &= ~0x1ULL;
+    }
+    kr = thread_set_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg, count);
+    if (kr != KERN_SUCCESS) {
+        snprintf(err, err_len, "thread_set_state(ARM_DEBUG_STATE64) failed: %s", mach_err_str(kr));
+        return 0;
+    }
+    return 1;
+#else
+    (void)thread;
+    (void)addr;
+    (void)bcr_value;
+    (void)enable;
+    (void)single_step;
+    snprintf(err, err_len, "hardware breakpoints unavailable on this architecture");
+    return 0;
+#endif
+}
+
+static void *hw_exception_server(void *arg) {
+    mach_port_t port = (mach_port_t)(uintptr_t)arg;
+    mach_msg_server(mach_exc_server, 2048, port, 0);
+    return NULL;
+}
+
+static int install_hw_breakpoint(
+    void *target,
+    struct hw_breakpoint_report *report,
+    char *err,
+    size_t err_len
+) {
+    if (report) {
+        memset(report, 0, sizeof(*report));
+        report->attempted = 1;
+        report->breakpoint_index = g_hw_break_index;
+    }
+    if (!target) {
+        snprintf(err, err_len, "target address unavailable");
+        if (report) {
+            snprintf(report->error, sizeof(report->error), "target address unavailable");
+        }
+        return 0;
+    }
+#if defined(__arm64__) || defined(__aarch64__)
+    kern_return_t kr;
+    if (g_hw_exception_port == MACH_PORT_NULL) {
+        kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &g_hw_exception_port);
+        if (kr != KERN_SUCCESS) {
+            snprintf(err, err_len, "mach_port_allocate failed: %s", mach_err_str(kr));
+            if (report) {
+                snprintf(report->error, sizeof(report->error), "mach_port_allocate failed: %s", mach_err_str(kr));
+            }
+            return 0;
+        }
+        kr = mach_port_insert_right(mach_task_self(), g_hw_exception_port, g_hw_exception_port, MACH_MSG_TYPE_MAKE_SEND);
+        if (kr != KERN_SUCCESS) {
+            snprintf(err, err_len, "mach_port_insert_right failed: %s", mach_err_str(kr));
+            if (report) {
+                snprintf(report->error, sizeof(report->error), "mach_port_insert_right failed: %s", mach_err_str(kr));
+            }
+            return 0;
+        }
+        if (report) {
+            report->port_ok = 1;
+        }
+    } else if (report) {
+        report->port_ok = 1;
+    }
+
+    if (!g_hw_server_running) {
+        pthread_t thr;
+        int rc = pthread_create(&thr, NULL, hw_exception_server, (void *)(uintptr_t)g_hw_exception_port);
+        if (rc != 0) {
+            snprintf(err, err_len, "pthread_create failed: %s", strerror(rc));
+            if (report) {
+                snprintf(report->error, sizeof(report->error), "pthread_create failed: %s", strerror(rc));
+            }
+            return 0;
+        }
+        pthread_detach(thr);
+        g_hw_server_running = 1;
+        if (report) {
+            report->handler_thread_ok = 1;
+        }
+    } else if (report) {
+        report->handler_thread_ok = 1;
+    }
+
+    thread_t thread = mach_thread_self();
+    kr = thread_set_exception_ports(
+        thread,
+        EXC_MASK_BREAKPOINT,
+        g_hw_exception_port,
+        EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+        ARM_THREAD_STATE64
+    );
+    if (kr != KERN_SUCCESS) {
+        snprintf(err, err_len, "thread_set_exception_ports failed: %s", mach_err_str(kr));
+        if (report) {
+            snprintf(report->error, sizeof(report->error), "thread_set_exception_ports failed: %s", mach_err_str(kr));
+        }
+        return 0;
+    }
+    if (report) {
+        report->exception_port_ok = 1;
+    }
+
+    g_hw_bcr_value = hw_breakpoint_control();
+    if (report) {
+        report->bcr_value = g_hw_bcr_value;
+    }
+    g_hw_target_addr = (uint64_t)(uintptr_t)target;
+    if (!hw_breakpoint_update_state(thread, (uint64_t)(uintptr_t)target, g_hw_bcr_value, 1, 0, err, err_len)) {
+        if (report) {
+            snprintf(report->error, sizeof(report->error), "%s", err);
+        }
+        return 0;
+    }
+    if (report) {
+        report->debug_state_ok = 1;
+        report->breakpoint_set_ok = 1;
+        report->threads_scanned = 1;
+        report->threads_armed = 1;
+    }
+    return 1;
+#else
+    snprintf(err, err_len, "hardware breakpoints unsupported on this architecture");
+    if (report) {
+        snprintf(report->error, sizeof(report->error), "hardware breakpoints unsupported on this architecture");
+    }
+    return 0;
+#endif
+}
+
+static void hw_emit_record_from_thread(thread_t thread) {
+#if defined(__arm64__) || defined(__aarch64__)
+    arm_thread_state64_t ts;
+    mach_msg_type_number_t count = ARM_THREAD_STATE64_COUNT;
+    kern_return_t kr = thread_get_state(thread, ARM_THREAD_STATE64, (thread_state_t)&ts, &count);
+    if (kr != KERN_SUCCESS) {
+        return;
+    }
+    void *buf = (void *)(uintptr_t)ARM_TS_X(ts, 0);
+    uint64_t cursor = (uint64_t)ARM_TS_X(ts, 1);
+    const void *data = (const void *)(uintptr_t)ARM_TS_X(ts, 2);
+    uint64_t len = (uint64_t)ARM_TS_X(ts, 3);
+
+    trace_open();
+    if (g_trace_fp) {
+        pthread_mutex_lock(&g_trace_lock);
+        emit_record(buf, cursor, data, len);
+        pthread_mutex_unlock(&g_trace_lock);
+    }
+#else
+    (void)thread;
+#endif
+}
+
+kern_return_t catch_mach_exception_raise(
+    mach_port_t exception_port,
+    mach_port_t thread,
+    mach_port_t task,
+    exception_type_t exception,
+    mach_exception_data_t code,
+    mach_msg_type_number_t codeCnt
+) {
+    (void)exception_port;
+    (void)code;
+    (void)codeCnt;
+    if (exception != EXC_BREAKPOINT) {
+        if (thread != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), thread);
+        }
+        if (task != MACH_PORT_NULL) {
+            mach_port_deallocate(mach_task_self(), task);
+        }
+        return KERN_FAILURE;
+    }
+
+    pthread_mutex_lock(&g_hw_lock);
+    int step_active = g_hw_step_active;
+    if (!step_active) {
+        hw_emit_record_from_thread(thread);
+        g_hw_step_active = 1;
+    } else {
+        g_hw_step_active = 0;
+    }
+
+    char err_buf[256] = {0};
+    int ok = 0;
+    if (step_active) {
+        ok = hw_breakpoint_update_state(thread, g_hw_target_addr, g_hw_bcr_value, 1, 0, err_buf, sizeof(err_buf));
+    } else {
+        ok = hw_breakpoint_update_state(thread, 0, g_hw_bcr_value, 0, 1, err_buf, sizeof(err_buf));
+    }
+    pthread_mutex_unlock(&g_hw_lock);
+
+    if (thread != MACH_PORT_NULL) {
+        mach_port_deallocate(mach_task_self(), thread);
+    }
+    if (task != MACH_PORT_NULL) {
+        mach_port_deallocate(mach_task_self(), task);
+    }
+    return ok ? KERN_SUCCESS : KERN_FAILURE;
+}
+
+kern_return_t catch_mach_exception_raise_state(
+    mach_port_t exception_port,
+    exception_type_t exception,
+    const mach_exception_data_t code,
+    mach_msg_type_number_t codeCnt,
+    int *flavor,
+    const thread_state_t old_state,
+    mach_msg_type_number_t old_stateCnt,
+    thread_state_t new_state,
+    mach_msg_type_number_t *new_stateCnt
+) {
+    (void)exception_port;
+    (void)exception;
+    (void)code;
+    (void)codeCnt;
+    (void)flavor;
+    (void)old_state;
+    (void)old_stateCnt;
+    (void)new_state;
+    (void)new_stateCnt;
+    return KERN_NOT_SUPPORTED;
+}
+
+kern_return_t catch_mach_exception_raise_state_identity(
+    mach_port_t exception_port,
+    mach_port_t thread,
+    mach_port_t task,
+    exception_type_t exception,
+    mach_exception_data_t code,
+    mach_msg_type_number_t codeCnt,
+    int *flavor,
+    thread_state_t old_state,
+    mach_msg_type_number_t old_stateCnt,
+    thread_state_t new_state,
+    mach_msg_type_number_t *new_stateCnt
+) {
+    (void)exception_port;
+    (void)thread;
+    (void)task;
+    (void)exception;
+    (void)code;
+    (void)codeCnt;
+    (void)flavor;
+    (void)old_state;
+    (void)old_stateCnt;
+    (void)new_state;
+    (void)new_stateCnt;
+    return KERN_NOT_SUPPORTED;
+}
+
 static void triage_emit(
     const char *arch,
     const char *target_symbol,
@@ -441,6 +771,7 @@ static void triage_emit(
     int uuid_match_known,
     int uuid_match,
     const struct patch_report *patch,
+    const struct hw_breakpoint_report *hw,
     const char *mode,
     const char *sandbox_path_str,
     int sandbox_loaded,
@@ -621,6 +952,27 @@ static void triage_emit(
         fputs("}", g_triage_fp);
     } else {
         fputs(",\"patch_attempted\":false", g_triage_fp);
+    }
+    if (hw) {
+        fputs(",\"hw_breakpoint\":{", g_triage_fp);
+        fprintf(g_triage_fp, "\"attempted\":%s", hw->attempted ? "true" : "false");
+        fprintf(g_triage_fp, ",\"port_ok\":%s", hw->port_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"handler_thread_ok\":%s", hw->handler_thread_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"exception_port_ok\":%s", hw->exception_port_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"debug_state_ok\":%s", hw->debug_state_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"breakpoint_set_ok\":%s", hw->breakpoint_set_ok ? "true" : "false");
+        fprintf(g_triage_fp, ",\"threads_scanned\":%d", hw->threads_scanned);
+        fprintf(g_triage_fp, ",\"threads_armed\":%d", hw->threads_armed);
+        fprintf(g_triage_fp, ",\"breakpoint_index\":%d", hw->breakpoint_index);
+        fputs(",\"bcr_value\":", g_triage_fp);
+        if (hw->bcr_value) {
+            fprintf(g_triage_fp, "\"0x%llx\"", (unsigned long long)hw->bcr_value);
+        } else {
+            fputs("null", g_triage_fp);
+        }
+        fputs(",\"error\":", g_triage_fp);
+        json_escape(g_triage_fp, hw->error[0] ? hw->error : NULL);
+        fputs("}", g_triage_fp);
     }
     fputs(",\"mode\":", g_triage_fp);
     json_escape(g_triage_fp, mode);
@@ -1067,6 +1419,7 @@ static void install_hook(void) {
     const char *hook_error = NULL;
     const char *patch_surface = NULL;
     struct patch_report patch = {0};
+    struct hw_breakpoint_report hw = {0};
 
     if (strcmp(g_trace_mode, "dynamic") == 0) {
         hook_attempt = "dynamic";
@@ -1110,6 +1463,29 @@ static void install_hook(void) {
                 }
             }
         }
+    } else if (strcmp(g_trace_mode, "hw_breakpoint") == 0) {
+        hook_attempt = "hw_breakpoint";
+        patch_surface = "hw_breakpoint";
+        if (!target_addr) {
+            hook_status = "skipped";
+            if (unslid_known && !unslid_allowed && unslid_block_reason) {
+                hook_error = unslid_block_reason;
+            } else if (unslid_known && !slide_known) {
+                hook_error = "image slide unavailable";
+            } else {
+                hook_error = "target address unavailable";
+            }
+        } else {
+            patch.target_runtime_addr = target_addr;
+            record_region_info((mach_vm_address_t)(uintptr_t)target_addr, &patch);
+            char err_buf[256] = {0};
+            if (install_hw_breakpoint(target_addr, &hw, err_buf, sizeof(err_buf))) {
+                hook_status = "ok";
+            } else {
+                hook_status = "failed";
+                hook_error = err_buf;
+            }
+        }
     }
 
     triage_open();
@@ -1129,6 +1505,7 @@ static void install_hook(void) {
         uuid_match_known,
         uuid_match,
         (patch.attempted || patch.applied || patch.region_info_ok) ? &patch : NULL,
+        (hw.attempted || hw.port_ok || hw.handler_thread_ok) ? &hw : NULL,
         g_trace_mode,
         sandbox_path_str,
         handle != NULL,

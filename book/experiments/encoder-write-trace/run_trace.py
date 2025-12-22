@@ -422,9 +422,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     ap.add_argument(
         "--mode",
-        choices=("triage", "dynamic", "patch"),
+        choices=("triage", "dynamic", "patch", "hw_breakpoint"),
         default="triage",
-        help="Hook mode (triage only, dynamic interpose, or address patch)",
+        help="Hook mode (triage only, dynamic interpose, address patch, or hardware breakpoint)",
     )
     ap.add_argument(
         "--write-addr",
@@ -515,7 +515,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         selected = uuid_info.get("extracted_selected")
         if isinstance(selected, Mapping):
             extracted_uuid = selected.get("uuid")
-    if args.mode == "patch" and not args.write_addr and not args.write_offset and not write_unslid:
+    if args.mode in ("patch", "hw_breakpoint") and not args.write_addr and not args.write_offset and not write_unslid:
         nm_info = bind_analysis.get("nm")
         if isinstance(nm_info, Mapping):
             candidate = nm_info.get("address")
@@ -619,7 +619,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if write_unslid:
         manifest["trace_harness"]["env"]["SBPL_WRITE_UNSLID"] = write_unslid
         manifest["trace_harness"]["write_unslid_source"] = "nm" if auto_unslid else "cli"
-    elif args.mode == "patch" and not args.write_addr and not args.write_offset and not args.write_unslid:
+    elif args.mode in ("patch", "hw_breakpoint") and not args.write_addr and not args.write_offset and not args.write_unslid:
         if not extracted_uuid:
             manifest["trace_harness"]["write_unslid_source"] = "skipped_uuid_missing"
     if write_uuid:
