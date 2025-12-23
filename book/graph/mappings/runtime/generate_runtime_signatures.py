@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, Tuple
 
-from book.api.runtime_tools import observations as runtime_observations
+from book.api.runtime_tools.core import normalize as runtime_normalize
 
 ROOT = Path(__file__).resolve().parents[4]
 RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
@@ -295,11 +295,11 @@ def main() -> None:
         expected_matrix_doc.setdefault("profiles", {}).update((adv_expected.get("profiles") or {}))
     if ADV_RESULTS.exists():
         adv_obs = (
-            runtime_observations.normalize_from_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id)
+            runtime_normalize.normalize_matrix_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id)
             if ADV_EXPECTED.exists()
             else []
         )
-        events.extend([runtime_observations.serialize_observation(o) for o in adv_obs])
+        events.extend([runtime_normalize.observation_to_dict(o) for o in adv_obs])
 
     extra_jobs = set()
     if ADV_EXPECTED.exists() or ADV_RESULTS.exists() or ADV_MISMATCH.exists():

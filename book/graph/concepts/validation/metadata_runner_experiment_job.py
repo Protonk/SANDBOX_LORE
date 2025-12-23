@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from book.api.path_utils import find_repo_root, to_repo_relative
-from book.api.runtime_tools import observations as runtime_observations
+from book.api.runtime_tools.core import normalize as runtime_normalize
 from book.graph.concepts.validation import registry
 from book.graph.concepts.validation.registry import ValidationJob
 
@@ -65,10 +65,10 @@ def run_metadata_runner_job():
     else:
         runner_info = _build_runner_info()
 
-    observations = runtime_observations.normalize_metadata_runner_results(results_doc, runner_info=runner_info)
+    observations = runtime_normalize.normalize_metadata_results(results_doc, runner_info=runner_info)
     IR_PATH.parent.mkdir(parents=True, exist_ok=True)
     IR_PATH.write_text(
-        json.dumps([runtime_observations.serialize_observation(o) for o in observations], indent=2, sort_keys=True)
+        json.dumps([runtime_normalize.observation_to_dict(o) for o in observations], indent=2, sort_keys=True)
     )
 
     STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)

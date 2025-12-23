@@ -15,7 +15,7 @@ This experiment checks how alias/canonical path families behave structurally and
 - **Harness:**
   - Entry: `book/experiments/vfs-canonicalization/run_vfs.py`.
   - Structural decode via `book/api/profile_tools/decoder.py` using `book/graph/mappings/tag_layouts/tag_layouts.json`.
-  - Runtime harness via `book.api.runtime_tools.harness_runner.run_expected_matrix`, reusing the same shims as `runtime-checks` / `runtime-adversarial`.
+  - Runtime harness via `book.api.runtime_tools.harness.runner.run_matrix`, reusing the same shims as `runtime-checks` / `runtime-adversarial`.
 - **Outputs:**
   - `sb/build/*.sb.bin` – compiled VFS profiles.
   - `out/expected_matrix.json` – human expectations for `(profile_id, requested_path, expected_decision)`.

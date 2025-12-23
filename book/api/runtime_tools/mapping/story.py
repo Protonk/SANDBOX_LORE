@@ -14,8 +14,8 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
 from book.api import path_utils
-from book.api.runtime_tools import mapping_builders
-from book.api.runtime_tools import observations as runtime_observations
+from book.api.runtime_tools.core import models
+from book.api.runtime_tools.mapping import build as mapping_build
 
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
 OPS_VOCAB = REPO_ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json"
@@ -37,7 +37,7 @@ def _load_vocab(path: Path = OPS_VOCAB) -> Dict[str, Dict[str, Any]]:
     return vocab
 
 
-def build_runtime_story(
+def build_story(
     op_mapping_path: Path | str,
     scenario_mapping_path: Path | str,
     vocab_path: Path | str = OPS_VOCAB,
@@ -89,21 +89,21 @@ def build_runtime_story(
             "static": {"vocab_entry": vocab_entry},
         }
 
-    meta = mapping_builders.make_metadata(
-        resolved_world or runtime_observations.WORLD_ID,
+    meta = mapping_build.mapping_metadata(
+        resolved_world or models.WORLD_ID,
         notes="joined runtime story",
     )
     return {"meta": meta, "ops": story_ops}
 
 
-def write_runtime_story(doc: Mapping[str, Any], out_path: Path | str) -> Path:
+def write_story(doc: Mapping[str, Any], out_path: Path | str) -> Path:
     out_path = path_utils.ensure_absolute(Path(out_path), REPO_ROOT)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(doc, indent=2))
     return out_path
 
 
-def story_to_runtime_signatures(story_doc: Mapping[str, Any]) -> Dict[str, Any]:
+def story_to_signatures(story_doc: Mapping[str, Any]) -> Dict[str, Any]:
     """
     Emit a legacy-ish runtime_signatures view from a runtime story.
     Each scenario becomes a signature id keyed by scenario_id.

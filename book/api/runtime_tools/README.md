@@ -1,20 +1,20 @@
 # runtime_tools
 
-Unified runtime tooling for the Sonoma baseline (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`). This package merges the runtime observation/normalization helpers, mapping builders, projections, and the runtime harness runner/generator into one documented surface. It replaces `book/api/runtime` and `book/api/runtime_harness`.
+Unified runtime tooling for the Sonoma baseline (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`). This package merges normalization, mapping builders, projections, workflow helpers, and the runtime harness runner/golden generator into one documented surface. It replaces `book/api/runtime` and `book/api/runtime_harness`.
 
-- **CLI:** `python -m book.api.runtime_tools <generate|run> ...`
-- **Python (preferred):** import submodules from `book.api.runtime_tools` (`observations`, `runtime_contract`, `mapping_builders`, `runtime_story`, `derived_views`, `runtime_pipeline`, `harness_runner`, `harness_generate`).
+- **CLI:** `python -m book.api.runtime_tools <run|normalize|cut|story|golden|promote|mismatch|run-all> ...`
+- **Python (preferred):** import subpackages from `book.api.runtime_tools` (`core`, `mapping`, `harness`, `workflow`).
 - **Native markers:** C/Swift helpers live under `book/api/runtime_tools/native/`.
 
 See `book/api/README.md` for higher-level routing and deprecation notes.
 
 ## CLI
 
-Runtime harness commands (same behavior as the former runtime_harness CLI):
+Runtime harness commands:
 
 ```sh
 # Generate golden decodes/expectations/traces from runtime-checks outputs.
-python -m book.api.runtime_tools generate \
+python -m book.api.runtime_tools golden \
   --matrix book/experiments/runtime-checks/out/expected_matrix.json \
   --runtime-results book/experiments/runtime-checks/out/runtime_results.json
 
@@ -22,53 +22,60 @@ python -m book.api.runtime_tools generate \
 python -m book.api.runtime_tools run \
   --matrix book/profiles/golden-triple/expected_matrix.json \
   --out book/profiles/golden-triple/
+
+# Build a runtime cut from matrix + results.
+python -m book.api.runtime_tools cut \
+  --matrix book/experiments/runtime-checks/out/expected_matrix.json \
+  --runtime-results book/experiments/runtime-checks/out/runtime_results.json \
+  --out /tmp/runtime_cut
 ```
 
 ## Routing (Python)
 
 Pick the smallest tool for the job:
 
-- **observations:** canonical runtime observation schema + normalization helpers.
-  - `RuntimeObservation`, `WORLD_ID`, `normalize_from_paths`, `write_normalized_events`.
-- **runtime_contract:** versioned tool-marker parsing and runtime_result schema guards.
-- **mapping_builders:** build runtime mappings (traces, scenarios, ops, indexes, manifest).
-- **runtime_story:** join op mappings + scenario summaries + vocab into a runtime story; emit legacy `runtime_signatures`/coverage views.
-- **derived_views:** derived projections that do not change failure_stage/failure_kind (e.g., callout vs syscall comparison).
-- **runtime_pipeline:** higher-level helpers (generate/publish runtime cuts, promote staged artifacts).
-- **harness_runner:** run an expected_matrix using the standard runtime probes and shims.
-- **harness_generate:** compile/decode golden profiles and normalize runtime-checks outputs.
+- **core.models:** canonical dataclasses + `WORLD_ID`.
+- **core.normalize:** normalization helpers (`normalize_matrix_paths`, `write_matrix_observations`).
+- **core.contract:** versioned tool-marker parsing and runtime_result schema guards.
+- **mapping.build:** build runtime mappings (traces, scenarios, ops, indexes, manifest).
+- **mapping.story:** join op mappings + scenario summaries + vocab into a runtime story; emit legacy coverage/signatures.
+- **mapping.views:** derived projections that do not change failure_stage/failure_kind (e.g., callout vs syscall).
+- **harness.runner:** run an expected_matrix using the standard runtime probes and shims.
+- **harness.golden:** compile/decode golden profiles and normalize runtime-checks outputs.
+- **workflow:** higher-level helpers (build cuts, promote staged artifacts, run profiles end-to-end).
 
 Examples:
 
 ```py
-from book.api.runtime_tools import observations, mapping_builders
+from book.api.runtime_tools.core import normalize
+from book.api.runtime_tools.mapping import build
 
-observations_list = observations.normalize_from_paths(
+observations = normalize.normalize_matrix_paths(
     "book/profiles/golden-triple/expected_matrix.json",
     "book/profiles/golden-triple/runtime_results.json",
 )
-index, _ = mapping_builders.write_per_scenario_traces(
-    observations_list,
+index, _ = build.write_traces(
+    observations,
     "book/graph/mappings/runtime/traces",
 )
 ```
 
 ```py
-from book.api.runtime_tools import runtime_pipeline
+from book.api.runtime_tools import workflow
 
-paths = runtime_pipeline.generate_runtime_cut(
+cut = workflow.build_cut(
     "book/experiments/runtime-checks/out/expected_matrix.json",
     "book/experiments/runtime-checks/out/runtime_results.json",
     "/tmp/runtime_cut",
 )
-print(paths["manifest"])
+print(cut.manifest)
 ```
 
 ```py
-from book.api.runtime_tools import derived_views
+from book.api.runtime_tools.mapping import views
 
-comparison = derived_views.callout_vs_syscall_comparison(observations_list)
-print(comparison["summary"])
+comparison = views.build_callout_vs_syscall(observations)
+print(comparison["counts"])
 ```
 
 ## Native tool markers
@@ -81,8 +88,14 @@ Shared JSONL marker helpers for runtime tooling live here:
 - `book/api/runtime_tools/native/seatbelt_callout_shim.h`
 
 These emit versioned JSONL markers to stderr that are parsed by
-`runtime_contract` and stripped out of canonical normalized stderr. Use them in
+`core.contract` and stripped out of canonical normalized stderr. Use them in
 runtime probes and wrappers instead of ad-hoc stderr parsing.
+
+## File probe helper
+
+The minimal read/write probe used by runtime harnesses lives under:
+
+- `book/api/runtime_tools/native/file_probe/` (see its README for build/run)
 
 ## Preflight and apply-gate guardrails
 

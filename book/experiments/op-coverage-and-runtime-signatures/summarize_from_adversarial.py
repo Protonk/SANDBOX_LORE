@@ -17,10 +17,10 @@ EVENTS_SRC = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "ru
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from book.api.runtime_tools.observations import WORLD_ID, normalize_from_paths, serialize_observation
-from book.api.runtime_tools import observations as runtime_observations
-from book.api.runtime_tools import mapping_builders
-from book.api.runtime_tools.runtime_pipeline import build_op_summary_from_index
+from book.api.runtime_tools.core.models import WORLD_ID, RuntimeObservation
+from book.api.runtime_tools.core.normalize import normalize_matrix_paths, observation_to_dict
+from book.api.runtime_tools.mapping import build as mapping_build
+from book.api.runtime_tools import workflow
 
 BLOCKED_STAGES = {"apply", "bootstrap", "preflight"}
 
@@ -51,14 +51,14 @@ def load_observations() -> list[dict]:
 
     expected_doc, runtime_doc, expected_path, results_path = load_expected_and_results()
     world_id = expected_doc.get("world_id") or runtime_doc.get("world_id") or WORLD_ID
-    obs = normalize_from_paths(expected_path, results_path, world_id=world_id)
-    return [serialize_observation(o) for o in obs]
+    obs = normalize_matrix_paths(expected_path, results_path, world_id=world_id)
+    return [observation_to_dict(o) for o in obs]
 
 
 observations = load_observations()
 
 
-def build_reference_op_summary(observations: list[runtime_observations.RuntimeObservation]) -> dict:
+def build_reference_op_summary(observations: list[RuntimeObservation]) -> dict:
     """
     Build an independent per-op summary from observations to compare against
     the canonical op mapping. Keeps full scenario sets and counts (no truncation).
@@ -113,15 +113,15 @@ events_index_candidates = [
 canonical_op = None
 for candidate in events_index_candidates:
     if candidate.exists():
-        canonical_op = build_op_summary_from_index(candidate, world_id=WORLD_ID)
+        canonical_op = workflow.build_ops_from_index(candidate, world_id=WORLD_ID)
         break
 
 if canonical_op is None:
     # Fallback: build from normalized observations directly.
-    obs_objs = [runtime_observations.RuntimeObservation(**o) for o in observations]
-    canonical_op = mapping_builders.build_op_summaries(obs_objs, world_id=WORLD_ID)
+    obs_objs = [RuntimeObservation(**o) for o in observations]
+    canonical_op = mapping_build.build_ops(obs_objs, world_id=WORLD_ID)
 else:
-    obs_objs = [runtime_observations.RuntimeObservation(**o) for o in observations]
+    obs_objs = [RuntimeObservation(**o) for o in observations]
 
 if isinstance(canonical_op, dict) and canonical_op.get("ops"):
     canonical_path = OUT_DIR / "runtime_mappings" / "ops.json"
@@ -159,7 +159,7 @@ if isinstance(canonical_op, dict) and canonical_op.get("ops"):
 else:
     print("[!] Failed to build canonical op mapping; skipping guardrail")
 
-def build_op_runtime_summary(observations: list[runtime_observations.RuntimeObservation]) -> dict:
+def build_op_runtime_summary(observations: list[RuntimeObservation]) -> dict:
     summary: dict[str, dict] = {}
     for obs in observations:
         entry = summary.setdefault(
@@ -218,36 +218,36 @@ try:
     mapping_root = OUT_DIR / "runtime_mappings"
     traces_dir = mapping_root / "traces"
 
-    events_index, _ = mapping_builders.write_per_scenario_traces(
-        [runtime_observations.RuntimeObservation(**o) for o in observations],
+    events_index, _ = mapping_build.write_traces(
+        [RuntimeObservation(**o) for o in observations],
         traces_dir,
         world_id=WORLD_ID,
     )
     events_index_path = mapping_root / "events_index.json"
-    mapping_builders.write_events_index(events_index, events_index_path)
+    mapping_build.write_events_index(events_index, events_index_path)
 
-    scenario_doc = mapping_builders.build_scenario_summaries(
-        [runtime_observations.RuntimeObservation(**o) for o in observations],
+    scenario_doc = mapping_build.build_scenarios(
+        [RuntimeObservation(**o) for o in observations],
         expected_doc,
         world_id=WORLD_ID,
     )
     scenario_path = mapping_root / "scenarios.json"
-    mapping_builders.write_scenario_mapping(scenario_doc, scenario_path)
+    mapping_build.write_scenarios(scenario_doc, scenario_path)
 
-    op_doc = mapping_builders.build_op_summaries(
-        [runtime_observations.RuntimeObservation(**o) for o in observations],
+    op_doc = mapping_build.build_ops(
+        [RuntimeObservation(**o) for o in observations],
         world_id=WORLD_ID,
     )
     op_path = mapping_root / "ops.json"
-    mapping_builders.write_op_mapping(op_doc, op_path)
+    mapping_build.write_ops(op_doc, op_path)
 
-    idx_doc = mapping_builders.build_indexes(scenario_doc, events_index)
+    idx_doc = mapping_build.build_indexes(scenario_doc, events_index)
     idx_path = mapping_root / "runtime_indexes.json"
-    mapping_builders.write_index_mapping(idx_doc, idx_path)
+    mapping_build.write_indexes(idx_doc, idx_path)
 
-    manifest = mapping_builders.build_manifest(WORLD_ID, events_index_path, scenario_path, op_path)
+    manifest = mapping_build.build_manifest(WORLD_ID, events_index_path, scenario_path, op_path)
     manifest_path = mapping_root / "runtime_manifest.json"
-    mapping_builders.write_manifest(manifest, manifest_path)
+    mapping_build.write_manifest(manifest, manifest_path)
     print(f"Wrote staged runtime mappings under {mapping_root}")
 except Exception as e:
     print(f"[!] failed to emit staged runtime mappings: {e}")

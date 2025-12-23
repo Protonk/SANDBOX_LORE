@@ -17,12 +17,12 @@ from __future__ import annotations
 import json
 import re
 from collections import defaultdict
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 from book.api import path_utils
-from book.api.runtime_tools import observations as runtime_observations
+from book.api.runtime_tools.core import models
+from book.api.runtime_tools.core import normalize
 
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
 OPS_VOCAB = REPO_ROOT / "book" / "graph" / "mappings" / "vocab" / "ops.json"
@@ -32,7 +32,7 @@ RUNTIME_LOG_SCHEMA = "runtime_log_schema.v0.1.json"
 RUNTIME_MAPPING_SCHEMA = "runtime-mapping.v0.1"
 
 
-def make_metadata(
+def mapping_metadata(
     world_id: str,
     schema_version: str = RUNTIME_MAPPING_SCHEMA,
     runtime_log_schema: str = RUNTIME_LOG_SCHEMA,
@@ -69,8 +69,8 @@ def _load_ops_vocab() -> Dict[str, Any]:
         return json.load(fh).get("ops", {})
 
 
-def write_per_scenario_traces(
-    observations: Iterable[runtime_observations.RuntimeObservation],
+def write_traces(
+    observations: Iterable[models.RuntimeObservation],
     traces_root: Path,
     world_id: Optional[str] = None,
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
@@ -96,11 +96,11 @@ def write_per_scenario_traces(
             trace_path.unlink()
         truncated.add(scenario_id)
         with trace_path.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(runtime_observations.serialize_observation(obs)) + "\n")
+            fh.write(json.dumps(normalize.observation_to_dict(obs)) + "\n")
         index[scenario_id].append(path_utils.to_repo_relative(trace_path, REPO_ROOT))
 
     events_index = {
-        "meta": make_metadata(resolved_world or runtime_observations.WORLD_ID, status="partial", notes="per-scenario traces"),
+        "meta": mapping_metadata(resolved_world or models.WORLD_ID, status="partial", notes="per-scenario traces"),
         "traces": index,
     }
     manifest_entry = {
@@ -117,8 +117,8 @@ def write_events_index(events_index: Mapping[str, Any], out_path: Path) -> Path:
     return out_path
 
 
-def build_scenario_summaries(
-    observations: Iterable[runtime_observations.RuntimeObservation],
+def build_scenarios(
+    observations: Iterable[models.RuntimeObservation],
     expectations: Mapping[str, Any],
     world_id: Optional[str] = None,
 ) -> Dict[str, Any]:
@@ -135,7 +135,7 @@ def build_scenario_summaries(
             family = profile_id.split(":", 1)[0]
         profile_family[profile_id] = family or "unknown"
         for probe in rec.get("probes") or []:
-            eid = probe.get("expectation_id") or runtime_observations.derive_expectation_id(
+            eid = probe.get("expectation_id") or normalize.derive_expectation_id(
                 profile_id, probe.get("operation"), probe.get("target")
             )
             expected_idx[eid] = {
@@ -280,7 +280,7 @@ def build_scenario_summaries(
             body["results"]["status"] = "brittle"
         body["scenario_id"] = scenario_id
 
-    meta = make_metadata(world_id or runtime_observations.WORLD_ID, status="partial", notes="scenario-level runtime summaries")
+    meta = mapping_metadata(world_id or models.WORLD_ID, status="partial", notes="scenario-level runtime summaries")
     return {
         "meta": meta,
         "phase_histograms": {"overall": hist_overall, "by_family": hist_by_family},
@@ -288,15 +288,15 @@ def build_scenario_summaries(
     }
 
 
-def write_scenario_mapping(doc: Mapping[str, Any], out_path: Path) -> Path:
+def write_scenarios(doc: Mapping[str, Any], out_path: Path) -> Path:
     out_path = path_utils.ensure_absolute(out_path, REPO_ROOT)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(doc, indent=2))
     return out_path
 
 
-def build_op_summaries(
-    observations: Iterable[runtime_observations.RuntimeObservation],
+def build_ops(
+    observations: Iterable[models.RuntimeObservation],
     world_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
@@ -369,11 +369,11 @@ def build_op_summaries(
         else:
             entry["coverage_status"] = "brittle"
 
-    meta = make_metadata(world_id or runtime_observations.WORLD_ID, status="partial", notes="op-level runtime summary")
+    meta = mapping_metadata(world_id or models.WORLD_ID, status="partial", notes="op-level runtime summary")
     return {"meta": meta, "ops": ops}
 
 
-def write_op_mapping(doc: Mapping[str, Any], out_path: Path) -> Path:
+def write_ops(doc: Mapping[str, Any], out_path: Path) -> Path:
     out_path = path_utils.ensure_absolute(out_path, REPO_ROOT)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(doc, indent=2))
@@ -400,11 +400,11 @@ def build_indexes(
     for scenario_id, traces in (events_index.get("traces") or {}).items():
         scenario_to_traces[scenario_id] = traces
 
-    meta = scenario_summaries.get("meta") or make_metadata(runtime_observations.WORLD_ID, status="partial")
+    meta = scenario_summaries.get("meta") or mapping_metadata(models.WORLD_ID, status="partial")
     return {"meta": meta, "op_to_scenarios": op_to_scenarios, "scenario_to_traces": scenario_to_traces}
 
 
-def write_index_mapping(doc: Mapping[str, Any], out_path: Path) -> Path:
+def write_indexes(doc: Mapping[str, Any], out_path: Path) -> Path:
     out_path = path_utils.ensure_absolute(out_path, REPO_ROOT)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(doc, indent=2))
@@ -422,7 +422,7 @@ def build_manifest(
     Global jump table for runtime artifacts.
     """
 
-    meta = make_metadata(world_id, status="partial", notes="runtime manifest")
+    meta = mapping_metadata(world_id, status="partial", notes="runtime manifest")
     manifest = {
         "meta": meta,
         "events_index": path_utils.to_repo_relative(traces_index_path, REPO_ROOT),
@@ -441,7 +441,7 @@ def write_manifest(doc: Mapping[str, Any], out_path: Path) -> Path:
     return out_path
 
 
-def append_divergence_annotation(
+def append_divergence(
     annotations_path: Path,
     world_id: str,
     op_id: Optional[int],
@@ -459,7 +459,7 @@ def append_divergence_annotation(
     if annotations_path.exists():
         existing = json.loads(annotations_path.read_text())
     else:
-        existing = {"meta": make_metadata(world_id, status="partial", notes="divergence annotations"), "annotations": []}
+        existing = {"meta": mapping_metadata(world_id, status="partial", notes="divergence annotations"), "annotations": []}
     existing["annotations"].append(
         {
             "world_id": world_id,

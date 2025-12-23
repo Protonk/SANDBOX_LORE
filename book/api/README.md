@@ -44,13 +44,13 @@ python3 book/tools/preflight/preflight.py scan path/to/profile.sb
 
 ### file_probe
 
-Definition: Minimal JSON-emitting read/write probe binary.
+Definition: Minimal JSON-emitting read/write probe binary (under `book/api/runtime_tools/native/file_probe/`).
 
 Role: Provide a deterministic target for runtime allow/deny checks when paired with SBPL-wrapper.
 
 Example:
 ```sh
-gcc book/api/file_probe/file_probe.c -o /tmp/file_probe
+gcc book/api/runtime_tools/native/file_probe/file_probe.c -o /tmp/file_probe
 /tmp/file_probe read /etc/hosts
 ```
 
@@ -83,14 +83,15 @@ See `book/api/carton/README.md`, `AGENTS.md`, and `API.md` for design, routing, 
 
 ### runtime_tools
 
-Definition: Unified runtime tooling (observations, mappings, projections, and harness runner/generator).
+Definition: Unified runtime tooling (observations, mappings, projections, and harness runner/golden generator).
 
 Role: Normalize harness output into canonical runtime observations, build runtime mappings/stories, and run expectation-driven probes to emit `runtime_results.json`.
 
 Example:
 ```sh
-python -m book.api.runtime_tools generate --matrix book/experiments/runtime-checks/out/expected_matrix.json
+python -m book.api.runtime_tools golden --matrix book/experiments/runtime-checks/out/expected_matrix.json
 python -m book.api.runtime_tools run --matrix book/profiles/golden-triple/expected_matrix.json --out book/profiles/golden-triple/
+python -m book.api.runtime_tools cut --matrix book/experiments/runtime-checks/out/expected_matrix.json --out /tmp/runtime_cut
 ```
 
 Preflight (apply-gate avoidance):
@@ -104,4 +105,4 @@ Preflight (apply-gate avoidance):
 
 - **op_table**: could gain a CARTON-backed query layer if op-table fingerprints/alignments are ever promoted to CARTON mappings; today it is generator/inspection tooling (see `book.api.profile_tools.op_table`), not CARTON IR.
 - **runtime_tools**: the harness + mapping outputs could be query-able if golden traces/expectations become CARTON mappings with a defined concept; currently generation-only.
-- **Others (regex_tools, SBPL-wrapper, file_probe, ghidra)**: generation/inspection/harness tools, not CARTON concepts; poor fits for the CARTON query surface in their current form.
+- **Others (regex_tools, SBPL-wrapper, runtime_tools/native/file_probe, ghidra)**: generation/inspection/harness tools, not CARTON concepts; poor fits for the CARTON query surface in their current form.

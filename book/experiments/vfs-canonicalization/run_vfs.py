@@ -5,7 +5,7 @@ VFS canonicalization harness for alias/canonical path families on Sonoma.
 Tasks:
 - Compile VFS SBPL profiles → blobs under sb/build.
 - Emit a simple expected_matrix.json (profile_id, operation, requested_path, expected_decision).
-- Build a harness matrix and run it via book.api.runtime_tools.harness_runner.run_expected_matrix.
+- Build a harness matrix and run it via book.api.runtime_tools.harness.runner.run_matrix.
 - Down-convert the harness runtime_results.json into a simple runtime_results.json array.
 - Decode the VFS blobs via book.api.profile_tools.decoder and emit decode_tmp_profiles.json
   (anchors, tags, and field2 values for the configured path pairs).
@@ -24,9 +24,9 @@ if str(REPO_ROOT) not in sys.path:
 
 from book.api.path_utils import ensure_absolute, find_repo_root, to_repo_relative
 from book.api.profile_tools import decoder  # type: ignore
-from book.api.runtime_tools.harness_runner import ensure_tmp_files, run_expected_matrix  # type: ignore
+from book.api.runtime_tools.harness.runner import ensure_fixtures, run_matrix  # type: ignore
 from book.api.profile_tools import compile_sbpl_string  # type: ignore
-from book.api.runtime_tools.observations import write_normalized_events  # type: ignore
+from book.api.runtime_tools.core.normalize import write_matrix_observations  # type: ignore
 
 
 REPO_ROOT = find_repo_root(Path(__file__))
@@ -343,7 +343,7 @@ def run_runtime(matrix_path: Path, sb_paths: Dict[str, Path]) -> Path:
     """Run the harness matrix via runtime_tools and return path to raw runtime_results.json."""
     harness_out = OUT_DIR / "harness"
     harness_out.mkdir(parents=True, exist_ok=True)
-    runtime_out = run_expected_matrix(
+    runtime_out = run_matrix(
         matrix_path=matrix_path,
         out_dir=harness_out,
         profile_paths={k: ensure_absolute(v, REPO_ROOT) for k, v in sb_paths.items()},
@@ -354,7 +354,7 @@ def run_runtime(matrix_path: Path, sb_paths: Dict[str, Path]) -> Path:
 def normalize_runtime_results(expected_matrix_path: Path, raw_runtime_results_path: Path) -> Path:
     """Normalize runtime harness output into canonical runtime events for this suite."""
     out_path = OUT_DIR / "runtime_events.normalized.json"
-    write_normalized_events(expected_matrix_path, raw_runtime_results_path, out_path)
+    write_matrix_observations(expected_matrix_path, raw_runtime_results_path, out_path)
     return out_path
 
 
@@ -555,7 +555,7 @@ def emit_mismatch_summary(world_id: str) -> Path:
 
 def ensure_vfs_files() -> None:
     """Ensure the basic /tmp and /private/tmp fixtures exist."""
-    ensure_tmp_files()
+    ensure_fixtures()
     fixture_paths = [
         Path("/private/tmp/foo"),
         Path("/private/tmp/bar"),

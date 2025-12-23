@@ -1,11 +1,13 @@
 import json
 from pathlib import Path
 
-from book.api.runtime_tools import observations, runtime_pipeline, runtime_story
+from book.api.runtime_tools.core import models
+from book.api.runtime_tools import workflow
+from book.api.runtime_tools.mapping import story as runtime_story
 
 
 def _write_fixture(matrix_path: Path, results_path: Path) -> None:
-    world = observations.WORLD_ID
+    world = models.WORLD_ID
     expected_matrix = {
         "world_id": world,
         "profiles": {
@@ -50,16 +52,16 @@ def test_generate_runtime_cut_and_indexes(tmp_path: Path) -> None:
     _write_fixture(matrix_path, results_path)
 
     staging_root = tmp_path / "runtime_mappings"
-    artifacts = runtime_pipeline.generate_runtime_cut(matrix_path, results_path, staging_root)
+    artifacts = workflow.build_cut(matrix_path, results_path, staging_root)
 
-    events_index = (artifacts["events_index"]).read_text()
-    scenarios_doc = __import__("json").loads((artifacts["scenarios"]).read_text())
-    ops_doc = __import__("json").loads((artifacts["ops"]).read_text())
+    events_index = (artifacts.events_index).read_text()
+    scenarios_doc = __import__("json").loads((artifacts.scenarios).read_text())
+    ops_doc = __import__("json").loads((artifacts.ops).read_text())
 
     # events index ↔ scenario IDs consistency
     scenario_ids = set(scenarios_doc.get("scenarios", {}).keys())
     assert scenario_ids, "expected at least one scenario"
-    index_data = __import__("json").loads((artifacts["events_index"]).read_text())
+    index_data = __import__("json").loads((artifacts.events_index).read_text())
     assert scenario_ids == set(index_data.get("traces", {}).keys())
 
     # every scenario references an op that appears in op mapping
@@ -75,7 +77,7 @@ def test_generate_runtime_cut_and_indexes(tmp_path: Path) -> None:
     # metadata envelope invariants
     for doc in [index_data, scenarios_doc, ops_doc]:
         meta = doc.get("meta") or {}
-        assert meta.get("world_id") == observations.WORLD_ID
+        assert meta.get("world_id") == models.WORLD_ID
         assert meta.get("schema_version")
         assert meta.get("runtime_log_schema")
 
@@ -86,14 +88,14 @@ def test_promote_runtime_cut(tmp_path: Path) -> None:
     _write_fixture(matrix_path, results_path)
 
     staging_root = tmp_path / "runtime_mappings"
-    artifacts = runtime_pipeline.generate_runtime_cut(matrix_path, results_path, staging_root)
-    promoted = runtime_pipeline.promote_runtime_cut(staging_root, tmp_path / "runtime_cuts")
+    artifacts = workflow.build_cut(matrix_path, results_path, staging_root)
+    promoted = workflow.promote_cut(staging_root, tmp_path / "runtime_cuts")
 
     # ensure promoted artifacts are readable via loaders
-    events = list(runtime_pipeline.load_events_from_index(promoted["events_index"]))
+    events = list(workflow.load_observations_from_index(promoted.events_index))
     assert events and events[0].scenario_id
-    assert promoted["scenarios"].exists()
-    assert promoted["ops"].exists()
+    assert promoted.scenarios.exists()
+    assert promoted.ops.exists()
 
 
 def test_full_cut_lifecycle_and_story(tmp_path: Path) -> None:
@@ -102,27 +104,27 @@ def test_full_cut_lifecycle_and_story(tmp_path: Path) -> None:
     _write_fixture(matrix_path, results_path)
 
     staging_root = tmp_path / "runtime_mappings"
-    artifacts = runtime_pipeline.generate_runtime_cut(matrix_path, results_path, staging_root)
-    promoted = runtime_pipeline.promote_runtime_cut(staging_root, tmp_path / "runtime_cuts")
+    artifacts = workflow.build_cut(matrix_path, results_path, staging_root)
+    promoted = workflow.promote_cut(staging_root, tmp_path / "runtime_cuts")
 
-    story = runtime_story.build_runtime_story(promoted["ops"], promoted["scenarios"])
+    story = runtime_story.build_story(promoted.ops, promoted.scenarios)
     coverage_view = runtime_story.story_to_coverage(story)
-    signatures_view = runtime_story.story_to_runtime_signatures(story)
+    signatures_view = runtime_story.story_to_signatures(story)
 
     # index consistency
-    idx_doc = json.loads(promoted["indexes"].read_text())
-    scenarios_doc = json.loads(promoted["scenarios"].read_text())
+    idx_doc = json.loads(promoted.indexes.read_text())
+    scenarios_doc = json.loads(promoted.scenarios.read_text())
     assert set(idx_doc.get("scenario_to_traces", {}).keys()) == set((scenarios_doc.get("scenarios") or {}).keys())
 
     # metadata invariants
-    assert (story.get("meta") or {}).get("world_id") == observations.WORLD_ID
+    assert (story.get("meta") or {}).get("world_id") == models.WORLD_ID
     for meta in [coverage_view.get("metadata"), signatures_view.get("metadata")]:
-        assert meta.get("world_id") == observations.WORLD_ID
+        assert meta.get("world_id") == models.WORLD_ID
 
     # events stream aligns with scenario/op mappings
-    ops_doc = json.loads(promoted["ops"].read_text())
+    ops_doc = json.loads(promoted.ops.read_text())
     op_names = set((ops_doc.get("ops") or {}).keys())
-    events = list(runtime_pipeline.load_events_from_index(promoted["events_index"]))
+    events = list(workflow.load_observations_from_index(promoted.events_index))
     assert events, "expected promoted events to stream"
     assert any(ev.operation in op_names for ev in events)
     assert all(ev.scenario_id in idx_doc.get("scenario_to_traces", {}) for ev in events)

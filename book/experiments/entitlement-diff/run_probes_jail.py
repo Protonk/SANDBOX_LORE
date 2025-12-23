@@ -710,7 +710,7 @@ def _stage_discovery_matrix(*, stage_root: Path, capture_root: Optional[Path] = 
     on this host. It is not a promoted mapping.
     """
 
-    file_probe_src = REPO_ROOT / "book" / "api" / "file_probe" / "file_probe"
+    file_probe_src = REPO_ROOT / "book" / "api" / "runtime_tools" / "native" / "file_probe" / "file_probe"
     repo_open_target = REPO_ROOT / "book" / "experiments" / "entitlement-diff" / "Report.md"
 
     roots: List[Tuple[str, Path]] = [

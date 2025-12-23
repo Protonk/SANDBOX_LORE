@@ -16,7 +16,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from book.api import path_utils  # noqa: E402
-from book.api.runtime_tools.observations import WORLD_ID  # noqa: E402
+
+# Fixed world for this repository baseline.
+WORLD_ID = "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
 
 
 def sha256_bytes(blob: bytes) -> str:
@@ -55,8 +57,8 @@ def main() -> int:
     ap.add_argument(
         "--duration-s",
         type=float,
-        default=5.0,
-        help="How long to run before detach (spawn mode)",
+        default=None,
+        help="How long to run before detach (spawn mode; also used for attach when set)",
     )
     args = ap.parse_args()
 
@@ -117,16 +119,11 @@ def main() -> int:
 
     jsonl = (out_root / "events.jsonl").open("w", encoding="utf-8")
 
-    device = frida.get_local_device()
+    pid: int | None = None
+    session = None
+    device = None
 
-    if spawn_argv:
-        pid = device.spawn(spawn_argv)
-        session = device.attach(pid)
-    else:
-        pid = args.attach_pid
-        session = device.attach(pid)
-
-    def on_message(msg, data):
+    def write_event(msg):
         rec = {
             "t_ns": now_ns(),
             "pid": pid,
@@ -135,21 +132,67 @@ def main() -> int:
         jsonl.write(json.dumps(rec, separators=(",", ":")) + "\n")
         jsonl.flush()
 
-    script = session.create_script(js_src.decode("utf-8"))
-    script.on("message", on_message)
-    script.load()
+    def emit_runner(kind: str, **fields) -> None:
+        write_event({"type": "runner", "payload": {"kind": kind, **fields}})
 
-    if spawn_argv:
-        device.resume(pid)
-        time.sleep(args.duration_s)
-        session.detach()
-    else:
-        # attach mode: run until Ctrl-C
-        try:
-            while True:
-                time.sleep(0.25)
-        except KeyboardInterrupt:
+    emit_runner("runner-start")
+
+    stage = "device"
+    try:
+        emit_runner("stage", stage=stage)
+        device = frida.get_local_device()
+
+        stage = "attach"
+        emit_runner("stage", stage=stage)
+        if spawn_argv:
+            pid = device.spawn(spawn_argv)
+            session = device.attach(pid)
+        else:
+            pid = args.attach_pid
+            session = device.attach(pid)
+
+        def on_detached(reason, crash=None):
+            payload = {"reason": str(reason)}
+            if crash:
+                payload["crash"] = crash
+            emit_runner("session-detached", **payload)
+
+        session.on("detached", on_detached)
+
+        def on_message(msg, data):
+            write_event(msg)
+
+        stage = "script-load"
+        emit_runner("stage", stage=stage)
+        script = session.create_script(js_src.decode("utf-8"))
+        script.on("message", on_message)
+        script.load()
+
+        if spawn_argv:
+            stage = "resume"
+            emit_runner("stage", stage=stage)
+            device.resume(pid)
+            duration_s = args.duration_s if args.duration_s is not None else 5.0
+            time.sleep(duration_s)
             session.detach()
+        else:
+            if args.duration_s is not None:
+                stage = "attach-sleep"
+                emit_runner("stage", stage=stage)
+                time.sleep(args.duration_s)
+                session.detach()
+            else:
+                # attach mode: run until Ctrl-C
+                stage = "attach-loop"
+                emit_runner("stage", stage=stage)
+                try:
+                    while True:
+                        time.sleep(0.25)
+                except KeyboardInterrupt:
+                    session.detach()
+    except Exception as exc:
+        emit_runner("runner-exception", stage=stage, error=str(exc))
+        raise
 
     jsonl.close()
     return 0

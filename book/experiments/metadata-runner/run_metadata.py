@@ -23,7 +23,7 @@ if str(REPO_ROOT) not in sys.path:
 from book.api.path_utils import find_repo_root, to_repo_relative  # type: ignore
 from book.api.profile_tools import decoder  # type: ignore
 from book.api.profile_tools import compile_sbpl_string  # type: ignore
-from book.api.runtime_tools.observations import write_metadata_runner_normalized_events  # type: ignore
+from book.api.runtime_tools.core.normalize import write_metadata_observations  # type: ignore
 
 BASE_DIR = Path(__file__).resolve().parent
 SB_DIR = BASE_DIR / "sb"
@@ -308,7 +308,7 @@ def main() -> int:
     runtime_path = run_matrix(runner, blobs)
     print(f"[+] runtime results -> {runtime_path}")
     normalized_path = OUT_DIR / "runtime_events.normalized.json"
-    write_metadata_runner_normalized_events(runtime_path, normalized_path)
+    write_metadata_observations(runtime_path, normalized_path)
     print(f"[+] normalized events -> {normalized_path}")
     return 0
 

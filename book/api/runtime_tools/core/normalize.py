@@ -10,54 +10,14 @@ needed, but the normalization helpers are the source of truth.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 from book.api import path_utils
-from book.api.runtime_tools import runtime_contract as rt_contract
-
-# Fixed world for this repository.
-WORLD_ID = "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
-
-
-@dataclass
-class RuntimeObservation:
-    """
-    Canonical per-event runtime record for this world.
-
-    Fields are intentionally redundant with the harness output so that a single
-    observation carries enough context to stand alone or to be joined back to
-    expectations and static mappings.
-    """
-
-    world_id: str
-    profile_id: str
-    scenario_id: str
-    expectation_id: Optional[str] = None
-    operation: str = ""
-    target: Optional[str] = None
-    probe_name: Optional[str] = None
-    expected: Optional[str] = None
-    actual: Optional[str] = None
-    match: Optional[bool] = None
-    runtime_status: Optional[str] = None
-    errno: Optional[int] = None
-    errno_name: Optional[str] = None
-    failure_stage: Optional[str] = None
-    failure_kind: Optional[str] = None
-    apply_report: Optional[Dict[str, Any]] = None
-    preflight: Optional[Dict[str, Any]] = None
-    runner_info: Optional[Dict[str, Any]] = None
-    seatbelt_callouts: Optional[List[Dict[str, Any]]] = None
-    entitlement_checks: Optional[List[Dict[str, Any]]] = None
-    violation_summary: Optional[str] = None
-    command: Optional[List[str]] = None
-    stdout: Optional[str] = None
-    stderr: Optional[str] = None
-    harness: Optional[str] = None
-    notes: Optional[str] = None
+from book.api.runtime_tools.core import contract as rt_contract
+from book.api.runtime_tools.core import models
 
 
 def _strip_sbpl_apply_markers(stderr: Optional[str]) -> Optional[str]:
@@ -196,7 +156,7 @@ def make_scenario_id(
     return f"{profile_id}::{op_part}::{target_part}"
 
 
-def serialize_observation(obs: RuntimeObservation) -> Dict[str, Any]:
+def observation_to_dict(obs: models.RuntimeObservation) -> Dict[str, Any]:
     """
     Serialize an observation to a JSON-friendly dict, dropping None values.
     """
@@ -232,12 +192,12 @@ def _expectation_for(
     return (expectations_index.get(profile_id) or {}).get(probe_name or "", {}) or {}
 
 
-def normalize_runtime_results(
+def normalize_matrix(
     expected_matrix: Mapping[str, Any],
     runtime_results: Mapping[str, Any],
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
-) -> List[RuntimeObservation]:
+) -> List[models.RuntimeObservation]:
     """
     Normalize harness output into RuntimeObservation rows.
 
@@ -247,10 +207,10 @@ def normalize_runtime_results(
     harness_version: optional string to tag the harness build/revision.
     """
 
-    resolved_world = world_id or expected_matrix.get("world_id") or runtime_results.get("world_id") or WORLD_ID
+    resolved_world = world_id or expected_matrix.get("world_id") or runtime_results.get("world_id") or models.WORLD_ID
     expectations_idx = _index_expectations(expected_matrix or {})
 
-    observations: List[RuntimeObservation] = []
+    observations: List[models.RuntimeObservation] = []
     for profile_id, profile_result in (runtime_results or {}).items():
         preflight = profile_result.get("preflight")
         probes = profile_result.get("probes") or []
@@ -283,7 +243,7 @@ def normalize_runtime_results(
             rt_contract.assert_no_tool_markers_in_stderr(stderr_canonical)
 
             observations.append(
-                RuntimeObservation(
+                models.RuntimeObservation(
                     world_id=resolved_world,
                     profile_id=profile_id,
                     scenario_id=scenario_id,
@@ -325,13 +285,13 @@ def load_json(path: Path | str) -> Any:
         return json.load(fh)
 
 
-def write_observations(observations: Iterable[RuntimeObservation], out_path: Path | str) -> Path:
+def write_observations(observations: Iterable[models.RuntimeObservation], out_path: Path | str) -> Path:
     """
     Write observations as a JSON array to the given path.
     """
 
     path = path_utils.ensure_absolute(Path(out_path), path_utils.find_repo_root(Path(__file__)))
-    payload = [serialize_observation(o) for o in observations]
+    payload = [observation_to_dict(o) for o in observations]
     path.parent.mkdir(parents=True, exist_ok=True)
     import json
 
@@ -339,22 +299,22 @@ def write_observations(observations: Iterable[RuntimeObservation], out_path: Pat
     return path
 
 
-def normalize_from_paths(
+def normalize_matrix_paths(
     expected_matrix_path: Path | str,
     runtime_results_path: Path | str,
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
-) -> List[RuntimeObservation]:
+) -> List[models.RuntimeObservation]:
     """
     Load expected_matrix + runtime_results from disk and return normalized observations.
     """
 
     expected_doc = load_json(expected_matrix_path)
     runtime_doc = load_json(runtime_results_path)
-    return normalize_runtime_results(expected_doc, runtime_doc, world_id=world_id, harness_version=harness_version)
+    return normalize_matrix(expected_doc, runtime_doc, world_id=world_id, harness_version=harness_version)
 
 
-def write_normalized_events(
+def write_matrix_observations(
     expected_matrix_path: Path | str,
     runtime_results_path: Path | str,
     out_path: Path | str,
@@ -365,16 +325,16 @@ def write_normalized_events(
     Normalize events from disk and write them as a JSON array.
     """
 
-    observations = normalize_from_paths(expected_matrix_path, runtime_results_path, world_id=world_id, harness_version=harness_version)
+    observations = normalize_matrix_paths(expected_matrix_path, runtime_results_path, world_id=world_id, harness_version=harness_version)
     return write_observations(observations, out_path)
 
 
-def normalize_metadata_runner_results(
+def normalize_metadata_results(
     runtime_results: Mapping[str, Any],
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
     runner_info: Optional[Mapping[str, Any]] = None,
-) -> List[RuntimeObservation]:
+) -> List[models.RuntimeObservation]:
     """
     Normalize metadata-runner experiment output into RuntimeObservation rows.
 
@@ -382,7 +342,7 @@ def normalize_metadata_runner_results(
     - {world_id, runner_info?, results:[{profile_id, operation, requested_path, status, errno, apply_mode, apply_rc, ...}]}
     """
 
-    resolved_world = world_id or runtime_results.get("world_id") or WORLD_ID
+    resolved_world = world_id or runtime_results.get("world_id") or models.WORLD_ID
     base_runner_info: Optional[Dict[str, Any]] = None
     if isinstance(runner_info, Mapping):
         base_runner_info = dict(runner_info)
@@ -393,7 +353,7 @@ def normalize_metadata_runner_results(
     if not isinstance(rows, list):
         raise AssertionError("metadata-runner runtime_results.json should contain a results list")
 
-    observations: List[RuntimeObservation] = []
+    observations: List[models.RuntimeObservation] = []
     for row in rows:
         if not isinstance(row, Mapping):
             continue
@@ -525,7 +485,7 @@ def normalize_metadata_runner_results(
         notes = "; ".join(notes_parts) if notes_parts else None
 
         observations.append(
-            RuntimeObservation(
+            models.RuntimeObservation(
                 world_id=resolved_world,
                 profile_id=profile_id,
                 scenario_id=scenario_id,
@@ -557,7 +517,7 @@ def normalize_metadata_runner_results(
     return observations
 
 
-def write_metadata_runner_normalized_events(
+def write_metadata_observations(
     runtime_results_path: Path | str,
     out_path: Path | str,
     world_id: Optional[str] = None,
@@ -565,5 +525,5 @@ def write_metadata_runner_normalized_events(
     runner_info: Optional[Mapping[str, Any]] = None,
 ) -> Path:
     runtime_doc = load_json(runtime_results_path)
-    observations = normalize_metadata_runner_results(runtime_doc, world_id=world_id, harness_version=harness_version, runner_info=runner_info)
+    observations = normalize_metadata_results(runtime_doc, world_id=world_id, harness_version=harness_version, runner_info=runner_info)
     return write_observations(observations, out_path)

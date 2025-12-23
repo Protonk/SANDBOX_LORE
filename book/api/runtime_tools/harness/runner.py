@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from book.api.path_utils import ensure_absolute, find_repo_root, relativize_command, to_repo_relative
-from book.api.runtime_tools import runtime_contract as rt_contract
+from book.api.runtime_tools.core import contract as rt_contract
 
 REPO_ROOT = find_repo_root(Path(__file__))
 DEFAULT_OUT = REPO_ROOT / "book" / "profiles" / "golden-triple"
@@ -61,7 +61,7 @@ def _sha256_path(path: Path) -> str:
     return digest
 
 
-def ensure_tmp_files(fixture_root: Path = Path("/tmp")) -> None:
+def ensure_fixtures(fixture_root: Path = Path("/tmp")) -> None:
     for name in ["foo", "bar"]:
         p = fixture_root / name
         p.write_text(f"runtime-checks {name}\n")
@@ -82,7 +82,7 @@ def ensure_tmp_files(fixture_root: Path = Path("/tmp")) -> None:
     (ok_dir / "allow.txt").write_text("param ok allow\n")
 
 
-def classify_status(probes: List[Dict[str, Any]], skipped_reason: str | None = None) -> tuple[str, str | None]:
+def classify_profile_status(probes: List[Dict[str, Any]], skipped_reason: str | None = None) -> tuple[str, str | None]:
     if skipped_reason:
         return "blocked", skipped_reason
     if not probes:
@@ -104,7 +104,7 @@ def classify_status(probes: List[Dict[str, Any]], skipped_reason: str | None = N
     return "partial", "runtime results diverged from expected allow/deny matrix"
 
 
-def prepare_runtime_profile(
+def prepare_profile(
     base: Path,
     key: str,
     key_specific_rules: Dict[str, List[str]],
@@ -219,7 +219,7 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None, wr
         return {"error": str(e)}
 
 
-def run_expected_matrix(
+def run_matrix(
     matrix_path: Path | str,
     out_dir: Path | None = None,
     runtime_profile_dir: Path | None = None,
@@ -229,7 +229,7 @@ def run_expected_matrix(
     matrix_path = ensure_absolute(matrix_path, REPO_ROOT)
     out_dir = ensure_absolute(out_dir, REPO_ROOT) if out_dir else DEFAULT_OUT
     runtime_profile_dir = ensure_absolute(runtime_profile_dir, REPO_ROOT) if runtime_profile_dir else out_dir / "runtime_profiles"
-    ensure_tmp_files()
+    ensure_fixtures()
     assert matrix_path.exists(), f"missing expected matrix: {matrix_path}"
     matrix = json.loads(matrix_path.read_text())
     profiles = matrix.get("profiles") or {}
@@ -246,13 +246,13 @@ def run_expected_matrix(
             if blob:
                 profile_path = ensure_absolute(blob, REPO_ROOT)
         if not profile_path or not profile_path.exists():
-            status, note = classify_status([], skipped_reason="no profile path")
+            status, note = classify_profile_status([], skipped_reason="no profile path")
             entry: Dict[str, Any] = {"status": status}
             if note:
                 entry["notes"] = note
             results[key] = entry
             continue
-        runtime_profile = prepare_runtime_profile(
+        runtime_profile = prepare_profile(
             profile_path,
             key,
             key_specific_rules=key_specific_rules,
@@ -437,7 +437,7 @@ def run_expected_matrix(
                     ),
                 }
             )
-        status, note = classify_status(probe_results)
+        status, note = classify_profile_status(probe_results)
         entry = {
             "status": status,
             "profile_path": to_repo_relative(runtime_profile, REPO_ROOT),

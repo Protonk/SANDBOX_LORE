@@ -14,8 +14,9 @@ ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from book.api.runtime_tools.observations import WORLD_ID, write_normalized_events
-from book.api.runtime_tools.runtime_pipeline import run_from_expected_matrix
+from book.api.runtime_tools.core.models import WORLD_ID
+from book.api.runtime_tools.core.normalize import write_matrix_observations
+from book.api.runtime_tools import workflow
 
 
 ROOT = Path(__file__).resolve().parent
@@ -34,13 +35,13 @@ KEY_SPECIFIC_RULES = {
 
 
 def main() -> int:
-    artifacts = run_from_expected_matrix(MATRIX, OUT_DIR, world_id=WORLD_ID, key_specific_rules=KEY_SPECIFIC_RULES)
-    out_path = artifacts.get("runtime_results") or OUT_DIR / "runtime_results.json"
+    run = workflow.run_from_matrix(MATRIX, OUT_DIR, world_id=WORLD_ID, key_specific_rules=KEY_SPECIFIC_RULES)
+    out_path = run.runtime_results
     try:
         events_path = OUT_DIR / "runtime_events.normalized.json"
-        write_normalized_events(MATRIX, out_path, events_path, world_id=WORLD_ID)
+        write_matrix_observations(MATRIX, out_path, events_path, world_id=WORLD_ID)
         print(f"[+] wrote normalized events to {events_path}")
-        print(f"[+] runtime cut artifacts: {artifacts}")
+        print(f"[+] runtime cut artifacts: {run.cut}")
     except Exception as e:
         print(f"[!] failed to normalize runtime events: {e}")
     print(f"[+] wrote {out_path}")

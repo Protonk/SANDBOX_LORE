@@ -20,8 +20,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from book.api.path_utils import find_repo_root
-from book.api.runtime_tools.runtime_pipeline import FamilySpec, run_family_specs, generate_runtime_cut
-from book.api.runtime_tools.observations import WORLD_ID, write_normalized_events
+from book.api.runtime_tools import workflow
+from book.api.runtime_tools.core.models import WORLD_ID
+from book.api.runtime_tools.core.normalize import write_matrix_observations
 
 REPO_ROOT = find_repo_root(Path(__file__))
 
@@ -83,7 +84,7 @@ def start_loopback_server() -> Tuple[socketserver.TCPServer, int]:
     return srv, srv.server_address[1]
 
 
-def build_families(loopback_targets: List[str]) -> List[FamilySpec]:
+def build_families(loopback_targets: List[str]) -> List[workflow.ProfileSpec]:
     probes_common_read = [
         {
             "name": "allow-ok-root",
@@ -228,63 +229,63 @@ def build_families(loopback_targets: List[str]) -> List[FamilySpec]:
         probes_net_deny.append({"name": name, "operation": "network-outbound", "target": target, "expected": "deny"})
 
     return [
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:struct_flat",
             profile_path=SB_DIR / "struct_flat.sb",
             probes=probes_common_read + probes_common_write,
             family="structural_variants",
             semantic_group="structural:file-read-subpath",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:struct_nested",
             profile_path=SB_DIR / "struct_nested.sb",
             probes=probes_common_read + probes_common_write,
             family="structural_variants",
             semantic_group="structural:file-read-subpath",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:path_edges",
             profile_path=SB_DIR / "path_edges.sb",
             probes=probes_edges_read + probes_edges_write,
             family="path_edges",
             semantic_group="paths:literal-vs-normalized",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:mach_simple_allow",
             profile_path=SB_DIR / "mach_simple_allow.sb",
             probes=probes_mach,
             family="mach_variants",
             semantic_group="mach:global-name-allow",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:mach_simple_variants",
             profile_path=SB_DIR / "mach_simple_variants.sb",
             probes=probes_mach,
             family="mach_variants",
             semantic_group="mach:global-name-allow",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:mach_local_literal",
             profile_path=SB_DIR / "mach_local_literal.sb",
             probes=probes_mach_local,
             family="mach_local",
             semantic_group="mach:local-name-allow",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:mach_local_regex",
             profile_path=SB_DIR / "mach_local_regex.sb",
             probes=probes_mach_local,
             family="mach_local",
             semantic_group="mach:local-name-allow",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:net_outbound_allow",
             profile_path=SB_DIR / "net_outbound_allow.sb",
             probes=probes_net_allow,
             family="network",
             semantic_group="network:outbound-allow",
         ),
-        FamilySpec(
+        workflow.ProfileSpec(
             profile_id="adv:net_outbound_deny",
             profile_path=SB_DIR / "net_outbound_deny.sb",
             probes=probes_net_deny,
@@ -321,9 +322,9 @@ def main() -> int:
         loopback_targets = []
 
     families = build_families(loopback_targets)
-    artifacts = run_family_specs(families, OUT_DIR, world_id=world_id)
-    matrix_path = artifacts.get("expected_matrix") or OUT_DIR / "expected_matrix.generated.json"
-    runtime_out = artifacts.get("runtime_results") or OUT_DIR / "runtime_results.json"
+    run = workflow.run_profiles(families, OUT_DIR, world_id=world_id)
+    matrix_path = run.expected_matrix
+    runtime_out = run.runtime_results
 
     # Keep compatibility filenames for downstream consumers during transition.
     if matrix_path.exists():
@@ -331,8 +332,8 @@ def main() -> int:
     if runtime_out.exists():
         (OUT_DIR / "runtime_results.json").write_text(Path(runtime_out).read_text())
     mismatch_doc = {}
-    if artifacts.get("mismatch_summary"):
-        mismatch_doc = json.loads(Path(artifacts["mismatch_summary"]).read_text())
+    if run.mismatch_summary:
+        mismatch_doc = json.loads(Path(run.mismatch_summary).read_text())
         (OUT_DIR / "mismatch_summary.json").write_text(json.dumps(mismatch_doc, indent=2))
     impact_map = OUT_DIR / "impact_map.json"
     impact_body: Dict[str, Any] = {}
@@ -355,9 +356,9 @@ def main() -> int:
 
     try:
         events_path = OUT_DIR / "runtime_events.normalized.json"
-        write_normalized_events(matrix_path, runtime_out, events_path, world_id=world_id)
+        write_matrix_observations(matrix_path, runtime_out, events_path, world_id=world_id)
         print(f"[+] wrote normalized events to {events_path}")
-        print(f"[+] runtime mapping set under {OUT_DIR / 'runtime_mappings'} -> {artifacts}")
+        print(f"[+] runtime mapping set under {OUT_DIR / 'runtime_mappings'} -> {run.cut}")
     except Exception as e:
         print(f"[!] failed to normalize runtime events: {e}")
 

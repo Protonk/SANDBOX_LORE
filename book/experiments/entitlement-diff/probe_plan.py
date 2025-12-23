@@ -49,7 +49,7 @@ def staged_binary_specs(repo_root: Path | None = None) -> Sequence[StagedBinaryS
         ),
         StagedBinarySpec(
             id="file_probe",
-            src_path=root / "book" / "api" / "file_probe" / "file_probe",
+            src_path=root / "book" / "api" / "runtime_tools" / "native" / "file_probe" / "file_probe",
             dest_name="file_probe",
         ),
     )
@@ -99,4 +99,3 @@ def build_probe_matrix(
         {"id": "file_read", "command": [str(staged["file_probe"]), "read", str(target)]},
         {"id": "file_write", "command": [str(staged["file_probe"]), "write", str(target)]},
     ]
-

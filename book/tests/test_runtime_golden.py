@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-import book.api.runtime_tools.harness_generate as rg
+import book.api.runtime_tools.harness.golden as rg
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -10,25 +10,25 @@ RUNTIME_RESULTS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "ru
 
 
 def test_load_matrix_has_golden_profiles():
-    profiles = rg.load_matrix(MATRIX)
+    profiles = rg.load_golden_matrix(MATRIX)
     assert set(rg.GOLDEN_KEYS).issubset(profiles.keys())
     for key in rg.GOLDEN_KEYS:
         assert profiles[key].path.exists()
 
 
 def test_compile_and_decode_bucket4():
-    profiles = rg.load_matrix(MATRIX)
+    profiles = rg.load_golden_matrix(MATRIX)
     prof = profiles["bucket4:v1_read"]
-    blob = rg.compile_profile(prof)
+    blob = rg.compile_golden_profile(prof)
     assert isinstance(blob, (bytes, bytearray))
     assert len(blob) > 0
-    decoded = rg.decode_profile(blob)
+    decoded = rg.decode_blob(blob)
     assert decoded.get("node_count") is not None
     assert decoded.get("op_count") is not None
 
 
 def test_normalize_runtime_results_rows_present():
-    rows = rg.normalize_runtime_results(RUNTIME_RESULTS, rg.GOLDEN_KEYS)
+    rows = rg.normalize_golden_results(RUNTIME_RESULTS, rg.GOLDEN_KEYS)
     assert rows, "expected runtime rows for golden profiles"
     profiles_present = {r["profile"] for r in rows}
     assert "bucket4:v1_read" in profiles_present

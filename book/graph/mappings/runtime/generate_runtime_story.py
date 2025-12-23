@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from book.api import path_utils
-from book.api.runtime_tools import runtime_story as rt_story
+from book.api.runtime_tools.mapping import story as rt_story
 
 CUT_ROOT = ROOT / "book" / "graph" / "mappings" / "runtime_cuts"
 
@@ -39,7 +39,7 @@ def main() -> None:
     scenarios_path = path_utils.ensure_absolute(manifest.get("scenarios"), ROOT)
     ops_path = path_utils.ensure_absolute(manifest.get("ops"), ROOT)
 
-    story = rt_story.build_runtime_story(ops_path, scenarios_path)
+    story = rt_story.build_story(ops_path, scenarios_path)
     inputs = [
         path_utils.to_repo_relative(ops_path, ROOT),
         path_utils.to_repo_relative(scenarios_path, ROOT),
@@ -56,7 +56,7 @@ def main() -> None:
         meta["source_jobs"] = manifest_meta["source_jobs"]
     story["meta"] = meta
     out_path = CUT_ROOT / "runtime_story.json"
-    rt_story.write_runtime_story(story, out_path)
+    rt_story.write_story(story, out_path)
 
     manifest["runtime_story"] = path_utils.to_repo_relative(out_path, ROOT)
     manifest_path.write_text(json.dumps(manifest, indent=2))

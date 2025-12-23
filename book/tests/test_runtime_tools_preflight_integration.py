@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from book.api.runtime_tools import harness_runner as runner
+from book.api.runtime_tools.harness import runner
 
 
 def test_runtime_tools_preflight_blocks_known_apply_gate_signature(tmp_path, monkeypatch):
@@ -28,7 +28,7 @@ def test_runtime_tools_preflight_blocks_known_apply_gate_signature(tmp_path, mon
     matrix_path = tmp_path / "expected_matrix.json"
     matrix_path.write_text(json.dumps(matrix, indent=2))
 
-    out_path = runner.run_expected_matrix(matrix_path, out_dir=tmp_path)
+    out_path = runner.run_matrix(matrix_path, out_dir=tmp_path)
     results = json.loads(out_path.read_text())
 
     entry = results["preflight:test"]
@@ -70,7 +70,7 @@ def test_runtime_tools_preflight_blocks_known_apply_gate_blob_digest(tmp_path, m
     matrix_path = tmp_path / "expected_matrix.json"
     matrix_path.write_text(json.dumps(matrix, indent=2))
 
-    out_path = runner.run_expected_matrix(matrix_path, out_dir=tmp_path)
+    out_path = runner.run_matrix(matrix_path, out_dir=tmp_path)
     results = json.loads(out_path.read_text())
 
     entry = results["preflight:blob"]
@@ -118,7 +118,7 @@ def test_runtime_tools_profile_can_force_apply_even_when_preflight_flags_signatu
     matrix_path = tmp_path / "expected_matrix.json"
     matrix_path.write_text(json.dumps(matrix, indent=2))
 
-    out_path = runner.run_expected_matrix(matrix_path, out_dir=tmp_path)
+    out_path = runner.run_matrix(matrix_path, out_dir=tmp_path)
     results = json.loads(out_path.read_text())
 
     assert calls["count"] == 1

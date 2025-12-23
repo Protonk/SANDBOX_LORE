@@ -36,7 +36,7 @@ ALLOWLIST = {
     },
     "sandbox_exec": {
         Path("book/api/profile_tools/libsandbox.py"),
-        Path("book/api/runtime_tools/harness_runner.py"),
+        Path("book/api/runtime_tools/harness/runner.py"),
         Path("book/graph/mappings/runtime/generate_runtime_signatures.py"),
     },
 }

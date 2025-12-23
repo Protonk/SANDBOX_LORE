@@ -1,0 +1,27 @@
+{
+  "frida": {
+    "python_pkg_version": "17.5.2"
+  },
+  "host": {
+    "machine": "arm64",
+    "platform": "macOS-14.4.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.2",
+    "sw_vers": {
+      "buildVersion": "23E224",
+      "productVersion": "14.4.1"
+    }
+  },
+  "mode": "attach",
+  "out_dir": "book/experiments/frida-testing/out/4d31a0d8-87da-4d58-af6b-04a9297370b9",
+  "run_id": "4d31a0d8-87da-4d58-af6b-04a9297370b9",
+  "script": {
+    "path": "book/experiments/frida-testing/hooks/fs_open.js",
+    "sha256": "98c41fa9cd61bd840793e6752006cc510019e8d4d00b89d4ed54b9cd63537d70"
+  },
+  "t0_ns": 1766455442484343000,
+  "target": {
+    "attach_pid": 82114,
+    "spawn_argv": null
+  },
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+}

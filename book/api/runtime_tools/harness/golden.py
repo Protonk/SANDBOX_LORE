@@ -43,7 +43,7 @@ class BaselineInfo:
     baseline_ref: str
 
 
-def load_baseline(baseline_ref: str) -> BaselineInfo:
+def load_baseline_info(baseline_ref: str) -> BaselineInfo:
     path = Path(baseline_ref)
     data = json.loads(path.read_text())
     world_id = data.get("world_id")
@@ -52,7 +52,7 @@ def load_baseline(baseline_ref: str) -> BaselineInfo:
     return BaselineInfo(world_id=world_id, baseline_ref=baseline_ref)
 
 
-def load_matrix(matrix_path: Path) -> Dict[str, GoldenProfile]:
+def load_golden_matrix(matrix_path: Path) -> Dict[str, GoldenProfile]:
     data = json.loads(matrix_path.read_text())
     profiles = data.get("profiles") or {}
     out: Dict[str, GoldenProfile] = {}
@@ -72,17 +72,17 @@ def sha256_bytes(buf: bytes) -> str:
     return hashlib.sha256(buf).hexdigest()
 
 
-def compile_profile(profile: GoldenProfile) -> bytes:
+def compile_golden_profile(profile: GoldenProfile) -> bytes:
     if profile.is_blob:
         return profile.path.read_bytes()
     return compile_mod.compile_sbpl_string(profile.path.read_text()).blob
 
 
-def decode_profile(blob: bytes) -> Dict[str, Any]:
+def decode_blob(blob: bytes) -> Dict[str, Any]:
     return decoder.decode_profile_dict(blob)
 
 
-def summarize_decode(key: str, blob_path: Path, blob_bytes: bytes, decoded: Dict[str, Any]) -> Dict[str, Any]:
+def summarize_blob(key: str, blob_path: Path, blob_bytes: bytes, decoded: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "key": key,
         "blob": str(blob_path),
@@ -94,7 +94,7 @@ def summarize_decode(key: str, blob_path: Path, blob_bytes: bytes, decoded: Dict
     }
 
 
-def normalize_runtime_results(runtime_results: Path, profiles: Iterable[str]) -> List[Dict[str, Any]]:
+def normalize_golden_results(runtime_results: Path, profiles: Iterable[str]) -> List[Dict[str, Any]]:
     data = json.loads(runtime_results.read_text())
     rows: List[Dict[str, Any]] = []
     for key in profiles:

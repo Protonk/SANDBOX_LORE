@@ -1,0 +1,7 @@
+{"t_ns":1766456170426669000,"pid":null,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766456170426707000,"pid":null,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766456170462599000,"pid":null,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766456171170892000,"pid":85332,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766456171172464000,"pid":85332,"msg":{"type":"send","payload":{"kind":"inspect-nativefunction","pError_typeof":"object","pError_str":"0x189d02bd4","new_typeof":"function","new_own_keys":[],"new_proto_keys":["apply","call","constructor"],"new_call":"0x16ddb30ac","nonew_typeof":null,"nonew_own_keys":null,"nonew_proto_keys":null,"nonew_call":"error:TypeError: must be called with new"}}}
+{"t_ns":1766456171172519000,"pid":85332,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach-sleep"}}}
+{"t_ns":1766456172180901000,"pid":85332,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"application-requested"}}}
