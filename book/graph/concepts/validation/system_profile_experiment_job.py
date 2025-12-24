@@ -1,6 +1,6 @@
 """
-Validation job for system-profile-digest experiment.
-Normalizes digests into shared IR and records status.
+Validation job for system-profile digests.
+Normalizes canonical blob digests into shared IR and records status.
 """
 
 from __future__ import annotations
@@ -9,11 +9,11 @@ import json
 from pathlib import Path
 
 from book.api.path_utils import find_repo_root, to_repo_relative
+from book.api.profile_tools import digests
 from book.graph.concepts.validation import registry
 from book.graph.concepts.validation.registry import ValidationJob
 
 ROOT = find_repo_root(Path(__file__))
-EXP_DIGESTS = ROOT / "book" / "experiments" / "system-profile-digest" / "out" / "digests.json"
 META_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "metadata.json"
 STATUS_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "system-profile-digest" / "status.json"
 IR_PATH = ROOT / "book" / "graph" / "concepts" / "validation" / "out" / "experiments" / "system-profile-digest" / "digests_ir.json"
@@ -33,10 +33,11 @@ def _load_host():
 
 
 def run_system_profiles_job():
-    if not EXP_DIGESTS.exists():
-        raise FileNotFoundError(f"missing required input: {EXP_DIGESTS}")
-
-    raw = json.loads(EXP_DIGESTS.read_text())
+    blobs = digests.canonical_system_profile_blobs(ROOT)
+    for path in blobs.values():
+        if not path.exists():
+            raise FileNotFoundError(f"missing required input: {path}")
+    raw = digests.digest_named_blobs(blobs, repo_root=ROOT)
     host = _load_host()
 
     # Normalize keys to sys:<name>
@@ -57,7 +58,7 @@ def run_system_profiles_job():
         "job_id": "experiment:system-profile-digest",
         "status": "ok",
         "host": host,
-        "inputs": [rel(EXP_DIGESTS)],
+        "inputs": [rel(path) for path in blobs.values()],
         "outputs": [rel(IR_PATH)],
         "metrics": {"profiles": len(profiles)},
         "notes": "Normalized system profile digests into IR.",
@@ -78,10 +79,10 @@ def run_system_profiles_job():
 registry.register(
     ValidationJob(
         id="experiment:system-profile-digest",
-        inputs=[rel(EXP_DIGESTS)],
+        inputs=[rel(path) for path in digests.canonical_system_profile_blobs(ROOT).values()],
         outputs=[rel(IR_PATH), rel(STATUS_PATH)],
         tags=["experiment:system-profile-digest", "experiment", "system-profiles", "golden"],
-        description="Normalize system-profile-digest outputs into shared IR for mappings.",
+        description="Normalize canonical system profile digests into shared IR for mappings.",
         example_command="python -m book.graph.concepts.validation --experiment system-profile-digest",
         runner=run_system_profiles_job,
     )

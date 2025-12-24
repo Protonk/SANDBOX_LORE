@@ -37,6 +37,9 @@ Explore whether Frida-based instrumentation can provide host-bound runtime witne
 - Attempted: sandbox trace hook initial run failed due to missing `Module.findExportByName`.
 - Completed: sandbox trace hook runs but reports `sandbox_set_trace_path` missing in `libsystem_sandbox.dylib` for `ProbeService_fully_injectable` (no trace file).
 - Completed: expanded file-decision funnel (metadata/xattr/open) and observed `__open` + `open` errno hits during fs_op.
+- Completed: upgraded sandbox trace to a capability ladder (set_trace, vtrace, unavailable).
+- Completed: added unified-log capture helpers for sandbox deny fallbacks.
+- Completed: collapsed `fs_open.js` to a minimal hook pack and revalidated fs_op observability.
 
 ## Evidence & artifacts
 - Bootstrap target: `book/experiments/frida-testing/targets/open_loop.c`.
@@ -45,6 +48,7 @@ Explore whether Frida-based instrumentation can provide host-bound runtime witne
 - Smoke hook: `book/experiments/frida-testing/hooks/smoke.js`.
 - Runner: `book/api/frida/runner.py` (core) and `book/experiments/frida-testing/run_frida.py` (CLI wrapper).
 - Trace parser: `book/experiments/frida-testing/parse_sandbox_trace.py`.
+- Sandbox log capture: `book/experiments/frida-testing/capture_sandbox_log.py` and `book/experiments/frida-testing/parse_sandbox_log.py`.
 
 - Attach-first plumbing witness (baseline target `open_loop`):
   - Run `book/experiments/frida-testing/out/0bd798d6-5986-4a26-a19c-28f7d577f240` (smoke): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, event kinds `{"runner-start":1,"stage":4,"smoke":1,"session-detached":1}`.
@@ -78,16 +82,19 @@ Explore whether Frida-based instrumentation can provide host-bound runtime witne
 - Run `book/experiments/frida-testing/out/18ef5758-937a-4e9c-b54d-db999d23a270` (sandbox_trace initial attempt on `ProbeService_fully_injectable`): script sha256 `6207b3a1c2378a1e26a6454003b9e8710c2f0a8f9e315d478b66bf776708465a`, event kinds `{\"runner-start\":1,\"stage\":4,\"error\":1,\"session-detached\":1}`; error `TypeError: not a function` from `Module.findExportByName`.
 - Run `book/experiments/frida-testing/out/227d3232-9da5-463d-bab4-2f7bbbfc03ae` (sandbox_trace on `ProbeService_fully_injectable`): script sha256 `e0753d40450b1135c1b4ad79d6d902108de9a9bac9a642f826f2173c8359ba04`, event kinds `{\"runner-start\":1,\"stage\":4,\"sandbox-trace\":1,\"session-detached\":1}`; trace status `symbol-missing`, summary in `book/experiments/frida-testing/out/227d3232-9da5-463d-bab4-2f7bbbfc03ae/sandbox_trace_summary.json` (trace_exists false).
 - Run `book/experiments/frida-testing/out/0ee1b6e3-f000-4037-aaee-23ce3e7f0098` (file-decision funnel on `ProbeService_fully_injectable`): script sha256 `43976ac03198182d3977e66631b3f2762eab4c72fd28db5a2dc4c67b246f17f0`, event kinds `{\"runner-start\":1,\"stage\":4,\"funnel-candidates\":3,\"funnel-hook\":41,\"funnel-hit\":2,\"session-detached\":1}`; `funnel-hit` events observed for `__open` and `open` with errno 13 on the deny path.
+- Run `book/experiments/frida-testing/out/218aba7d-9290-4955-b82a-11b40266be0f` (sandbox_trace capability ladder on `ProbeService_fully_injectable`): script sha256 `d535a5973d9e738dcc2c49885b29a356ca262ca0c3c9567839513b1f3627eacf`, event kinds `{\"runner-start\":1,\"stage\":4,\"sandbox-trace-capability\":1,\"sandbox-trace-unavailable\":1,\"session-detached\":1}`; vtrace and set_trace both unavailable.
+- Run `book/experiments/frida-testing/out/797832ba-a22c-41ba-8f2a-370f87f97713` (minimal fs_open on `ProbeService_fully_injectable`): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"fs-open\":2,\"session-detached\":1}`; `fs-open` events observed for `__open` and `open` with errno 13 on the deny path.
 
 ## Blockers / risks
 - Spawn runs are terminating before any send() payloads are recorded; treat spawn as unstable on this host until proven otherwise.
 - Attach-first smoke run triggered frida-helper and target crashes; the helper crash suggests a Frida-layer instability and the target died with a code signing invalid-page kill.
 - Attach-first smoke run against `ProbeService_debuggable` also ended in a code signing invalid-page kill, with a frida-helper SIGILL crash reported.
 - `ProbeService_fully_injectable` is attachable (smoke + export inventory); `fs_open` events can be forced via self-open, but `fs_op` does not emit fs-open events even when run in the same PID via `--attach`.
-- `sandbox_set_trace_path` is not exported from `libsystem_sandbox.dylib` in `ProbeService_fully_injectable` (trace gating is blocked for this target).
-- File-decision funnel now observes `__open` and `open` errno 13 hits in `libsystem_kernel.dylib` during fs_op; the open path is no longer unknown, but sandbox trace is still unavailable.
+- `sandbox_set_trace_path` and vtrace exports are unavailable from `libsystem_sandbox.dylib` in `ProbeService_fully_injectable`, so in-process trace gating is blocked for this target.
+- File-decision funnel and the minimal fs_open pack now observe `__open` and `open` errno 13 hits in `libsystem_kernel.dylib` during fs_op; the open path is confirmed.
+- Unified-log capture fallback is implemented but not yet exercised alongside fs_op.
 - Running Frida inside the Codex harness sandbox can produce misleading “plumbing” crashes (for example, `frida.get_local_device()` SIGSEGV); run `frida-testing` captures from a normal Terminal session.
 
 ## Next steps
-- Decide whether to load or resolve sandbox tracing via a different module or target (current symbol missing blocks trace gating).
-- Use the funnel hits + backtrace to tie `fs_op` errno 13 to the in-process open path and update hooks accordingly.
+- Run unified-log capture alongside fs_op to build a fallback deny stream witness.
+- Keep the minimal fs_open pack as the default hook for fs_op, and retire the funnel to diagnostics-only.

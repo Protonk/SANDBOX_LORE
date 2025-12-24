@@ -1,5 +1,7 @@
 # System Profile Digest – Research Report (Sonoma baseline)
 
+Status: **ok (structural; dispersed)**
+
 ## Purpose
 Produce stable digests for curated system profile blobs (for example, `airlock`, `bsd`, `sample`) using the current decoder. Each digest captures op-table buckets, tag counts, literal samples, and basic section info, and is published at `book/graph/mappings/system_profiles/digests.json` for reuse across the book.
 
@@ -25,6 +27,7 @@ Produce stable digests for curated system profile blobs (for example, `airlock`,
   - Normalized digest published to `book/graph/mappings/system_profiles/digests.json` with host metadata, op-table entries, node/tag counts, literal sample, sections, and validation flags for `airlock`, `bsd`, and `sample`.
   - Guardrail added (`tests/test_mappings_guardrail.py`) to ensure digests remain present and version-tagged.
   - Digests refreshed under the current decoder framing (stride=8 node records selected via op-table witness); contract/tag-layout hashes and canonical status are expected to stay `ok` once the mapping generator is rerun.
+  - Canonical digests are now emitted by the validation job (`book/graph/concepts/validation/system_profile_experiment_job.py`) from the fixed canonical blobs; the experiment `out/` artifacts are retained for provenance only and are not consumed by mappings.
 - **1) Scope and setup**
   - Identified input blobs: `book/graph/concepts/validation/fixtures/blobs/{airlock,bsd,sample}.sb.bin` on this Sonoma host.
   - Confirmed digest tooling (`book.api.profile_tools.digests`, decoder-backed) and shared mappings (`book/graph/mappings/vocab`, `book/graph/mappings/op_table`) are available and in use.
@@ -52,14 +55,11 @@ If the digest set needs to be updated (for example, new system profiles or decod
 
 ## Evidence & artifacts
 - Canonical system profiles at `book/graph/concepts/validation/fixtures/blobs/{airlock,bsd,sample}.sb.bin` for this host.
-- Intermediate digest output `book/experiments/system-profile-digest/out/digests.json`.
+- Intermediate digest output `book/experiments/system-profile-digest/out/digests.json` (legacy; not consumed by mappings).
 - Published digest `book/graph/mappings/system_profiles/digests.json` with host metadata, op-table entries, node/tag counts, literal samples, and section offsets.
+- Validation IR `book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json` generated directly from the canonical blobs.
 - Guardrail coverage in `tests/test_mappings_guardrail.py` asserting presence and basic shape of the digests.
 
-## Blockers / risks
-- Digest contents reflect the current decoder’s view; future decoder changes could require regenerating digests and updating guardrails to keep them meaningful.
-- Additional system profiles are not yet covered; expanding the curated set will require careful selection and versioning to avoid churn.
-
-## Next steps
-- Treat the current digest set as the baseline for this host and only extend it when new system profiles are explicitly added to the curated list.
-- Regenerate digests and adjust guardrails if the decoder or mapping artifacts change in ways that affect op-table interpretation or node/tag counts for these profiles.
+## Maintenance notes
+- Digest contents reflect the current decoder’s view; if the decoder framing changes, regenerate digests and update guardrails to keep them meaningful.
+- The curated set is intentionally small; only expand it via deliberate updates to the canonical profile list and mapping generator.

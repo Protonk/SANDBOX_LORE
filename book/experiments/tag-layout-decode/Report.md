@@ -1,5 +1,7 @@
 # Tag Layout Decode – Research Report
 
+Status: **ok (structural; dispersed)**
+
 ## Purpose
 Map node tags that reference literal or regex pools to interpretable layouts (edge fields plus operand fields) using the current decoder and anchor hits. Produce a reusable map at `book/graph/mappings/tag_layouts/tag_layouts.json` for other tooling and book chapters.
 
@@ -25,6 +27,7 @@ Map node tags that reference literal or regex pools to interpretable layouts (ed
   - Baseline decode complete for canonical system profiles (`airlock`, `bsd`, `sample`); tag counts and literal counts recorded in `out/tag_histogram.json`. Decoder inputs: `book/graph/concepts/validation/fixtures/blobs/{airlock,bsd,sample}.sb.bin`.
   - Sample literal-bearing nodes grouped by tag captured in `out/tag_literal_nodes.json` to support layout interpretation.
   - Canonical tag layouts published at `book/graph/mappings/tag_layouts/tag_layouts.json` (record_size_bytes=8) and enforced by a guardrail (`book/tests/test_mappings_guardrail.py`). The decoder selects stride=8 for this world using op-table word-offset alignment evidence and exposes that witness under `validation.node_stride_selection`.
+  - Canonical layouts are now emitted via `book/graph/mappings/tag_layouts/generate_tag_layouts.py` from the canonical profile digests; experiment `out/` artifacts remain as provenance only.
 - **1) Scope and setup**
   - Identified reference blobs: canonical system profiles (`airlock.sb.bin`, `bsd.sb.bin`, `sample.sb.bin`) and shared mappings needed for decoding.
   - Confirmed decoder path (`book.api.profile_tools.decoder`) and access to `book/graph/mappings/vocab` and `book/graph/mappings/op_table`.
@@ -57,11 +60,8 @@ If tag layouts need to be extended or revised, reuse this outline:
 - `book/experiments/tag-layout-decode/out/tag_histogram.json` with tag counts and literal usage across these profiles.
 - `book/experiments/tag-layout-decode/out/tag_literal_nodes.json` capturing sample literal-bearing nodes grouped by tag.
 - Published tag-layout map `book/graph/mappings/tag_layouts/tag_layouts.json` plus associated guardrail tests in `tests/test_mappings_guardrail.py`.
+- Experiment `out/` artifacts are retained for provenance; consumers should use `book/graph/mappings/tag_layouts/tag_layouts.json`.
 
-## Blockers / risks
-- Tag layouts are currently defined for a subset of literal/regex-bearing tags; additional tags or operand types in future profiles may require revisiting or extending the map.
-- Layout interpretations rely on the current decoder and literal-table heuristics; mistakes there could propagate into downstream experiments that consume `tag_layouts.json`.
-
-## Next steps
-- Use additional probes and system profiles (including anchor-heavy cases from `probe-op-structure`) to refine or extend per-tag layouts as needed.
-- Update `tag_layouts.json` and guardrails when new tags or operand patterns are confirmed, keeping host/build metadata and provenance up to date.
+## Maintenance notes
+- Tag layouts are defined for the canonical corpus on this world; adding new tags or operand types should be treated as a new, explicit extension (not a silent drift).
+- Layout interpretations rely on the current decoder and literal-table heuristics; if those change, rerun the generator and guardrails to keep `tag_layouts.json` aligned.

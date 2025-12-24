@@ -9,7 +9,9 @@
     "machine": "arm64"
   },
   "inputs": [
-    "book/experiments/system-profile-digest/out/digests.json"
+    "book/graph/concepts/validation/fixtures/blobs/airlock.sb.bin",
+    "book/graph/concepts/validation/fixtures/blobs/bsd.sb.bin",
+    "book/graph/concepts/validation/fixtures/blobs/sample.sb.bin"
   ],
   "outputs": [
     "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json"

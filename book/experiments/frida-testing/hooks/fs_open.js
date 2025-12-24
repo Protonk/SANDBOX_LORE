@@ -1,8 +1,9 @@
 'use strict';
 
 const LOG_SUCCESSES = false;      // keep noise down
-const INCLUDE_BT = true;          // flip off if too heavy
+const INCLUDE_BT = true;          // only on errno 1/13
 const MAX_BT_FRAMES = 20;
+const ERROR_BT_ERRNOS = { 1: true, 13: true };
 
 function findGlobal(symbol) {
   try {
@@ -32,42 +33,9 @@ function backtrace(ctx) {
   }
 }
 
-function hookOpen() {
-  hookOpenSymbol('open');
-}
-
-function hookOpenat() {
-  hookOpenatSymbol('openat');
-}
-
-function hookFopen() {
-  const symbol = 'fopen';
-  const addr = findGlobal(symbol);
-  if (!addr) return send({ kind: 'hook-missing', symbol });
-  send({ kind: 'hook-installed', symbol, addr: addr.toString() });
-
-  Interceptor.attach(addr, {
-    onEnter(args) {
-      this.tid = Process.getCurrentThreadId();
-      this.path = args[0].isNull() ? null : args[0].readUtf8String();
-      this.mode_str = args[1].isNull() ? null : args[1].readUtf8String();
-      this.bt = backtrace(this.context);
-    },
-    onLeave(retval) {
-      const ok = !retval.isNull();
-      if (ok && !LOG_SUCCESSES) return;
-      send({
-        kind: 'fs-open',
-        symbol,
-        tid: this.tid,
-        path: this.path,
-        mode_str: this.mode_str,
-        rv: ok ? 0 : -1,
-        errno: ok ? 0 : readErrno(),
-        bt: this.bt
-      });
-    }
-  });
+function maybeBt(errno, ctx) {
+  if (!ERROR_BT_ERRNOS[errno]) return null;
+  return backtrace(ctx);
 }
 
 function hookOpenSymbol(symbol) {
@@ -81,11 +49,11 @@ function hookOpenSymbol(symbol) {
       this.path = args[0].isNull() ? null : args[0].readUtf8String();
       this.flags = args[1].toInt32();
       this.mode = args[2].toInt32();
-      this.bt = backtrace(this.context);
     },
     onLeave(retval) {
       const rv = retval.toInt32();
       if (rv !== -1 && !LOG_SUCCESSES) return;
+      const errno = rv === -1 ? readErrno() : 0;
       send({
         kind: 'fs-open',
         symbol,
@@ -94,8 +62,8 @@ function hookOpenSymbol(symbol) {
         flags: this.flags,
         mode: this.mode,
         rv,
-        errno: rv === -1 ? readErrno() : 0,
-        bt: this.bt
+        errno,
+        bt: rv === -1 ? maybeBt(errno, this.context) : null
       });
     }
   });
@@ -113,11 +81,11 @@ function hookOpenatSymbol(symbol) {
       this.path = args[1].isNull() ? null : args[1].readUtf8String();
       this.flags = args[2].toInt32();
       this.mode = args[3].toInt32();
-      this.bt = backtrace(this.context);
     },
     onLeave(retval) {
       const rv = retval.toInt32();
       if (rv !== -1 && !LOG_SUCCESSES) return;
+      const errno = rv === -1 ? readErrno() : 0;
       send({
         kind: 'fs-open',
         symbol,
@@ -127,20 +95,19 @@ function hookOpenatSymbol(symbol) {
         flags: this.flags,
         mode: this.mode,
         rv,
-        errno: rv === -1 ? readErrno() : 0,
-        bt: this.bt
+        errno,
+        bt: rv === -1 ? maybeBt(errno, this.context) : null
       });
     }
   });
 }
 
-// cover the common Darwin variants; whichever exist will hook
-hookOpen();
-hookOpenat();
-hookFopen();
-hookOpenSymbol('open$NOCANCEL');
-hookOpenatSymbol('openat$NOCANCEL');
+// minimal hook pack; keep openat for coverage, plus $INODE64 variants when present
 hookOpenSymbol('__open');
-hookOpenSymbol('__open_nocancel');
+hookOpenSymbol('open');
+hookOpenSymbol('__open$INODE64');
+hookOpenSymbol('open$INODE64');
+hookOpenatSymbol('openat');
 hookOpenatSymbol('__openat');
-hookOpenatSymbol('__openat_nocancel');
+hookOpenatSymbol('openat$INODE64');
+hookOpenatSymbol('__openat$INODE64');

@@ -911,68 +911,29 @@
       ],
       "op_table_offset": 16,
       "sections": {
-        "literal_pool": 2900,
-        "literal_start": 1762,
+        "op_table": 334,
         "nodes": 1412,
+        "literal_pool": 2900,
         "nodes_start": 350,
-        "op_table": 334
+        "literal_start": 1762
       },
-      "source": "book/graph/concepts/validation/fixtures/blobs/airlock.sb.bin",
       "tag_counts": {
-        "0": 11,
-        "1": 2,
-        "10": 1,
-        "101": 1,
-        "102": 1,
-        "103": 1,
-        "104": 2,
-        "105": 1,
-        "106": 1,
-        "107": 1,
-        "108": 1,
-        "109": 1,
-        "11": 1,
-        "110": 1,
-        "111": 1,
-        "112": 1,
-        "113": 1,
-        "114": 1,
-        "115": 1,
-        "116": 1,
-        "117": 1,
-        "12": 2,
-        "120": 1,
-        "122": 2,
-        "124": 2,
-        "125": 1,
-        "127": 2,
-        "129": 2,
-        "13": 1,
-        "130": 1,
-        "132": 2,
-        "133": 1,
-        "136": 2,
-        "137": 1,
-        "138": 2,
-        "139": 1,
-        "14": 1,
-        "141": 1,
-        "146": 6,
-        "148": 1,
-        "15": 2,
-        "150": 2,
-        "151": 1,
-        "152": 1,
-        "154": 1,
-        "155": 1,
-        "156": 1,
-        "157": 1,
-        "159": 2,
-        "162": 2,
         "166": 26,
+        "1": 2,
+        "0": 11,
+        "2": 2,
+        "104": 2,
+        "6": 1,
+        "8": 1,
+        "15": 2,
+        "10": 1,
+        "11": 1,
+        "12": 2,
+        "13": 1,
+        "14": 1,
+        "71": 2,
         "18": 1,
         "19": 1,
-        "2": 2,
         "20": 1,
         "21": 1,
         "22": 1,
@@ -983,41 +944,38 @@
         "27": 1,
         "28": 1,
         "29": 1,
-        "3": 1,
         "30": 1,
         "31": 1,
         "33": 2,
+        "62": 2,
+        "58": 2,
         "37": 1,
-        "4": 1,
+        "53": 2,
         "44": 1,
         "45": 1,
         "46": 1,
         "48": 1,
-        "5": 1,
         "50": 1,
         "51": 1,
         "52": 1,
-        "53": 2,
         "54": 1,
         "55": 1,
         "57": 1,
-        "58": 2,
-        "6": 1,
         "61": 1,
-        "62": 2,
         "63": 1,
         "64": 1,
         "65": 1,
+        "5": 1,
         "68": 1,
         "69": 1,
         "70": 1,
-        "71": 2,
         "72": 1,
         "73": 1,
         "74": 1,
         "75": 1,
         "76": 1,
-        "8": 1,
+        "4": 1,
+        "3": 1,
         "81": 1,
         "82": 1,
         "83": 1,
@@ -1033,164 +991,84 @@
         "95": 1,
         "96": 1,
         "97": 1,
-        "98": 2
+        "98": 2,
+        "101": 1,
+        "102": 1,
+        "103": 1,
+        "105": 1,
+        "106": 1,
+        "107": 1,
+        "108": 1,
+        "109": 1,
+        "110": 1,
+        "111": 1,
+        "112": 1,
+        "113": 1,
+        "114": 1,
+        "115": 1,
+        "116": 1,
+        "117": 1,
+        "120": 1,
+        "122": 2,
+        "124": 2,
+        "125": 1,
+        "127": 2,
+        "129": 2,
+        "130": 1,
+        "132": 2,
+        "133": 1,
+        "136": 2,
+        "138": 2,
+        "137": 1,
+        "139": 1,
+        "146": 6,
+        "141": 1,
+        "148": 1,
+        "150": 2,
+        "151": 1,
+        "152": 1,
+        "154": 1,
+        "155": 1,
+        "156": 1,
+        "157": 1,
+        "159": 2,
+        "162": 2
       },
       "validation": {
+        "node_remainder_bytes": 4,
         "edge_fields_in_bounds": 148,
         "edge_fields_total": 352,
+        "nodes_start": 350,
         "literal_start": 1762,
-        "node_remainder_bytes": 4,
         "node_stride_bytes": 8,
         "node_stride_selection": {
-          "metrics": {
-            "12": {
-              "misaligned_targets": 133,
-              "op_table_entries": 167,
-              "stride_bytes": 12
-            },
-            "8": {
-              "misaligned_targets": 0,
-              "op_table_entries": 167,
-              "stride_bytes": 8
-            }
-          },
           "mode": "auto",
-          "selected": 8
-        },
-        "nodes_start": 350,
-        "op_table_scaling_witness": {
-          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling.",
-          "scale12": {
-            "ascii_pair_count": 132,
-            "in_range": 167,
-            "kind0_count": 30,
-            "plausible_known_kind0_count": 28,
-            "plausible_non_ascii_kind0_count": 20,
-            "scale_bytes": 12,
-            "top_tag_kind_pairs": [
-              {
-                "count": 115,
-                "key": "(108, 116)"
-              },
-              {
-                "count": 14,
-                "key": "(80, 73)"
-              },
-              {
-                "count": 12,
-                "key": "(0, 0)"
-              },
-              {
-                "count": 4,
-                "key": "(52, 0)"
-              },
-              {
-                "count": 3,
-                "key": "(15, 10)"
-              },
-              {
-                "count": 2,
-                "key": "(8, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(0, 128)"
-              },
-              {
-                "count": 1,
-                "key": "(1, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(10, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(101, 114)"
-              },
-              {
-                "count": 1,
-                "key": "(109, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(112, 0)"
-              }
-            ],
-            "total": 167
-          },
-          "scale8": {
-            "ascii_pair_count": 0,
-            "in_range": 167,
-            "kind0_count": 165,
-            "plausible_known_kind0_count": 165,
-            "plausible_non_ascii_kind0_count": 153,
-            "scale_bytes": 8,
-            "top_tag_kind_pairs": [
-              {
-                "count": 115,
-                "key": "(159, 0)"
-              },
-              {
-                "count": 14,
-                "key": "(157, 0)"
-              },
-              {
-                "count": 13,
-                "key": "(146, 0)"
-              },
-              {
-                "count": 5,
-                "key": "(166, 0)"
-              },
-              {
-                "count": 5,
-                "key": "(33, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(0, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(111, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(139, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(15, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(155, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(28, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(31, 0)"
-              }
-            ],
-            "total": 167
+          "selected": 8,
+          "metrics": {
+            "8": {
+              "stride_bytes": 8,
+              "op_table_entries": 167,
+              "misaligned_targets": 0
+            },
+            "12": {
+              "stride_bytes": 12,
+              "op_table_entries": 167,
+              "misaligned_targets": 133
+            }
           }
         },
         "tag_validation": {
-          "0": {
-            "edge_in_bounds": 5,
-            "edge_total": 22,
+          "166": {
+            "edge_in_bounds": 33,
+            "edge_total": 52,
             "payloads": {
-              "0": 2,
-              "16": 1,
-              "165": 4,
-              "35": 1,
-              "38": 1,
-              "39": 1,
-              "49171": 1
+              "166": 6,
+              "0": 3,
+              "165": 9,
+              "2": 1,
+              "49171": 5,
+              "48915": 1,
+              "164": 1
             },
             "record_size": 8
           },
@@ -1198,39 +1076,30 @@
             "edge_in_bounds": 3,
             "edge_total": 4,
             "payloads": {
-              "165": 1,
-              "166": 1
-            },
-            "record_size": 8
-          },
-          "10": {
-            "edge_in_bounds": 0,
-            "edge_total": 2,
-            "payloads": {
+              "166": 1,
               "165": 1
             },
             "record_size": 8
           },
-          "101": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
+          "0": {
+            "edge_in_bounds": 5,
+            "edge_total": 22,
             "payloads": {
-              "165": 1
+              "39": 1,
+              "165": 4,
+              "16": 1,
+              "35": 1,
+              "38": 1,
+              "0": 2,
+              "49171": 1
             },
             "record_size": 8
           },
-          "102": {
+          "2": {
             "edge_in_bounds": 1,
-            "edge_total": 2,
+            "edge_total": 4,
             "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "103": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
+              "10": 1,
               "165": 1
             },
             "record_size": 8
@@ -1239,45 +1108,38 @@
             "edge_in_bounds": 1,
             "edge_total": 4,
             "payloads": {
+              "4": 1,
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "6": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "0": 1
+            },
+            "record_size": 8
+          },
+          "8": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "9": 1
+            },
+            "record_size": 8
+          },
+          "15": {
+            "edge_in_bounds": 0,
+            "edge_total": 4,
+            "payloads": {
               "165": 1,
-              "4": 1
+              "10": 1
             },
             "record_size": 8
           },
-          "105": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "106": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "107": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "108": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "109": {
-            "edge_in_bounds": 1,
+          "10": {
+            "edge_in_bounds": 0,
             "edge_total": 2,
             "payloads": {
               "165": 1
@@ -1292,128 +1154,12 @@
             },
             "record_size": 8
           },
-          "110": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "111": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "112": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "113": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "114": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "115": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "116": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "117": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
           "12": {
             "edge_in_bounds": 0,
             "edge_total": 4,
             "payloads": {
-              "118": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "120": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "121": 1
-            },
-            "record_size": 8
-          },
-          "122": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "123": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "124": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "145": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "125": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "126": 1
-            },
-            "record_size": 8
-          },
-          "127": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "128": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "129": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "144": 1,
-              "165": 1
+              "165": 1,
+              "118": 1
             },
             "record_size": 8
           },
@@ -1425,65 +1171,6 @@
             },
             "record_size": 8
           },
-          "130": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "131": 1
-            },
-            "record_size": 8
-          },
-          "132": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "135": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "133": {
-            "edge_in_bounds": 0,
-            "edge_total": 2,
-            "payloads": {
-              "134": 1
-            },
-            "record_size": 8
-          },
-          "136": {
-            "edge_in_bounds": 1,
-            "edge_total": 4,
-            "payloads": {
-              "143": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "137": {
-            "edge_in_bounds": 0,
-            "edge_total": 2,
-            "payloads": {
-              "142": 1
-            },
-            "record_size": 8
-          },
-          "138": {
-            "edge_in_bounds": 1,
-            "edge_total": 4,
-            "payloads": {
-              "140": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "139": {
-            "edge_in_bounds": 0,
-            "edge_total": 2,
-            "payloads": {
-              "141": 1
-            },
-            "record_size": 8
-          },
           "14": {
             "edge_in_bounds": 0,
             "edge_total": 2,
@@ -1492,124 +1179,12 @@
             },
             "record_size": 8
           },
-          "141": {
-            "edge_in_bounds": 0,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "146": {
-            "edge_in_bounds": 2,
-            "edge_total": 12,
-            "payloads": {
-              "10": 1,
-              "165": 5
-            },
-            "record_size": 8
-          },
-          "148": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "15": {
-            "edge_in_bounds": 0,
+          "71": {
+            "edge_in_bounds": 3,
             "edge_total": 4,
             "payloads": {
-              "10": 1,
+              "0": 1,
               "165": 1
-            },
-            "record_size": 8
-          },
-          "150": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "165": 2
-            },
-            "record_size": 8
-          },
-          "151": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "166": 1
-            },
-            "record_size": 8
-          },
-          "152": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "164": 1
-            },
-            "record_size": 8
-          },
-          "154": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "155": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "158": 1
-            },
-            "record_size": 8
-          },
-          "156": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "157": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "159": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "160": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "162": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "165": 2
-            },
-            "record_size": 8
-          },
-          "166": {
-            "edge_in_bounds": 33,
-            "edge_total": 52,
-            "payloads": {
-              "0": 3,
-              "164": 1,
-              "165": 9,
-              "166": 6,
-              "2": 1,
-              "48915": 1,
-              "49171": 5
             },
             "record_size": 8
           },
@@ -1626,15 +1201,6 @@
             "edge_total": 2,
             "payloads": {
               "34": 1
-            },
-            "record_size": 8
-          },
-          "2": {
-            "edge_in_bounds": 1,
-            "edge_total": 4,
-            "payloads": {
-              "10": 1,
-              "165": 1
             },
             "record_size": 8
           },
@@ -1718,14 +1284,6 @@
             },
             "record_size": 8
           },
-          "3": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
           "30": {
             "edge_in_bounds": 1,
             "edge_total": 2,
@@ -1746,7 +1304,25 @@
             "edge_in_bounds": 1,
             "edge_total": 4,
             "payloads": {
+              "165": 1,
+              "10": 1
+            },
+            "record_size": 8
+          },
+          "62": {
+            "edge_in_bounds": 1,
+            "edge_total": 4,
+            "payloads": {
               "10": 1,
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "58": {
+            "edge_in_bounds": 3,
+            "edge_total": 4,
+            "payloads": {
+              "0": 1,
               "165": 1
             },
             "record_size": 8
@@ -1759,11 +1335,12 @@
             },
             "record_size": 8
           },
-          "4": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
+          "53": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
             "payloads": {
-              "165": 1
+              "0": 1,
+              "77": 1
             },
             "record_size": 8
           },
@@ -1799,14 +1376,6 @@
             },
             "record_size": 8
           },
-          "5": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
           "50": {
             "edge_in_bounds": 0,
             "edge_total": 2,
@@ -1828,15 +1397,6 @@
             "edge_total": 2,
             "payloads": {
               "79": 1
-            },
-            "record_size": 8
-          },
-          "53": {
-            "edge_in_bounds": 2,
-            "edge_total": 4,
-            "payloads": {
-              "0": 1,
-              "77": 1
             },
             "record_size": 8
           },
@@ -1864,36 +1424,10 @@
             },
             "record_size": 8
           },
-          "58": {
-            "edge_in_bounds": 3,
-            "edge_total": 4,
-            "payloads": {
-              "0": 1,
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "6": {
-            "edge_in_bounds": 1,
-            "edge_total": 2,
-            "payloads": {
-              "0": 1
-            },
-            "record_size": 8
-          },
           "61": {
             "edge_in_bounds": 1,
             "edge_total": 2,
             "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "62": {
-            "edge_in_bounds": 1,
-            "edge_total": 4,
-            "payloads": {
-              "10": 1,
               "165": 1
             },
             "record_size": 8
@@ -1922,6 +1456,14 @@
             },
             "record_size": 8
           },
+          "5": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
           "68": {
             "edge_in_bounds": 1,
             "edge_total": 2,
@@ -1942,15 +1484,6 @@
             "edge_in_bounds": 1,
             "edge_total": 2,
             "payloads": {
-              "165": 1
-            },
-            "record_size": 8
-          },
-          "71": {
-            "edge_in_bounds": 3,
-            "edge_total": 4,
-            "payloads": {
-              "0": 1,
               "165": 1
             },
             "record_size": 8
@@ -1995,11 +1528,19 @@
             },
             "record_size": 8
           },
-          "8": {
+          "4": {
             "edge_in_bounds": 1,
             "edge_total": 2,
             "payloads": {
-              "9": 1
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "3": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
             },
             "record_size": 8
           },
@@ -2127,13 +1668,472 @@
             "edge_in_bounds": 2,
             "edge_total": 4,
             "payloads": {
-              "149": 1,
+              "165": 1,
+              "149": 1
+            },
+            "record_size": 8
+          },
+          "101": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
               "165": 1
             },
             "record_size": 8
+          },
+          "102": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "103": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "105": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "106": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "107": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "108": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "109": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "110": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "111": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "112": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "113": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "114": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "115": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "116": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "117": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "120": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "121": 1
+            },
+            "record_size": 8
+          },
+          "122": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "123": 1
+            },
+            "record_size": 8
+          },
+          "124": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "145": 1
+            },
+            "record_size": 8
+          },
+          "125": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "126": 1
+            },
+            "record_size": 8
+          },
+          "127": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "128": 1
+            },
+            "record_size": 8
+          },
+          "129": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "144": 1
+            },
+            "record_size": 8
+          },
+          "130": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "131": 1
+            },
+            "record_size": 8
+          },
+          "132": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "135": 1
+            },
+            "record_size": 8
+          },
+          "133": {
+            "edge_in_bounds": 0,
+            "edge_total": 2,
+            "payloads": {
+              "134": 1
+            },
+            "record_size": 8
+          },
+          "136": {
+            "edge_in_bounds": 1,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "143": 1
+            },
+            "record_size": 8
+          },
+          "138": {
+            "edge_in_bounds": 1,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "140": 1
+            },
+            "record_size": 8
+          },
+          "137": {
+            "edge_in_bounds": 0,
+            "edge_total": 2,
+            "payloads": {
+              "142": 1
+            },
+            "record_size": 8
+          },
+          "139": {
+            "edge_in_bounds": 0,
+            "edge_total": 2,
+            "payloads": {
+              "141": 1
+            },
+            "record_size": 8
+          },
+          "146": {
+            "edge_in_bounds": 2,
+            "edge_total": 12,
+            "payloads": {
+              "165": 5,
+              "10": 1
+            },
+            "record_size": 8
+          },
+          "141": {
+            "edge_in_bounds": 0,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "148": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "150": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 2
+            },
+            "record_size": 8
+          },
+          "151": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "166": 1
+            },
+            "record_size": 8
+          },
+          "152": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "164": 1
+            },
+            "record_size": 8
+          },
+          "154": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "155": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "158": 1
+            },
+            "record_size": 8
+          },
+          "156": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "157": {
+            "edge_in_bounds": 1,
+            "edge_total": 2,
+            "payloads": {
+              "165": 1
+            },
+            "record_size": 8
+          },
+          "159": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 1,
+              "160": 1
+            },
+            "record_size": 8
+          },
+          "162": {
+            "edge_in_bounds": 2,
+            "edge_total": 4,
+            "payloads": {
+              "165": 2
+            },
+            "record_size": 8
           }
+        },
+        "op_table_scaling_witness": {
+          "scale8": {
+            "scale_bytes": 8,
+            "total": 167,
+            "in_range": 167,
+            "ascii_pair_count": 0,
+            "kind0_count": 165,
+            "plausible_non_ascii_kind0_count": 153,
+            "plausible_known_kind0_count": 165,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(159, 0)",
+                "count": 115
+              },
+              {
+                "key": "(157, 0)",
+                "count": 14
+              },
+              {
+                "key": "(146, 0)",
+                "count": 13
+              },
+              {
+                "key": "(166, 0)",
+                "count": 5
+              },
+              {
+                "key": "(33, 0)",
+                "count": 5
+              },
+              {
+                "key": "(0, 0)",
+                "count": 1
+              },
+              {
+                "key": "(111, 0)",
+                "count": 1
+              },
+              {
+                "key": "(139, 0)",
+                "count": 1
+              },
+              {
+                "key": "(15, 0)",
+                "count": 1
+              },
+              {
+                "key": "(155, 0)",
+                "count": 1
+              },
+              {
+                "key": "(28, 0)",
+                "count": 1
+              },
+              {
+                "key": "(31, 0)",
+                "count": 1
+              }
+            ]
+          },
+          "scale12": {
+            "scale_bytes": 12,
+            "total": 167,
+            "in_range": 167,
+            "ascii_pair_count": 132,
+            "kind0_count": 30,
+            "plausible_non_ascii_kind0_count": 20,
+            "plausible_known_kind0_count": 28,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(108, 116)",
+                "count": 115
+              },
+              {
+                "key": "(80, 73)",
+                "count": 14
+              },
+              {
+                "key": "(0, 0)",
+                "count": 12
+              },
+              {
+                "key": "(52, 0)",
+                "count": 4
+              },
+              {
+                "key": "(15, 10)",
+                "count": 3
+              },
+              {
+                "key": "(8, 0)",
+                "count": 2
+              },
+              {
+                "key": "(0, 128)",
+                "count": 1
+              },
+              {
+                "key": "(1, 0)",
+                "count": 1
+              },
+              {
+                "key": "(10, 0)",
+                "count": 1
+              },
+              {
+                "key": "(101, 114)",
+                "count": 1
+              },
+              {
+                "key": "(109, 0)",
+                "count": 1
+              },
+              {
+                "key": "(112, 0)",
+                "count": 1
+              }
+            ]
+          },
+          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling."
         }
       },
+      "source": "book/graph/concepts/validation/fixtures/blobs/airlock.sb.bin",
       "id": "sys:airlock",
       "profile_id": "sys:airlock",
       "role": "canonical-system-profile",
@@ -2845,110 +2845,68 @@
       ],
       "op_table_offset": 16,
       "sections": {
-        "literal_pool": 1514,
-        "literal_start": 626,
+        "op_table": 56,
         "nodes": 554,
+        "literal_pool": 1514,
         "nodes_start": 72,
-        "op_table": 56
+        "literal_start": 626
       },
-      "source": "book/graph/concepts/validation/fixtures/blobs/bsd.sb.bin",
       "tag_counts": {
-        "0": 26,
-        "1": 2,
-        "17": 1,
-        "26": 13,
         "27": 26,
-        "5": 1
+        "26": 13,
+        "17": 1,
+        "5": 1,
+        "0": 26,
+        "1": 2
       },
       "validation": {
+        "node_remainder_bytes": 2,
         "edge_fields_in_bounds": 124,
         "edge_fields_total": 138,
+        "nodes_start": 72,
         "literal_start": 626,
-        "node_remainder_bytes": 2,
         "node_stride_bytes": 8,
         "node_stride_selection": {
-          "metrics": {
-            "12": {
-              "misaligned_targets": 11,
-              "op_table_entries": 28,
-              "stride_bytes": 12
-            },
-            "8": {
-              "misaligned_targets": 0,
-              "op_table_entries": 28,
-              "stride_bytes": 8
-            }
-          },
           "mode": "auto",
-          "selected": 8
-        },
-        "nodes_start": 72,
-        "op_table_scaling_witness": {
-          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling.",
-          "scale12": {
-            "ascii_pair_count": 0,
-            "in_range": 28,
-            "kind0_count": 28,
-            "plausible_known_kind0_count": 28,
-            "plausible_non_ascii_kind0_count": 28,
-            "scale_bytes": 12,
-            "top_tag_kind_pairs": [
-              {
-                "count": 16,
-                "key": "(0, 0)"
-              },
-              {
-                "count": 11,
-                "key": "(27, 0)"
-              },
-              {
-                "count": 1,
-                "key": "(26, 0)"
-              }
-            ],
-            "total": 28
-          },
-          "scale8": {
-            "ascii_pair_count": 0,
-            "in_range": 28,
-            "kind0_count": 28,
-            "plausible_known_kind0_count": 28,
-            "plausible_non_ascii_kind0_count": 28,
-            "scale_bytes": 8,
-            "top_tag_kind_pairs": [
-              {
-                "count": 26,
-                "key": "(27, 0)"
-              },
-              {
-                "count": 2,
-                "key": "(26, 0)"
-              }
-            ],
-            "total": 28
+          "selected": 8,
+          "metrics": {
+            "8": {
+              "stride_bytes": 8,
+              "op_table_entries": 28,
+              "misaligned_targets": 0
+            },
+            "12": {
+              "stride_bytes": 12,
+              "op_table_entries": 28,
+              "misaligned_targets": 11
+            }
           }
         },
         "tag_validation": {
-          "0": {
-            "edge_in_bounds": 38,
+          "27": {
+            "edge_in_bounds": 52,
             "edge_total": 52,
             "payloads": {
-              "10": 1,
-              "11": 1,
-              "12": 1,
-              "15": 3,
-              "22": 1,
-              "23": 1,
-              "27": 17,
-              "4": 1
+              "18": 1,
+              "27": 14,
+              "26": 5,
+              "16": 1,
+              "9": 1,
+              "8": 1,
+              "5": 1,
+              "3": 1,
+              "1": 1
             },
             "record_size": 8
           },
-          "1": {
-            "edge_in_bounds": 4,
-            "edge_total": 4,
+          "26": {
+            "edge_in_bounds": 26,
+            "edge_total": 26,
             "payloads": {
-              "0": 2
+              "26": 7,
+              "27": 4,
+              "2": 1,
+              "0": 1
             },
             "record_size": 8
           },
@@ -2960,33 +2918,6 @@
             },
             "record_size": 8
           },
-          "26": {
-            "edge_in_bounds": 26,
-            "edge_total": 26,
-            "payloads": {
-              "0": 1,
-              "2": 1,
-              "26": 7,
-              "27": 4
-            },
-            "record_size": 8
-          },
-          "27": {
-            "edge_in_bounds": 52,
-            "edge_total": 52,
-            "payloads": {
-              "1": 1,
-              "16": 1,
-              "18": 1,
-              "26": 5,
-              "27": 14,
-              "3": 1,
-              "5": 1,
-              "8": 1,
-              "9": 1
-            },
-            "record_size": 8
-          },
           "5": {
             "edge_in_bounds": 2,
             "edge_total": 2,
@@ -2994,9 +2925,78 @@
               "26": 1
             },
             "record_size": 8
+          },
+          "0": {
+            "edge_in_bounds": 38,
+            "edge_total": 52,
+            "payloads": {
+              "27": 17,
+              "4": 1,
+              "10": 1,
+              "11": 1,
+              "12": 1,
+              "15": 3,
+              "22": 1,
+              "23": 1
+            },
+            "record_size": 8
+          },
+          "1": {
+            "edge_in_bounds": 4,
+            "edge_total": 4,
+            "payloads": {
+              "0": 2
+            },
+            "record_size": 8
           }
+        },
+        "op_table_scaling_witness": {
+          "scale8": {
+            "scale_bytes": 8,
+            "total": 28,
+            "in_range": 28,
+            "ascii_pair_count": 0,
+            "kind0_count": 28,
+            "plausible_non_ascii_kind0_count": 28,
+            "plausible_known_kind0_count": 28,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(27, 0)",
+                "count": 26
+              },
+              {
+                "key": "(26, 0)",
+                "count": 2
+              }
+            ]
+          },
+          "scale12": {
+            "scale_bytes": 12,
+            "total": 28,
+            "in_range": 28,
+            "ascii_pair_count": 0,
+            "kind0_count": 28,
+            "plausible_non_ascii_kind0_count": 28,
+            "plausible_known_kind0_count": 28,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(0, 0)",
+                "count": 16
+              },
+              {
+                "key": "(27, 0)",
+                "count": 11
+              },
+              {
+                "key": "(26, 0)",
+                "count": 1
+              }
+            ]
+          },
+          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling."
         }
       },
+      "source": "book/graph/concepts/validation/fixtures/blobs/bsd.sb.bin",
       "id": "sys:bsd",
       "profile_id": "sys:bsd",
       "role": "canonical-system-profile",
@@ -3096,92 +3096,103 @@
       ],
       "op_table_offset": 16,
       "sections": {
-        "literal_pool": 109,
-        "literal_start": 474,
+        "op_table": 18,
         "nodes": 440,
+        "literal_pool": 109,
         "nodes_start": 34,
-        "op_table": 18
+        "literal_start": 474
       },
-      "source": "book/graph/concepts/validation/fixtures/blobs/sample.sb.bin",
       "tag_counts": {
+        "8": 24,
+        "5": 2,
+        "3": 4,
+        "7": 16,
+        "2": 1,
         "0": 4,
         "1": 3,
-        "11": 1,
-        "2": 1,
-        "3": 4,
-        "5": 2,
-        "7": 16,
-        "8": 24
+        "11": 1
       },
       "validation": {
+        "node_remainder_bytes": 0,
         "edge_fields_in_bounds": 110,
         "edge_fields_total": 110,
+        "nodes_start": 34,
         "literal_start": 474,
-        "node_remainder_bytes": 0,
         "node_stride_bytes": 8,
         "node_stride_selection": {
-          "metrics": {
-            "12": {
-              "misaligned_targets": 9,
-              "op_table_entries": 9,
-              "stride_bytes": 12
-            },
-            "8": {
-              "misaligned_targets": 0,
-              "op_table_entries": 9,
-              "stride_bytes": 8
-            }
-          },
           "mode": "auto",
-          "selected": 8
-        },
-        "nodes_start": 34,
-        "op_table_scaling_witness": {
-          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling.",
-          "scale12": {
-            "ascii_pair_count": 0,
-            "in_range": 9,
-            "kind0_count": 9,
-            "plausible_known_kind0_count": 9,
-            "plausible_non_ascii_kind0_count": 9,
-            "scale_bytes": 12,
-            "top_tag_kind_pairs": [
-              {
-                "count": 9,
-                "key": "(8, 0)"
-              }
-            ],
-            "total": 9
-          },
-          "scale8": {
-            "ascii_pair_count": 0,
-            "in_range": 9,
-            "kind0_count": 9,
-            "plausible_known_kind0_count": 9,
-            "plausible_non_ascii_kind0_count": 9,
-            "scale_bytes": 8,
-            "top_tag_kind_pairs": [
-              {
-                "count": 7,
-                "key": "(7, 0)"
-              },
-              {
-                "count": 2,
-                "key": "(3, 0)"
-              }
-            ],
-            "total": 9
+          "selected": 8,
+          "metrics": {
+            "8": {
+              "stride_bytes": 8,
+              "op_table_entries": 9,
+              "misaligned_targets": 0
+            },
+            "12": {
+              "stride_bytes": 12,
+              "op_table_entries": 9,
+              "misaligned_targets": 9
+            }
           }
         },
         "tag_validation": {
+          "8": {
+            "edge_in_bounds": 48,
+            "edge_total": 48,
+            "payloads": {
+              "8": 16,
+              "7": 6,
+              "5": 1,
+              "3": 1
+            },
+            "record_size": 8
+          },
+          "5": {
+            "edge_in_bounds": 4,
+            "edge_total": 4,
+            "payloads": {
+              "8": 1,
+              "256": 1
+            },
+            "record_size": 8
+          },
+          "3": {
+            "edge_in_bounds": 8,
+            "edge_total": 8,
+            "payloads": {
+              "3": 1,
+              "8": 1,
+              "7": 1,
+              "1": 1
+            },
+            "record_size": 8
+          },
+          "7": {
+            "edge_in_bounds": 32,
+            "edge_total": 32,
+            "payloads": {
+              "7": 10,
+              "8": 5,
+              "0": 1
+            },
+            "record_size": 8
+          },
+          "2": {
+            "edge_in_bounds": 2,
+            "edge_total": 2,
+            "payloads": {
+              "7": 1
+            },
+            "record_size": 8
+          },
           "0": {
             "edge_in_bounds": 8,
             "edge_total": 8,
             "payloads": {
-              "1281": 1,
-              "15": 1,
+              "3584": 1,
               "256": 1,
-              "3584": 1
+              "1281": 1,
+              "15": 1
             },
             "record_size": 8
           },
@@ -3201,58 +3212,47 @@
               "256": 1
             },
             "record_size": 8
-          },
-          "2": {
-            "edge_in_bounds": 2,
-            "edge_total": 2,
-            "payloads": {
-              "7": 1
-            },
-            "record_size": 8
-          },
-          "3": {
-            "edge_in_bounds": 8,
-            "edge_total": 8,
-            "payloads": {
-              "1": 1,
-              "3": 1,
-              "7": 1,
-              "8": 1
-            },
-            "record_size": 8
-          },
-          "5": {
-            "edge_in_bounds": 4,
-            "edge_total": 4,
-            "payloads": {
-              "256": 1,
-              "8": 1
-            },
-            "record_size": 8
-          },
-          "7": {
-            "edge_in_bounds": 32,
-            "edge_total": 32,
-            "payloads": {
-              "0": 1,
-              "7": 10,
-              "8": 5
-            },
-            "record_size": 8
-          },
-          "8": {
-            "edge_in_bounds": 48,
-            "edge_total": 48,
-            "payloads": {
-              "3": 1,
-              "5": 1,
-              "7": 6,
-              "8": 16
-            },
-            "record_size": 8
           }
+        },
+        "op_table_scaling_witness": {
+          "scale8": {
+            "scale_bytes": 8,
+            "total": 9,
+            "in_range": 9,
+            "ascii_pair_count": 0,
+            "kind0_count": 9,
+            "plausible_non_ascii_kind0_count": 9,
+            "plausible_known_kind0_count": 9,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(7, 0)",
+                "count": 7
+              },
+              {
+                "key": "(3, 0)",
+                "count": 2
+              }
+            ]
+          },
+          "scale12": {
+            "scale_bytes": 12,
+            "total": 9,
+            "in_range": 9,
+            "ascii_pair_count": 0,
+            "kind0_count": 9,
+            "plausible_non_ascii_kind0_count": 9,
+            "plausible_known_kind0_count": 9,
+            "top_tag_kind_pairs": [
+              {
+                "key": "(8, 0)",
+                "count": 9
+              }
+            ]
+          },
+          "notes": "Scores op_table entries as offsets into the node stream under different scale factors; ASCII-heavy scale12 is a strong sign of mis-scaling."
         }
       },
+      "source": "book/graph/concepts/validation/fixtures/blobs/sample.sb.bin",
       "id": "sys:sample",
       "profile_id": "sys:sample",
       "role": "canonical-system-profile",

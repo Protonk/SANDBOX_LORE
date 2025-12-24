@@ -12,7 +12,7 @@
     },
     {
       "path": "book/graph/mappings/system_profiles/digests.json",
-      "sha256": "97a948c108e5444a72d2940b85c892877a36ca8547c3543b497a110ecf0cf0d7"
+      "sha256": "ee0a4a14b82f045c6219ea953f2b0734cd6d449d106a460f8f3fc80ab5ab34bd"
     },
     {
       "path": "book/graph/mappings/carton/operation_coverage.json",
@@ -44,7 +44,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
-      "sha256": "b9f1009a98fd86b4f9ad049b6e03359dfa2c96d37e7f26d4e49d9d8a1bf0fadf"
+      "sha256": "01f00abd66201bfcec8ee15c179f74b79fd119bf391f94969221e432ba01d186"
     },
     {
       "path": "book/graph/concepts/validation/out/vocab_status.json",
@@ -52,7 +52,7 @@
     },
     {
       "path": "book/graph/concepts/validation/out/validation_status.json",
-      "sha256": "3f5a6bf5f425a7955b1d9b417f9a5da5f0b11d5848b64da21541d9c6987365a5"
+      "sha256": "125be3d5ef5afb77804d98905fbaecf5b0aa9c1da657ff85d652ff26d3b9828d"
     }
   ]
 }

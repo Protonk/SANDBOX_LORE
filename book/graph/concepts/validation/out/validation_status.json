@@ -128,7 +128,9 @@
         "machine": "arm64"
       },
       "inputs": [
-        "book/experiments/system-profile-digest/out/digests.json"
+        "book/graph/concepts/validation/fixtures/blobs/airlock.sb.bin",
+        "book/graph/concepts/validation/fixtures/blobs/bsd.sb.bin",
+        "book/graph/concepts/validation/fixtures/blobs/sample.sb.bin"
       ],
       "outputs": [
         "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json",
@@ -141,8 +143,8 @@
         "golden"
       ],
       "hashes": {
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "b9f1009a98fd86b4f9ad049b6e03359dfa2c96d37e7f26d4e49d9d8a1bf0fadf",
-        "book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "e1440a83c0f0c8a30d3694335cbba469d4c9974bb780452b5a68bd7fbd7ac65e"
+        "book/graph/concepts/validation/out/experiments/system-profile-digest/digests_ir.json": "01f00abd66201bfcec8ee15c179f74b79fd119bf391f94969221e432ba01d186",
+        "book/graph/concepts/validation/out/experiments/system-profile-digest/status.json": "b8023845235b132f2f45a9643fa5dcf3f703caef49fb026444c2b12c536aded7"
       },
       "notes": "Normalized system profile digests into IR.",
       "metrics": {

@@ -217,6 +217,24 @@
 - Status: ok
 - Follow-up: update curated hooks to target `__open` and confirm with repeatable fs_op runs.
 
+- Command: update `sandbox_trace.js` to a capability ladder (set_trace, vtrace, unavailable) and add unified-log capture helpers.
+- Result: sandbox_trace now emits capability records and cleanly reports unavailability; added scripts for sandbox log capture + summary.
+- Artifacts: `book/experiments/frida-testing/hooks/sandbox_trace.js`; `book/experiments/frida-testing/capture_sandbox_log.py`; `book/experiments/frida-testing/parse_sandbox_log.py`
+- Status: ok
+- Follow-up: run sandbox log capture alongside fs_op if in-process trace remains unavailable.
+
+- Command: attach updated `sandbox_trace.js` to `ProbeService_fully_injectable` during fs_op.
+- Result: capability record shows set_trace and vtrace functions missing; trace reported unavailable.
+- Artifacts: `book/experiments/frida-testing/out/218aba7d-9290-4955-b82a-11b40266be0f`
+- Status: partial (capability witness only; no in-process trace)
+- Follow-up: use unified log capture as the fallback trace source.
+
+- Command: attach minimal `fs_open.js` to `ProbeService_fully_injectable` during fs_op (deny path).
+- Result: `fs-open` events observed for `__open` and `open` with errno 13.
+- Artifacts: `book/experiments/frida-testing/out/797832ba-a22c-41ba-8f2a-370f87f97713`
+- Status: ok
+- Follow-up: keep minimal fs_open pack as the stable hook for fs_op observability.
+
 ## Entry template
 - Command:
 - Result:
