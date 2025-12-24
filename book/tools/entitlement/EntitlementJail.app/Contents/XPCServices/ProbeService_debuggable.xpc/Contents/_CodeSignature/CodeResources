@@ -5,7 +5,29 @@
 	<key>files</key>
 	<dict/>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>MacOS/ProbeService_debuggable.dSYM/Contents/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			fs6i6oRs6cTuEaaGF7z+yOm4VIt/Dw/CY4NiCNjcokk=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_debuggable.dSYM/Contents/Resources/DWARF/ProbeService_debuggable</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			jeyc0pI/rH0xdB4QSULwy9haRqwkbE+2Se4X4UhGDJY=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_debuggable.dSYM/Contents/Resources/Relocations/aarch64/ProbeService_debuggable.yml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			8AF69xpd2lNP6kHA5NpfJIb2C1aP2z/3PqqcB8+RS80=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>

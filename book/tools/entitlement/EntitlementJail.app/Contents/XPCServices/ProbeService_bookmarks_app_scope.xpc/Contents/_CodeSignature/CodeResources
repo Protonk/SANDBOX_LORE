@@ -5,7 +5,29 @@
 	<key>files</key>
 	<dict/>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>MacOS/ProbeService_bookmarks_app_scope.dSYM/Contents/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			IfOC2d/BL3PHe779t7xozr1QpE1y/Z35GRmLuAuwiuw=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_bookmarks_app_scope.dSYM/Contents/Resources/DWARF/ProbeService_bookmarks_app_scope</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ZYpXx3Z8HYS61U63VyxsrQa2mpxnG7hO8ZUaYAYuWiw=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_bookmarks_app_scope.dSYM/Contents/Resources/Relocations/aarch64/ProbeService_bookmarks_app_scope.yml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7ITwvTqoFmt10ChM3Dk9AVdc9pLNXXvWZAFTZibNSwg=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>

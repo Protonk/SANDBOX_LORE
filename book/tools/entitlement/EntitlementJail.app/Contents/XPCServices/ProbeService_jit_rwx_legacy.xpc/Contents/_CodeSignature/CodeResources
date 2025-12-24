@@ -5,7 +5,29 @@
 	<key>files</key>
 	<dict/>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>MacOS/ProbeService_jit_rwx_legacy.dSYM/Contents/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			xbT/TTP192TWpzn4Vx0HmNaWmOzMEj/M2oj3tdroS9U=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_jit_rwx_legacy.dSYM/Contents/Resources/DWARF/ProbeService_jit_rwx_legacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			fLayiDwdApFB5ijCWESUh84y1O3Jc0V9lQ4nGMBsp8g=
+			</data>
+		</dict>
+		<key>MacOS/ProbeService_jit_rwx_legacy.dSYM/Contents/Resources/Relocations/aarch64/ProbeService_jit_rwx_legacy.yml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			zTbxk7Yw35MsnFqNChhkdiNPsUVM109ic6ibNDwfV+w=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>

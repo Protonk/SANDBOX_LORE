@@ -5,7 +5,29 @@
 	<key>files</key>
 	<dict/>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>MacOS/QuarantineLab_default.dSYM/Contents/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0m3aRZ5tE7mU3kao89GZZltR3Qx1Vgx9m9KW604hvuY=
+			</data>
+		</dict>
+		<key>MacOS/QuarantineLab_default.dSYM/Contents/Resources/DWARF/QuarantineLab_default</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			XgxwibfpjX15pSFBuX7Mlu6dmz8+xlwGxgfdOS4Lq6Q=
+			</data>
+		</dict>
+		<key>MacOS/QuarantineLab_default.dSYM/Contents/Resources/Relocations/aarch64/QuarantineLab_default.yml</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			BlvxTrQMgIcgHdWTqTRabHpEYvVu8EU5yPZtlP6apEM=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^Resources/</key>
