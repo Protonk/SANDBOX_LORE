@@ -1,0 +1,9 @@
+iter	return_code	denies_seen	new_rules	profile_lines
+1	1	16	15	26
+2	1	4	1	27
+3	1	8	3	30
+4	0	10	4	34
+5	1	7	2	36
+6	0	82	7	43
+7	0	6	0	43
+8	0	6	0	43

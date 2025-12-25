@@ -1,2 +1,3 @@
 status=success
-iter=3
+iter=6
+success_streak=2

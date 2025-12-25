@@ -11,7 +11,19 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from book.api import path_utils
 
-from ej_cli import EJ, REPO_ROOT, copy_file, extract_log_capture_path, home_hint, maybe_parse_json
+from ej_cli import EJ, REPO_ROOT, copy_file, home_hint, maybe_parse_json
+from ej_logging import (
+    LOG_CAPTURE_REQUESTED_MODE,
+    LOG_OBSERVER_LAST,
+    extract_correlation_id,
+    extract_log_capture_path,
+    extract_process_name,
+    extract_service_pid,
+    log_capture_args,
+    observer_status,
+    run_sandbox_log_observer,
+    should_run_observer,
+)
 
 
 def _read_lines(stream, sink: List[str], on_line: Optional[Callable[[str], None]] = None) -> None:
@@ -90,6 +102,8 @@ def _run_wait_command(
     wait_timeout_ms: Optional[int],
     log_path: Optional[Path],
     capture_path: Optional[Path],
+    log_capture_mode: Optional[str],
+    log_capture_log_name: Optional[str],
     plan_id: str,
     row_id: str,
     trigger_delay_s: float,
@@ -216,10 +230,28 @@ def _run_wait_command(
             capture_source = extract_log_capture_path(stdout_json)
             if capture_source:
                 capture_path = Path(capture_source)
-        if capture_path is not None:
+        if capture_path is None and log_path.exists():
+            capture_path = log_path
+        if capture_path is not None and capture_path != log_path:
             log_copy_error = copy_file(capture_path, log_path)
+        elif log_path.exists():
+            log_copy_error = None
         else:
             log_copy_error = "log_capture_path_missing"
+
+    observer: Optional[Dict[str, object]] = None
+    if log_path is not None and should_run_observer(stdout_json):
+        observer = run_sandbox_log_observer(
+            pid=extract_service_pid(stdout_json),
+            process_name=extract_process_name(stdout_json),
+            dest_path=log_path.parent / "observer" / log_path.name,
+            last=LOG_OBSERVER_LAST,
+            start_s=start_ts,
+            end_s=finished_ts,
+            plan_id=plan_id,
+            row_id=row_id,
+            correlation_id=extract_correlation_id(stdout_json),
+        )
 
     finished_ts = time.time()
 
@@ -247,20 +279,31 @@ def _run_wait_command(
         "started_at_unix_s": start_ts,
         "finished_at_unix_s": finished_ts,
         "duration_s": finished_ts - start_ts,
+        "log_capture_mode": log_capture_mode,
+        "log_capture_log_name": log_capture_log_name,
+        "log_capture_requested_mode": LOG_CAPTURE_REQUESTED_MODE,
         "log_path": path_utils.to_repo_relative(log_path, REPO_ROOT) if log_path else None,
         "log_capture_source": home_hint(capture_path) if capture_path else None,
         "log_copy_error": log_copy_error,
+        "observer": observer,
+        "observer_status": observer_status(observer),
     }
     if extra_meta:
         record.update(extra_meta)
     return record
 
 
-def _prepare_log_capture(cmd: List[str], log_path: Optional[Path]) -> Tuple[List[str], Optional[Path]]:
+def _prepare_log_capture(
+    cmd: List[str],
+    log_path: Optional[Path],
+) -> Tuple[List[str], Optional[Path], Optional[str], Optional[str]]:
     if log_path is None:
-        return cmd, None
-    log_name = log_path.name
-    return cmd + ["--log-path-class", "tmp", "--log-name", log_name], None
+        return cmd, None, None, None
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    if log_path.exists():
+        log_path.unlink()
+    log_capture_mode, log_args, log_name = log_capture_args(log_path)
+    return cmd + log_args, None, log_capture_mode, log_name
 
 
 def run_wait_xpc(
@@ -281,7 +324,7 @@ def run_wait_xpc(
     use_profile: bool = True,
 ) -> Dict[str, object]:
     cmd = [str(EJ), "run-xpc"]
-    cmd, capture_path = _prepare_log_capture(cmd, log_path)
+    cmd, capture_path, log_capture_mode, log_capture_log_name = _prepare_log_capture(cmd, log_path)
     cmd += ["--plan-id", plan_id, "--row-id", row_id, *wait_args]
     if use_profile and profile_id:
         cmd += ["--profile", profile_id]
@@ -297,6 +340,8 @@ def run_wait_xpc(
         wait_timeout_ms=wait_timeout_ms,
         log_path=log_path,
         capture_path=capture_path,
+        log_capture_mode=log_capture_mode,
+        log_capture_log_name=log_capture_log_name,
         plan_id=plan_id,
         row_id=row_id,
         trigger_delay_s=trigger_delay_s,
@@ -331,7 +376,7 @@ def run_probe_wait(
     use_profile: bool = True,
 ) -> Dict[str, object]:
     cmd = [str(EJ), "run-xpc"]
-    cmd, capture_path = _prepare_log_capture(cmd, log_path)
+    cmd, capture_path, log_capture_mode, log_capture_log_name = _prepare_log_capture(cmd, log_path)
     cmd += ["--plan-id", plan_id, "--row-id", row_id]
     if use_profile and profile_id:
         cmd += ["--profile", profile_id]
@@ -347,6 +392,8 @@ def run_probe_wait(
         wait_timeout_ms=wait_timeout_ms,
         log_path=log_path,
         capture_path=capture_path,
+        log_capture_mode=log_capture_mode,
+        log_capture_log_name=log_capture_log_name,
         plan_id=plan_id,
         row_id=row_id,
         trigger_delay_s=trigger_delay_s,

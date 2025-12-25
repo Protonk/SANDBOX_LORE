@@ -1,0 +1,6 @@
+(version 1)
+(import "dyld-support.sb")
+(deny default)
+(allow process-exec* (subpath (param "WORK_DIR")))
+(allow process-fork)
+(allow process-exec* (literal "/usr/bin/id"))

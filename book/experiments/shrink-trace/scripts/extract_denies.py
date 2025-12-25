@@ -3,12 +3,15 @@ import re
 import sys
 
 def main() -> int:
-    if len(sys.argv) != 3:
-        print("Usage: extract_denies.py <log_path> <pid>", file=sys.stderr)
+    if len(sys.argv) not in (2, 3):
+        print("Usage: extract_denies.py <log_path> [pid|all]", file=sys.stderr)
         return 2
     log_path = sys.argv[1]
-    pid = sys.argv[2]
-    pid_re = re.compile(r"\(" + re.escape(pid) + r"\)")
+    pid_re = None
+    if len(sys.argv) == 3:
+        pid = sys.argv[2]
+        if pid and pid not in {"all", "*"}:
+            pid_re = re.compile(r"\(" + re.escape(pid) + r"\)")
     event_re = re.compile(r'"eventMessage"\s*:\s*"([^"]*)"')
 
     with open(log_path, "r", errors="ignore") as fh:
@@ -20,8 +23,9 @@ def main() -> int:
             msg = msg.replace("\\/", "/").replace("\\\"", '"')
             if "deny" not in msg:
                 continue
-            if pid_re.search(msg):
-                print(msg)
+            if pid_re and not pid_re.search(msg):
+                continue
+            print(msg)
     return 0
 
 if __name__ == "__main__":

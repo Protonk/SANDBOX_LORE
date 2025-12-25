@@ -1,0 +1,36 @@
+{
+  "data": {
+    "correlation_id": "1A474E82-4F67-49F8-9326-42C8C91C78ED",
+    "deny_lines": [],
+    "end": "2025-12-24 19:50:52",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "observed_deny": false,
+    "observed_lines": 1,
+    "pid": 68062,
+    "plan_id": "entitlement-diff:ej",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(68062)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"68062\")))",
+    "process_name": "ProbeService_net_client",
+    "row_id": "net_client.net_client.world_shape",
+    "start": "2025-12-24 19:50:48"
+  },
+  "generated_at_unix_ms": 1766634651094,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 1
+}

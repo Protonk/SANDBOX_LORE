@@ -152,6 +152,16 @@
 - Result: matrix outputs refreshed under `book/experiments/entitlement-diff/out/ej/matrix/<group>/`; run-matrix does not request log capture, so no new deny evidence for this run.
 - Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario net_op_groups
 - Result: log stream + observer captured for all probe profiles via net_op tcp_connect; observer reports `observed_deny: true` for `minimal`, `plugin_host_relaxed`, and `user_selected_executable`, and `observed_deny: false` for other probe profiles.
+- EntitlementJail update notes (CLI help):
+  - `run-xpc --help` now lists `--log-stream` and `--log-path-class` only; `--log-sandbox` is no longer present.
+  - `sandbox-log-observer --help` now accepts `--plan-id`, `--row-id`, and `--correlation-id`.
+- Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario matrix_groups --ack-risk fully_injectable
+- Result: matrix outputs refreshed; run-matrix still reports `group_id` as `jit` and lists the same profile set for all groups.
+- Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario net_client
+- Result: observer report now includes `plan_id`, `row_id`, and `correlation_id` (verified in `book/experiments/entitlement-diff/out/ej/logs/observer/net_client.minimal.tcp_connect.log`).
+- Runner update: sandbox-log-observer is now invoked for all runs by default, with `plan_id`/`row_id`/`correlation_id` forwarded when present.
+- Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario net_client
+- Result: observer output now records non-null `start`/`end` fields and includes correlation metadata in `book/experiments/entitlement-diff/out/ej/contract/observer.sample.json`.
 - Observation: probe_families and bookmark_roundtrip runs report log_capture_status=requested_failed with `log: Cannot run while sandboxed` across all runs; deny evidence is not captured for these scenarios.
 - Status: partial (runtime outcomes recorded, log capture blocked by sandboxed log invocation)
 

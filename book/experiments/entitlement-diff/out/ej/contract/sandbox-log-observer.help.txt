@@ -1,0 +1,6 @@
+usage:
+  sandbox-log-observer --pid <pid> --process-name <name> [--start <time> --end <time> | --last <duration>] [--predicate <predicate>] [--plan-id <id>] [--row-id <id>] [--correlation-id <id>]
+
+notes:
+  - runs `log show` with a sandbox-deny predicate (observer-only)
+  - intended to run outside EntitlementJail.app (unsandboxed)

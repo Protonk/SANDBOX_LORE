@@ -21,3 +21,15 @@
 - Shrink failed the initial “full sandbox” check because `open(out/hello.txt)` was denied; traced profile only includes `file-write-create` for the file, not `file-write-data` (`out/shrink_stdout.txt`).
 - Network denies were dropped into `out/bad_rules.txt` under `NETWORK_RULES=drop`.
 - Output overwrites removed earlier `log_show_sandbox_exec.txt`; current `out/` no longer includes that capture.
+- Updated trace success criteria to require a success streak (`SUCCESS_STREAK=2`) so the profile is stable under repeated execution.
+- Added a pre-shrink validation gate (two runs) before invoking the shrinker; gate outputs are written to `out/pre_shrink_run*_exitcode.txt`.
+- Fixed pre-shrink validation to run from the output directory so relative paths match the traced profile.
+- Latest run with defaults completed: trace converged in 6 iterations, pre-shrink validation passed, shrink produced `profile.sb.shrunk` with 9 lines; shrink output is in `out/shrink_stdout.txt`.
+- Switched `NETWORK_RULES` default to `parsed` with SBPL-aligned normalization (host `*`/`localhost`, unix-socket `path-literal` for path-shaped denies); latest run still converged in 6 iterations and shrink succeeded.
+- Network parsing observed 2 network denies and emitted 2 rules; `bad_rules.txt` now only contains invalid `file-ioctl` rules from rule-level validation.
+- Added `scripts/shrink_instrumented.sh` to enforce fresh + repeat checks per deletion and `scripts/lint_profile.py` to lint network filters after trace and shrink.
+- Added subprocess and network-required fixtures (`sandbox_spawn`, `sandbox_net_required`) plus `scripts/run_matrix.sh` for configuration sweeps.
+- Latest run with PID-agnostic deny extraction (`DENY_SCOPE=all`) converged in 6 iterations with a 37-line traced profile; shrink removed 26 lines and produced an 11-line `profile.sb.shrunk` that passes fresh + repeat validation (post-shrink exit codes 0/0).
+- Run metadata is recorded in `out/run_summary.txt`.
+- Ran `FIXTURE_BIN=sandbox_net_required` into `out/net_required/`: 8 iterations, 43 traced lines, 12-line shrunk profile; shrunk profile retains `network-outbound` for `*:2000`.
+- Ran `FIXTURE_BIN=sandbox_spawn` into `out/spawn/`: 7 iterations, 35 traced lines, 6-line shrunk profile; shrunk profile retains `process-fork` and `process-exec*` for `/usr/bin/id`.

@@ -44,6 +44,7 @@ Use EntitlementJail 1.x’s process zoo to compare entitlement deltas across pro
 - Deny evidence logs (bookmarks minimal bookmark_make): `book/experiments/entitlement-diff/out/ej/logs/bookmarks.minimal.bookmark_make.log` (log stream), `book/experiments/entitlement-diff/out/ej/logs/observer/bookmarks.minimal.bookmark_make.log` (observer report).
 - Deny evidence logs (bookmark_roundtrip minimal roundtrip_stat): `book/experiments/entitlement-diff/out/ej/logs/bookmark_roundtrip.minimal.roundtrip_stat.log` (log stream), `book/experiments/entitlement-diff/out/ej/logs/observer/bookmark_roundtrip.minimal.roundtrip_stat.log` (observer report).
 - Deny evidence logs (net_op_groups): `book/experiments/entitlement-diff/out/ej/logs/net_op_groups.minimal.tcp_connect.log`, `book/experiments/entitlement-diff/out/ej/logs/net_op_groups.plugin_host_relaxed.tcp_connect.log`, `book/experiments/entitlement-diff/out/ej/logs/net_op_groups.user_selected_executable.tcp_connect.log` (log stream), with observer reports under `book/experiments/entitlement-diff/out/ej/logs/observer/net_op_groups.*.log`.
+- API contract docs and fixtures: `book/experiments/entitlement-diff/EntitlementJailContract.md`, `book/experiments/entitlement-diff/out/ej/contract/`.
 - Workflow narrative: `book/experiments/entitlement-diff/wait-attach-flow.md`.
 
 ## Blockers / risks

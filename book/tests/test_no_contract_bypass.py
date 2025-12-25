@@ -38,6 +38,11 @@ ALLOWLIST = {
         Path("book/api/profile_tools/libsandbox.py"),
         Path("book/api/runtime_tools/harness/runner.py"),
         Path("book/graph/mappings/runtime/generate_runtime_signatures.py"),
+        Path("book/experiments/shrink-trace/scripts/run_workflow.sh"),
+        Path("book/experiments/shrink-trace/scripts/shrink_instrumented.sh"),
+        Path("book/experiments/shrink-trace/scripts/trace_instrumented.sh"),
+        Path("book/experiments/shrink-trace/upstream/shrink.sh"),
+        Path("book/experiments/shrink-trace/upstream/trace.sh"),
     },
 }
 

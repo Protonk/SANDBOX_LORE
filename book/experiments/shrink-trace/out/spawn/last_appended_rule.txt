@@ -1,0 +1,1 @@
+(allow file-write-data (literal "/dev/tty"))

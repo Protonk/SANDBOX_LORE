@@ -1,22 +1,26 @@
 {
   "data": {
-    "end": null,
-    "last": "10s",
+    "correlation_id": "1A474E82-4F67-49F8-9326-42C8C91C78ED",
+    "deny_lines": [],
+    "end": "2025-12-24 19:50:53",
+    "last": null,
     "layer_attribution": {
       "seatbelt": "observer_only"
     },
     "log_error": null,
     "log_rc": 0,
     "log_stderr": "",
-    "log_stdout": "Timestamp                       (process)[PID]    \n2025-12-24 17:27:00.831075-0800  localhost log[36897]: [com.apple.log:] log run noninteractively, parent: 36896 (sandbox-log-observer), args: '/usr/bin/log' 'show' '--style' 'syslog' '--info' '--debug' '--last' '10s' '--predicate' '((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(36895)\") OR ((eventMessage CONTAIN",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
     "observed_deny": false,
-    "observed_lines": 2,
-    "pid": 36895,
-    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(36895)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"36895\")))",
+    "observed_lines": 1,
+    "pid": 68062,
+    "plan_id": "entitlement-diff:ej",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(68062)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"68062\")))",
     "process_name": "ProbeService_net_client",
-    "start": null
+    "row_id": "net_client.net_client.world_shape",
+    "start": "2025-12-24 19:50:48"
   },
-  "generated_at_unix_ms": 1766626021050,
+  "generated_at_unix_ms": 1766634651221,
   "kind": "sandbox_log_observer_report",
   "result": {
     "errno": null,

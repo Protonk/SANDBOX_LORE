@@ -24,10 +24,14 @@ fi
 LOG_PREDICATE='((processID == 0) AND (senderImagePath CONTAINS "/Sandbox")) OR (subsystem == "com.apple.sandbox.reporting") OR (sender == "Sandbox")'
 
 WORK_DIR="${WORK_DIR:-$(pwd)}"
+WORK_DIR_PARAM="${WORK_DIR_PARAM:-WORK_DIR}"
+DYLD_LOG_PATH="${DYLD_LOG_PATH:-${WORK_DIR}/dyld.log}"
+DYLD_LOG_PARAM="${DYLD_LOG_PARAM:-DYLD_LOG_PATH}"
 LOG_DIR="${WORK_DIR}/logs"
 METRICS_TSV="${WORK_DIR}/metrics.tsv"
 MAX_ITERS="${MAX_ITERS:-50}"
 SUCCESS_CODE="${SUCCESS_CODE:-0}"
+SUCCESS_STREAK="${SUCCESS_STREAK:-2}"
 LOG_FLUSH_SECONDS="${LOG_FLUSH_SECONDS:-5}"
 SEED_DYLD="${SEED_DYLD:-1}"
 TRACE_STATUS="${WORK_DIR}/trace_status.txt"
@@ -39,9 +43,11 @@ ALLOW_FIXTURE_EXEC="${ALLOW_FIXTURE_EXEC:-1}"
 IMPORT_DYLD_SUPPORT="${IMPORT_DYLD_SUPPORT:-1}"
 DYLD_LOG="${DYLD_LOG:-0}"
 DYLD_SUPPORT_PATH="/System/Library/Sandbox/Profiles/dyld-support.sb"
-NETWORK_RULES="${NETWORK_RULES:-drop}"
+NETWORK_RULES="${NETWORK_RULES:-parsed}"
 BAD_RULES="${WORK_DIR}/bad_rules.txt"
 LAST_RULE_FILE="${WORK_DIR}/last_appended_rule.txt"
+DENY_SCOPE="${DENY_SCOPE:-all}"
+PARAM_ARGS=(-D "${WORK_DIR_PARAM}=${WORK_DIR}" -D "${DYLD_LOG_PARAM}=${DYLD_LOG_PATH}")
 
 mkdir -p "${LOG_DIR}"
 : > "${TRACE_STATUS}"
@@ -90,11 +96,11 @@ ${DENY_DEFAULT_LINE}
 EOF
     if [[ "${ALLOW_FIXTURE_EXEC}" -eq 1 ]]; then
       cat >> "${SANDBOX_PROFILE}" <<EOF
-(allow process-exec* (subpath "${WORK_DIR}"))
-(allow file-read-metadata (subpath "${WORK_DIR}"))
+(allow process-exec* (subpath (param "${WORK_DIR_PARAM}")))
+(allow file-read-metadata (subpath (param "${WORK_DIR_PARAM}")))
 EOF
     fi
-    echo "(allow file-write* (literal \"${WORK_DIR}/dyld.log\"))" >> "${SANDBOX_PROFILE}"
+    echo "(allow file-write* (literal (param \"${DYLD_LOG_PARAM}\")))" >> "${SANDBOX_PROFILE}"
   else
     cat > "${SANDBOX_PROFILE}" <<EOF
 (version 1)
@@ -103,17 +109,18 @@ ${DENY_DEFAULT_LINE}
 EOF
     if [[ "${ALLOW_FIXTURE_EXEC}" -eq 1 ]]; then
       cat >> "${SANDBOX_PROFILE}" <<EOF
-(allow process-exec* (subpath "${WORK_DIR}"))
-(allow file-read-metadata (subpath "${WORK_DIR}"))
+(allow process-exec* (subpath (param "${WORK_DIR_PARAM}")))
+(allow file-read-metadata (subpath (param "${WORK_DIR_PARAM}")))
 EOF
     fi
-    echo "(allow file-write* (literal \"${WORK_DIR}/dyld.log\"))" >> "${SANDBOX_PROFILE}"
+    echo "(allow file-write* (literal (param \"${DYLD_LOG_PARAM}\")))" >> "${SANDBOX_PROFILE}"
   fi
 fi
 
 echo -e "iter\treturn_code\tdenies_seen\tnew_rules\tprofile_lines" > "${METRICS_TSV}"
 
 iter=0
+success_count=0
 while true; do
   iter=$((iter + 1))
   if (( iter > MAX_ITERS )); then
@@ -151,12 +158,12 @@ while true; do
   echo "[-] Iteration ${iter}: executing under sandbox-exec"
   # NOTE: This matches the upstream constraint: PROGRAM_NAME is treated as the executable, no args.
   if [[ "${DYLD_LOG}" -eq 1 ]]; then
-    DYLD_PRINT_TO_FILE="${WORK_DIR}/dyld.log" \
+    DYLD_PRINT_TO_FILE="${DYLD_LOG_PATH}" \
       DYLD_PRINT_LIBRARIES=1 \
       DYLD_PRINT_INITIALIZERS=1 \
-      sandbox-exec -f "${SANDBOX_PROFILE}" "${PROGRAM_NAME}" > "${iter_stdout}" 2> "${iter_stderr}" &
+      sandbox-exec "${PARAM_ARGS[@]}" -f "${SANDBOX_PROFILE}" "${PROGRAM_NAME}" > "${iter_stdout}" 2> "${iter_stderr}" &
   else
-    sandbox-exec -f "${SANDBOX_PROFILE}" "${PROGRAM_NAME}" > "${iter_stdout}" 2> "${iter_stderr}" &
+    sandbox-exec "${PARAM_ARGS[@]}" -f "${SANDBOX_PROFILE}" "${PROGRAM_NAME}" > "${iter_stdout}" 2> "${iter_stderr}" &
   fi
   PROGRAM_PID=$!
   echo "${PROGRAM_PID}" > "${LOG_DIR}/iter_${iter}_pid.txt"
@@ -216,15 +223,19 @@ while true; do
     break
   fi
 
-  # Extract deny lines associated with this PID from JSON eventMessage fields.
+  # Extract deny lines from JSON eventMessage fields (all sandbox messages in-window).
   deny_lines_tmp="$(mktemp)"
-  python3 "${DENY_EXTRACTOR}" "${iter_log}" "${PROGRAM_PID}" > "${deny_lines_tmp}"
+  deny_arg="${DENY_SCOPE}"
+  if [[ "${DENY_SCOPE}" == "pid" ]]; then
+    deny_arg="${PROGRAM_PID}"
+  fi
+  python3 "${DENY_EXTRACTOR}" "${iter_log}" "${deny_arg}" > "${deny_lines_tmp}"
   denies_seen="$(wc -l < "${deny_lines_tmp}" | tr -d ' ')"
   if [[ "${denies_seen}" -eq 0 ]]; then
     iter_log_show="${LOG_DIR}/iter_${iter}_log_show.json"
     sleep 1
     /usr/bin/log show --last "${LOG_SHOW_WINDOW}" --style json --predicate "${LOG_PREDICATE}" > "${iter_log_show}" 2>/dev/null || true
-    python3 "${DENY_EXTRACTOR}" "${iter_log_show}" "${PROGRAM_PID}" > "${deny_lines_tmp}"
+    python3 "${DENY_EXTRACTOR}" "${iter_log_show}" "${deny_arg}" > "${deny_lines_tmp}"
     denies_seen="$(wc -l < "${deny_lines_tmp}" | tr -d ' ')"
   fi
 
@@ -253,33 +264,49 @@ while true; do
           rule="(allow ${op})"
           ;;
         parsed)
-          if [[ -z "${arg}" || "${arg}" == path:* || "${arg}" == unix-socket:* || "${arg}" == *"/"* ]]; then
-            rule="(allow ${op})"
-          else
-            raw="${arg#remote:}"
+          scope="remote"
+          if [[ "${op}" == "network-bind" || "${op}" == "network-listen" ]]; then
+            scope="local"
+          fi
+
+          raw="${arg}"
+          while [[ "${raw}" == remote:* || "${raw}" == local:* ]]; do
+            raw="${raw#remote:}"
             raw="${raw#local:}"
-            if [[ "${raw}" == *":"* ]]; then
-              port="${raw##*:}"
-              host="${raw%:*}"
-            else
-              host="${raw}"
-              port="*"
-            fi
-            if [[ -z "${port}" || ( ! "${port}" =~ ^[0-9]+$ && "${port}" != "*" ) ]]; then
-              port="*"
-            fi
-            if [[ -z "${host}" || "${host}" == "*" ]]; then
-              host="*"
-            elif [[ "${host}" == "localhost" || "${host}" == "127.0.0.1" || "${host}" == "::1" ]]; then
-              host="localhost"
-            elif [[ "${host}" == *":"* ]]; then
-              host="*"
-            else
-              host="*"
-            fi
-            scope="remote"
-            if [[ "${op}" == "network-bind" || "${op}" == "network-listen" ]]; then
-              scope="local"
+          done
+
+          path_arg=""
+          if [[ "${raw}" == path:* ]]; then
+            path_arg="${raw#path:}"
+          elif [[ "${raw}" == unix-socket:* ]]; then
+            path_arg="${raw#unix-socket:}"
+          elif [[ "${raw}" == /* ]]; then
+            path_arg="${raw}"
+          fi
+
+          if [[ -n "${path_arg}" ]]; then
+            rule="(allow ${op} (${scope} unix-socket (path-literal \"${path_arg}\")))"
+          else
+            host="*"
+            port="*"
+            if [[ -n "${raw}" ]]; then
+              if [[ "${raw}" == *":"* ]]; then
+                port="${raw##*:}"
+                host="${raw%:*}"
+              else
+                host="${raw}"
+                port="*"
+              fi
+              if [[ -z "${port}" || ( ! "${port}" =~ ^[0-9]+$ && "${port}" != "*" ) ]]; then
+                port="*"
+              fi
+              if [[ -z "${host}" || "${host}" == "*" ]]; then
+                host="*"
+              elif [[ "${host}" == "localhost" || "${host}" == "127.0.0.1" || "${host}" == "::1" ]]; then
+                host="localhost"
+              else
+                host="*"
+              fi
             fi
             rule="(allow ${op} (${scope} ip \"${host}:${port}\"))"
           fi
@@ -315,7 +342,7 @@ while true; do
       cp "${SANDBOX_PROFILE}" "${tmp_profile}"
       echo "${rule}" >> "${tmp_profile}"
       set +e
-      sandbox-exec -f "${tmp_profile}" /usr/bin/true >/dev/null 2>&1
+      sandbox-exec "${PARAM_ARGS[@]}" -f "${tmp_profile}" /usr/bin/true >/dev/null 2>&1
       validate_rc=$?
       set -e
       rm -f "${tmp_profile}"
@@ -335,14 +362,24 @@ while true; do
 
   echo "[-] Iteration ${iter} done: rc=${RETURN_CODE}, denies=${denies_seen}, new_rules=${new_rules}, lines=${after_lines}"
 
-  # Stop conditions: success, continue if rules added, otherwise record a stall/no-new-rules reason.
-  if [[ "${RETURN_CODE}" -eq "${SUCCESS_CODE}" ]]; then
-    echo "[+] Return code ${RETURN_CODE} == SUCCESS_CODE ${SUCCESS_CODE}; stopping."
+  # Stop conditions: success streak, continue if rules added, otherwise record a stall/no-new-rules reason.
+  if [[ "${RETURN_CODE}" -eq "${SUCCESS_CODE}" && "${new_rules}" -eq 0 ]]; then
+    success_count=$((success_count + 1))
+  else
+    success_count=0
+  fi
+  if [[ "${success_count}" -ge "${SUCCESS_STREAK}" ]]; then
+    echo "[+] Success streak ${success_count}/${SUCCESS_STREAK}; stopping."
     echo "status=success" > "${TRACE_STATUS}"
     echo "iter=${iter}" >> "${TRACE_STATUS}"
+    echo "success_streak=${SUCCESS_STREAK}" >> "${TRACE_STATUS}"
     break
   fi
   if [[ "${new_rules}" -gt 0 ]]; then
+    continue
+  fi
+  if [[ "${RETURN_CODE}" -eq "${SUCCESS_CODE}" && "${new_rules}" -eq 0 ]]; then
+    echo "[-] Success with no new rules; streak ${success_count}/${SUCCESS_STREAK}. Continuing."
     continue
   fi
 

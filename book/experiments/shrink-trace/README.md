@@ -17,11 +17,16 @@ These references are external documentation and not host witnesses. Treat them a
 - `book/experiments/shrink-trace/upstream/shrink.sh` - upstream shrinker (verbatim).
 - `book/experiments/shrink-trace/upstream/readme.md` - upstream notes (verbatim).
 - `book/experiments/shrink-trace/fixtures/sandbox_target.c` - deterministic workload fixture.
+- `book/experiments/shrink-trace/fixtures/sandbox_net_required.c` - network-required fixture (connect must be allowed).
+- `book/experiments/shrink-trace/fixtures/sandbox_spawn.c` - subprocess fixture (spawns `/usr/bin/id`).
 - `book/experiments/shrink-trace/fixtures/sandbox_min.c` - minimal fixture to test dyld/bootstrap.
 - `book/experiments/shrink-trace/scripts/build_fixture.sh` - build the fixture.
 - `book/experiments/shrink-trace/scripts/extract_denies.py` - parse JSON-style logs to extract deny lines by PID.
 - `book/experiments/shrink-trace/scripts/extract_sandbox_messages.py` - extract sandbox-related event messages from JSON logs.
 - `book/experiments/shrink-trace/scripts/trace_instrumented.sh` - instrumented tracer with metrics.
+- `book/experiments/shrink-trace/scripts/shrink_instrumented.sh` - shrinker that validates fresh + repeat runs per deletion.
+- `book/experiments/shrink-trace/scripts/lint_profile.py` - lint SBPL network filters for host/path constraints.
+- `book/experiments/shrink-trace/scripts/run_matrix.sh` - run a small configuration/fixture matrix and write `out/summary.md`.
 - `book/experiments/shrink-trace/scripts/run_workflow.sh` - build, trace, shrink, verify.
 - `book/experiments/shrink-trace/scripts/summarize_metrics.sh` - summarize metrics from a run.
 - `book/experiments/shrink-trace/out/` - run outputs (overwritten on each run).
@@ -36,9 +41,19 @@ Run the workflow from `book/experiments/shrink-trace`:
 ```
 ./scripts/run_workflow.sh
 ```
+Fixture variants:
+```
+FIXTURE_BIN=sandbox_net_required ./scripts/run_workflow.sh
+FIXTURE_BIN=sandbox_spawn ./scripts/run_workflow.sh
+```
 Then summarize metrics:
 ```
 ./scripts/summarize_metrics.sh
+```
+
+Run the matrix (writes `out/summary.md` and per-run logs under `out/matrix/`):
+```
+./scripts/run_matrix.sh
 ```
 
 ## Outputs
@@ -55,6 +70,14 @@ Each run writes to `book/experiments/shrink-trace/out/` (overwriting any previou
 - `trace_stdout.txt` - trace output.
 - `shrink_stdout.txt` - shrink output.
 - `preflight_scan.json` - preflight scan of the traced profile before shrink.
+- `pre_shrink_run1_stdout.txt` - stdout from the first pre-shrink validation run.
+- `pre_shrink_run1_stderr.txt` - stderr from the first pre-shrink validation run.
+- `pre_shrink_run1_exitcode.txt` - exit code from the first pre-shrink validation run.
+- `pre_shrink_run2_stdout.txt` - stdout from the second pre-shrink validation run.
+- `pre_shrink_run2_stderr.txt` - stderr from the second pre-shrink validation run.
+- `pre_shrink_run2_exitcode.txt` - exit code from the second pre-shrink validation run.
+- `lint_profile_trace.txt` - lint output for the traced profile.
+- `lint_profile_shrunk.txt` - lint output for the shrunk profile.
 - `trace_status.txt` - trace stop reason (`success`, `no_new_rules`, `stalled`, `preflight_failed`, or `profile_invalid`).
 - `stall_iter_<n>/` - bundle created when the trace stalls on a signal with no observed denies (includes logs, stderr, and any crash report found).
 - `stall_iter_<n>/sandbox_messages.txt` - sandbox-related event messages collected from the stall logs.
@@ -65,6 +88,15 @@ Each run writes to `book/experiments/shrink-trace/out/` (overwriting any previou
 - `sandbox_min_stdout.txt` - stdout from the minimal fixture check.
 - `sandbox_min_stderr.txt` - stderr from the minimal fixture check.
 - `sandbox_min_exitcode.txt` - exit code from the minimal fixture check.
+- `post_shrink_fresh_stdout.txt` - stdout from the shrunk-profile fresh run.
+- `post_shrink_fresh_stderr.txt` - stderr from the shrunk-profile fresh run.
+- `post_shrink_fresh_exitcode.txt` - exit code from the shrunk-profile fresh run.
+- `post_shrink_repeat_stdout.txt` - stdout from the shrunk-profile repeat run.
+- `post_shrink_repeat_stderr.txt` - stderr from the shrunk-profile repeat run.
+- `post_shrink_repeat_exitcode.txt` - exit code from the shrunk-profile repeat run.
+- `run_summary.txt` - key/value summary including host metadata and run results.
+- `summary.md` - matrix summary (only when running `run_matrix.sh`).
+- `matrix/` - per-run outputs for the matrix (only when running `run_matrix.sh`).
 
 ## Interpreting results
 1) Trace convergence:
@@ -101,7 +133,11 @@ Each run writes to `book/experiments/shrink-trace/out/` (overwriting any previou
   then runs the program under `sandbox-exec`, captures `deny` log lines, and appends `(allow ...)` rules derived from those lines.
 - It stops when either the program returns 0 or no new rules are added.
 - `shrink.sh` removes profile lines from bottom to top, keeping a deletion if the command still succeeds. It refuses to delete explicit `(deny ...)` rules even if deletion would still succeed.
-- The instrumented tracer in `scripts/trace_instrumented.sh` keeps the upstream CLI contract but adds per-iteration logs, metrics, a broader log predicate, and avoids `killall` side effects.
+- `shrink_instrumented.sh` only removes a line if both a fresh and repeat run succeed, to avoid deleting first-run-only permissions.
+- The instrumented tracer in `scripts/trace_instrumented.sh` keeps the upstream CLI contract but adds per-iteration logs, metrics, a broader log predicate, a success streak gate, and avoids `killall` side effects.
+- The instrumented tracer extracts deny lines from all sandbox messages in the iteration window (PID-agnostic) to capture subprocess denials; set `DENY_SCOPE=pid` to restrict to the parent process.
+- The seed uses SBPL parameters for the run directory (`WORK_DIR`) and dyld log path (`DYLD_LOG_PATH`); `sandbox-exec` is invoked with `-D` to supply these values.
+- `scripts/run_workflow.sh` only runs the shrinker after two consecutive successful runs under the traced profile (repeatable execution gate).
 
 ## Troubleshooting and confounders
 1) Log predicate mismatches
@@ -138,7 +174,11 @@ Each run writes to `book/experiments/shrink-trace/out/` (overwriting any previou
 - `IMPORT_DYLD_SUPPORT=1` (default) imports `dyld-support.sb` when present under `/System/Library/Sandbox/Profiles/`.
 - `DYLD_LOG=1` enables dyld logging to `dyld.log` in the output directory.
 - `ALLOW_FIXTURE_EXEC=1` (default) allows `process-exec*` and `file-read-metadata` for the output directory so `sandbox_min` is executable.
-- `NETWORK_RULES=drop` (default) drops network denies; `NETWORK_RULES=coarse` emits `(allow network-*)` without filters; `NETWORK_RULES=parsed` emits `(remote ip)` or `(local ip)` with normalization.
+- `SUCCESS_STREAK=2` (default) requires N consecutive runs with `rc==0` and no new rules before stopping the trace loop.
+- `DENY_SCOPE=all` (default) extracts deny lines from all sandbox messages within the iteration window; `DENY_SCOPE=pid` restricts extraction to the parent PID.
+- `FIXTURE_BIN=sandbox_target` (default) selects which fixture to trace (`sandbox_target`, `sandbox_net_required`, `sandbox_spawn`).
+- `NETWORK_RULES=parsed` (default) emits `(remote ip)` or `(local ip)` with host normalization (`*` or `localhost`) and maps path-shaped denials to `(remote unix-socket (path-literal ...))`.
+- `NETWORK_RULES=drop` drops network denies; `NETWORK_RULES=coarse` emits `(allow network-*)` without filters.
 
 [1]: https://man.freebsd.org/cgi/man.cgi?manpath=macOS+14.8&query=sandbox-exec&sektion=1 "sandbox-exec(1)"
 [2]: https://chromium.googlesource.com/chromium/src/%2B/8073c7e0afcb/docs/mac/sandbox_debugging.md "Sandbox Debugging"
