@@ -8,27 +8,27 @@
       "entitlements_error": "entitlements parse error: not found",
       "id": "xpc-probe-client",
       "kind": "helper",
-      "lc_uuid": "90AA94A6-283E-37D5-9C46-73D9C894E4E5",
+      "lc_uuid": "112B37DA-9F3B-33BF-9C98-B77FAA015A02",
       "rel_path": "Contents/MacOS/xpc-probe-client",
-      "sha256": "fe44d0b49784057e7587e9a3e540d5245ddd1b6df884bf9da86cb983bc44dfb7"
+      "sha256": "b049cbb30b4078ea220009b6da34fb091951ae141b81800a4e78f11f9bc7f6b3"
     },
     {
       "entitlements": {},
       "entitlements_error": "entitlements parse error: not found",
       "id": "xpc-quarantine-client",
       "kind": "helper",
-      "lc_uuid": "F7F96660-E50A-3DE7-9815-E85F4B2AFDD8",
+      "lc_uuid": "4A52DA30-40EF-3846-823A-874BE371C772",
       "rel_path": "Contents/MacOS/xpc-quarantine-client",
-      "sha256": "d0b8e666e3453c547ec9662e9aa3883e968e669576e39209b2efea5b4df1fe41"
+      "sha256": "7e3f148d82c2578718868799c4c40b3925b0474accd041bf6beb365c2454635d"
     },
     {
       "entitlements": {},
       "entitlements_error": "entitlements parse error: not found",
       "id": "sandbox-log-observer",
       "kind": "helper",
-      "lc_uuid": "E23A277E-C52A-3E8C-903C-0628939EC45D",
+      "lc_uuid": "6714FE9B-7C5B-3B24-93CD-8594DDB356E7",
       "rel_path": "Contents/MacOS/sandbox-log-observer",
-      "sha256": "995d8dd9a60224274bc61851ba43f353993fdf9ce0fe32885c47b126c21d8ec4"
+      "sha256": "2fbb52deb64a9e64e7e75548e2cfa1780808bb5a165a394c71fa09dd28a180a3"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_bookmarks_app_scope",
@@ -38,10 +38,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_bookmarks_app_scope",
       "kind": "xpc-service",
-      "lc_uuid": "D136644F-4AEE-3719-B7F9-FD2AA1CA4707",
+      "lc_uuid": "261640AA-2479-3067-B59C-014613B525F7",
       "rel_path": "Contents/XPCServices/ProbeService_bookmarks_app_scope.xpc/Contents/MacOS/ProbeService_bookmarks_app_scope",
       "service_name": "ProbeService_bookmarks_app_scope",
-      "sha256": "3a19a8a86e91d6059cd0e42e796cbf16e739d38604424849556a7a794745e4aa"
+      "sha256": "100bf3604bf0fbebedff3d3d617a84826f64bf07b48bec1cdc89267dbb7ca0d4"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_debuggable",
@@ -52,10 +52,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_debuggable",
       "kind": "xpc-service",
-      "lc_uuid": "08988EE2-5E1C-3C3D-B872-532A010D53D6",
+      "lc_uuid": "6A6C3FD0-7F0C-3D2E-93E2-8DF337D4F5C6",
       "rel_path": "Contents/XPCServices/ProbeService_debuggable.xpc/Contents/MacOS/ProbeService_debuggable",
       "service_name": "ProbeService_debuggable",
-      "sha256": "484593af5a1c540d4e8539303e9a9be0dbbd4ec787147ed59760b235d904074d"
+      "sha256": "8d8234af7e617d759e7b016fa4546b82c65c9bef7121d754cbbf7d862a72dce9"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_downloads_rw",
@@ -65,10 +65,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_downloads_rw",
       "kind": "xpc-service",
-      "lc_uuid": "6EE76A0F-5F91-330D-96AD-4EE887447938",
+      "lc_uuid": "58601E77-F3A9-35D6-BC8B-A295DA88C71C",
       "rel_path": "Contents/XPCServices/ProbeService_downloads_rw.xpc/Contents/MacOS/ProbeService_downloads_rw",
       "service_name": "ProbeService_downloads_rw",
-      "sha256": "0bdf8905e1af6025ca3a25be84c2e06cb6cf7055917f6eace6fac4e3d03e2e3e"
+      "sha256": "b2f7ac76653e38a01f7eab5a02d15b7e7f312e96ace73c3d926b123d92337b5e"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_dyld_env_enabled",
@@ -78,10 +78,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_dyld_env_enabled",
       "kind": "xpc-service",
-      "lc_uuid": "CB334773-9202-3FE0-8E28-1D03823F39CA",
+      "lc_uuid": "EB406878-E602-35F0-86AB-384AF8B7D6C0",
       "rel_path": "Contents/XPCServices/ProbeService_dyld_env_enabled.xpc/Contents/MacOS/ProbeService_dyld_env_enabled",
       "service_name": "ProbeService_dyld_env_enabled",
-      "sha256": "7dd3e43d453a6223e99c960ddfb07e15d4a881fd9bd0274cddb1da289267dea4"
+      "sha256": "aebed1fed00485f1c37ec895874ba7299c8ab744dfb8e95b9fd02f8fc7a22919"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_fully_injectable",
@@ -95,10 +95,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_fully_injectable",
       "kind": "xpc-service",
-      "lc_uuid": "C4F390D3-0D42-3811-B6EC-67366264AC06",
+      "lc_uuid": "4F2A8C80-BA27-3CB5-AD8A-BD50534020BB",
       "rel_path": "Contents/XPCServices/ProbeService_fully_injectable.xpc/Contents/MacOS/ProbeService_fully_injectable",
       "service_name": "ProbeService_fully_injectable",
-      "sha256": "f1e84128f751f0fb8c33492139b076fd5ae9f13ed538f25da1d5caafe03eb2c3"
+      "sha256": "f533a7d76640bf234c328098b7c9b56f2de2ebde6564f7687fba2f7447c2c435"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_map_jit",
@@ -108,10 +108,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_jit_map_jit",
       "kind": "xpc-service",
-      "lc_uuid": "BA418816-9982-36CE-8548-0F2D3EEEA20E",
+      "lc_uuid": "A644C413-E848-3B84-87AE-B9C404BF62C0",
       "rel_path": "Contents/XPCServices/ProbeService_jit_map_jit.xpc/Contents/MacOS/ProbeService_jit_map_jit",
       "service_name": "ProbeService_jit_map_jit",
-      "sha256": "19b6bfb9f6c2ef8073d4df456d9d6a445e90456663169416186bd535db2e7447"
+      "sha256": "afc323654238ea838cf6383b40691ceea6356e326a0c4cc7a006fa0ef14620e6"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_rwx_legacy",
@@ -121,10 +121,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_jit_rwx_legacy",
       "kind": "xpc-service",
-      "lc_uuid": "494AE906-6862-3348-92E5-841AFCA84FD8",
+      "lc_uuid": "1AD96524-89CD-3289-915F-1D45E3BF5742",
       "rel_path": "Contents/XPCServices/ProbeService_jit_rwx_legacy.xpc/Contents/MacOS/ProbeService_jit_rwx_legacy",
       "service_name": "ProbeService_jit_rwx_legacy",
-      "sha256": "ea1289cf06a492f71f09217bec868072dc985bccdb554dc69e6f782354cb1d0e"
+      "sha256": "1535b097fe9a3a226d08731aa96728caa0e059828c8b139d35ca8958f103bc6b"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_minimal",
@@ -133,10 +133,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_minimal",
       "kind": "xpc-service",
-      "lc_uuid": "6AC1C43F-CA5E-3E8E-A7CD-C54C6298420E",
+      "lc_uuid": "2EDF74C8-16F1-32BB-B4AC-FF83D2F16937",
       "rel_path": "Contents/XPCServices/ProbeService_minimal.xpc/Contents/MacOS/ProbeService_minimal",
       "service_name": "ProbeService_minimal",
-      "sha256": "8571ae5fd4e4916c5e9c16fd7ae539a42df5ed98d0fb3cab5e3cfe925dc7460c"
+      "sha256": "8e35fb0918d93e59ddf72dca2f81e4db702376b271c62e0be378048b7281f0de"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_net_client",
@@ -146,10 +146,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_net_client",
       "kind": "xpc-service",
-      "lc_uuid": "57D2BE2B-ABF5-3FA1-AE08-4B20267A9AB8",
+      "lc_uuid": "1038580A-5F15-3388-9442-59F5D321AA66",
       "rel_path": "Contents/XPCServices/ProbeService_net_client.xpc/Contents/MacOS/ProbeService_net_client",
       "service_name": "ProbeService_net_client",
-      "sha256": "f42793fc84f5191668bbd26585021ef3b6a23d275223e1bb8cecd49744ec07a3"
+      "sha256": "c715253b2edad5af21bd88a3f7826a3b4b9655c602199d953b5fe20f88b5ed6c"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_plugin_host_relaxed",
@@ -159,10 +159,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_plugin_host_relaxed",
       "kind": "xpc-service",
-      "lc_uuid": "35A8B8C9-D033-3909-B389-E3359C313959",
+      "lc_uuid": "6651CD46-80EF-306D-9026-FBD8F492634C",
       "rel_path": "Contents/XPCServices/ProbeService_plugin_host_relaxed.xpc/Contents/MacOS/ProbeService_plugin_host_relaxed",
       "service_name": "ProbeService_plugin_host_relaxed",
-      "sha256": "c92260b9238978b87c06ad0d79f918519ced7cb4202094ae2cb0bfbb726006ee"
+      "sha256": "5c4adae4ff6cc800ed9b1aee967deb0b1c3576f6f95191825025623cbb109f20"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_user_selected_executable",
@@ -172,10 +172,10 @@
       },
       "id": "com.yourteam.entitlement-jail.ProbeService_user_selected_executable",
       "kind": "xpc-service",
-      "lc_uuid": "4BA18ADB-4AA6-3ABE-BE18-2F6375EEFF7D",
+      "lc_uuid": "6B593085-F7B6-3047-8FF4-04A50C4B9DD3",
       "rel_path": "Contents/XPCServices/ProbeService_user_selected_executable.xpc/Contents/MacOS/ProbeService_user_selected_executable",
       "service_name": "ProbeService_user_selected_executable",
-      "sha256": "bdae0ec53ff5ccadea2235d004bf854b5672a5d5e96a8501605386e23733cc3e"
+      "sha256": "cf3b31423bf1354eb04e27873a8f915297554ecbc90225d1f2cf7331313fbb1a"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.QuarantineLab_bookmarks_app_scope",
@@ -185,10 +185,10 @@
       },
       "id": "com.yourteam.entitlement-jail.QuarantineLab_bookmarks_app_scope",
       "kind": "xpc-service",
-      "lc_uuid": "78DD007F-812C-373C-8249-B471EE98D73B",
+      "lc_uuid": "92ECA9A8-B660-3205-92B4-D1D15748271A",
       "rel_path": "Contents/XPCServices/QuarantineLab_bookmarks_app_scope.xpc/Contents/MacOS/QuarantineLab_bookmarks_app_scope",
       "service_name": "QuarantineLab_bookmarks_app_scope",
-      "sha256": "fefb5d4cfec507dd7127815b10599f099d5486ae8c0f9390f9bedc022577dad6"
+      "sha256": "f50e91b68adb2c0f63b2abc27df431eb4d79f9f7665985bce7649ca528668bc2"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.QuarantineLab_default",
@@ -197,10 +197,10 @@
       },
       "id": "com.yourteam.entitlement-jail.QuarantineLab_default",
       "kind": "xpc-service",
-      "lc_uuid": "0027496F-9F5E-342E-8E86-25B663478A7C",
+      "lc_uuid": "0D7EA3AC-A2D1-32FD-B060-9FEFFB18A5E6",
       "rel_path": "Contents/XPCServices/QuarantineLab_default.xpc/Contents/MacOS/QuarantineLab_default",
       "service_name": "QuarantineLab_default",
-      "sha256": "bedca524b78780a67d68630fedfaa861599fc2036f2099ec270c1f0e7a758814"
+      "sha256": "bc66a395930665047c4740a51377a8185460860c498dbd26d77c3093a7250d6a"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.QuarantineLab_downloads_rw",
@@ -210,10 +210,10 @@
       },
       "id": "com.yourteam.entitlement-jail.QuarantineLab_downloads_rw",
       "kind": "xpc-service",
-      "lc_uuid": "DB6084BE-F46D-3B4C-8452-9A3E4ED6A813",
+      "lc_uuid": "027B6DEA-9FB6-31A7-9302-BC00897E4B30",
       "rel_path": "Contents/XPCServices/QuarantineLab_downloads_rw.xpc/Contents/MacOS/QuarantineLab_downloads_rw",
       "service_name": "QuarantineLab_downloads_rw",
-      "sha256": "edcb800f7df7726cb9eed106ce1449e03a71b3d996c868a2259fd32c8b272a8e"
+      "sha256": "0967b3da906024a3f1837c34e00079e4cfe004f7bdf72f233ce87abb4990c73a"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.QuarantineLab_net_client",
@@ -223,10 +223,10 @@
       },
       "id": "com.yourteam.entitlement-jail.QuarantineLab_net_client",
       "kind": "xpc-service",
-      "lc_uuid": "3FCABA77-44BA-3FF6-BD3B-9BBAC1D6F79F",
+      "lc_uuid": "FBC6650E-429F-3009-8902-91119E94A789",
       "rel_path": "Contents/XPCServices/QuarantineLab_net_client.xpc/Contents/MacOS/QuarantineLab_net_client",
       "service_name": "QuarantineLab_net_client",
-      "sha256": "ffd2d91c857fc0a1f0e6e5b5c48d269696085775e064147bf96710c7b42739fa"
+      "sha256": "f16dd1ae4ba0ac293089138ce3532ff7b8058e7be459497a0dece90e19707029"
     },
     {
       "bundle_id": "com.yourteam.entitlement-jail.QuarantineLab_user_selected_executable",
@@ -236,25 +236,25 @@
       },
       "id": "com.yourteam.entitlement-jail.QuarantineLab_user_selected_executable",
       "kind": "xpc-service",
-      "lc_uuid": "D9AD9F22-8E1D-3183-A251-CFB1663152E5",
+      "lc_uuid": "7B8FE6B5-A715-3ADD-9F90-C0B9BA22CA0A",
       "rel_path": "Contents/XPCServices/QuarantineLab_user_selected_executable.xpc/Contents/MacOS/QuarantineLab_user_selected_executable",
       "service_name": "QuarantineLab_user_selected_executable",
-      "sha256": "b001ec523b1473afd134abd29f33c8cc5bc039342fd0c52b591ccb7ea2865414"
+      "sha256": "47ec02be592f9a83019996fff647a878759a432179017c17005f606d92318bb4"
     },
     {
       "id": "evidence.symbols",
       "kind": "evidence",
       "rel_path": "Contents/Resources/Evidence/symbols.json",
-      "sha256": "c085bc121daa788c5f20179d8a577e22c09c2aa3c05e367230ba04dc5213ab0c"
+      "sha256": "db5d04693a3debe9a8f996e4de3a770171a772460f55d0fd264061d2e2428ead"
     },
     {
       "id": "evidence.profiles",
       "kind": "evidence",
       "rel_path": "Contents/Resources/Evidence/profiles.json",
-      "sha256": "75429c6df7cc5e8c1c13edc0bea6ab5bc4e1cc8fe760edef74fc5b3d94fcb7ad"
+      "sha256": "1f07695515a9781f564a3f80bb40ec79ce2913e57625504e7433436ebb43aa13"
     }
   ],
-  "generated_at": "2025-12-25T00:57:08Z",
+  "generated_at": "2025-12-25T03:21:11Z",
   "notes": [
     "Main app binary hash is omitted because the manifest is signed by the app bundle."
   ],
