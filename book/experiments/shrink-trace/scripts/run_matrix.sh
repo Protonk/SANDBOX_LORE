@@ -2,24 +2,12 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "${ROOT_DIR}/../../.." && pwd)"
 OUT_ROOT="${ROOT_DIR}/out"
 MATRIX_DIR="${OUT_ROOT}/matrix"
-SUMMARY="${OUT_ROOT}/summary.md"
+SUMMARY_JSON="${MATRIX_DIR}/summary.json"
 
 mkdir -p "${MATRIX_DIR}"
-
-sw_vers_line="$(sw_vers | tr '\n' ';' | sed 's/;*$//')"
-uname_line="$(uname -a)"
-
-cat > "${SUMMARY}" <<EOF
-# shrink-trace run matrix
-
-Host (sw_vers): ${sw_vers_line}
-Host (uname): ${uname_line}
-
-| run | fixture | import_dyld_support | network_rules | success_streak | trace_status | iterations | trace_lines | shrunk_lines | bad_rules | shrink_removed | shrink_kept | fresh_rc | repeat_rc |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-EOF
 
 fixtures=("sandbox_target" "sandbox_net_required" "sandbox_spawn")
 import_vals=(1 0)
@@ -41,47 +29,52 @@ for fixture in "${fixtures[@]}"; do
           SUCCESS_STREAK="${streak}" \
           "${ROOT_DIR}/scripts/run_workflow.sh" > "${run_dir}/run.log" 2>&1
         set -e
-
-        metrics="${run_dir}/metrics.tsv"
-        trace_status="unknown"
-        if [[ -f "${run_dir}/trace_status.txt" ]]; then
-          trace_status="$(awk -F= '/^status=/{print $2}' "${run_dir}/trace_status.txt" | tail -n 1)"
-        fi
-        iterations="na"
-        if [[ -f "${metrics}" ]]; then
-          iterations="$(tail -n +2 "${metrics}" | wc -l | tr -d ' ')"
-        fi
-        trace_lines="na"
-        if [[ -f "${run_dir}/profile.sb" ]]; then
-          trace_lines="$(wc -l < "${run_dir}/profile.sb" | tr -d ' ')"
-        fi
-        shrunk_lines="na"
-        if [[ -f "${run_dir}/profile.sb.shrunk" ]]; then
-          shrunk_lines="$(wc -l < "${run_dir}/profile.sb.shrunk" | tr -d ' ')"
-        fi
-        bad_rules="na"
-        if [[ -f "${run_dir}/bad_rules.txt" ]]; then
-          bad_rules="$(wc -l < "${run_dir}/bad_rules.txt" | tr -d ' ')"
-        fi
-        shrink_removed="na"
-        shrink_kept="na"
-        if [[ -f "${run_dir}/shrink_stdout.txt" ]]; then
-          shrink_removed="$(grep -c 'Removed line' "${run_dir}/shrink_stdout.txt" || true)"
-          shrink_kept="$(grep -c 'Kept line' "${run_dir}/shrink_stdout.txt" || true)"
-        fi
-        fresh_rc="na"
-        repeat_rc="na"
-        if [[ -f "${run_dir}/post_shrink_fresh_exitcode.txt" ]]; then
-          fresh_rc="$(cat "${run_dir}/post_shrink_fresh_exitcode.txt")"
-        fi
-        if [[ -f "${run_dir}/post_shrink_repeat_exitcode.txt" ]]; then
-          repeat_rc="$(cat "${run_dir}/post_shrink_repeat_exitcode.txt")"
-        fi
-
-        echo "| ${label} | ${fixture} | ${import_dyld} | ${net_rule} | ${streak} | ${trace_status} | ${iterations} | ${trace_lines} | ${shrunk_lines} | ${bad_rules} | ${shrink_removed} | ${shrink_kept} | ${fresh_rc} | ${repeat_rc} |" >> "${SUMMARY}"
       done
     done
   done
 done
 
-echo "[+] Wrote summary: ${SUMMARY}"
+PYTHONPATH="${REPO_ROOT}" MATRIX_DIR="${MATRIX_DIR}" SUMMARY_JSON="${SUMMARY_JSON}" python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+from book.api import path_utils
+
+matrix_dir = Path(os.environ["MATRIX_DIR"])
+summary_path = Path(os.environ["SUMMARY_JSON"])
+runs = []
+world_id = ""
+
+for run_json in sorted(matrix_dir.glob("*/run.json")):
+    data = json.loads(run_json.read_text())
+    if not world_id:
+        world_id = data.get("world_id", "")
+    runs.append(
+        {
+            "label": run_json.parent.name,
+            "run_dir": path_utils.to_repo_relative(run_json.parent),
+            "fixture": data.get("knobs", {}).get("fixture"),
+            "import_dyld_support": data.get("knobs", {}).get("import_dyld_support"),
+            "network_rules": data.get("knobs", {}).get("network_rules"),
+            "success_streak": data.get("knobs", {}).get("success_streak"),
+            "trace_status": data.get("trace", {}).get("status"),
+            "trace_iterations": data.get("trace", {}).get("iterations"),
+            "trace_lines": data.get("trace", {}).get("profile_lines"),
+            "shrunk_lines": data.get("shrink", {}).get("profile_lines"),
+            "bad_rules": data.get("trace", {}).get("bad_rules"),
+            "shrink_removed": data.get("shrink", {}).get("removed"),
+            "shrink_kept": data.get("shrink", {}).get("kept"),
+            "post_shrink_fresh_rc": data.get("shrink", {}).get("post_shrink_fresh_rc"),
+            "post_shrink_repeat_rc": data.get("shrink", {}).get("post_shrink_repeat_rc"),
+        }
+    )
+
+summary = {
+    "world_id": world_id,
+    "matrix_dir": path_utils.to_repo_relative(matrix_dir),
+    "runs": runs,
+}
+summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True))
+PY
+
+echo "[+] Wrote summary: ${SUMMARY_JSON}"

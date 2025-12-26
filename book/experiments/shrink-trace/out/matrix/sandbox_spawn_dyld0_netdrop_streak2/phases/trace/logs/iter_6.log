@@ -1,0 +1,2110 @@
+Filtering the log data using "(processIdentifier == 0 AND senderImagePath CONTAINS "/Sandbox") OR subsystem == "com.apple.sandbox.reporting" OR sender == "Sandbox""
+[{
+  "timezoneName" : "",
+  "messageType" : "Debug",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "Sandbox apply: %s[%d] %s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199474,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 44236,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.407166-0800",
+  "machTimestamp" : 82279913879661,
+  "eventMessage" : "Sandbox apply: sandbox-exec[37310] <bytes>",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 632202006626820,
+  "processID" : 0,
+  "senderProgramCounter" : 44236,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.410579-0800",
+  "machTimestamp" : 82279913961576,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-ioctl path:\/dev\/dtracehelper ioctl-command:(_IO \"h\" 4)",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.411390-0800",
+  "machTimestamp" : 82279913981048,
+  "eventMessage" : "Sandbox: id(37311) deny(1) network-outbound \/private\/var\/run\/syslog",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.411905-0800",
+  "machTimestamp" : 82279913993420,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.412782-0800",
+  "machTimestamp" : 82279914014462,
+  "eventMessage" : "4 duplicate reports for Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.412791-0800",
+  "machTimestamp" : 82279914014672,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.412833-0800",
+  "machTimestamp" : 82279914015686,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.412928-0800",
+  "machTimestamp" : 82279914017950,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414156-0800",
+  "machTimestamp" : 82279914047424,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414200-0800",
+  "machTimestamp" : 82279914048469,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414286-0800",
+  "machTimestamp" : 82279914050548,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414455-0800",
+  "machTimestamp" : 82279914054593,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414498-0800",
+  "machTimestamp" : 82279914055649,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.414567-0800",
+  "machTimestamp" : 82279914057291,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415040-0800",
+  "machTimestamp" : 82279914068641,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415083-0800",
+  "machTimestamp" : 82279914069677,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415139-0800",
+  "machTimestamp" : 82279914071004,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415542-0800",
+  "machTimestamp" : 82279914080696,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415583-0800",
+  "machTimestamp" : 82279914081673,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.415646-0800",
+  "machTimestamp" : 82279914083198,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416000-0800",
+  "machTimestamp" : 82279914091699,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416039-0800",
+  "machTimestamp" : 82279914092611,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416095-0800",
+  "machTimestamp" : 82279914093977,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416426-0800",
+  "machTimestamp" : 82279914101909,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416466-0800",
+  "machTimestamp" : 82279914102870,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416523-0800",
+  "machTimestamp" : 82279914104224,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416849-0800",
+  "machTimestamp" : 82279914112068,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416888-0800",
+  "machTimestamp" : 82279914113006,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.416927-0800",
+  "machTimestamp" : 82279914113937,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417242-0800",
+  "machTimestamp" : 82279914121494,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417277-0800",
+  "machTimestamp" : 82279914122330,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417322-0800",
+  "machTimestamp" : 82279914123416,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417636-0800",
+  "machTimestamp" : 82279914130950,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417666-0800",
+  "machTimestamp" : 82279914131663,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.417725-0800",
+  "machTimestamp" : 82279914133078,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418029-0800",
+  "machTimestamp" : 82279914140381,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418060-0800",
+  "machTimestamp" : 82279914141125,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418098-0800",
+  "machTimestamp" : 82279914142041,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418409-0800",
+  "machTimestamp" : 82279914149503,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418444-0800",
+  "machTimestamp" : 82279914150335,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418486-0800",
+  "machTimestamp" : 82279914151354,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418775-0800",
+  "machTimestamp" : 82279914158289,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418809-0800",
+  "machTimestamp" : 82279914159097,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.418847-0800",
+  "machTimestamp" : 82279914160020,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419132-0800",
+  "machTimestamp" : 82279914166845,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419165-0800",
+  "machTimestamp" : 82279914167651,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419222-0800",
+  "machTimestamp" : 82279914169014,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419539-0800",
+  "machTimestamp" : 82279914176631,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419574-0800",
+  "machTimestamp" : 82279914177466,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419617-0800",
+  "machTimestamp" : 82279914178495,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419929-0800",
+  "machTimestamp" : 82279914185971,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.419959-0800",
+  "machTimestamp" : 82279914186714,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420003-0800",
+  "machTimestamp" : 82279914187742,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420311-0800",
+  "machTimestamp" : 82279914195160,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420344-0800",
+  "machTimestamp" : 82279914195963,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420404-0800",
+  "machTimestamp" : 82279914197380,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420719-0800",
+  "machTimestamp" : 82279914204949,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420753-0800",
+  "machTimestamp" : 82279914205771,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.420796-0800",
+  "machTimestamp" : 82279914206795,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421098-0800",
+  "machTimestamp" : 82279914214056,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421132-0800",
+  "machTimestamp" : 82279914214869,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421176-0800",
+  "machTimestamp" : 82279914215931,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421481-0800",
+  "machTimestamp" : 82279914223243,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421515-0800",
+  "machTimestamp" : 82279914224063,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421560-0800",
+  "machTimestamp" : 82279914225125,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421884-0800",
+  "machTimestamp" : 82279914232915,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/UTC",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421916-0800",
+  "machTimestamp" : 82279914233688,
+  "eventMessage" : "Sandbox: id(37311) deny(1) file-read-data \/private\/var\/db\/timezone\/tz\/2025b.1.0\/zoneinfo\/posixrules",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21199476,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:46:04.421962-0800",
+  "machTimestamp" : 82279914234776,
+  "eventMessage" : "Sandbox: id(37311) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+}

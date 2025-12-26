@@ -10,7 +10,7 @@ import stat
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
-from ej_cli import (
+from book.api.entitlementjail.cli import (
     EJ,
     REPO_ROOT,
     WORLD_ID,
@@ -26,8 +26,8 @@ from ej_cli import (
     run_matrix_group,
     run_xpc,
 )
+from book.api.entitlementjail.wait import run_probe_wait, run_wait_xpc
 from ej_profiles import MATRIX_GROUPS, PROFILES
-from ej_wait import run_probe_wait, run_wait_xpc
 
 OUT_ROOT = REPO_ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "ej"
 LOG_DIR = OUT_ROOT / "logs"

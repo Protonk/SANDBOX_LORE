@@ -1,0 +1,6 @@
+dropped_network: Sandbox: sandbox_net_required(32606) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32606) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_net_required(32737) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32737) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_net_required(32795) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_net_required(32845) deny(1) network-outbound remote:*:2000

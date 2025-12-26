@@ -1,0 +1,157 @@
+Filtering the log data using "(processIdentifier == 0 AND senderImagePath CONTAINS "/Sandbox") OR subsystem == "com.apple.sandbox.reporting" OR sender == "Sandbox""
+[{
+  "timezoneName" : "",
+  "messageType" : "Debug",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "Sandbox apply: %s[%d] %s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21257459,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 44236,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:54:02.134637-0800",
+  "machTimestamp" : 82291379986230,
+  "eventMessage" : "Sandbox apply: sandbox-exec[48267] <bytes>",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 632202006626820,
+  "processID" : 0,
+  "senderProgramCounter" : 44236,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21257460,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:54:02.136171-0800",
+  "machTimestamp" : 82291380023043,
+  "eventMessage" : "Sandbox: sandbox_target(48267) deny(1) file-ioctl path:\/dev\/dtracehelper ioctl-command:(_IO \"h\" 4)",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21257460,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:54:02.137472-0800",
+  "machTimestamp" : 82291380054282,
+  "eventMessage" : "Sandbox: sandbox_target(48267) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21257460,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:54:02.139558-0800",
+  "machTimestamp" : 82291380104335,
+  "eventMessage" : "5 duplicate reports for Sandbox: sandbox_target(48267) deny(1) ipc-posix-shm-read-data apple.shm.notification_center",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21257460,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:54:02.139569-0800",
+  "machTimestamp" : 82291380104601,
+  "eventMessage" : "Sandbox: sandbox_target(48267) deny(1) file-write-data \/Users\/achyland\/Desktop\/VM-BRIDGE\/SANDBOX_LORE\/book\/experiments\/shrink-trace\/out\/matrix\/sandbox_target_dyld0_netparsed_streak2\/out\/hello.txt",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+}

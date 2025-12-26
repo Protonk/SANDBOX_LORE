@@ -1,21 +1,31 @@
 # Plan
 
-## Question
-- Can we reproduce a trace-then-shrink workflow that converges on a minimal SBPL profile for a deterministic fixture on this host?
+## Current state (summary)
 
-## Hypothesis
-- The fixture should converge within a small number of iterations and shrink should remove rules associated with optional noise. This is a working assumption, not a host witness.
+- The trace + shrink workflow converges for the baseline, required-network, subprocess, and minimal-loader fixtures on this host (partial; see `Report.md`).
+- Two-state shrink preserves first-run and repeat-run requirements, and can remove intentionally unused rules.
+- Matrix results show sensitivity to dyld import and network rule mode.
 
-## Success criteria
-- `trace_instrumented.sh` reaches a stop condition and writes `metrics.tsv` and per-iteration logs.
-- `shrink.sh` produces `profile.sb.shrunk` and `sandbox-exec -f profile.sb.shrunk sandbox_target` returns 0.
-- Outputs are reproducible under the Sonoma baseline.
+## Known brittleness
 
-## Approach
-1) Build the fixture (`scripts/build_fixture.sh`).
-2) Run the instrumented trace (`scripts/trace_instrumented.sh`) via `scripts/run_workflow.sh`.
-3) Shrink the resulting profile with the upstream shrinker.
-4) Summarize convergence and rule counts with `scripts/summarize_metrics.sh`.
+- Some runs stop early (`no_new_rules`) and only converge on rerun.
+- Removing `dyld-support.sb` can trigger `SIGABRT` during shrink attempts.
+- Matrix runs can exceed default timeouts.
 
-## Status
-- Not started (scaffolding only; no runs yet).
+## Next questions and what they teach
+
+1) **How much deny noise is ambient vs fixture-driven?**
+   - Plan: compare `DENY_SCOPE=pid` vs `DENY_SCOPE=all` on the same fixtures.
+   - Teaches: how much the sandbox denial surface is attributable to child processes or background activity.
+
+2) **What minimal loader allowances are required before user code runs?**
+   - Plan: isolate dyld imports and trace `sandbox_min` variants with and without dyld support.
+   - Teaches: early loader dependencies and the boundary between apply-time and runtime denials.
+
+3) **Which network deny shapes remain unparseable?**
+   - Plan: collect `bad_rules.txt` patterns from the matrix and categorize by address shape.
+   - Teaches: practical constraints on SBPL network filters for this host.
+
+4) **How stable is convergence under different streak thresholds?**
+   - Plan: repeat matrix with `SUCCESS_STREAK` variations and compare convergence and profile size.
+   - Teaches: sensitivity of deny-based bootstrapping to log timing and non-determinism.

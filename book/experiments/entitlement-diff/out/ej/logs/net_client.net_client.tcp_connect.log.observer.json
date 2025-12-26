@@ -1,8 +1,9 @@
 {
   "data": {
-    "correlation_id": "F683E8F0-E493-4539-9C31-EB53B3F89885",
+    "correlation_id": "E9969F47-547F-404E-B32D-A109154D96B9",
     "deny_lines": [],
-    "end": "2025-12-24 19:50:53",
+    "duration_ms": null,
+    "end": "2025-12-24 21:59:28",
     "last": null,
     "layer_attribution": {
       "seatbelt": "observer_only"
@@ -11,16 +12,19 @@
     "log_rc": 0,
     "log_stderr": "",
     "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
     "observed_deny": false,
     "observed_lines": 1,
-    "pid": 68070,
+    "observer_schema_version": 1,
+    "pid": 3055,
     "plan_id": "entitlement-diff:ej",
-    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(68070)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"68070\")))",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_net_client(3055)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"3055\")))",
     "process_name": "ProbeService_net_client",
     "row_id": "net_client.net_client.tcp_connect",
-    "start": "2025-12-24 19:50:49"
+    "start": "2025-12-24 21:59:24"
   },
-  "generated_at_unix_ms": 1766634651936,
+  "generated_at_unix_ms": 1766642367300,
   "kind": "sandbox_log_observer_report",
   "result": {
     "errno": null,

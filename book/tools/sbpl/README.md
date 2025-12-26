@@ -10,6 +10,7 @@ Current contents:
 - `corpus/` – curated SBPL specimen set with historical provenance.
 - `corpus/catalog.py` – quick summary of the corpus directory.
 - `wrapper/` – SBPL apply harness for runtime probes (see `wrapper/README.md`).
+- `trace_shrink/` – SBPL trace + shrink tool built from the shrink-trace experiment.
 
 This corpus is about **inputs**, not policy semantics. Any claim about behavior
 must cite the relevant mapping or validation artifacts.

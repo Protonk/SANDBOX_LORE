@@ -10,6 +10,7 @@ This guide assumes you have only `EntitlementJail.app` and this file (`Entitleme
 - Router (start here)
 - Quick start
 - Concepts
+- Logging & Evidence (quick reference)
 - Workflows
 - Output format (JSON)
 - Safety notes
@@ -90,6 +91,81 @@ EntitlementJail records *what happened* (return codes, errno, paths, timing) and
 - “Seatbelt/App Sandbox denial” is only attributed when there is **deny evidence** (for example, a matching unified log denial line for the service PID, often containing `deny` / `Sandbox:`).
 - Quarantine/Gatekeeper behavior is measured separately (Quarantine Lab does not execute anything).
 
+## Logging & Evidence (quick reference)
+
+This section is the short version of log capture and deny evidence. For full context, see the "Sandbox log capture (deny evidence)" subsection under Workflows.
+
+**Best-practice command patterns**
+
+Observer-only (windowed log show, default):
+
+```sh
+$EJ run-xpc --observe --profile minimal fs_op --op stat --path-class tmp
+```
+
+Observer live stream with JSONL output (auto path):
+
+```sh
+$EJ run-xpc --observe --observer-duration 2 --observer-format jsonl --observer-output auto --profile minimal net_op --op tcp_connect --host 127.0.0.1 --port 9
+```
+
+If the PID is not available in time, the observer falls back to windowed `log show`; check `data.log_observer_report.data.mode`.
+
+Stream capture to file (observer runs automatically):
+
+```sh
+$EJ run-xpc --log-stream auto --profile minimal net_op --op tcp_connect --host 127.0.0.1 --port 9
+```
+
+Stream report to stdout (probe JSON goes to file):
+
+```sh
+$EJ run-xpc --log-stream stdout --json-out /tmp/ej_probe.json --profile minimal net_op --op tcp_connect --host 127.0.0.1 --port 9
+```
+
+Standalone observer (outside the sandbox boundary):
+
+```sh
+EntitlementJail.app/Contents/MacOS/sandbox-log-observer --pid <pid> --process-name <name> --last 5s
+```
+
+**Report types**
+
+| Report kind | Produced by | Where to find it |
+| --- | --- | --- |
+| `sandbox_log_stream_report` | `run-xpc --log-stream` | file at `data.log_capture_path` (or stdout when `--log-stream stdout`) |
+| `sandbox_log_observer_report` | `run-xpc --observe` or `sandbox-log-observer` | file at `data.log_observer_path`, and embedded in `data.log_observer_report` |
+
+**Status fields and values**
+
+- `deny_evidence`: `not_captured`, `captured`, `not_found`, `log_error`
+  - `captured` means the stream or observer matched a deny line for the PID/process.
+  - `not_found` means capture ran but no deny line matched.
+- `log_capture_status`: `not_requested`, `requested_written`, `requested_failed`
+- `log_observer_status`: `not_requested`, `requested_written`, `requested_failed`
+
+**Output locations and extensions**
+
+- `data.log_capture_path` points to a JSON file containing a single `sandbox_log_stream_report` envelope (or `stdout`/`-` when `--log-stream stdout` is used).
+- `data.log_observer_path` points to a JSON or JSONL file depending on `--observer-format`:
+  - `json` -> `.json` (single report envelope)
+  - `jsonl` -> `.jsonl` (one `sandbox_log_observer_event` per line plus a final `sandbox_log_observer_report`)
+
+**Stdout vs file output**
+
+- With `--log-stream stdout`, the stream report is written to stdout and the probe JSON must go to `--json-out`.
+- Observer output always goes to a file path (`--observer-output` or auto).
+
+**Troubleshooting quick hits**
+
+- `permission_error` with `deny_evidence=not_found` means no deny line was captured. Treat attribution as unknown: check `data.log_capture_error` / `data.log_observer_error`, verify the path exists, and rerun with `--observe --observer-duration <seconds>` or a standalone observer if needed.
+- `deny_evidence=captured` but you cannot find a Sandbox line: check `data.log_observer_deny_lines` and the `sandbox_log_stream_report`. The deny line may not include the literal `Sandbox:` prefix, or it may appear only in one of the two reports.
+
+Follow‑up recipe for downloads path class (“permission_error with no deny evidence”):
+1) Re-run the same probe under `downloads_rw` or a `user_selected_*` profile (see `list-profiles`) to see if the outcome flips (entitlement-sensitive signal).
+2) Widen the observer window (`--observer-duration 5` or `--observer-follow`) to reduce missed denies.
+3) Inspect the resolved target path (`data.details.base_dir`, `data.details.file_path`, `data.details.path_class`) to verify what the probe actually touched.
+
 ## Workflows
 All workflows use the CLI at `EntitlementJail.app/Contents/MacOS/entitlement-jail` (the quick start sets `EJ` to this path). Run `--help` on any command to see the exact argument syntax.
 
@@ -155,7 +231,7 @@ Notes:
 - `--log-stream auto` writes to an app-managed path under `~/Library/Application Support/entitlement-jail/logs/`; `--log-stream stdout` writes the stream report to stdout and requires `--json-out` so the probe JSON goes to a file (observer output still goes to a file path).
 - `--log-stream` implies observer capture (same as `--observe`).
 - `--observe` runs the embedded `sandbox-log-observer` even without `--log-stream`.
-- `--observer-duration <seconds>` (or `--observer-follow`) makes the observer run in live mode (`log stream`) instead of windowed `log show`.
+- `--observer-duration <seconds>` (or `--observer-follow`) makes the observer run in live mode (`log stream`) when possible; if the PID is not available in time, the observer falls back to windowed `log show` (check `data.log_observer_report.data.mode`).
 - `--observer-follow` cannot be combined with `--observer-duration`.
 - `--observer-format jsonl` and `--observer-output <path|auto>` control observer persistence; `jsonl` emits per-line events plus a final report line.
 - `--log-path-class` + `--log-name` chooses a container-safe output path for the log stream report (still host-side capture). Allowed classes: `home`, `tmp`, `downloads`, `desktop`, `documents`, `app_support`, `caches`.
@@ -215,6 +291,7 @@ Wait metadata is recorded in `data.details` (`wait_*` fields).
 **Sandbox log capture (deny evidence)**
 
 Some probes return a permission-shaped failure (often `EPERM`/`EACCES`). That is *compatible with* a sandbox denial, but it is not proof of one. Treat the observer as the evidence source; log stream is a best-effort feed.
+See "Logging & Evidence (quick reference)" for status fields, report types, and output paths.
 
 If you want deny evidence for a specific run, prefer the observer (log stream is optional):
 
@@ -228,16 +305,17 @@ $EJ run-xpc --log-path-class tmp --log-name ej-sandbox.log --profile minimal fs_
 The log stream report is a JSON envelope (`kind: sandbox_log_stream_report`). `data` includes:
 
 - `pid`, `process_name`, `predicate`
-- `log_rc`, `log_stdout`, `log_stderr`, `log_error`
+- `log_rc`, `log_rc_raw`, `log_stdout`, `log_stderr`, `log_error`
 - `observed_lines`, `observed_deny`
 - `layer_attribution.seatbelt` = `log_stream`
 
 `data.log_stdout` is a filtered excerpt (deny/Sandbox lines for the PID/process), not the full `log stream` output.
+The `log_rc` value is normalized to `0` when the stream is terminated intentionally; `log_rc_raw` preserves the raw exit status.
 
 When the observer runs (via `--observe` or any `--log-stream`), the CLI writes a second report to `--observer-output` if set. Otherwise:
 
-- If `--log-stream` points to a file path, the observer report defaults to `<log_stream_path>.observer.json`.
-- If `--log-stream stdout` (or no log stream path is provided), the observer report defaults to an app-managed path under `~/Library/Application Support/entitlement-jail/logs/`.
+- If `--log-stream` points to a file path, the observer report defaults to `<log_stream_path>.observer.json` (or `.observer.jsonl` when `--observer-format jsonl` is set).
+- If `--log-stream stdout` (or no log stream path is provided), the observer report defaults to an app-managed path under `~/Library/Application Support/entitlement-jail/logs/` (extension matches the observer format).
 
 The observer report is a JSON envelope (`kind: sandbox_log_observer_report`). `data` includes:
 
@@ -270,6 +348,8 @@ Interpretation rules:
 - `data.log_capture_status` is `not_requested`, `requested_written`, or `requested_failed`; `data.log_observer_status` is `requested_written` or `requested_failed`.
 - `data.log_observer_path` points to the observer report file.
 - `data.log_capture_path` is the stream report path (or `stdout`/`-` when `--log-stream stdout` is used).
+- The log prelude line (“Filtering the log data using …”) is ignored for `observed_*` and `deny_lines`.
+- Permission-shaped failures can still yield `deny_evidence=not_found`; treat that as “no deny evidence captured”, not as a denial attribution.
 - If log capture was not requested, `data.deny_evidence` is set to `not_captured`.
 - If stream and observer both fail, `data.deny_evidence` is set to `log_error`.
 - Log capture is best-effort; if `/usr/bin/log` fails, treat that as "no deny evidence captured", not as a Seatbelt signal. Log capture is host-side only; in-sandbox log capture is not viable.
@@ -284,6 +364,8 @@ Some probes expect a **file** path, not a directory. In particular:
 - `fs_op --target run_dir` and `fs_op --target harness_dir` resolve to directories.
 - `fs_op --target specimen_file` resolves to a file path under `*/entitlement-jail-harness/*`, but the file is only created by ops like `create` or `open_write` (not by `stat`).
 - `fs_xattr` write/remove operations are refused outside harness paths unless you pass `--allow-write` or `--allow-unsafe-path`.
+
+Note on `--path-class downloads`: the resolved path is the **service container** Downloads directory (for example `~/Library/Containers/<bundle-id>/Data/Downloads`). A `permission_error` here can be entitlement-sensitive (compare with `downloads_rw`) even if no deny line is captured; keep attribution explicit.
 
 A reliable pattern for `fs_xattr` is:
 

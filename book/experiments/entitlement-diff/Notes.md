@@ -161,7 +161,7 @@
 - Result: observer report now includes `plan_id`, `row_id`, and `correlation_id` (verified in `book/experiments/entitlement-diff/out/ej/logs/observer/net_client.minimal.tcp_connect.log`).
 - Runner update: sandbox-log-observer is now invoked for all runs by default, with `plan_id`/`row_id`/`correlation_id` forwarded when present.
 - Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario net_client
-- Result: observer output now records non-null `start`/`end` fields and includes correlation metadata in `book/experiments/entitlement-diff/out/ej/contract/observer.sample.json`.
+- Result: observer output now records non-null `start`/`end` fields and includes correlation metadata in `book/tools/entitlement/fixtures/contract/observer.sample.json` (moved from the experiment contract output).
 - Observation: probe_families and bookmark_roundtrip runs report log_capture_status=requested_failed with `log: Cannot run while sandboxed` across all runs; deny evidence is not captured for these scenarios.
 - Status: partial (runtime outcomes recorded, log capture blocked by sandboxed log invocation)
 
@@ -248,3 +248,62 @@
 - Command: PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario quarantine_lab
 - Result: quarantine_default bundle id resolved via show-profile; quarantine-lab text payload run succeeded with exit_code=0.
 - Status: ok (partial runtime evidence; no execution)
+
+## EntitlementJail update: observer + stream
+- Updated CLI help now exposes `--observe`/`--observer-*` and `--log-stream <path|auto|stdout>`, plus `sandbox-log-observer --duration/--follow --format --output`.
+- `run-xpc` with `--log-stream` now emits `data.log_observer_*` and writes a `.log.observer.json` file (embedded observer report); log stream output is `sandbox_log_stream_report`.
+- `--observe --observer-duration 2 --observer-format jsonl` produced a stream-mode observer report (`mode=stream`, `duration_ms=2000`) and a JSONL output file under `$HOME/Library/Application Support/entitlement-jail/logs/...`.
+- `--log-stream stdout` + `--json-out` works: stream report on stdout, JSON response in file, `log_observer_path` populated.
+- Issue: stream-mode observer reports can mark `observed_deny=true` even when only the filter prelude is present; `deny_lines` include the filter line; `log_rc=15` even when a report is written.
+
+## Log capture path-class revalidation
+- Command: `EJ_LOG_MODE=path_class PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario net_client`
+- Result: `log_capture_status=requested_written` with container tmp paths; log files copied into `out/ej/logs` (`log_copy_error=None`).
+- Issue: stream/observer reports still treat the filter prelude as a deny line (false positive), even when no Sandbox deny line is present.
+
+## EntitlementJail update re-check (observer/stream)
+- Command: `entitlement-jail run-xpc --log-stream <repo-log> --observe --observer-duration 2 --observer-format jsonl --observer-output auto --profile minimal capabilities_snapshot`
+- Result: stream report `log_rc=0`, `observed_deny=false`, no filter prelude line; observer path ends with `.jsonl`.
+- Command: `entitlement-jail run-xpc --log-stream <repo-log> --observe --observer-duration 2 --observer-format jsonl --observer-output auto --profile minimal net_op --op tcp_connect --host 127.0.0.1 --port 9`
+- Result: stream report captures deny line (`observed_deny=true`), but embedded observer report shows `observed_deny=false` with empty `deny_lines`.
+
+## Matrix group metadata re-check
+- Command: `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario matrix_groups --ack-risk fully_injectable`
+- Result: `run-matrix.json` under each group still reports `group_id=jit` and the same profile set (`minimal`, `jit_map_jit`, `jit_rwx_legacy`) for baseline/debug/inject/jit groups.
+
+## probe_families + bookmark_roundtrip re-check
+- Commands: `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario probe_families` and `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario bookmark_roundtrip`
+- Result: no `log_capture_status=requested_failed` or `log: Cannot run while sandboxed` errors; log capture succeeds for these scenarios.
+- Result: fs_xattr set/get/list now return `normalized_outcome=ok` and `fs_op create` reports a concrete `file_path` under the container tmp dir.
+
+## wait-path-class + wait-name re-check
+- Command: `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario wait_path_class`
+- Result: wait-ready line emitted with `mode=fifo` and a concrete wait path under the service tmp dir; run exits 0.
+
+## Deny evidence coverage gap re-checks
+- Downloads scenario: `deny_evidence=not_found` for `fs_listdir` under both minimal and downloads_rw; no log deny lines observed.
+- probe_families filesystem probes: `deny_evidence=not_found` for `fs_xattr` and `fs_coordinated_op`; no log deny lines observed.
+- bookmark_roundtrip: minimal `roundtrip_stat` reports `deny_evidence=captured`; bookmarks_app_scope `roundtrip_stat` still reports `not_found`.
+
+## Observer/stream alignment re-check
+- Commands: re-ran `net_client`, `bookmarks`, `bookmark_roundtrip`, `probe_families`.
+- Result: no mismatches between `deny_evidence` and `log_capture_observed_deny`/`log_observer_observed_deny`; embedded observer reports align with stream logs.
+- Observation: deny lines now include both the sandboxd line and a `MetaData: {...}` line for bookmark-related probes.
+
+## Log capture mode re-checks
+- Command: `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario run_matrix_out`
+- Result: `data.output_dir` matches `--out`, report parsed, outputs copied; no path/matrix errors.
+- Command: `entitlement-jail run-xpc --log-stream auto --observe --observer-duration 2 --observer-format jsonl --observer-output auto --profile minimal capabilities_snapshot`
+- Result: `log_capture_path` and `log_observer_path` use app-managed log paths; stream report is JSON, observer report is JSONL (`.jsonl`); both files exist.
+
+## wait_attach re-check
+- Command: `PYTHONPATH=. python book/experiments/entitlement-diff/run_entitlementjail.py --scenario wait_attach`
+- Result: `log_capture_status=requested_written` and `log_observer_status=requested_written` across wait/attach runs; no deny evidence expected or observed.
+
+## run-matrix group metadata re-check (post-update)
+- Commands: `entitlement-jail run-matrix --group baseline|debug|inject|jit capabilities_snapshot` (inject/jit with `--ack-risk fully_injectable`)
+- Result: `data.group_id` now matches the requested group and profile lists differ per group (baseline: minimal; debug: minimal+debuggable; inject: minimal+plugin_host_relaxed+dyld_env_enabled+fully_injectable; jit: minimal+jit_map_jit+jit_rwx_legacy).
+
+## downloads listdir deny evidence re-check
+- Command: `entitlement-jail run-xpc --profile minimal --log-stream auto --observe --observer-duration 2 --observer-format jsonl --observer-output auto fs_op --op listdir --path-class downloads`
+- Result: `normalized_outcome=permission_error` with `errno=1`, but `deny_evidence=not_found` and no deny lines in stream/observer reports.

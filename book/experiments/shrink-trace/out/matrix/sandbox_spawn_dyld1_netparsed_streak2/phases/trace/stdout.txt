@@ -1,0 +1,11 @@
+[-] Iteration 1: starting log stream
+[-] Iteration 1: executing under sandbox-exec
+[-] Iteration 1 done: rc=1, denies=8, new_rules=7, lines=18
+[-] Iteration 2: starting log stream
+[-] Iteration 2: executing under sandbox-exec
+[-] Iteration 2 done: rc=1, denies=2, new_rules=1, lines=19
+[-] Iteration 3: starting log stream
+[-] Iteration 3: executing under sandbox-exec
+[-] Iteration 3 done: rc=1, denies=1, new_rules=0, lines=19
+[*] No new rules added; stopping.
+Updated sandbox profile: /Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_spawn_dyld1_netparsed_streak2/profiles/trace.sb

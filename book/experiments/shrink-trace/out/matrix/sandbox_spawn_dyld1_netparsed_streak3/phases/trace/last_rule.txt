@@ -1,0 +1,1 @@
+(allow file-read-data (literal "/private/var/db/timezone/tz/2025b.1.0/zoneinfo/posixrules"))

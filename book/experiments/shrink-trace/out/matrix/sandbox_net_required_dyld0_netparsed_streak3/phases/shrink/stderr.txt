@@ -1,0 +1,1703 @@
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) FAILED: Operation not permitted
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) FAILED: Operation not permitted
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) FAILED: Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) FAILED: Operation not permitted
+[required] open(out/hello.txt for write) FAILED: No such file or directory
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) FAILED: Operation not permitted
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) FAILED: Operation not permitted
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) FAILED: Operation not permitted
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/scripts/shrink_instrumented.sh: line 29: 31970 Abort trap: 6           sandbox-exec "${PARAM_ARGS[@]}" -f "${profile}" ${COMMAND}
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: execvp() of 'sandbox_net_required' failed: Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) FAILED: Operation not permitted
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.5Of31RaAGT:13:4:
+	(subpath "/System/Volumes/Preboot/Cryptexes/OS")
+
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.aSW2e5e0lS:13:4:
+	(subpath "/System/Volumes/Preboot/Cryptexes/OS")
+
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.BIo3cimwg3:7:4:
+	(subpath "/System/Library/dyld")
+
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.4Ts2LIOCrl:7:4:
+	(subpath "/System/Library/dyld")
+
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+#NIL:0:0:
+	()
+
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+#NIL:0:0:
+	()
+
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK
+sandbox-exec: no version specified
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.hPkFl8ZrpR:1:2:
+	(allow file-read* file-map-executable)
+

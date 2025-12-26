@@ -1,0 +1,12 @@
+dropped_network: Sandbox: sandbox_target(46309) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46309) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_target(46391) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46391) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_target(46444) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46444) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_target(46484) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46484) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_target(46526) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46526) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_target(46553) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_target(46553) deny(1) network-outbound remote:*:2000

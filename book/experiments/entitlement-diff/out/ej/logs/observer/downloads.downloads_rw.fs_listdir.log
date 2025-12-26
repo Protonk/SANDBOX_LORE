@@ -1,22 +1,30 @@
 {
   "data": {
-    "end": null,
-    "last": "10s",
+    "correlation_id": "D8004BA7-9D6E-4423-BA14-CD86B1D93A9C",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-25 12:59:20",
+    "last": null,
     "layer_attribution": {
       "seatbelt": "observer_only"
     },
     "log_error": null,
     "log_rc": 0,
     "log_stderr": "",
-    "log_stdout": "Timestamp                       (process)[PID]    \n2025-12-24 17:26:51.234792-0800  localhost log[36823]: [com.apple.log:] log run noninteractively, parent: 36822 (sandbox-log-observer), args: '/usr/bin/log' 'show' '--style' 'syslog' '--info' '--debug' '--last' '10s' '--predicate' '((eventMessage CONTAINS[c] \"Sandbox: ProbeService_downloads_rw(36821)\") OR ((eventMessage CONTA",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
     "observed_deny": false,
-    "observed_lines": 2,
-    "pid": 36821,
-    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_downloads_rw(36821)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"36821\")))",
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 87122,
+    "plan_id": "entitlement-diff:ej",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_downloads_rw(87122)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"87122\")))",
     "process_name": "ProbeService_downloads_rw",
-    "start": null
+    "row_id": "downloads.downloads_rw.fs_listdir",
+    "start": "2025-12-25 12:59:10"
   },
-  "generated_at_unix_ms": 1766626011378,
+  "generated_at_unix_ms": 1766696356350,
   "kind": "sandbox_log_observer_report",
   "result": {
     "errno": null,

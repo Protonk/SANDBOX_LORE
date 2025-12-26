@@ -1,0 +1,95 @@
+Filtering the log data using "(processIdentifier == 0 AND senderImagePath CONTAINS "/Sandbox") OR subsystem == "com.apple.sandbox.reporting" OR sender == "Sandbox""
+[{
+  "timezoneName" : "",
+  "messageType" : "Debug",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "Sandbox apply: %s[%d] %s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21221962,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 44236,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:48:30.135464-0800",
+  "machTimestamp" : 82283411706008,
+  "eventMessage" : "Sandbox apply: sandbox-exec[43181] <bytes>",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 632202006626820,
+  "processID" : 0,
+  "senderProgramCounter" : 44236,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "com.apple.sandbox.reporting",
+  "category" : "violation",
+  "threadID" : 21220896,
+  "senderImageUUID" : "39067119-E072-360A-B923-8A0453C4E35D",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 168796,
+        "imageUUID" : "39067119-E072-360A-B923-8A0453C4E35D"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/usr\/libexec\/sandboxd",
+  "senderImagePath" : "\/usr\/libexec\/sandboxd",
+  "timestamp" : "2025-12-25 14:48:30.140878-0800",
+  "machTimestamp" : 82283411835978,
+  "eventMessage" : "Sandbox: sandbox_spawn(43181) deny(1) process-exec* \/usr\/bin\/id\nViolation:       deny(1) process-exec* \/usr\/bin\/id\nProcess:         sandbox_spawn [43181]\nPath:            \/Users\/achyland\/Desktop\/VM-BRIDGE\/SANDBOX_LORE\/book\/experiments\/shrink-trace\/out\/matrix\/sandbox_spawn_dyld0_netparsed_streak3\/artifacts\/bin\/sandbox_spawn\nLoad Address:    0\nIdentifier:      ???\nVersion:         ??? (???)\nCode Type:       unknown (Native)\nParent Process:  ??? [-1]\nResponsible:     \/System\/Applications\/Utilities\/Terminal.app\/Contents\/MacOS\/Terminal\nUser ID:         -1\n\nDate\/Time:       2025-12-25 14:48:30.140 PST\nOS Version:      macOS 14.4.1 (23E224)\nRelease Type:    User\nReport Version:  8\n\nMetaData: {\"primary-filter\":\"path\",\"vnode-type\":\"REGULAR-FILE\",\"platform_binary\":\"no\",\"uid\":501,\"target\":\"\\\/usr\\\/bin\\\/id\",\"operation\":\"process-exec*\",\"flags\":5,\"hardware\":\"J313\",\"profile-in-collection\":false,\"file-mode\":493,\"profile-flags\":0,\"responsible-process-signing-id\":\"com.apple.Terminal\",\"responsible-process-path\":\"\\\/System\\\/Applications\\\/Utilities\\\/Terminal.app\\\/Contents\\\/MacOS\\\/Terminal\",\"apfs-synthetic\":false,\"errno\":1,\"summary\":\"deny(1) process-exec* \\\/usr\\\/bin\\\/id\",\"platform-policy\":false,\"primary-filter-value\":\"\\\/usr\\\/bin\\\/id\",\"action\":\"deny\",\"binary-in-trust-cache\":false,\"rdev\":0,\"process\":\"sandbox_spawn\",\"hardlinked\":false,\"pid\":43181,\"path\":\"\\\/usr\\\/bin\\\/id\",\"policy-description\":\"Sandbox\",\"signing-id\":\"sandbox_spawn\",\"process-path\":\"\\\/Users\\\/achyland\\\/Desktop\\\/VM-BRIDGE\\\/SANDBOX_LORE\\\/book\\\/experiments\\\/shrink-trace\\\/out\\\/matrix\\\/sandbox_spawn_dyld0_netparsed_streak3\\\/artifacts\\\/bin\\\/sandbox_spawn\",\"process_path\":[\"Users\",\"achyland\",\"Desktop\",\"VM-BRIDGE\",\"SANDBOX_LORE\",\"book\",\"experiments\",\"shrink-trace\",\"out\",\"matrix\",\"sandbox_spawn_dyld0_netparsed_streak3\",\"artifacts\",\"bin\",\"sandbox_spawn\"],\"apple-internal\":false,\"normalized_target\":[\"usr\",\"bin\",\"id\"],\"platform-binary\":false,\"build\":\"macOS 14.4.1 (23E224)\",\"release-type\":\"User\"}\n\nFailed to symbolicate: NULL symbolicator",
+  "processImageUUID" : "39067119-E072-360A-B923-8A0453C4E35D",
+  "traceID" : 1235413150863364,
+  "processID" : 65126,
+  "senderProgramCounter" : 168796,
+  "parentActivityIdentifier" : 0
+},{
+  "timezoneName" : "",
+  "messageType" : "Error",
+  "eventType" : "logEvent",
+  "source" : null,
+  "formatString" : "%s",
+  "userID" : 0,
+  "activityIdentifier" : 0,
+  "subsystem" : "",
+  "category" : "",
+  "threadID" : 21221968,
+  "senderImageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B",
+  "backtrace" : {
+    "frames" : [
+      {
+        "imageOffset" : 149364,
+        "imageUUID" : "274C4541-1E1C-3002-9418-7532DA123B8B"
+      }
+    ]
+  },
+  "bootUUID" : "",
+  "processImagePath" : "\/kernel",
+  "senderImagePath" : "\/System\/Library\/Extensions\/Sandbox.kext\/Contents\/MacOS\/Sandbox",
+  "timestamp" : "2025-12-25 14:48:33.571055-0800",
+  "machTimestamp" : 82283494165224,
+  "eventMessage" : "Sandbox: mlhostd(79785) deny(1) mach-lookup com.apple.SystemConfiguration.configd",
+  "processImageUUID" : "81DAE146-7A58-3A72-839B-E0840E1CC03A",
+  "traceID" : 639168443584516,
+  "processID" : 0,
+  "senderProgramCounter" : 149364,
+  "parentActivityIdentifier" : 0
+}

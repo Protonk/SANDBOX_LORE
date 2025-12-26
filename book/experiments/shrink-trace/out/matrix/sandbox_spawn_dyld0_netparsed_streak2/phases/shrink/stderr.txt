@@ -1,0 +1,120 @@
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] posix_spawn(/usr/bin/id) FAILED: Operation not permitted
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] posix_spawn(/usr/bin/id) FAILED: Operation not permitted
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/scripts/shrink_instrumented.sh: line 29: 42717 Abort trap: 6           sandbox-exec "${PARAM_ARGS[@]}" -f "${profile}" ${COMMAND}
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: execvp() of 'sandbox_spawn' failed: Operation not permitted
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.ftOlrH27tz:13:4:
+	(subpath "/System/Volumes/Preboot/Cryptexes/OS")
+
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.dVBAOoLNgn:13:4:
+	(subpath "/System/Volumes/Preboot/Cryptexes/OS")
+
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.O61D5QXVH0:7:4:
+	(subpath "/System/Library/dyld")
+
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.98Jca1PXOG:7:4:
+	(subpath "/System/Library/dyld")
+
+sandbox-exec: syntax error: expecting ')'
+
+Backtrace: 
+#NIL:0:0:
+	()
+
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: syntax error: illegal token
+
+Backtrace: 
+#NIL:0:0:
+	()
+
+[required] /usr/bin/id OK
+[required] /usr/bin/id OK
+sandbox-exec: no version specified
+
+Backtrace: 
+/private/var/folders/ff/qyyjgwss7m110t6fnj2qtpjr0000gn/T/tmp.QV7FM3g65Q:1:2:
+	(allow file-read* file-map-executable)
+

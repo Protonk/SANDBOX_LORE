@@ -1,22 +1,30 @@
 {
   "data": {
-    "end": null,
-    "last": "10s",
+    "correlation_id": "B8DD394C-A905-4BAC-9A44-3CE192352498",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-25 13:08:21",
+    "last": null,
     "layer_attribution": {
       "seatbelt": "observer_only"
     },
     "log_error": null,
     "log_rc": 0,
     "log_stderr": "",
-    "log_stdout": "Timestamp                       (process)[PID]    \n2025-12-24 17:31:57.221666-0800  localhost log[39386]: [com.apple.log:] log run noninteractively, parent: 39385 (sandbox-log-observer), args: '/usr/bin/log' 'show' '--style' 'syslog' '--info' '--debug' '--last' '10s' '--predicate' '((eventMessage CONTAINS[c] \"Sandbox: ProbeService_bookmarks_app_scope(39384)\") OR ((eventMessag",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
     "observed_deny": false,
-    "observed_lines": 2,
-    "pid": 39384,
-    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_bookmarks_app_scope(39384)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"39384\")))",
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 89245,
+    "plan_id": "entitlement-diff:ej",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_bookmarks_app_scope(89245)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"89245\")))",
     "process_name": "ProbeService_bookmarks_app_scope",
-    "start": null
+    "row_id": "bookmarks.bookmarks_app_scope.world_shape",
+    "start": "2025-12-25 13:08:11"
   },
-  "generated_at_unix_ms": 1766626317443,
+  "generated_at_unix_ms": 1766696897427,
   "kind": "sandbox_log_observer_report",
   "result": {
     "errno": null,

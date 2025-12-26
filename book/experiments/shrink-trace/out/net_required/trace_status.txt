@@ -1,3 +1,0 @@
-status=success
-iter=8
-success_streak=2

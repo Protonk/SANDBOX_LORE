@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from typing import Dict
 
-from ej_cli import REPO_ROOT, write_json
+from book.api.entitlementjail.cli import REPO_ROOT, write_json
 from ej_scenarios import (
     scenario_attach_holdopen_default,
     scenario_bookmark_roundtrip,

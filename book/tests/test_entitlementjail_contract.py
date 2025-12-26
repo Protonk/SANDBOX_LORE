@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CONTRACT_DIR = ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "ej" / "contract"
+CONTRACT_DIR = ROOT / "book" / "tools" / "entitlement" / "fixtures" / "contract"
 
 
 def test_entitlementjail_run_xpc_help_contract():
@@ -15,6 +15,12 @@ def test_entitlementjail_run_xpc_help_contract():
         "--log-stream",
         "--log-path-class",
         "--log-predicate",
+        "--observe",
+        "--observer-duration",
+        "--observer-format",
+        "--observer-output",
+        "--observer-follow",
+        "--json-out",
         "--plan-id",
         "--row-id",
         "--correlation-id",
@@ -32,6 +38,10 @@ def test_entitlementjail_observer_help_contract():
         "--start",
         "--end",
         "--last",
+        "--duration",
+        "--follow",
+        "--format",
+        "--output",
         "--plan-id",
         "--row-id",
         "--correlation-id",

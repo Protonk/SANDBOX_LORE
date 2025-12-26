@@ -81,6 +81,32 @@ Preflight (apply-gate avoidance):
   - Force apply even if preflight flags a signature: `SANDBOX_LORE_PREFLIGHT_FORCE=1`
   - Per-profile override in `expected_matrix.json`: `"preflight": {"mode": "off"|"force"|"enforce"}`
 
+### entitlementjail
+
+Definition: Thin Python surface for EntitlementJail.app (`entitlement-jail` CLI + `sandbox-log-observer`).
+
+Role: Run probes across profiles, capture observer/stream deny evidence, and bundle matrix/evidence outputs without binding tooling to experiment paths.
+
+Example:
+```sh
+python - <<'PY'
+from book.api.entitlementjail import cli
+result = cli.run_xpc(
+    profile_id="minimal",
+    service_id="com.yourteam.entitlement-jail.ProbeService_minimal",
+    probe_id="capabilities_snapshot",
+    probe_args=[],
+    log_path=None,
+    plan_id="entitlementjail:sample",
+    row_id="capabilities_snapshot",
+    ack_risk=None,
+)
+print(result.get("stdout_json", {}))
+PY
+```
+
+See `book/api/entitlementjail/README.md` (Contract section) for API usage and contract fixtures.
+
 ## CARTON conversion assessment
 
 - **op_table**: could gain a CARTON-backed query layer if op-table fingerprints/alignments are ever promoted to CARTON mappings; today it is generator/inspection tooling (see `book.api.profile_tools.op_table`), not CARTON IR.

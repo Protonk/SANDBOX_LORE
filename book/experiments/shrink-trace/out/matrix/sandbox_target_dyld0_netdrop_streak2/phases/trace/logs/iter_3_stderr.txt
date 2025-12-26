@@ -1,0 +1,8 @@
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) FAILED: Operation not permitted
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted

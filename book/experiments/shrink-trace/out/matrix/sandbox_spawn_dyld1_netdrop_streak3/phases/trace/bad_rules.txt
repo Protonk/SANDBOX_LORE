@@ -1,0 +1,19 @@
+dropped_network: Sandbox: sandbox_spawn(44218) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_spawn(44330) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: id(44331) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_spawn(44398) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: id(44399) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_spawn(44446) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: id(44447) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: sandbox_spawn(44562) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: id(44563) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_spawn(44601) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: id(44602) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_spawn(44633) deny(1) network-outbound /private/var/run/syslog
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: id(44634) deny(1) network-outbound /private/var/run/syslog

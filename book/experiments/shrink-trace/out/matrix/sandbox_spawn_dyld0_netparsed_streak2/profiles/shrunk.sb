@@ -1,0 +1,12 @@
+(version 1)
+(allow file-read* file-map-executable
+)
+(allow file-read* file-map-executable
+)
+(allow file-read* file-map-executable
+)
+(deny default)
+(allow process-exec* (subpath (param "WORK_DIR")))
+(allow file-read-data (literal "/"))
+(allow process-fork)
+(allow process-exec* (literal "/usr/bin/id"))

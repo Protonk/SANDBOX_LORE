@@ -1,0 +1,1 @@
+(allow file-write-create (literal "/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_net_required_dyld0_netdrop_streak3/out/hello.txt"))

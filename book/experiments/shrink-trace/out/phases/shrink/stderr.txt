@@ -1,0 +1,771 @@
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) FAILED: Operation not permitted
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) FAILED: Operation not permitted
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Connection refused
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) FAILED: Operation not permitted
+[required] open(out/hello.txt for write) FAILED: No such file or directory
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) FAILED: Operation not permitted
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) FAILED: Operation not permitted
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) FAILED: Operation not permitted
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+sandbox-exec: execvp() of 'sandbox_target' failed: Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) FAILED: Operation not permitted
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/scripts/shrink_instrumented.sh: line 29:  8998 Abort trap: 6           sandbox-exec "${PARAM_ARGS[@]}" -f "${profile}" ${COMMAND}
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[optional] connect(127.0.0.1:2000) failed (ignored): Operation not permitted
+sandbox-exec: execvp() of 'sandbox_target' failed: Operation not permitted

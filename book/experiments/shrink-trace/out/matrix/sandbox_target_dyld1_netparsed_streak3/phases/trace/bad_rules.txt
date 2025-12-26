@@ -1,0 +1,1 @@
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))

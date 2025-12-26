@@ -1,0 +1,9 @@
+{
+  "denies_seen": 5,
+  "iter": 8,
+  "new_rules": 0,
+  "reason": "success_streak",
+  "return_code": 0,
+  "status": "success",
+  "success_streak": 2
+}

@@ -1,0 +1,9 @@
+[required] open(/etc/hosts) OK
+[required] read(/etc/hosts) OK
+[required] sysctlbyname(kern.ostype) OK
+[required] getpwuid(getuid()) OK
+[required] username=achyland
+[required] mkdir(out) OK
+[required] open(out/hello.txt for write) OK
+[required] write(out/hello.txt) OK
+[required] connect(127.0.0.1:2000) OK

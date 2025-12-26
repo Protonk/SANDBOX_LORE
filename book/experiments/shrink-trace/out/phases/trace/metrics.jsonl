@@ -1,0 +1,8 @@
+{"iter":1,"return_code":1,"denies_seen":9,"new_rules":9,"profile_lines":20}
+{"iter":2,"return_code":1,"denies_seen":12,"new_rules":9,"profile_lines":29}
+{"iter":3,"return_code":0,"denies_seen":9,"new_rules":3,"profile_lines":32}
+{"iter":4,"return_code":1,"denies_seen":7,"new_rules":3,"profile_lines":35}
+{"iter":5,"return_code":0,"denies_seen":2,"new_rules":0,"profile_lines":35}
+{"iter":6,"return_code":0,"denies_seen":81,"new_rules":13,"profile_lines":48}
+{"iter":7,"return_code":0,"denies_seen":3,"new_rules":0,"profile_lines":48}
+{"iter":8,"return_code":0,"denies_seen":2,"new_rules":0,"profile_lines":48}

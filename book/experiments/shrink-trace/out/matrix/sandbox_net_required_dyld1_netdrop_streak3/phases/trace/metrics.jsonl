@@ -1,0 +1,4 @@
+{"iter":1,"return_code":1,"denies_seen":44,"new_rules":13,"profile_lines":24}
+{"iter":2,"return_code":1,"denies_seen":9,"new_rules":5,"profile_lines":29}
+{"iter":3,"return_code":1,"denies_seen":7,"new_rules":3,"profile_lines":32}
+{"iter":4,"return_code":1,"denies_seen":2,"new_rules":0,"profile_lines":32}

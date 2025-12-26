@@ -1,0 +1,47 @@
+{"event": "precheck", "decision": "ok", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 46, "decision": "removed", "rule": "(allow mach-lookup (global-name \"com.apple.SystemConfiguration.configd\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 45, "decision": "kept_required", "rule": "(allow file-write-data (literal \"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_target_dyld0_netdrop_streak2/out/hello.txt\"))", "fresh_rc": 0, "repeat_rc": 1, "profile_lines": 46}
+{"event": "candidate", "line_number": 44, "decision": "removed", "rule": "(allow file-write-data (literal \"/dev/dtracehelper\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 43, "decision": "removed", "rule": "(allow file-read-data (literal \"/private/var/db/timezone/tz/2025b.1.0/zoneinfo/posixrules\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 42, "decision": "removed", "rule": "(allow file-read-data (literal \"/private/var/db/timezone/tz/2025b.1.0/zoneinfo/UTC\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 41, "decision": "kept_required", "rule": "(allow file-write-create (literal \"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_target_dyld0_netdrop_streak2/out/hello.txt\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 40, "decision": "removed", "rule": "(allow mach-lookup (global-name \"com.apple.diagnosticd\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 39, "decision": "removed", "rule": "(allow mach-lookup (global-name \"com.apple.logd\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 38, "decision": "removed", "rule": "(allow ipc-posix-shm-read-data (literal \"apple.shm.notification_center\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 37, "decision": "kept_required", "rule": "(allow file-write-create (literal \"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_target_dyld0_netdrop_streak2/out\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 36, "decision": "removed", "rule": "(allow file-read-data (literal \"/private/etc/passwd\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 35, "decision": "kept_required", "rule": "(allow mach-lookup (global-name \"com.apple.system.opendirectoryd.libinfo\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 34, "decision": "removed", "rule": "(allow mach-lookup (global-name \"com.apple.system.notification_center\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 33, "decision": "kept_required", "rule": "(allow sysctl-read (sysctl-name \"kern.ostype\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 32, "decision": "kept_required", "rule": "(allow file-read-data (literal \"/private/etc/hosts\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 31, "decision": "removed", "rule": "(allow sysctl-read (sysctl-name \"hw.ephemeral_storage\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 30, "decision": "removed", "rule": "(allow sysctl-read (sysctl-name \"kern.osvariant_status\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 29, "decision": "removed", "rule": "(allow file-read-data (literal \"/dev/dtracehelper\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 28, "decision": "removed", "rule": "(allow file-read-data (literal \"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_target_dyld0_netdrop_streak2/artifacts/bin/sandbox_target\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 27, "decision": "kept_required", "rule": "(allow file-read-data (literal \"/\"))", "fresh_rc": 134, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 26, "decision": "removed", "rule": "(allow sysctl-read (sysctl-name \"kern.bootargs\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 25, "decision": "removed", "rule": "(allow file-write* (literal (param \"DYLD_LOG_PATH\")))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 24, "decision": "removed", "rule": "(allow file-read-metadata (subpath (param \"WORK_DIR\")))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 23, "decision": "kept_required", "rule": "(allow process-exec* (subpath (param \"WORK_DIR\")))", "fresh_rc": 71, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 22, "decision": "removed", "rule": "(allow mach-lookup (global-name \"com.apple.system.DirectoryService.libinfo_v1\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 21, "decision": "removed", "rule": "(allow file-read* file-write-data (literal \"/dev/null\") (literal \"/dev/zero\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 20, "decision": "removed", "rule": "(allow file-read* (literal \"/dev/random\") (literal \"/dev/urandom\"))", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 19, "decision": "kept_required", "rule": "(allow file-read-metadata (subpath \"/\"))", "fresh_rc": 1, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 18, "decision": "kept_deny", "rule": "(deny default)", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 17, "decision": "kept_required", "rule": ")", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 16, "decision": "removed", "rule": "  (subpath \"/private/var/db/dyld\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 15, "decision": "kept_required", "rule": "(allow file-read* file-map-executable", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 14, "decision": "kept_required", "rule": ")", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 13, "decision": "removed", "rule": "  (subpath \"/System/Volumes/Preboot/Cryptexes/OS\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 12, "decision": "removed", "rule": "  (subpath \"/System/Volumes/Preboot/Cryptexes/App/System\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 11, "decision": "removed", "rule": "  (subpath \"/System/Cryptexes/OS\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 10, "decision": "removed", "rule": "  (subpath \"/System/Cryptexes/App\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 9, "decision": "kept_required", "rule": "(allow file-read* file-map-executable", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 8, "decision": "kept_required", "rule": ")", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 7, "decision": "removed", "rule": "  (subpath \"/System/Library/dyld\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 6, "decision": "removed", "rule": "  (subpath \"/usr/lib\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 5, "decision": "removed", "rule": "  (subpath \"/System/Library/PrivateFrameworks\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 4, "decision": "removed", "rule": "  (subpath \"/System/Library/Frameworks\")", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 3, "decision": "kept_required", "rule": "(allow file-read* file-map-executable", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 2, "decision": "removed", "rule": "(debug deny)", "fresh_rc": 0, "repeat_rc": 0, "profile_lines": 46}
+{"event": "candidate", "line_number": 1, "decision": "kept_required", "rule": "(version 1)", "fresh_rc": 65, "repeat_rc": 0, "profile_lines": 46}

@@ -1,0 +1,28 @@
+[-] Iteration 1: starting log stream
+[-] Iteration 1: executing under sandbox-exec
+[-] Iteration 1 done: rc=1, denies=9, new_rules=7, lines=18
+[-] Iteration 2: starting log stream
+[-] Iteration 2: executing under sandbox-exec
+[-] Iteration 2 done: rc=1, denies=1, new_rules=1, lines=19
+[-] Iteration 3: starting log stream
+[-] Iteration 3: executing under sandbox-exec
+[-] Iteration 3 done: rc=0, denies=16, new_rules=7, lines=26
+[-] Iteration 4: starting log stream
+[-] Iteration 4: executing under sandbox-exec
+[-] Iteration 4 done: rc=0, denies=8, new_rules=3, lines=29
+[-] Iteration 5: starting log stream
+[-] Iteration 5: executing under sandbox-exec
+[-] Iteration 5 done: rc=0, denies=68, new_rules=2, lines=31
+[-] Iteration 6: starting log stream
+[-] Iteration 6: executing under sandbox-exec
+[-] Iteration 6 done: rc=0, denies=7, new_rules=0, lines=31
+[-] Success with no new rules; streak 1/3. Continuing.
+[-] Iteration 7: starting log stream
+[-] Iteration 7: executing under sandbox-exec
+[-] Iteration 7 done: rc=0, denies=4, new_rules=0, lines=31
+[-] Success with no new rules; streak 2/3. Continuing.
+[-] Iteration 8: starting log stream
+[-] Iteration 8: executing under sandbox-exec
+[-] Iteration 8 done: rc=0, denies=4, new_rules=0, lines=31
+[+] Success streak 3/3; stopping.
+Updated sandbox profile: /Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/shrink-trace/out/matrix/sandbox_spawn_dyld1_netdrop_streak3/profiles/trace.sb

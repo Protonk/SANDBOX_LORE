@@ -1,3 +1,1 @@
-Filtering the log data using "composedMessage CONTAINS[c] "Sandbox:" OR composedMessage CONTAINS[c] "deny""
-Timestamp                       (process)[PID]    
-2025-12-24 17:32:01.561111-0800  localhost kernel[0]: (Sandbox) Sandbox: ScopedBookmarkAgent(77488) deny(1) file-read-data /Library/Preferences/com.apple.security.plist
+{"data":{"layer_attribution":{"seatbelt":"log_stream"},"log_rc":0,"log_rc_raw":15,"log_stderr":"","log_stdout":"","observed_deny":false,"observed_lines":0,"pid":"89563","predicate":"(eventMessage CONTAINS[c] \"Sandbox: ProbeService_bookmarks_app_scope\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"ProbeService_bookmarks_app_scope\"))","process_name":"ProbeService_bookmarks_app_scope"},"generated_at_unix_ms":1766696905245,"kind":"sandbox_log_stream_report","result":{"exit_code":0,"ok":true},"schema_version":1}

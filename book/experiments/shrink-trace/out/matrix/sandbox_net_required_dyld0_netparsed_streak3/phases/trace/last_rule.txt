@@ -1,0 +1,1 @@
+(allow file-read-metadata (literal "/Library/Caches/com.apple.aned"))

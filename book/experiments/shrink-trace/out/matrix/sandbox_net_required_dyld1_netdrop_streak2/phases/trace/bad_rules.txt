@@ -1,0 +1,13 @@
+dropped_network: Sandbox: sandbox_net_required(32292) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32292) deny(1) network-outbound remote:*:2000
+dropped_network: Sandbox: sandbox_net_required(32378) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32378) deny(1) network-outbound remote:*:2000
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: sandbox_net_required(32430) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32430) deny(1) network-outbound remote:*:2000
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: sandbox_net_required(32474) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32474) deny(1) network-outbound remote:*:2000
+invalid_rule: (allow file-ioctl (literal "/dev/dtracehelper ioctl-command:(_IO \"))
+dropped_network: Sandbox: sandbox_net_required(32518) deny(1) network-outbound /private/var/run/syslog
+dropped_network: Sandbox: sandbox_net_required(32518) deny(1) network-outbound remote:*:2000
