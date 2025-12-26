@@ -1,0 +1,4 @@
+{"t_ns":1766731752683274000,"pid":34774,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766731752683417000,"pid":34774,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766731752750433000,"pid":34774,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766731753774282000,"pid":34774,"msg":{"type":"runner","payload":{"kind":"runner-exception","error":"process with pid 34774 either refused to load frida-agent, or terminated during injection"}}}

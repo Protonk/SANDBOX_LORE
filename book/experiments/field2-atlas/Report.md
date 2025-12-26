@@ -19,16 +19,16 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 - `out/atlas/summary.json` — counts by status to show field2 coverage at a glance.
 
 ## Status
-- Static: `ok` for the seed slice including seed `2560` (characterized static-only).
-- Runtime: **partial** — refreshed via the runtime-checks + runtime-adversarial harness runs and re-derived `runtime_signatures.json`, but the latest runtime-adversarial run is apply-gated (`sandbox_init` EPERM), so current attempts are recorded as `runtime_attempted_blocked`. The atlas now keeps last-known-good runtime results as `runtime_backed_historical` when a historical witness is available. Path normalization evidence is still captured (requested vs normalized) and a dedicated path-alias witness now shows `/tmp` resolving to `/private/tmp`.
-- Atlas: `runtime_attempted_blocked` for the seed slice when the latest run is apply-gated, or `runtime_backed_historical` when an older decision-stage witness exists; rebuilt after the refreshed runtime signatures and static inventory.
+- Static: `ok` for the seed slice including seed `2560` (characterized flow-divert triple token).
+- Runtime: **partial** — refreshed via the launchd clean channel; decision-stage results are current but structural/path mismatches remain (notably `adv:path_edges:allow-subpath` for field2=1), so runtime mappings remain `partial`.
+- Atlas: rebuilt after the refreshed runtime signatures and static inventory; field2=1 is now runtime-attempted with a bounded mismatch packet, and field2=2560 is runtime-backed with a control witness.
 
 ## Case studies (seed slice)
-- Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*) but is currently apply-gated (`sandbox_init` EPERM). The canonicalization boundary is now explicit: the runtime record carries `requested_path=/tmp/...`, `normalized_path=/private/tmp/...`, and a `path_canonicalization_witness` sourced from the `adv:path_alias` twin-probe profile.
-- Field2 5 (`global-name`): Present in `sys:bsd` tag 27 and many mach/path probes; anchors include `preferences/logging` and `/etc/hosts`. Runtime scenario `field2-5-mach-global` (mach-lookup `com.apple.cfprefsd.agent`) is currently apply-gated.
-- Field2 7 (`local`): Present in `sys:sample` tags 3/7/8 and network/mach probes; anchors include `/etc/hosts` and blocked `flow-divert`. Runtime scenario `field2-7-mach-local` is currently apply-gated.
-- Field2 1 (`mount-relative-path`): Added as a nearby static-only neighbor (same ops/profiles as seed0). Anchored via `/etc/hosts` and present in `sys:sample` tag 8; now tied to `adv:path_edges` (`allow-subpath`) but currently apply-gated.
-- Field2 2560 (`flow-divert triple`): Characterized static token for combined domain/type/proto in flow-divert probes; tag0/u16_role=filter_vocab_id with literal `com.apple.flow-divert`, target op `network-outbound`. Runtime scenario `adv:flow_divert_require_all_tcp` attempts a loopback TCP connect under the require-all domain/type/protocol profile and is currently apply-gated.
+- Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*). The canonicalization boundary is explicit: the runtime record carries `requested_path=/tmp/...`, `normalized_path=/private/tmp/...`, and a `path_canonicalization_witness` sourced from the `adv:path_alias` twin-probe profile.
+- Field2 5 (`global-name`): Present in `sys:bsd` tag 27 and many mach/path probes; anchors include `preferences/logging` and `/etc/hosts`. Runtime scenario `field2-5-mach-global` (mach-lookup `com.apple.cfprefsd.agent`) is decision-stage current.
+- Field2 7 (`local`): Present in `sys:sample` tags 3/7/8 and network/mach probes; anchors include `/etc/hosts` and blocked `flow-divert`. Runtime scenario `field2-7-mach-local` is decision-stage current.
+- Field2 1 (`mount-relative-path`): Anchored via `/etc/hosts` and present in `sys:sample` tag 8; runtime scenario `adv:path_edges:allow-subpath` is deny where expected allow. The mismatch is captured as a packet in `book/experiments/runtime-adversarial/out/mismatch_packets.jsonl` with baseline/oracle/normalization controls and labeled `path_normalization_sensitivity`.
+- Field2 2560 (`flow-divert triple`): Characterized static token for combined domain/type/proto in flow-divert probes; tag0/u16_role=filter_vocab_id with literal `com.apple.flow-divert`, target op `network-outbound`. Runtime scenario `adv:flow_divert_require_all_tcp` now yields a decision-stage allow and is paired with a partial-triple control (`adv:flow_divert_partial_tcp`) plus a baseline connect check; the control is currently non-discriminating and is labeled as such in `out/runtime/field2_runtime_results.json`.
 
 ## Evidence & artifacts
 - Seeds: `book/experiments/field2-atlas/field2_seeds.json`
@@ -36,8 +36,9 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 - Runtime: `book/experiments/field2-atlas/out/runtime/field2_runtime_results.json`
 - Atlas: `book/experiments/field2-atlas/out/atlas/{field2_atlas.json,summary.json}`
 - Helpers: `atlas_static.py`, `atlas_runtime.py`, `atlas_build.py`; guardrail `book/tests/test_field2_atlas.py`.
+- Mismatch packets: `book/experiments/runtime-adversarial/out/mismatch_packets.jsonl` (decision-stage mismatch bundles).
 
 ## Next steps
-- Resolve the apply gate blocking runtime-adversarial (sandbox_init EPERM); re-run the harness once a clean apply path is available so runtime-backed statuses can be restored.
-- If apply-gate persists, capture it as a bounded discrepancy (what changed vs prior runs) and keep `runtime_attempted_blocked` statuses explicit rather than forcing allow/deny interpretations.
+- If the path-edge mismatch remains after normalization controls, tighten the expectation or anchor join for field2=1 and keep the mismatch packet updated with an explicit reason.
+- Try a discriminating flow-divert control (alter domain/type/proto filter shape) so field2=2560 has a positive/negative contrast rather than an allow-only witness.
 - Keep the runtime corpus current via the standard harness + validation pipeline, then refresh `atlas_runtime.py` and `atlas_build.py`.

@@ -241,6 +241,7 @@ def normalize_matrix(
     runtime_results: Mapping[str, Any],
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
+    run_id: Optional[str] = None,
 ) -> List[models.RuntimeObservation]:
     """
     Normalize harness output into RuntimeObservation rows.
@@ -249,6 +250,7 @@ def normalize_matrix(
     runtime_results: full parsed runtime_results.json.
     world_id: overrides the world id to stamp on observations (defaults to WORLD_ID).
     harness_version: optional string to tag the harness build/revision.
+    run_id: optional run identifier to stamp on observations.
     """
 
     resolved_world = world_id or expected_matrix.get("world_id") or runtime_results.get("world_id") or models.WORLD_ID
@@ -299,6 +301,7 @@ def normalize_matrix(
                     world_id=resolved_world,
                     profile_id=profile_id,
                     scenario_id=scenario_id,
+                    run_id=run_id,
                     expectation_id=expectation_id,
                     operation=op or "",
                     target=target,
@@ -311,6 +314,11 @@ def normalize_matrix(
                     expected=expected_decision,
                     actual=actual_decision,
                     match=match,
+                    primary_intent=probe.get("primary_intent"),
+                    reached_primary_op=probe.get("reached_primary_op"),
+                    first_denial_op=probe.get("first_denial_op"),
+                    first_denial_filters=probe.get("first_denial_filters"),
+                    decision_path=probe.get("decision_path"),
                     runtime_status=runtime_result.get("status"),
                     errno=runtime_result.get("errno"),
                     errno_name=None,
@@ -321,6 +329,7 @@ def normalize_matrix(
                     runner_info=runtime_result.get("runner_info"),
                     seatbelt_callouts=runtime_result.get("seatbelt_callouts"),
                     entitlement_checks=runtime_result.get("entitlement_checks"),
+                    probe_details=probe.get("probe_details"),
                     violation_summary=probe.get("violation_summary"),
                     command=probe.get("command"),
                     stdout=probe.get("stdout"),
@@ -361,6 +370,7 @@ def normalize_matrix_paths(
     runtime_results_path: Path | str,
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
+    run_id: Optional[str] = None,
 ) -> List[models.RuntimeObservation]:
     """
     Load expected_matrix + runtime_results from disk and return normalized observations.
@@ -368,7 +378,7 @@ def normalize_matrix_paths(
 
     expected_doc = load_json(expected_matrix_path)
     runtime_doc = load_json(runtime_results_path)
-    return normalize_matrix(expected_doc, runtime_doc, world_id=world_id, harness_version=harness_version)
+    return normalize_matrix(expected_doc, runtime_doc, world_id=world_id, harness_version=harness_version, run_id=run_id)
 
 
 def write_matrix_observations(
@@ -377,12 +387,19 @@ def write_matrix_observations(
     out_path: Path | str,
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
+    run_id: Optional[str] = None,
 ) -> Path:
     """
     Normalize events from disk and write them as a JSON array.
     """
 
-    observations = normalize_matrix_paths(expected_matrix_path, runtime_results_path, world_id=world_id, harness_version=harness_version)
+    observations = normalize_matrix_paths(
+        expected_matrix_path,
+        runtime_results_path,
+        world_id=world_id,
+        harness_version=harness_version,
+        run_id=run_id,
+    )
     return write_observations(observations, out_path)
 
 
@@ -391,6 +408,7 @@ def normalize_metadata_results(
     world_id: Optional[str] = None,
     harness_version: Optional[str] = None,
     runner_info: Optional[Mapping[str, Any]] = None,
+    run_id: Optional[str] = None,
 ) -> List[models.RuntimeObservation]:
     """
     Normalize metadata-runner experiment output into RuntimeObservation rows.
@@ -549,6 +567,7 @@ def normalize_metadata_results(
                 world_id=resolved_world,
                 profile_id=profile_id,
                 scenario_id=scenario_id,
+                run_id=run_id,
                 expectation_id=expectation_id,
                 operation=op,
                 target=target,

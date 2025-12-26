@@ -1,0 +1,6 @@
+{"t_ns":1766731780843162000,"pid":35019,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766731780843277000,"pid":35019,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766731780903629000,"pid":35019,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766731781942123000,"pid":35019,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766731781943881000,"pid":35019,"msg":{"type":"send","payload":{"kind":"smoke","pid":35019,"arch":"arm64","platform":"darwin","code_signing_policy":"optional"}}}
+{"t_ns":1766731782742108000,"pid":35019,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

@@ -1,0 +1,42 @@
+{
+  "data": {
+    "correlation_id": "D2538AFB-6101-45B0-88D7-4235E9A28F72",
+    "deny_lines": [
+      "2025-12-25 23:27:46.961079-0800  localhost kernel[0]: (Sandbox) Sandbox: ProbeService_fully_injectable(43088) deny(1) mach-lookup com.apple.coresymbolicationd"
+    ],
+    "duration_ms": null,
+    "end": "2025-12-25 23:27:56",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    \n2025-12-25 23:27:46.961079-0800  localhost kernel[0]: (Sandbox) Sandbox: ProbeService_fully_injectable(43088) deny(1) mach-lookup com.apple.coresymbolicationd",
+    "log_truncated": false,
+    "mode": "show",
+    "observed_deny": true,
+    "observed_lines": 2,
+    "observer_schema_version": 1,
+    "pid": 43088,
+    "plan_id": "frida-testing:ej-frida",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_fully_injectable(43088)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"43088\")))",
+    "process_name": "ProbeService_fully_injectable",
+    "row_id": "frida-testing:ej-frida.21f80aa0-315d-4b55-9f74-de0098be48f8",
+    "start": "2025-12-25 23:27:40"
+  },
+  "generated_at_unix_ms": 1766734072377,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 1
+}

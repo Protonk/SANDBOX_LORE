@@ -5,6 +5,14 @@
     "runtime": {
       "field2": 0,
       "filter_name": "path",
+      "last_successful_witness": {
+        "failure_stage": "probe",
+        "probe_name": "allow-tmp",
+        "profile_id": "adv:path_edges",
+        "result": "deny",
+        "runtime_status": "errno",
+        "source": "book/experiments/runtime-adversarial/out/historical_runtime_events.json"
+      },
       "notes": "Multiple anchor witnesses in probe-op-structure; present in canonical sys:sample decode (tag 7). Structural coverage ok; runtime to be refreshed.",
       "path_canonicalization_witness": {
         "probes": [
@@ -34,8 +42,9 @@
         "anchor_match": null,
         "expected": "allow",
         "latest_attempt": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": "probe_nonzero_exit",
+          "failure_stage": "probe",
+          "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
           "runtime_status": "errno",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
@@ -43,8 +52,8 @@
         "operation": "file-read*",
         "path_canonicalization_detected": true,
         "path_observation": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": "probe_nonzero_exit",
+          "failure_stage": "probe",
           "normalized_path": "/private/tmp/runtime-adv/edges/a",
           "normalized_path_source": "observed_path",
           "observed_path": "/private/tmp/runtime-adv/edges/a",
@@ -57,7 +66,7 @@
         "profile_id": "adv:path_edges",
         "result": "deny",
         "result_source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "result_tier": "historical_mapping",
+        "result_tier": "current",
         "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
         "scenario_id": "field2-0-path_edges",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
@@ -75,7 +84,7 @@
           "status": "partial"
         }
       ],
-      "status": "runtime_backed_historical",
+      "status": "runtime_backed",
       "target_ops": [
         "file-read-data",
         "file-write-data"
@@ -480,7 +489,7 @@
       ],
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
     },
-    "status": "runtime_backed_historical",
+    "status": "runtime_backed",
     "target_ops": [
       "file-read-data",
       "file-write-data"
@@ -492,13 +501,22 @@
     "runtime": {
       "field2": 1,
       "filter_name": "mount-relative-path",
+      "last_successful_witness": {
+        "failure_stage": "probe",
+        "probe_name": "allow-subpath",
+        "profile_id": "adv:path_edges",
+        "result": "deny",
+        "runtime_status": "errno",
+        "source": "book/experiments/runtime-adversarial/out/historical_runtime_events.json"
+      },
       "notes": "Nearby static-only candidate riding the same path ops/profiles as seed0; added to exercise atlas growth. No runtime probe yet.",
       "runtime_candidate": {
         "anchor_match": null,
         "expected": "allow",
         "latest_attempt": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": "probe_nonzero_exit",
+          "failure_stage": "probe",
+          "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
           "runtime_status": "errno",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
@@ -506,8 +524,8 @@
         "operation": "file-read*",
         "path_canonicalization_detected": true,
         "path_observation": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": "probe_nonzero_exit",
+          "failure_stage": "probe",
           "normalized_path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
           "normalized_path_source": "observed_path",
           "observed_path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
@@ -520,7 +538,7 @@
         "profile_id": "adv:path_edges",
         "result": "deny",
         "result_source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "result_tier": "historical_mapping",
+        "result_tier": "current",
         "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
         "scenario_id": "field2-1-path-subpath",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
@@ -533,7 +551,7 @@
           "status": "partial"
         }
       ],
-      "status": "runtime_backed_historical",
+      "status": "runtime_backed",
       "target_ops": [
         "file-read-data",
         "file-write-data"
@@ -882,7 +900,7 @@
       ],
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
     },
-    "status": "runtime_backed_historical",
+    "status": "runtime_backed",
     "target_ops": [
       "file-read-data",
       "file-write-data"
@@ -894,35 +912,44 @@
     "runtime": {
       "field2": 5,
       "filter_name": "global-name",
+      "last_successful_witness": {
+        "failure_stage": null,
+        "probe_name": "allow-cfprefsd",
+        "profile_id": "adv:mach_simple_allow",
+        "result": "allow",
+        "runtime_status": "success",
+        "source": "book/experiments/runtime-adversarial/out/historical_runtime_events.json"
+      },
       "notes": "Global-name appears on multiple anchors (mach + path probes) and in sys:bsd tag 27; runtime backed by mach-lookup traces on this host.",
       "runtime_candidate": {
         "anchor_match": null,
         "expected": "allow",
         "latest_attempt": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
-          "runtime_status": "errno",
+          "failure_kind": null,
+          "failure_stage": null,
+          "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "mapping_status": "partial",
         "operation": "mach-lookup",
         "path_canonicalization_detected": false,
         "path_observation": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": null,
+          "failure_stage": null,
           "normalized_path": null,
           "normalized_path_source": null,
           "observed_path": null,
           "observed_path_source": null,
           "requested_path": null,
-          "runtime_status": "errno",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "probe_name": "allow-cfprefsd",
         "profile_id": "adv:mach_simple_allow",
-        "result": "deny",
+        "result": "allow",
         "result_source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "result_tier": "historical_mapping",
+        "result_tier": "current",
         "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb",
         "scenario_id": "field2-5-mach-global",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
@@ -940,7 +967,7 @@
           "status": "partial"
         }
       ],
-      "status": "runtime_backed_historical",
+      "status": "runtime_backed",
       "target_ops": [
         "mach-lookup"
       ],
@@ -1255,7 +1282,7 @@
       ],
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
     },
-    "status": "runtime_backed_historical",
+    "status": "runtime_backed",
     "target_ops": [
       "mach-lookup"
     ]
@@ -1266,35 +1293,44 @@
     "runtime": {
       "field2": 7,
       "filter_name": "local",
+      "last_successful_witness": {
+        "failure_stage": null,
+        "probe_name": "allow-cfprefsd-local",
+        "profile_id": "adv:mach_local_literal",
+        "result": "allow",
+        "runtime_status": "success",
+        "source": "book/experiments/runtime-adversarial/out/historical_runtime_events.json"
+      },
       "notes": "Local (mach/socket) has multiple anchor witnesses, including a blocked flow-divert path; present in sys:sample tags 3/7/8. Runtime probes exist for mach/local combos; reuse them here.",
       "runtime_candidate": {
         "anchor_match": null,
         "expected": "allow",
         "latest_attempt": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
-          "runtime_status": "errno",
+          "failure_kind": null,
+          "failure_stage": null,
+          "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "mapping_status": "partial",
         "operation": "mach-lookup",
         "path_canonicalization_detected": false,
         "path_observation": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": null,
+          "failure_stage": null,
           "normalized_path": null,
           "normalized_path_source": null,
           "observed_path": null,
           "observed_path_source": null,
           "requested_path": null,
-          "runtime_status": "errno",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "probe_name": "allow-cfprefsd-local",
         "profile_id": "adv:mach_local_literal",
-        "result": "deny",
+        "result": "allow",
         "result_source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "result_tier": "historical_mapping",
+        "result_tier": "current",
         "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb",
         "scenario_id": "field2-7-mach-local",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
@@ -1312,7 +1348,7 @@
           "status": "blocked"
         }
       ],
-      "status": "runtime_backed_historical",
+      "status": "runtime_backed",
       "target_ops": [
         "mach-lookup"
       ],
@@ -1504,7 +1540,7 @@
       ],
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
     },
-    "status": "runtime_backed_historical",
+    "status": "runtime_backed",
     "target_ops": [
       "mach-lookup"
     ]
@@ -1513,41 +1549,73 @@
     "field2": 2560,
     "filter_name": "local",
     "runtime": {
+      "control_witness": {
+        "baseline": {
+          "record": {
+            "name": "baseline:adv:flow_divert_require_all_tcp:tcp-loopback",
+            "operation": "network-outbound",
+            "probe_name": "tcp-loopback",
+            "profile_id": "adv:flow_divert_require_all_tcp",
+            "status": "allow",
+            "target": "127.0.0.1:62646"
+          },
+          "source": "book/experiments/runtime-adversarial/out/baseline_results.json"
+        },
+        "discriminating": false,
+        "notes": "control non-discriminating (same decision as require-all variant)",
+        "partial_triple": {
+          "actual": "allow",
+          "expected": "allow",
+          "probe_name": "tcp-loopback",
+          "profile_id": "adv:flow_divert_partial_tcp",
+          "runtime_status": "success",
+          "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
+        }
+      },
       "field2": 2560,
       "filter_name": "local",
+      "last_successful_witness": {
+        "failure_stage": null,
+        "probe_name": "tcp-loopback",
+        "profile_id": "adv:flow_divert_require_all_tcp",
+        "result": "allow",
+        "runtime_status": "success",
+        "source": "book/experiments/runtime-adversarial/out/historical_runtime_events.json"
+      },
       "notes": "Characterized static token for flow-divert triples (domain+type+proto) on tag0 with literal com.apple.flow-divert; derived from flow-divert-2560 matrix decode. No runtime witness; world-scoped.",
       "runtime_candidate": {
         "anchor_match": null,
         "expected": "allow",
         "latest_attempt": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
-          "runtime_status": "errno",
+          "failure_kind": null,
+          "failure_stage": null,
+          "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "mapping_status": "partial",
         "operation": "network-outbound",
         "path_canonicalization_detected": false,
         "path_observation": {
-          "failure_kind": "sandbox_init_failed",
-          "failure_stage": "apply",
+          "failure_kind": null,
+          "failure_stage": null,
           "normalized_path": null,
           "normalized_path_source": null,
           "observed_path": null,
           "observed_path_source": null,
           "requested_path": null,
-          "runtime_status": "errno",
+          "runtime_status": "success",
           "source": "book/experiments/runtime-adversarial/out/runtime_events.normalized.json"
         },
         "probe_name": "tcp-loopback",
         "profile_id": "adv:flow_divert_require_all_tcp",
-        "result": "deny",
+        "result": "allow",
         "result_source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "result_tier": "historical_mapping",
+        "result_tier": "current",
         "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb",
         "scenario_id": "field2-2560-flow-divert",
         "source": "book/graph/mappings/runtime/runtime_signatures.json",
-        "target": "127.0.0.1"
+        "target": "127.0.0.1:62646"
       },
       "seed_anchors": [
         {
@@ -1557,7 +1625,7 @@
           "status": "characterized"
         }
       ],
-      "status": "runtime_backed_historical",
+      "status": "runtime_backed",
       "target_ops": [
         "network-outbound"
       ],
@@ -1648,7 +1716,7 @@
       ],
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
     },
-    "status": "runtime_backed_historical",
+    "status": "runtime_backed",
     "target_ops": [
       "network-outbound"
     ]

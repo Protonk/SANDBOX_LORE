@@ -26,6 +26,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from book.api.runtime_tools.core import normalize as runtime_normalize
+from book.api.runtime_tools.mapping import story as runtime_story
 RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
@@ -38,7 +39,11 @@ ADV_EXPECTED = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "
 ADV_RESULTS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_results.json"
 ADV_MISMATCH = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "mismatch_summary.json"
 IMPACT_MAP = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "impact_map.json"
+ADV_RUNTIME_OPS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "ops.json"
+ADV_RUNTIME_SCENARIOS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "scenarios.json"
 RUNTIME_COVERAGE = ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_coverage.json"
+RUN_MANIFEST_CHECKS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "run_manifest.json"
+RUN_MANIFEST_ADV = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "run_manifest.json"
 
 
 def run_smoke_validation():
@@ -63,6 +68,21 @@ def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"missing input: {path}")
     return json.loads(path.read_text())
+
+
+def load_run_manifest(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return {}
+
+
+def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
+    channel = manifest.get("channel")
+    if channel != "launchd_clean":
+        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
 
 
 def load_baseline_world() -> str:
@@ -246,6 +266,32 @@ def summarize_field2(field2_ir: Dict[str, Any]) -> Dict[str, Any]:
     unknown_nodes = field2_ir.get("unknown_nodes", {})
     return {"profiles": summary, "unknown_nodes": unknown_nodes}
 
+
+def merge_story(base_doc: Dict[str, Any], extra_doc: Dict[str, Any]) -> bool:
+    base_ops = base_doc.get("ops")
+    extra_ops = extra_doc.get("ops")
+    if not isinstance(base_ops, dict) or not isinstance(extra_ops, dict):
+        return False
+    merged = False
+    for key, extra_entry in extra_ops.items():
+        if key not in base_ops:
+            base_ops[key] = extra_entry
+            merged = True
+            continue
+        base_entry = base_ops.get(key) or {}
+        base_scenarios = base_entry.get("scenarios") or []
+        extra_scenarios = extra_entry.get("scenarios") or []
+        if not extra_scenarios:
+            continue
+        seen = {s.get("scenario_id") for s in base_scenarios if isinstance(s, dict)}
+        appended = [s for s in extra_scenarios if isinstance(s, dict) and s.get("scenario_id") not in seen]
+        if appended:
+            base_entry["scenarios"] = list(base_scenarios) + appended
+            base_ops[key] = base_entry
+            merged = True
+    base_doc["ops"] = base_ops
+    return merged
+
 def extract_runtime_profile_from_command(cmd: Any) -> str | None:
     if not isinstance(cmd, list) or not cmd:
         return None
@@ -287,21 +333,44 @@ def main() -> None:
     coverage_doc = load_json(RUNTIME_COVERAGE)
     impact_map: Dict[str, Any] = load_json(IMPACT_MAP) if IMPACT_MAP.exists() else {}
     world_id = load_baseline_world()
+    run_manifest_checks = load_run_manifest(RUN_MANIFEST_CHECKS)
+    if not run_manifest_checks:
+        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
+    require_clean_manifest(run_manifest_checks, "runtime-checks")
+    run_manifest_adv = load_run_manifest(RUN_MANIFEST_ADV)
 
     expected_matrix_doc = runtime_ir.get("expected_matrix") or {}
     events = list(runtime_ir.get("events") or [])
 
     # Merge in runtime-adversarial expected/results for additional runtime-backed ops (e.g., network-outbound).
     if ADV_EXPECTED.exists():
+        if not run_manifest_adv:
+            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
+        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
         adv_expected = load_json(ADV_EXPECTED)
         expected_matrix_doc.setdefault("profiles", {}).update((adv_expected.get("profiles") or {}))
     if ADV_RESULTS.exists():
+        if not run_manifest_adv:
+            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
+        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
         adv_obs = (
             runtime_normalize.normalize_matrix_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id)
             if ADV_EXPECTED.exists()
             else []
         )
         events.extend([runtime_normalize.observation_to_dict(o) for o in adv_obs])
+
+    adv_story_inputs = []
+    if ADV_RUNTIME_OPS.exists() and ADV_RUNTIME_SCENARIOS.exists():
+        if not run_manifest_adv:
+            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
+        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
+        adv_story = runtime_story.build_story(ADV_RUNTIME_OPS, ADV_RUNTIME_SCENARIOS)
+        if merge_story(story_doc, adv_story):
+            adv_story_inputs = [
+                str(ADV_RUNTIME_OPS.relative_to(ROOT)),
+                str(ADV_RUNTIME_SCENARIOS.relative_to(ROOT)),
+            ]
 
     extra_jobs = set()
     if ADV_EXPECTED.exists() or ADV_RESULTS.exists() or ADV_MISMATCH.exists():
@@ -327,6 +396,9 @@ def main() -> None:
     cov_meta = coverage_doc.get("metadata") or {}
     status = cov_meta.get("status") or "partial"
     notes = "Derived from runtime_story with coverage gating; status cannot exceed runtime_coverage."
+    notes += " Decision-stage inputs require launchd_clean run manifests."
+    if adv_story_inputs:
+        notes += " Includes adversarial scenarios from runtime-adversarial runtime_mappings."
     if disallowed:
         status = "partial"
         notes += f" Disallowed mismatches present: {len(disallowed)}."
@@ -340,6 +412,25 @@ def main() -> None:
         str(ADV_EXPECTED.relative_to(ROOT)),
         str(ADV_RESULTS.relative_to(ROOT)),
     ]
+    if adv_story_inputs:
+        inputs.extend(adv_story_inputs)
+    run_manifest_inputs = []
+    run_ids = []
+    repo_root_contexts = []
+    if run_manifest_checks:
+        run_manifest_inputs.append(str(RUN_MANIFEST_CHECKS.relative_to(ROOT)))
+        if run_manifest_checks.get("run_id"):
+            run_ids.append(run_manifest_checks.get("run_id"))
+        if run_manifest_checks.get("repo_root_context"):
+            repo_root_contexts.append(run_manifest_checks.get("repo_root_context"))
+    if run_manifest_adv:
+        run_manifest_inputs.append(str(RUN_MANIFEST_ADV.relative_to(ROOT)))
+        if run_manifest_adv.get("run_id"):
+            run_ids.append(run_manifest_adv.get("run_id"))
+        if run_manifest_adv.get("repo_root_context"):
+            repo_root_contexts.append(run_manifest_adv.get("repo_root_context"))
+    if run_manifest_inputs:
+        inputs.extend(run_manifest_inputs)
 
     classified_matrix, classification_summary = classify_expected(expected_matrix_doc, expectation_index)
 
@@ -356,6 +447,11 @@ def main() -> None:
             "provenance": {
                 "runtime_story": story_doc.get("meta"),
                 "runtime_coverage": cov_meta,
+            },
+            "run_provenance": {
+                "run_ids": run_ids,
+                "manifests": run_manifest_inputs,
+                "repo_root_contexts": repo_root_contexts,
             },
         },
         "signatures": profiles,

@@ -1,0 +1,31 @@
+# Hardened Runtime – Plan
+
+## Purpose
+Build a clean, provenance-stamped decision-stage runtime lane for non-VFS sandbox surfaces on this host. The focus is on operation-based policy evaluation and the acquire-before vs acquire-after boundary for non-file resources (both treated as hypotheses to validate or falsify on this host).
+
+## Scope
+- World: `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` only.
+- Non-VFS operations only (mach/XPC, sysctl, IOKit, process-info, system-socket, notifications).
+- VFS canonicalization is explicitly out-of-scope except as a recorded observation field.
+
+## Inputs
+- SBPL profiles under `book/experiments/hardened-runtime/sb/`.
+- Clean channel execution via `run_via_launchctl.py`.
+- Runtime harness via `book.api.runtime_tools`.
+
+## Outputs
+- `out/run_manifest.json` (clean channel provenance bundle).
+- `out/baseline_results.json` (unsandboxed baseline comparator).
+- `out/runtime_results.json` + `out/runtime_events.normalized.json` (decision-stage evidence).
+- `out/mismatch_packets.jsonl` (bounded mismatch packets with enumerated reasons).
+- `out/oracle_results.json` (sandbox_check oracle lane only).
+- `out/summary.json` + `out/summary.md` (status and coverage).
+
+## Plan
+1. Stand up the clean-channel harness (launchd staging + apply preflight + run manifest gating).
+2. Seed initial non-VFS families (mach-lookup, sysctl-read) with baseline and oracle lanes.
+3. Expand families (IOKit, process-info, system-socket, notifications) using the same baseline/oracle/mismatch scaffolding.
+4. Add acquire-before vs acquire-after probes for non-file resources to map the warmup boundary (partial, under exploration).
+
+## Status
+- Initial scaffold only; no hardened-runtime runs recorded yet.

@@ -202,6 +202,18 @@ def main() -> int:
     ap.add_argument("--hold-open-seconds", type=int, default=20, help="Seconds to keep the service open")
     ap.add_argument("--trigger-delay-s", type=float, default=0.0, help="Delay before triggering wait")
     ap.add_argument("--attach-timeout-s", type=float, default=5.0, help="Attach PID lookup timeout")
+    ap.add_argument(
+        "--attach-stage",
+        choices=["wait", "post-trigger"],
+        default="wait",
+        help="Attach before trigger (wait) or after trigger (post-trigger)",
+    )
+    ap.add_argument(
+        "--post-trigger-attach-delay-s",
+        type=float,
+        default=0.0,
+        help="Delay before post-trigger attach",
+    )
     ap.add_argument("--selftest-path", help="Override selftest path for fs_open_selftest.js")
     ap.add_argument("--selftest-name", default="ej_noaccess", help="File name under tmp_dir")
     ap.add_argument("--skip-capabilities", action="store_true", help="Skip capabilities_snapshot")
@@ -280,14 +292,22 @@ def main() -> int:
         "t0_ns": now_ns(),
         "pid_source": "pgrep",
         "pid_candidates": [],
+        "attach_stage": args.attach_stage,
     }
 
     frida_capture: Optional[FridaCapture] = None
     frida_attach_error: Optional[str] = None
 
-    def on_wait_ready(wait_info: Dict[str, object]) -> None:
+    def attach_now(stage: str, info: Optional[Dict[str, object]] = None) -> None:
         nonlocal frida_capture, frida_attach_error
-        attach_meta["wait_info"] = wait_info
+        attach_meta["attach_stage"] = stage
+        if info is not None:
+            if stage == "post-trigger":
+                attach_meta["trigger_info"] = info
+            else:
+                attach_meta["wait_info"] = info
+        if stage == "post-trigger" and args.post_trigger_attach_delay_s > 0:
+            time.sleep(args.post_trigger_attach_delay_s)
         if not process_name:
             attach_meta["pid_error"] = "missing_process_name"
             return
@@ -308,6 +328,16 @@ def main() -> int:
             repo_root=repo_root,
         )
         frida_attach_error = frida_capture.attach()
+
+    def on_wait_ready(wait_info: Dict[str, object]) -> None:
+        if args.attach_stage == "wait":
+            attach_now("wait", wait_info)
+        else:
+            attach_meta["wait_info"] = wait_info
+
+    def on_trigger(trigger_info: Dict[str, object]) -> None:
+        if args.attach_stage == "post-trigger":
+            attach_now("post-trigger", trigger_info)
 
     wait_args: List[str] = [
         "--attach",
@@ -330,6 +360,7 @@ def main() -> int:
         row_id=row_id,
         trigger_delay_s=args.trigger_delay_s,
         on_wait_ready=on_wait_ready,
+        on_trigger=on_trigger,
         use_profile=use_profile,
     )
     write_json(ej_dir / "run_xpc.json", record)

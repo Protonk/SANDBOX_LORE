@@ -1,0 +1,4 @@
+(version 1)
+(allow default)
+
+(allow process-info-pidinfo (with report))

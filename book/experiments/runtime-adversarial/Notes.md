@@ -11,3 +11,7 @@
 - Added historical runtime event retention (`out/historical_runtime_events.json`) to keep last decision-stage witnesses when new runs are apply-gated.
 - Added launchctl procinfo + libproc parent-chain attribution to `out/apply_preflight.json` and a `run_via_launchctl.py` helper for a clean launchd-based run that requires successful apply preflight.
 - Latest apply preflight shows `launchctl procinfo` requires root and `log show` is blocked (`Cannot run while sandboxed`); parent-chain attribution points at the Codex launcher path.
+- Launchctl run initially failed with `Operation not permitted` opening `run_adversarial.py` from a Desktop path; updated `run_via_launchctl.py` to stage the repo into `/private/tmp` and sync outputs back.
+- Launchd-staged run succeeded: `out/runtime_results.json` now carries decision-stage outcomes plus sandbox_check callouts; `out/apply_preflight.json` shows `apply_ok: true`.
+- Clean-channel runs now emit `out/run_manifest.json` with run_id + baseline host metadata; runtime mapping generators refuse to promote decision-stage artifacts unless `channel=launchd_clean`.
+- Added unsandboxed baseline controls (`out/baseline_results.json`), a normalization control probe (`allow-subpath-normalized`), a flow-divert partial-triple profile (`flow_divert_partial_tcp`), and mismatch packets (`out/mismatch_packets.jsonl`) with enumerated mismatch reasons.

@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any, Dict
 
@@ -30,6 +31,7 @@ RUNNER = Path(__file__).with_name("run_adversarial.py")
 OUT_ROOT = Path(__file__).with_name("out")
 LAUNCHCTL_DIR = OUT_ROOT / "launchctl"
 STAGING_BASE = Path("/private/tmp/sandbox-lore-launchctl")
+BASELINE = REPO_ROOT / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "world-baseline.json"
 
 
 def write_json(path: Path, payload: Dict[str, Any]) -> None:
@@ -45,12 +47,13 @@ def build_plist(
     seatbelt_callout: bool,
     repo_root: Path,
     runner_path: Path,
+    run_id: str,
 ) -> Dict[str, Any]:
     program = str(PYTHON if PYTHON.exists() else sys.executable)
     args = [program, str(runner_path)]
     if require_clean:
         args.append("--require-clean")
-    env = {"PYTHONPATH": str(repo_root)}
+    env = {"PYTHONPATH": str(repo_root), "SANDBOX_LORE_RUN_ID": run_id}
     if seatbelt_callout:
         env["SANDBOX_LORE_SEATBELT_CALLOUT"] = "1"
     return {
@@ -75,6 +78,66 @@ def wait_for_output(stdout_path: Path, stderr_path: Path, timeout: float) -> boo
     return False
 
 
+def load_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return {}
+
+
+def load_baseline() -> Dict[str, Any]:
+    return load_json(BASELINE)
+
+
+def build_run_manifest(
+    *,
+    run_id: str,
+    label: str,
+    repo_root: Path,
+    stage_used: bool,
+    stage_root: Path | None,
+    job_out_dir: Path,
+    out_root: Path,
+    require_clean: bool,
+    seatbelt_callout: bool,
+    stdout_rel: str | None,
+    stderr_rel: str | None,
+) -> Dict[str, Any]:
+    apply_preflight_path = out_root / "apply_preflight.json"
+    apply_preflight = load_json(apply_preflight_path)
+    baseline = load_baseline()
+    world_id = apply_preflight.get("world_id") or baseline.get("world_id")
+    apply_ok = apply_preflight.get("apply_ok") if apply_preflight else None
+    channel = "launchd_clean" if require_clean and apply_ok else "launchd_unclean"
+    return {
+        "run_id": run_id,
+        "world_id": world_id,
+        "baseline_ref": path_utils.to_repo_relative(BASELINE, repo_root=repo_root) if BASELINE.exists() else None,
+        "host": baseline.get("host") if isinstance(baseline.get("host"), dict) else None,
+        "channel": channel,
+        "label": label,
+        "runner": path_utils.to_repo_relative(RUNNER, repo_root=repo_root),
+        "stage_used": stage_used,
+        "stage_root": str(stage_root) if stage_root else None,
+        "repo_root_context": str(stage_root) if stage_used and stage_root else str(repo_root),
+        "staged_output_root": str(job_out_dir) if stage_used else None,
+        "output_root": path_utils.to_repo_relative(out_root, repo_root=repo_root),
+        "stdout": stdout_rel,
+        "stderr": stderr_rel,
+        "seatbelt_callout": seatbelt_callout,
+        "apply_preflight": {
+            "path": path_utils.to_repo_relative(apply_preflight_path, repo_root=repo_root)
+            if apply_preflight_path.exists()
+            else None,
+            "record": apply_preflight or None,
+        },
+        "sandbox_check_self": (apply_preflight.get("sandbox_check_self") if apply_preflight else None),
+        "fingerprint": (apply_preflight.get("fingerprint") if apply_preflight else None),
+    }
+
+
 def stage_repo(label: str) -> Path:
     stage_root = STAGING_BASE / label
     if stage_root.exists():
@@ -92,7 +155,14 @@ def stage_repo(label: str) -> Path:
     return stage_root
 
 
-def sync_outputs(staged_out: Path, dest_out: Path, stdout_path: Path, stderr_path: Path) -> None:
+def sync_outputs(
+    staged_out: Path,
+    dest_out: Path,
+    stdout_path: Path,
+    stderr_path: Path,
+    repo_root: Path,
+) -> Dict[str, str]:
+    sync: Dict[str, str] = {}
     if staged_out.exists():
         shutil.copytree(
             staged_out,
@@ -103,9 +173,14 @@ def sync_outputs(staged_out: Path, dest_out: Path, stdout_path: Path, stderr_pat
     dest_launchctl = dest_out / "launchctl"
     dest_launchctl.mkdir(parents=True, exist_ok=True)
     if stdout_path.exists():
-        shutil.copy2(stdout_path, dest_launchctl / stdout_path.name)
+        dest_stdout = dest_launchctl / stdout_path.name
+        shutil.copy2(stdout_path, dest_stdout)
+        sync["stdout"] = path_utils.to_repo_relative(dest_stdout, repo_root)
     if stderr_path.exists():
-        shutil.copy2(stderr_path, dest_launchctl / stderr_path.name)
+        dest_stderr = dest_launchctl / stderr_path.name
+        shutil.copy2(stderr_path, dest_stderr)
+        sync["stderr"] = path_utils.to_repo_relative(dest_stderr, repo_root)
+    return sync
 
 
 def parse_args() -> argparse.Namespace:
@@ -130,6 +205,7 @@ def main() -> int:
         return 2
 
     label = args.label or f"sandbox-lore.runtime-adversarial.{os.getpid()}"
+    run_id = str(uuid.uuid4())
     stage_root: Path | None = None
     stage_used = not args.no_stage
     if stage_used:
@@ -159,12 +235,14 @@ def main() -> int:
         seatbelt_callout=seatbelt_callout,
         repo_root=repo_root,
         runner_path=runner_path,
+        run_id=run_id,
     )
     plist_path.write_bytes(plistlib.dumps(plist))
 
     target = f"gui/{os.getuid()}"
     result: Dict[str, Any] = {
         "label": label,
+        "run_id": run_id,
         "target": target,
         "plist": path_utils.to_repo_relative(plist_path, repo_root=REPO_ROOT),
         "stdout": path_utils.to_repo_relative(stdout_path, repo_root=REPO_ROOT),
@@ -200,7 +278,11 @@ def main() -> int:
 
     if stage_used and stage_root:
         try:
-            sync_outputs(job_out_dir, OUT_ROOT, stdout_path, stderr_path)
+            sync_paths = sync_outputs(job_out_dir, OUT_ROOT, stdout_path, stderr_path, REPO_ROOT)
+            if sync_paths:
+                result["stdout_original"] = result.get("stdout")
+                result["stderr_original"] = result.get("stderr")
+                result.update(sync_paths)
         except Exception as exc:
             result["stage_sync_error"] = str(exc)
         if not args.keep_stage:
@@ -208,6 +290,22 @@ def main() -> int:
                 shutil.rmtree(stage_root)
             except Exception as exc:
                 result["stage_cleanup_error"] = str(exc)
+
+    run_manifest = build_run_manifest(
+        run_id=run_id,
+        label=label,
+        repo_root=REPO_ROOT,
+        stage_used=stage_used,
+        stage_root=stage_root,
+        job_out_dir=job_out_dir,
+        out_root=OUT_ROOT,
+        require_clean=require_clean,
+        seatbelt_callout=seatbelt_callout,
+        stdout_rel=result.get("stdout"),
+        stderr_rel=result.get("stderr"),
+    )
+    write_json(OUT_ROOT / "run_manifest.json", run_manifest)
+    result["run_manifest"] = path_utils.to_repo_relative(OUT_ROOT / "run_manifest.json", repo_root=REPO_ROOT)
 
     write_json(LAUNCHCTL_DIR / "launchctl_last_run.json", result)
     print(f"[+] launchctl run recorded in {LAUNCHCTL_DIR / 'launchctl_last_run.json'}")

@@ -21,12 +21,20 @@ BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 RUNTIME_STORY = ROOT / "book/graph/mappings/runtime_cuts/runtime_story.json"
 IMPACT_MAP = ROOT / "book/experiments/runtime-adversarial/out/impact_map.json"
 OUT = ROOT / "book/graph/mappings/runtime/runtime_coverage.json"
+RUN_MANIFEST_CHECKS = ROOT / "book/experiments/runtime-checks/out/run_manifest.json"
+RUN_MANIFEST_ADV = ROOT / "book/experiments/runtime-adversarial/out/run_manifest.json"
 
 
 def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
+    channel = manifest.get("channel")
+    if channel != "launchd_clean":
+        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
 
 
 def baseline_world() -> str:
@@ -53,6 +61,15 @@ def main() -> None:
     world_id = baseline_world()
     story = load_json(RUNTIME_STORY)
     impact_map = load_json(IMPACT_MAP)
+    run_manifest_checks = load_json(RUN_MANIFEST_CHECKS)
+    if not run_manifest_checks:
+        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
+    require_clean_manifest(run_manifest_checks, "runtime-checks")
+    if IMPACT_MAP.exists():
+        run_manifest_adv = load_json(RUN_MANIFEST_ADV)
+        if not run_manifest_adv:
+            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
+        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
 
     story_meta = story.get("meta") or {}
     story_inputs = story_meta.get("inputs") or ["book/graph/mappings/runtime_cuts/runtime_story.json"]

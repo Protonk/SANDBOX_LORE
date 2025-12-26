@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-25T22:13:52Z",
+  "generated_at": "2025-12-26T05:53:43Z",
   "profiles": [
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_bookmarks_app_scope",
@@ -21,30 +21,6 @@
       ]
     },
     {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_debuggable",
-      "entitlements": {
-        "com.apple.security.app-sandbox": true,
-        "com.apple.security.cs.disable-library-validation": true,
-        "com.apple.security.get-task-allow": true
-      },
-      "entitlements_error": null,
-      "kind": "probe",
-      "label": "debuggable",
-      "profile_id": "debuggable",
-      "risk_reasons": [
-        "get_task_allow",
-        "disable_library_validation"
-      ],
-      "risk_tier": 1,
-      "service_name": "ProbeService_debuggable",
-      "tags": [
-        "debuggable",
-        "disable_library_validation",
-        "probe",
-        "sandbox"
-      ]
-    },
-    {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_downloads_rw",
       "entitlements": {
         "com.apple.security.app-sandbox": true,
@@ -59,27 +35,6 @@
       "service_name": "ProbeService_downloads_rw",
       "tags": [
         "downloads_rw",
-        "probe",
-        "sandbox"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_dyld_env_enabled",
-      "entitlements": {
-        "com.apple.security.app-sandbox": true,
-        "com.apple.security.cs.allow-dyld-environment-variables": true
-      },
-      "entitlements_error": null,
-      "kind": "probe",
-      "label": "dyld env enabled",
-      "profile_id": "dyld_env_enabled",
-      "risk_reasons": [
-        "allow_dyld_env"
-      ],
-      "risk_tier": 2,
-      "service_name": "ProbeService_dyld_env_enabled",
-      "tags": [
-        "dyld_env",
         "probe",
         "sandbox"
       ]
@@ -106,9 +61,9 @@
       "risk_tier": 2,
       "service_name": "ProbeService_fully_injectable",
       "tags": [
-        "debuggable",
         "disable_library_validation",
         "dyld_env",
+        "get_task_allow",
         "jit",
         "probe",
         "rwx_legacy",
@@ -116,44 +71,26 @@
       ]
     },
     {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_map_jit",
+      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_get-task-allow",
       "entitlements": {
         "com.apple.security.app-sandbox": true,
-        "com.apple.security.cs.allow-jit": true
+        "com.apple.security.cs.disable-library-validation": true,
+        "com.apple.security.get-task-allow": true
       },
       "entitlements_error": null,
       "kind": "probe",
-      "label": "jit map jit",
-      "profile_id": "jit_map_jit",
+      "label": "get-task-allow",
+      "profile_id": "get-task-allow",
       "risk_reasons": [
-        "allow_jit"
+        "get_task_allow",
+        "disable_library_validation"
       ],
-      "risk_tier": 2,
-      "service_name": "ProbeService_jit_map_jit",
+      "risk_tier": 1,
+      "service_name": "ProbeService_get-task-allow",
       "tags": [
-        "jit",
+        "disable_library_validation",
+        "get_task_allow",
         "probe",
-        "sandbox"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_rwx_legacy",
-      "entitlements": {
-        "com.apple.security.app-sandbox": true,
-        "com.apple.security.cs.allow-unsigned-executable-memory": true
-      },
-      "entitlements_error": null,
-      "kind": "probe",
-      "label": "jit rwx legacy",
-      "profile_id": "jit_rwx_legacy",
-      "risk_reasons": [
-        "allow_unsigned_exec_mem"
-      ],
-      "risk_tier": 2,
-      "service_name": "ProbeService_jit_rwx_legacy",
-      "tags": [
-        "probe",
-        "rwx_legacy",
         "sandbox"
       ]
     },
@@ -190,27 +127,6 @@
       "service_name": "ProbeService_net_client",
       "tags": [
         "network_client",
-        "probe",
-        "sandbox"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_plugin_host_relaxed",
-      "entitlements": {
-        "com.apple.security.app-sandbox": true,
-        "com.apple.security.cs.disable-library-validation": true
-      },
-      "entitlements_error": null,
-      "kind": "probe",
-      "label": "plugin host relaxed",
-      "profile_id": "plugin_host_relaxed",
-      "risk_reasons": [
-        "disable_library_validation"
-      ],
-      "risk_tier": 1,
-      "service_name": "ProbeService_plugin_host_relaxed",
-      "tags": [
-        "disable_library_validation",
         "probe",
         "sandbox"
       ]

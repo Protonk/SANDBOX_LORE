@@ -83,7 +83,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25116}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25116}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63697}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63697}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "allow-ok-deep",
@@ -154,7 +154,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25117}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25117}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63698}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63698}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-blocked",
@@ -225,7 +225,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25118}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25118}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63699}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63699}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-outside",
@@ -296,7 +296,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25119}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25119}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63700}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63700}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-ok-root",
@@ -367,7 +367,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25120}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25120}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63701}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63701}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-ok-deep",
@@ -438,7 +438,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25121}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25121}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63702}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63702}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-blocked",
@@ -509,7 +509,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25122}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25122}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63703}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63703}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-outside",
@@ -580,7 +580,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25123}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":25123}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63704}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":63704}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
@@ -669,7 +669,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25124}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25124}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63705}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63705}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "allow-ok-deep",
@@ -740,7 +740,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25125}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25125}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63706}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63706}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-blocked",
@@ -811,7 +811,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25126}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25126}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63707}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63707}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-outside",
@@ -882,7 +882,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25127}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25127}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63708}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63708}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-ok-root",
@@ -953,7 +953,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25128}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25128}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63709}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63709}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/allowed.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-ok-deep",
@@ -1024,7 +1024,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25129}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25129}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63710}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63710}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/ok/deep/nested.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-blocked",
@@ -1095,7 +1095,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25130}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25130}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63711}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63711}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-outside",
@@ -1166,7 +1166,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25131}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":25131}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63712}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":63712}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/struct/outside.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
@@ -1255,7 +1255,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25132}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25132}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63713}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63713}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-private",
@@ -1326,7 +1326,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25133}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25133}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63714}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63714}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "allow-subpath",
@@ -1397,7 +1397,78 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25134}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25134}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/item.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63715}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63715}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/item.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+      },
+      {
+        "name": "allow-subpath-normalized",
+        "expectation_id": "adv:path_edges:allow-subpath-normalized",
+        "operation": "file-read*",
+        "path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+        "expected": "deny",
+        "actual": "deny",
+        "match": true,
+        "runtime_result": {
+          "status": "errno",
+          "errno": -6,
+          "runtime_result_schema_version": 1,
+          "tool_marker_schema_version": 2,
+          "failure_stage": "probe",
+          "failure_kind": "probe_nonzero_exit",
+          "apply_report": {
+            "api": "sandbox_init",
+            "rc": 0,
+            "errno": 0,
+            "errbuf": null,
+            "err_class": "ok",
+            "err_class_source": "none"
+          },
+          "runner_info": {
+            "entrypoint": "sandbox_runner",
+            "apply_model": "exec_wrapper",
+            "apply_timing": "pre_exec",
+            "preexisting_sandbox_suspected": false,
+            "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+            "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+            "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+          },
+          "seatbelt_callouts": [
+            {
+              "tool": "seatbelt-callout",
+              "marker_schema_version": 2,
+              "stage": "preflight",
+              "api": "sandbox_check_by_audit_token",
+              "operation": "file-read*",
+              "filter_type": 0,
+              "filter_type_name": "path",
+              "check_type": 1073741824,
+              "varargs_count": 1,
+              "argument": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+              "no_report": true,
+              "token_status": "ok",
+              "token_mach_kr": 0,
+              "rc": 1,
+              "errno": 0,
+              "decision": "deny",
+              "no_report_reason": null
+            }
+          ]
+        },
+        "violation_summary": null,
+        "path_observation": {
+          "observed_path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+          "observed_path_source": "unsandboxed_fd_path"
+        },
+        "command": [
+          "book/experiments/runtime-checks/sandbox_runner",
+          "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb",
+          "--",
+          "book/api/runtime_tools/native/file_probe/file_probe",
+          "read",
+          "/private/tmp/runtime-adv/edges/okdir/item.txt"
+        ],
+        "exit_code": -6,
+        "stdout": "",
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63716}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63716}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/edges/okdir/item.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "deny-dotdot",
@@ -1468,7 +1539,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25135}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25135}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/../blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63717}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63717}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/../blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-tmp",
@@ -1539,7 +1610,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25136}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25136}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63718}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63718}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-private",
@@ -1610,7 +1681,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25137}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25137}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63719}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63719}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/edges/a\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-subpath",
@@ -1681,7 +1752,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25138}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25138}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/item.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63720}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63720}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/item.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "write-dotdot",
@@ -1752,7 +1823,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25139}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":25139}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/../blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63721}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":63721}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-write*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/edges/okdir/../blocked.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
@@ -1841,7 +1912,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":25140}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":25140}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/alias/allow.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":63722}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":63722}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/tmp/runtime-adv/alias/allow.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       },
       {
         "name": "alias-private",
@@ -1912,7 +1983,7 @@
         ],
         "exit_code": -6,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":25141}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":25141}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/alias/allow.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":63723}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":63723}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"file-read*\",\"filter_type\":0,\"filter_type_name\":\"path\",\"check_type\":1073741824,\"varargs_count\":1,\"argument\":\"/private/tmp/runtime-adv/alias/allow.txt\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":1,\"errno\":0,\"decision\":\"deny\"}\n"
       }
     ],
     "notes": "runtime results diverged from expected allow/deny matrix"
@@ -1996,7 +2067,7 @@
         ],
         "exit_code": 0,
         "stdout": "{\"kr\":0}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":25142}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":25142}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":63724}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":63724}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       },
       {
         "name": "deny-bogus",
@@ -2062,7 +2133,7 @@
         ],
         "exit_code": 1,
         "stdout": "{\"kr\":1100}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":25143}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":25143}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":63725}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":63725}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       }
     ]
   },
@@ -2145,7 +2216,7 @@
         ],
         "exit_code": 0,
         "stdout": "{\"kr\":0}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":25144}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":25144}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":63726}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":63726}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       },
       {
         "name": "deny-bogus",
@@ -2211,7 +2282,7 @@
         ],
         "exit_code": 1,
         "stdout": "{\"kr\":1100}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":25145}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":25145}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":63727}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":63727}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       }
     ]
   },
@@ -2294,7 +2365,7 @@
         ],
         "exit_code": 0,
         "stdout": "{\"kr\":0}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":25146}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":25146}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":63728}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":63728}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       },
       {
         "name": "deny-bogus-local",
@@ -2360,7 +2431,7 @@
         ],
         "exit_code": 1,
         "stdout": "{\"kr\":1102}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":25147}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":25147}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":63729}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":63729}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       }
     ]
   },
@@ -2443,7 +2514,7 @@
         ],
         "exit_code": 0,
         "stdout": "{\"kr\":0}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":25148}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":25148}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":63730}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":63730}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.cfprefsd.agent\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       },
       {
         "name": "deny-bogus-local",
@@ -2509,7 +2580,7 @@
         ],
         "exit_code": 1,
         "stdout": "{\"kr\":1102}\n",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":25149}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":25149}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":63731}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":63731}\n{\"tool\":\"seatbelt-callout\",\"marker_schema_version\":2,\"stage\":\"preflight\",\"api\":\"sandbox_check_by_audit_token\",\"operation\":\"mach-lookup\",\"filter_type\":5,\"filter_type_name\":\"global-name\",\"check_type\":1073741829,\"varargs_count\":1,\"argument\":\"com.apple.sandboxadversarial.fake\",\"no_report\":true,\"token_status\":\"ok\",\"token_mach_kr\":0,\"rc\":0,\"errno\":0,\"decision\":\"allow\"}\n"
       }
     ]
   },
@@ -2532,7 +2603,7 @@
         "name": "tcp-loopback",
         "expectation_id": "adv:net_outbound_allow:tcp-loopback",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54932",
+        "path": "127.0.0.1:62646",
         "expected": "allow",
         "actual": "allow",
         "match": true,
@@ -2572,17 +2643,17 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54932"
+          "62646"
         ],
         "exit_code": 0,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":25150}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":25150}\nConnection to 127.0.0.1 port 54932 [tcp/*] succeeded!\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":63732}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":63732}\nConnection to 127.0.0.1 port 62646 [tcp/*] succeeded!\n"
       },
       {
         "name": "tcp-loopback-2",
         "expectation_id": "adv:net_outbound_allow:tcp-loopback-2",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54933",
+        "path": "127.0.0.1:62647",
         "expected": "allow",
         "actual": "allow",
         "match": true,
@@ -2622,11 +2693,11 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54933"
+          "62647"
         ],
         "exit_code": 0,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":25151}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":25151}\nConnection to 127.0.0.1 port 54933 [tcp/*] succeeded!\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":63733}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":63733}\nConnection to 127.0.0.1 port 62647 [tcp/*] succeeded!\n"
       }
     ]
   },
@@ -2649,7 +2720,7 @@
         "name": "tcp-loopback",
         "expectation_id": "adv:net_outbound_deny:tcp-loopback",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54932",
+        "path": "127.0.0.1:62646",
         "expected": "deny",
         "actual": "deny",
         "match": true,
@@ -2689,17 +2760,17 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54932"
+          "62646"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":25152}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":25152}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":63734}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":63734}\n"
       },
       {
         "name": "tcp-loopback-2",
         "expectation_id": "adv:net_outbound_deny:tcp-loopback-2",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54933",
+        "path": "127.0.0.1:62647",
         "expected": "deny",
         "actual": "deny",
         "match": true,
@@ -2739,11 +2810,11 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54933"
+          "62647"
         ],
         "exit_code": 1,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":25153}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":25153}\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":63735}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb\",\"pid\":63735}\n"
       }
     ]
   },
@@ -2766,7 +2837,7 @@
         "name": "tcp-loopback",
         "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54932",
+        "path": "127.0.0.1:62646",
         "expected": "allow",
         "actual": "allow",
         "match": true,
@@ -2806,17 +2877,17 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54932"
+          "62646"
         ],
         "exit_code": 0,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":25154}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":25154}\nConnection to 127.0.0.1 port 54932 [tcp/*] succeeded!\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":63736}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":63736}\nConnection to 127.0.0.1 port 62646 [tcp/*] succeeded!\n"
       },
       {
         "name": "tcp-loopback-2",
         "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback-2",
         "operation": "network-outbound",
-        "path": "127.0.0.1:54933",
+        "path": "127.0.0.1:62647",
         "expected": "allow",
         "actual": "allow",
         "match": true,
@@ -2856,11 +2927,128 @@
           "-w",
           "2",
           "127.0.0.1",
-          "54933"
+          "62647"
         ],
         "exit_code": 0,
         "stdout": "",
-        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":25155}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":25155}\nConnection to 127.0.0.1 port 54933 [tcp/*] succeeded!\n"
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":63737}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":63737}\nConnection to 127.0.0.1 port 62647 [tcp/*] succeeded!\n"
+      }
+    ]
+  },
+  "adv:flow_divert_partial_tcp": {
+    "status": "ok",
+    "profile_path": "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb",
+    "base_profile_path": "book/experiments/runtime-adversarial/sb/flow_divert_partial_tcp.sb",
+    "preflight": {
+      "tool": "book/tools/preflight",
+      "preflight_schema_version": 1,
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "input_kind": "sbpl_path",
+      "input_ref": "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb",
+      "classification": "no_known_apply_gate_signature",
+      "signature": null,
+      "findings": []
+    },
+    "probes": [
+      {
+        "name": "tcp-loopback",
+        "expectation_id": "adv:flow_divert_partial_tcp:tcp-loopback",
+        "operation": "network-outbound",
+        "path": "127.0.0.1:62646",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null,
+          "runtime_result_schema_version": 1,
+          "tool_marker_schema_version": 2,
+          "failure_stage": null,
+          "failure_kind": null,
+          "apply_report": {
+            "api": "sandbox_init",
+            "rc": 0,
+            "errno": 0,
+            "errbuf": null,
+            "err_class": "ok",
+            "err_class_source": "none"
+          },
+          "runner_info": {
+            "entrypoint": "sandbox_runner",
+            "apply_model": "exec_wrapper",
+            "apply_timing": "pre_exec",
+            "preexisting_sandbox_suspected": false,
+            "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+            "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+            "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+          },
+          "seatbelt_callouts": null
+        },
+        "violation_summary": null,
+        "command": [
+          "book/experiments/runtime-checks/sandbox_runner",
+          "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb",
+          "--",
+          "/usr/bin/nc",
+          "-z",
+          "-w",
+          "2",
+          "127.0.0.1",
+          "62646"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb\",\"pid\":63738}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb\",\"pid\":63738}\nConnection to 127.0.0.1 port 62646 [tcp/*] succeeded!\n"
+      },
+      {
+        "name": "tcp-loopback-2",
+        "expectation_id": "adv:flow_divert_partial_tcp:tcp-loopback-2",
+        "operation": "network-outbound",
+        "path": "127.0.0.1:62647",
+        "expected": "allow",
+        "actual": "allow",
+        "match": true,
+        "runtime_result": {
+          "status": "success",
+          "errno": null,
+          "runtime_result_schema_version": 1,
+          "tool_marker_schema_version": 2,
+          "failure_stage": null,
+          "failure_kind": null,
+          "apply_report": {
+            "api": "sandbox_init",
+            "rc": 0,
+            "errno": 0,
+            "errbuf": null,
+            "err_class": "ok",
+            "err_class_source": "none"
+          },
+          "runner_info": {
+            "entrypoint": "sandbox_runner",
+            "apply_model": "exec_wrapper",
+            "apply_timing": "pre_exec",
+            "preexisting_sandbox_suspected": false,
+            "entrypoint_path": "book/experiments/runtime-checks/sandbox_runner",
+            "entrypoint_sha256": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e",
+            "tool_build_id": "797d7d72a2807a72e87a5fb578024d66b3dd0bd61da36d756467e38d0f39063e"
+          },
+          "seatbelt_callouts": null
+        },
+        "violation_summary": null,
+        "command": [
+          "book/experiments/runtime-checks/sandbox_runner",
+          "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb",
+          "--",
+          "/usr/bin/nc",
+          "-z",
+          "-w",
+          "2",
+          "127.0.0.1",
+          "62647"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb\",\"pid\":63739}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_partial_tcp.adv_flow_divert_partial_tcp.runtime.sb\",\"pid\":63739}\nConnection to 127.0.0.1 port 62647 [tcp/*] succeeded!\n"
       }
     ]
   }

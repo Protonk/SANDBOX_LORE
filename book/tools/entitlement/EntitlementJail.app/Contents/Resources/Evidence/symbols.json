@@ -21,49 +21,9 @@
       ]
     },
     {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_debuggable",
-      "id": "com.yourteam.entitlement-jail.ProbeService_debuggable",
-      "rel_path": "Contents/XPCServices/ProbeService_debuggable.xpc/Contents/MacOS/ProbeService_debuggable",
-      "symbols": [
-        "ej_connect",
-        "ej_dlopen",
-        "ej_getaddrinfo",
-        "ej_mmap",
-        "ej_munmap",
-        "ej_open",
-        "ej_probe_dlopen_external",
-        "ej_probe_fs_op",
-        "ej_probe_fs_op_wait",
-        "ej_probe_jit_map_jit",
-        "ej_probe_jit_rwx_legacy",
-        "ej_probe_net_op",
-        "ej_sendto"
-      ]
-    },
-    {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_downloads_rw",
       "id": "com.yourteam.entitlement-jail.ProbeService_downloads_rw",
       "rel_path": "Contents/XPCServices/ProbeService_downloads_rw.xpc/Contents/MacOS/ProbeService_downloads_rw",
-      "symbols": [
-        "ej_connect",
-        "ej_dlopen",
-        "ej_getaddrinfo",
-        "ej_mmap",
-        "ej_munmap",
-        "ej_open",
-        "ej_probe_dlopen_external",
-        "ej_probe_fs_op",
-        "ej_probe_fs_op_wait",
-        "ej_probe_jit_map_jit",
-        "ej_probe_jit_rwx_legacy",
-        "ej_probe_net_op",
-        "ej_sendto"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_dyld_env_enabled",
-      "id": "com.yourteam.entitlement-jail.ProbeService_dyld_env_enabled",
-      "rel_path": "Contents/XPCServices/ProbeService_dyld_env_enabled.xpc/Contents/MacOS/ProbeService_dyld_env_enabled",
       "symbols": [
         "ej_connect",
         "ej_dlopen",
@@ -101,29 +61,9 @@
       ]
     },
     {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_map_jit",
-      "id": "com.yourteam.entitlement-jail.ProbeService_jit_map_jit",
-      "rel_path": "Contents/XPCServices/ProbeService_jit_map_jit.xpc/Contents/MacOS/ProbeService_jit_map_jit",
-      "symbols": [
-        "ej_connect",
-        "ej_dlopen",
-        "ej_getaddrinfo",
-        "ej_mmap",
-        "ej_munmap",
-        "ej_open",
-        "ej_probe_dlopen_external",
-        "ej_probe_fs_op",
-        "ej_probe_fs_op_wait",
-        "ej_probe_jit_map_jit",
-        "ej_probe_jit_rwx_legacy",
-        "ej_probe_net_op",
-        "ej_sendto"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_jit_rwx_legacy",
-      "id": "com.yourteam.entitlement-jail.ProbeService_jit_rwx_legacy",
-      "rel_path": "Contents/XPCServices/ProbeService_jit_rwx_legacy.xpc/Contents/MacOS/ProbeService_jit_rwx_legacy",
+      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_get-task-allow",
+      "id": "com.yourteam.entitlement-jail.ProbeService_get-task-allow",
+      "rel_path": "Contents/XPCServices/ProbeService_get-task-allow.xpc/Contents/MacOS/ProbeService_get-task-allow",
       "symbols": [
         "ej_connect",
         "ej_dlopen",
@@ -164,26 +104,6 @@
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_net_client",
       "id": "com.yourteam.entitlement-jail.ProbeService_net_client",
       "rel_path": "Contents/XPCServices/ProbeService_net_client.xpc/Contents/MacOS/ProbeService_net_client",
-      "symbols": [
-        "ej_connect",
-        "ej_dlopen",
-        "ej_getaddrinfo",
-        "ej_mmap",
-        "ej_munmap",
-        "ej_open",
-        "ej_probe_dlopen_external",
-        "ej_probe_fs_op",
-        "ej_probe_fs_op_wait",
-        "ej_probe_jit_map_jit",
-        "ej_probe_jit_rwx_legacy",
-        "ej_probe_net_op",
-        "ej_sendto"
-      ]
-    },
-    {
-      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_plugin_host_relaxed",
-      "id": "com.yourteam.entitlement-jail.ProbeService_plugin_host_relaxed",
-      "rel_path": "Contents/XPCServices/ProbeService_plugin_host_relaxed.xpc/Contents/MacOS/ProbeService_plugin_host_relaxed",
       "symbols": [
         "ej_connect",
         "ej_dlopen",
@@ -321,5 +241,5 @@
       ]
     }
   ],
-  "generated_at": "2025-12-25T22:13:52Z"
+  "generated_at": "2025-12-26T05:53:43Z"
 }

@@ -1,0 +1,15 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+  "status": "ok",
+  "expected_profiles": [
+    "hardened:mach_lookup",
+    "hardened:sysctl_read",
+    "hardened:process_info_allow",
+    "hardened:process_info_deny",
+    "hardened:notifications",
+    "hardened:signal_self_allow",
+    "hardened:signal_self_deny"
+  ],
+  "mismatch_counts": {}
+}

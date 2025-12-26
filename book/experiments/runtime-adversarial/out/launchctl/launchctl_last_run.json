@@ -1,30 +1,31 @@
 {
-  "label": "sandbox-lore.runtime-adversarial.clean2",
+  "label": "sandbox-lore.runtime-adversarial.63656",
+  "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
   "target": "gui/501",
-  "plist": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.clean2.plist",
-  "stdout": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.clean2.stdout.txt",
-  "stderr": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.clean2.stderr.txt",
+  "plist": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.plist",
+  "stdout": "book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.stdout.txt",
+  "stderr": "book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.stderr.txt",
   "seatbelt_callout": true,
   "stage_used": true,
-  "stage_root": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2",
+  "stage_root": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656",
   "commands": [
     [
       "/bin/launchctl",
       "bootstrap",
       "gui/501",
-      "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.clean2.plist"
+      "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.plist"
     ],
     [
       "/bin/launchctl",
       "kickstart",
       "-k",
-      "gui/501/sandbox-lore.runtime-adversarial.clean2"
+      "gui/501/sandbox-lore.runtime-adversarial.63656"
     ],
     [
       "/bin/launchctl",
       "bootout",
       "gui/501",
-      "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.clean2/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.clean2.plist"
+      "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.plist"
     ]
   ],
   "bootstrap": {
@@ -42,5 +43,8 @@
     "rc": 0,
     "stderr": "",
     "stdout": ""
-  }
+  },
+  "stdout_original": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.stdout.txt",
+  "stderr_original": "/private/tmp/sandbox-lore-launchctl/sandbox-lore.runtime-adversarial.63656/book/experiments/runtime-adversarial/out/launchctl/sandbox-lore.runtime-adversarial.63656.stderr.txt",
+  "run_manifest": "book/experiments/runtime-adversarial/out/run_manifest.json"
 }

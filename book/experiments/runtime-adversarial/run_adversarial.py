@@ -9,10 +9,13 @@ from __future__ import annotations
 import argparse
 import ctypes
 import ctypes.util
+import fcntl
 import json
 import os
 import plistlib
+import socket
 import socketserver
+import errno
 import subprocess
 import sys
 import threading
@@ -41,6 +44,7 @@ WORLD_PATH = REPO_ROOT / "book" / "world" / "sonoma-14.4.1-23E224-arm64" / "worl
 ADVERSARIAL_SUMMARY = REPO_ROOT / "book" / "graph" / "mappings" / "runtime" / "adversarial_summary.json"
 APPLY_PREFLIGHT_PROFILE = SB_DIR / "apply_preflight_allow.sb"
 APPLY_PREFLIGHT_OUT = OUT_DIR / "apply_preflight.json"
+BASELINE_RESULTS = OUT_DIR / "baseline_results.json"
 HISTORICAL_EVENTS = OUT_DIR / "historical_runtime_events.json"
 HISTORICAL_RESULTS = OUT_DIR / "historical_runtime_results.json"
 SANDBOX_RUNNER = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_runner"
@@ -159,6 +163,122 @@ def _entitlement_info(path: Path) -> Dict[str, Any]:
         info["error"] = str(exc)
     _ENTITLEMENTS_CACHE[key] = info
     return info
+
+
+def _sandbox_check_self() -> Dict[str, Any]:
+    info: Dict[str, Any] = {"source": "sandbox_check"}
+    try:
+        lib = ctypes.CDLL("libsystem_sandbox.dylib", use_errno=True)
+        fn = lib.sandbox_check
+        fn.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int]
+        fn.restype = ctypes.c_int
+        rc = fn(os.getpid(), None, 0)
+        err = ctypes.get_errno()
+        info["rc"] = int(rc)
+        if err:
+            info["errno"] = int(err)
+            info["errno_name"] = errno.errorcode.get(err)
+    except Exception as exc:
+        info["error"] = str(exc)
+    return info
+
+
+def _baseline_file_read(path: str) -> Dict[str, Any]:
+    record: Dict[str, Any] = {"operation": "file-read*", "target": path}
+    try:
+        fd = os.open(path, os.O_RDONLY)
+    except OSError as exc:
+        record["status"] = "deny"
+        record["errno"] = exc.errno
+        record["errno_name"] = errno.errorcode.get(exc.errno)
+        record["observed_path_source"] = "unsandboxed_error"
+        return record
+    try:
+        buf = fcntl.fcntl(fd, fcntl.F_GETPATH, b"\0" * 1024)
+        observed = buf.split(b"\0", 1)[0].decode("utf-8", errors="replace")
+        record["status"] = "allow"
+        record["observed_path"] = observed
+        record["observed_path_source"] = "unsandboxed_fd_path"
+    except OSError as exc:
+        record["status"] = "deny"
+        record["errno"] = exc.errno
+        record["errno_name"] = errno.errorcode.get(exc.errno)
+        record["observed_path_source"] = "unsandboxed_error"
+    finally:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+    return record
+
+
+def _baseline_network_connect(target: str, timeout: float = 2.0) -> Dict[str, Any]:
+    record: Dict[str, Any] = {"operation": "network-outbound", "target": target}
+    host = target
+    port = None
+    if ":" in target:
+        host, port_str = target.rsplit(":", 1)
+        try:
+            port = int(port_str)
+        except ValueError:
+            port = None
+    if port is None:
+        record["status"] = "deny"
+        record["error"] = "missing_port"
+        return record
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            record["status"] = "allow"
+    except OSError as exc:
+        record["status"] = "deny"
+        record["errno"] = exc.errno
+        record["errno_name"] = errno.errorcode.get(exc.errno)
+        record["error"] = str(exc)
+    return record
+
+
+def build_baseline_results(world_id: str, run_id: Optional[str], loopback_targets: List[str]) -> Dict[str, Any]:
+    results: List[Dict[str, Any]] = []
+    base = _baseline_file_read("/tmp/runtime-adv/edges/okdir/item.txt")
+    base.update(
+        {
+            "name": "baseline:adv:path_edges:allow-subpath",
+            "profile_id": "adv:path_edges",
+            "probe_name": "allow-subpath",
+        }
+    )
+    results.append(base)
+    normalized = _baseline_file_read("/private/tmp/runtime-adv/edges/okdir/item.txt")
+    normalized.update(
+        {
+            "name": "baseline:adv:path_edges:allow-subpath-normalized",
+            "profile_id": "adv:path_edges",
+            "probe_name": "allow-subpath-normalized",
+        }
+    )
+    results.append(normalized)
+    if loopback_targets:
+        target = loopback_targets[0]
+        net_base = _baseline_network_connect(target)
+        net_base.update(
+            {
+                "name": "baseline:adv:flow_divert_require_all_tcp:tcp-loopback",
+                "profile_id": "adv:flow_divert_require_all_tcp",
+                "probe_name": "tcp-loopback",
+            }
+        )
+        results.append(net_base)
+        net_partial = dict(net_base)
+        net_partial.update(
+            {
+                "name": "baseline:adv:flow_divert_partial_tcp:tcp-loopback",
+                "profile_id": "adv:flow_divert_partial_tcp",
+                "probe_name": "tcp-loopback",
+            }
+        )
+        results.append(net_partial)
+    return {"world_id": world_id, "run_id": run_id, "results": results}
+
 
 def _truncate_text(text: str, limit: int = 4096) -> str:
     if len(text) <= limit:
@@ -384,6 +504,7 @@ def _classify_apply_gate_reason(app_sandbox: bool, apply_report: Optional[Dict[s
 
 def run_apply_preflight(world_id: str) -> Dict[str, Any]:
     parent_chain, chain_source = _parent_chain()
+    run_id = os.environ.get("SANDBOX_LORE_RUN_ID")
     pids = [row.get("pid") for row in parent_chain if isinstance(row, dict)]
     pids = [pid for pid in pids if isinstance(pid, int)]
     procinfo = [_run_launchctl_procinfo(pid) for pid in pids]
@@ -395,12 +516,14 @@ def run_apply_preflight(world_id: str) -> Dict[str, Any]:
     )
     record: Dict[str, Any] = {
         "world_id": world_id,
+        "run_id": run_id,
         "profile": path_utils.to_repo_relative(APPLY_PREFLIGHT_PROFILE, repo_root=REPO_ROOT),
         "runner": path_utils.to_repo_relative(SANDBOX_RUNNER, repo_root=REPO_ROOT),
         "parent_chain": parent_chain,
         "parent_chain_source": chain_source,
         "procinfo": procinfo,
         "runner_entitlements": _entitlement_info(SANDBOX_RUNNER),
+        "sandbox_check_self": _sandbox_check_self(),
     }
     if not APPLY_PREFLIGHT_PROFILE.exists():
         record["status"] = "error"
@@ -570,6 +693,12 @@ def build_families(loopback_targets: List[str]) -> List[workflow.ProfileSpec]:
             "operation": "file-read*",
             "target": "/tmp/runtime-adv/edges/okdir/item.txt",
             "expected": "allow",
+        },
+        {
+            "name": "allow-subpath-normalized",
+            "operation": "file-read*",
+            "target": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+            "expected": "deny",
         },
             {
                 "name": "deny-dotdot",
@@ -741,6 +870,13 @@ def build_families(loopback_targets: List[str]) -> List[workflow.ProfileSpec]:
             family="network",
             semantic_group="network:flow-divert-require-all",
         ),
+        workflow.ProfileSpec(
+            profile_id="adv:flow_divert_partial_tcp",
+            profile_path=SB_DIR / "flow_divert_partial_tcp.sb",
+            probes=probes_net_allow,
+            family="network",
+            semantic_group="network:flow-divert-partial",
+        ),
     ]
 
 
@@ -812,6 +948,10 @@ def main() -> int:
         loopback_srvs = []
         loopback_targets = []
 
+    run_id = os.environ.get("SANDBOX_LORE_RUN_ID")
+    baseline_doc = build_baseline_results(world_id, run_id, loopback_targets)
+    write_json(BASELINE_RESULTS, baseline_doc)
+
     families = build_families(loopback_targets)
     run = workflow.run_profiles(families, OUT_DIR, world_id=world_id)
     matrix_path = run.expected_matrix
@@ -847,7 +987,8 @@ def main() -> int:
 
     try:
         events_path = OUT_DIR / "runtime_events.normalized.json"
-        write_matrix_observations(matrix_path, runtime_out, events_path, world_id=world_id)
+        run_id = os.environ.get("SANDBOX_LORE_RUN_ID")
+        write_matrix_observations(matrix_path, runtime_out, events_path, world_id=world_id, run_id=run_id)
         print(f"[+] wrote normalized events to {events_path}")
         print(f"[+] runtime mapping set under {OUT_DIR / 'runtime_mappings'} -> {run.cut}")
         if update_historical_events(events_path, runtime_out):

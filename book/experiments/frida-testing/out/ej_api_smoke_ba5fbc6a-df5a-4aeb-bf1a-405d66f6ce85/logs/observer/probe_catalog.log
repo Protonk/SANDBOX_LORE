@@ -1,0 +1,40 @@
+{
+  "data": {
+    "correlation_id": "38A911DC-06B6-4E6E-926C-15A61428EC4D",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-25 22:38:41",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
+    "observed_deny": false,
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 30421,
+    "plan_id": "entitlementjail-api-smoke",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_minimal(30421)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"30421\")))",
+    "process_name": "ProbeService_minimal",
+    "row_id": "entitlementjail-api-smoke.probe_catalog",
+    "start": "2025-12-25 22:38:31"
+  },
+  "generated_at_unix_ms": 1766731117459,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 1
+}

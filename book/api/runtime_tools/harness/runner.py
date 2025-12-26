@@ -29,6 +29,8 @@ FILE_PROBE = REPO_ROOT / "book" / "api" / "runtime_tools" / "native" / "file_pro
 
 CAT = "/bin/cat"
 SH = "/bin/sh"
+NOTIFYUTIL = "/usr/bin/notifyutil"
+PYTHON = "/usr/bin/python3"
 
 RUNTIME_SHIM_RULES = [
     "(allow process-exec*)",
@@ -61,6 +63,27 @@ def _sha256_path(path: Path) -> str:
     digest = hashlib.sha256(data).hexdigest()
     _SHA256_CACHE[key] = digest
     return digest
+
+
+def _extract_probe_details(stdout: Optional[str]) -> tuple[Optional[Dict[str, Any]], str]:
+    if not stdout:
+        return None, ""
+    details: Optional[Dict[str, Any]] = None
+    cleaned_lines: List[str] = []
+    for line in stdout.splitlines():
+        if line.startswith("SBL_PROBE_DETAILS "):
+            payload = line[len("SBL_PROBE_DETAILS ") :].strip()
+            if payload:
+                try:
+                    details = json.loads(payload)
+                except Exception:
+                    details = {"error": "invalid_probe_details_json"}
+            continue
+        cleaned_lines.append(line)
+    cleaned = "\n".join(cleaned_lines)
+    if stdout.endswith("\n") and cleaned:
+        cleaned += "\n"
+    return details, cleaned
 
 
 def ensure_fixtures(fixture_root: Path = Path("/tmp")) -> None:
@@ -196,6 +219,120 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None, wr
             cmd = [str(MACH_PROBE), target]
         else:
             cmd = ["true"]
+    elif op == "sysctl-read":
+        if target:
+            cmd = ["/usr/sbin/sysctl", "-n", target]
+        else:
+            cmd = ["true"]
+    elif op == "darwin-notification-post":
+        if target and Path(NOTIFYUTIL).exists():
+            cmd = [NOTIFYUTIL, "-p", target]
+        else:
+            cmd = ["true"]
+    elif op == "distributed-notification-post":
+        if target and Path(PYTHON).exists():
+            script = (
+                "import ctypes, sys\n"
+                "cf = ctypes.CDLL('/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation')\n"
+                "cf.CFNotificationCenterGetDistributedCenter.restype = ctypes.c_void_p\n"
+                "center = cf.CFNotificationCenterGetDistributedCenter()\n"
+                "cf.CFStringCreateWithCString.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]\n"
+                "cf.CFStringCreateWithCString.restype = ctypes.c_void_p\n"
+                "kCFStringEncodingUTF8 = 0x08000100\n"
+                "name = sys.argv[1].encode('utf-8')\n"
+                "cfname = cf.CFStringCreateWithCString(None, name, kCFStringEncodingUTF8)\n"
+                "cf.CFNotificationCenterPostNotification.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_bool]\n"
+                "cf.CFNotificationCenterPostNotification(center, cfname, None, None, True)\n"
+            )
+            cmd = [PYTHON, "-c", script, target]
+        else:
+            cmd = ["true"]
+    elif op == "process-info-pidinfo":
+        if target and Path(PYTHON).exists():
+            script = (
+                "import ctypes, ctypes.util, os, sys\n"
+                "lib = ctypes.CDLL(ctypes.util.find_library('proc'))\n"
+                "lib.proc_pidinfo.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64, ctypes.c_void_p, ctypes.c_int]\n"
+                "lib.proc_pidinfo.restype = ctypes.c_int\n"
+                "PROC_PIDTBSDINFO = 3\n"
+                "pid_arg = sys.argv[1]\n"
+                "pid = os.getpid() if pid_arg == 'self' else int(pid_arg)\n"
+                "buf = ctypes.create_string_buffer(512)\n"
+                "rc = lib.proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, buf, ctypes.sizeof(buf))\n"
+                "sys.exit(0 if rc > 0 else 1)\n"
+            )
+            cmd = [PYTHON, "-c", script, target]
+        else:
+            cmd = ["true"]
+    elif op == "signal":
+        if Path(PYTHON).exists():
+            script = (
+                "import json, os, signal, subprocess, sys\n"
+                "ready_r, ready_w = os.pipe()\n"
+                "result_r, result_w = os.pipe()\n"
+                "child_env = os.environ.copy()\n"
+                "child_env['SBL_READY_FD'] = str(ready_w)\n"
+                "child_env['SBL_RESULT_FD'] = str(result_w)\n"
+                "child_code = (\n"
+                "    \"import os, signal, sys\\n\"\n"
+                "    \"ready_fd = int(os.environ.get('SBL_READY_FD', '-1'))\\n\"\n"
+                "    \"result_fd = int(os.environ.get('SBL_RESULT_FD', '-1'))\\n\"\n"
+                "    \"def handler(signum, frame):\\n\"\n"
+                "    \"    try: os.write(result_fd, b'signal')\\n\"\n"
+                "    \"    except Exception: pass\\n\"\n"
+                "    \"    sys.exit(0)\\n\"\n"
+                "    \"signal.signal(signal.SIGUSR1, handler)\\n\"\n"
+                "    \"try: os.write(ready_fd, b'ready')\\n\"\n"
+                "    \"except Exception: pass\\n\"\n"
+                "    \"signal.pause()\\n\"\n"
+                "    \"sys.exit(2)\\n\"\n"
+                ")\n"
+                "child = subprocess.Popen([sys.executable, '-c', child_code], pass_fds=(ready_w, result_w), env=child_env)\n"
+                "os.close(ready_w)\n"
+                "os.close(result_w)\n"
+                "details = {\n"
+                "    'probe_schema_version': 'hardened-runtime.signal-probe.v0.2',\n"
+                "    'child_pid': child.pid,\n"
+                "    'child_spawn_method': 'subprocess.Popen',\n"
+                "    'handshake_ok': False,\n"
+                "    'signal_sent': False,\n"
+                "    'child_received_signal': False,\n"
+                "}\n"
+                "try:\n"
+                "    data = os.read(ready_r, 5)\n"
+                "    details['handshake_ok'] = data == b'ready'\n"
+                "except Exception as exc:\n"
+                "    details['handshake_error'] = str(exc)\n"
+                "if details['handshake_ok']:\n"
+                "    try:\n"
+                "        os.kill(child.pid, signal.SIGUSR1)\n"
+                "        details['signal_sent'] = True\n"
+                "    except Exception as exc:\n"
+                "        details['signal_error'] = str(exc)\n"
+                "try:\n"
+                "    import select\n"
+                "    rlist, _, _ = select.select([result_r], [], [], 1.0)\n"
+                "    if rlist:\n"
+                "        data = os.read(result_r, 16)\n"
+                "        if data.startswith(b'signal'):\n"
+                "            details['child_received_signal'] = True\n"
+                "except Exception as exc:\n"
+                "    details['result_error'] = str(exc)\n"
+                "try:\n"
+                "    child.wait(timeout=1.0)\n"
+                "    details['child_exit_code'] = child.returncode\n"
+                "    details['child_status'] = 'exited'\n"
+                "except Exception:\n"
+                "    child.kill()\n"
+                "    child.wait()\n"
+                "    details['child_exit_code'] = child.returncode\n"
+                "    details['child_status'] = 'killed'\n"
+                "print('SBL_PROBE_DETAILS ' + json.dumps(details))\n"
+                "sys.exit(0 if details['signal_sent'] and details['child_received_signal'] else 1)\n"
+            )
+            cmd = [PYTHON, "-c", script]
+        else:
+            cmd = ["true"]
     elif op == "network-outbound":
         hostport = target or "127.0.0.1"
         if ":" in hostport:
@@ -233,6 +370,12 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None, wr
         elif op == "mach-lookup" and target:
             filter_type = 5
             callout_arg = target
+        elif op == "sysctl-read" and target:
+            filter_type = 37
+            callout_arg = target
+        elif op in {"darwin-notification-post", "distributed-notification-post"} and target:
+            filter_type = 34
+            callout_arg = target
 
         if op and filter_type is not None and callout_arg is not None:
             env = dict(os.environ)
@@ -248,11 +391,13 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None, wr
             timeout=10,
             env=env,
         )
+        probe_details, stdout_clean = _extract_probe_details(res.stdout)
         return {
             "command": full_cmd,
             "exit_code": res.returncode,
-            "stdout": res.stdout,
+            "stdout": stdout_clean,
             "stderr": res.stderr,
+            "probe_details": probe_details,
         }
     except FileNotFoundError as e:
         return {"error": f"sandbox-exec missing: {e}"}

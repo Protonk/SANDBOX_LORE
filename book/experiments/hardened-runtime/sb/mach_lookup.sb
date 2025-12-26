@@ -1,0 +1,6 @@
+(version 1)
+(deny default)
+
+(allow mach-bootstrap)
+(allow mach-lookup
+  (global-name "com.apple.cfprefsd.agent"))

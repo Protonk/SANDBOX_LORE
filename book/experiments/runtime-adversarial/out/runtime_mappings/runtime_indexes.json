@@ -20,6 +20,7 @@
       "adv:path_edges:allow-tmp",
       "adv:path_edges:deny-private",
       "adv:path_edges:allow-subpath",
+      "adv:path_edges:allow-subpath-normalized",
       "adv:path_edges:deny-dotdot",
       "adv:path_alias:alias-tmp",
       "adv:path_alias:alias-private"
@@ -54,7 +55,9 @@
       "adv:net_outbound_deny:tcp-loopback",
       "adv:net_outbound_deny:tcp-loopback-2",
       "adv:flow_divert_require_all_tcp:tcp-loopback",
-      "adv:flow_divert_require_all_tcp:tcp-loopback-2"
+      "adv:flow_divert_require_all_tcp:tcp-loopback-2",
+      "adv:flow_divert_partial_tcp:tcp-loopback",
+      "adv:flow_divert_partial_tcp:tcp-loopback-2"
     ]
   },
   "scenario_to_traces": {
@@ -114,6 +117,9 @@
     ],
     "adv:path_edges:allow-subpath": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_allow-subpath.jsonl"
+    ],
+    "adv:path_edges:allow-subpath-normalized": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_allow-subpath-normalized.jsonl"
     ],
     "adv:path_edges:deny-dotdot": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_deny-dotdot.jsonl"
@@ -177,6 +183,12 @@
     ],
     "adv:flow_divert_require_all_tcp:tcp-loopback-2": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_flow_divert_require_all_tcp_tcp-loopback-2.jsonl"
+    ],
+    "adv:flow_divert_partial_tcp:tcp-loopback": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_flow_divert_partial_tcp_tcp-loopback.jsonl"
+    ],
+    "adv:flow_divert_partial_tcp:tcp-loopback-2": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_flow_divert_partial_tcp_tcp-loopback-2.jsonl"
     ]
   }
 }

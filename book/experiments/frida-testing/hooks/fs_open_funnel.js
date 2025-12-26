@@ -9,7 +9,9 @@ const MODULES = [
 const MAX_EVENTS = 50;
 const ERROR_ERRNOS = {
   1: true,
-  13: true
+  2: true,
+  13: true,
+  22: true
 };
 
 const INCLUDE_BT = true;
@@ -49,7 +51,9 @@ const META_NAMES = new Set([
   'lstat',
   'fstatat',
   'access',
-  'faccessat'
+  'faccessat',
+  'readlink',
+  'readlinkat'
 ]);
 
 const XATTR_NAMES = new Set([
@@ -179,6 +183,13 @@ for (const moduleName of MODULES) {
           this.path = readPath(args[1]);
           this.mode = args[2].toInt32();
           this.flags = args[3].toInt32();
+        } else if (sig === 'readlink') {
+          this.path = readPath(args[0]);
+          this.bufsize = args[2].toInt32();
+        } else if (sig === 'readlinkat') {
+          this.dirfd = args[0].toInt32();
+          this.path = readPath(args[1]);
+          this.bufsize = args[3].toInt32();
         } else if (sig === 'getattrlist') {
           this.path = readPath(args[0]);
         } else if (sig === 'getattrlistat') {

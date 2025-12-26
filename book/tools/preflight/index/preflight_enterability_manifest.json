@@ -4233,6 +4233,222 @@
       ]
     },
     {
+      "file_sha256": "f3876fc6729f9bff66216fbc9dabdc367cabdd650d0454ccabe139f4f50e789c",
+      "file_size": 28,
+      "path": "book/experiments/hardened-runtime/sb/apply_preflight_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/apply_preflight_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "8b29a50c76f733197f93a97b68b95e37c99a895ee4c37652e785a9c739bdfaf3",
+      "file_size": 114,
+      "path": "book/experiments/hardened-runtime/sb/mach_lookup.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/mach_lookup.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "72eac86f198af4e2a8a11f8b67795df6337d90ceb90248b36336c8dc7e802f47",
+      "file_size": 131,
+      "path": "book/experiments/hardened-runtime/sb/mach_lookup_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/mach_lookup_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "0ff72279cd237723ad3eb491df683d77bac513bf32d7f55ecee583ff658b0bfa",
+      "file_size": 558,
+      "path": "book/experiments/hardened-runtime/sb/notifications.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/notifications.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "109fa78a2b050edcf58fa6c6a347d11ce6505ab6c449e918be4b8dc3f627884d",
+      "file_size": 607,
+      "path": "book/experiments/hardened-runtime/sb/notifications_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/notifications_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "f50ad397d352a2b08df60566e4b23daca4df7010d8478b02d10019e48de4de4e",
+      "file_size": 79,
+      "path": "book/experiments/hardened-runtime/sb/process_info_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/process_info_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "87e82c70d68c9a61e306dc0c836e940da27b5601609dfa518539e8c8f771e651",
+      "file_size": 72,
+      "path": "book/experiments/hardened-runtime/sb/process_info_allow_canary.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/process_info_allow_canary.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "6906c7cd0f1fe84d3891a055adeb34e2d5475c71dcbbd91fb83d6a813e031d5f",
+      "file_size": 27,
+      "path": "book/experiments/hardened-runtime/sb/process_info_deny.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/process_info_deny.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "18ed1501366219b874d2d7d8da7aec83d2cb7d426794caf4762da8cb7e5cf891",
+      "file_size": 123,
+      "path": "book/experiments/hardened-runtime/sb/signal_self_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/signal_self_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "f7287ee24f7e0324fad650301f478d6aa1400fab8b7788c0b29cb49282014c01",
+      "file_size": 65,
+      "path": "book/experiments/hardened-runtime/sb/signal_self_deny.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/signal_self_deny.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "2695ae5da59493f1bf6c0b2fbc54019742a0fefb4bb5b0478ac67dfec4120eae",
+      "file_size": 128,
+      "path": "book/experiments/hardened-runtime/sb/sysctl_read.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/sysctl_read.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "9217eaa7564e0f9f8cdad55ad1a07d7a6a58eaee6566862bbeb8662c8c4618dd",
+      "file_size": 63,
+      "path": "book/experiments/hardened-runtime/sb/sysctl_read_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/hardened-runtime/sb/sysctl_read_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
       "file_sha256": "8b85f18017bd8c363cc47ba094e0aed2440ce69ffd2b6eb5640cc87a024198ac",
       "file_size": 684,
       "path": "book/experiments/libsandbox-encoder/out/matrix_v1.sb.bin",
@@ -9319,6 +9535,24 @@
       ]
     },
     {
+      "file_sha256": "f3876fc6729f9bff66216fbc9dabdc367cabdd650d0454ccabe139f4f50e789c",
+      "file_size": 28,
+      "path": "book/experiments/runtime-adversarial/sb/apply_preflight_allow.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/runtime-adversarial/sb/apply_preflight_allow.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
       "file_sha256": "1a08e1558f42e5dccc21be1aa6f8a55efd632acaab75bbc4b7a9574826a82ff8",
       "file_size": 464,
       "path": "book/experiments/runtime-adversarial/sb/build/mach_local_literal.sb.bin",
@@ -9526,6 +9760,42 @@
       ]
     },
     {
+      "file_sha256": "612174c930a922f48aed525de9c262f42fa4dbf28479c9ea6bfd658f641e9a55",
+      "file_size": 765,
+      "path": "book/experiments/runtime-adversarial/sb/flow_divert_partial_tcp.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/runtime-adversarial/sb/flow_divert_partial_tcp.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "71f98dcf90a373fe39d545bba805aaf71a9a70d939dcf4426163455d9418e018",
+      "file_size": 806,
+      "path": "book/experiments/runtime-adversarial/sb/flow_divert_require_all_tcp.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/runtime-adversarial/sb/flow_divert_require_all_tcp.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
       "file_sha256": "86dceb164d804fa5f305c8ec17cac3370ab0eea394d9c8131dcca3d21f0dfb37",
       "file_size": 220,
       "path": "book/experiments/runtime-adversarial/sb/mach_local_literal.sb",
@@ -9624,6 +9894,24 @@
         "findings": [],
         "input_kind": "sbpl_path",
         "input_ref": "book/experiments/runtime-adversarial/sb/net_outbound_deny.sb",
+        "preflight_schema_version": 1,
+        "signature": null,
+        "tool": "book/tools/preflight",
+        "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
+      },
+      "sources": [
+        "experiments_sbpl"
+      ]
+    },
+    {
+      "file_sha256": "06fee54f7daa23b3efc36aef1c86f21432dda256f8c6fb7dd2ab9d0f81c4707f",
+      "file_size": 164,
+      "path": "book/experiments/runtime-adversarial/sb/path_alias.sb",
+      "preflight": {
+        "classification": "no_known_apply_gate_signature",
+        "findings": [],
+        "input_kind": "sbpl_path",
+        "input_ref": "book/experiments/runtime-adversarial/sb/path_alias.sb",
         "preflight_schema_version": 1,
         "signature": null,
         "tool": "book/tools/preflight",

@@ -35,6 +35,7 @@ def test_adversarial_artifacts_present_and_annotated():
         "adv:net_outbound_allow",
         "adv:net_outbound_deny",
         "adv:flow_divert_require_all_tcp",
+        "adv:flow_divert_partial_tcp",
     }
     # Shapes must stay aligned.
     assert set(runtime_results.keys()) == set(expected_matrix.get("profiles", {}).keys())

@@ -1,0 +1,93 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "results": [
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:mach_lookup:deny-cfprefsd",
+      "operation": "mach-lookup",
+      "filter_type": 5,
+      "filter_type_name": "global-name",
+      "argument": "com.apple.cfprefsd.agent",
+      "decision": "deny",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:mach_lookup:deny-bogus",
+      "operation": "mach-lookup",
+      "filter_type": 5,
+      "filter_type_name": "global-name",
+      "argument": "com.apple.sandbox-lore.hardened-runtime.bogus",
+      "decision": "deny",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:sysctl_read:deny-kern-osrelease",
+      "operation": "sysctl-read",
+      "filter_type": 37,
+      "filter_type_name": "unknown",
+      "argument": "kern.osrelease",
+      "decision": "error",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:sysctl_read:deny-kern-bootargs",
+      "operation": "sysctl-read",
+      "filter_type": 37,
+      "filter_type_name": "unknown",
+      "argument": "kern.bootargs",
+      "decision": "error",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:notifications:deny-allowed-darwin",
+      "operation": "darwin-notification-post",
+      "filter_type": 34,
+      "filter_type_name": "unknown",
+      "argument": "com.sandboxlore.hardened_runtime.test1",
+      "decision": "error",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:notifications:deny-darwin",
+      "operation": "darwin-notification-post",
+      "filter_type": 34,
+      "filter_type_name": "unknown",
+      "argument": "com.sandboxlore.hardened_runtime.test2",
+      "decision": "error",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:notifications:deny-allowed-distributed",
+      "operation": "distributed-notification-post",
+      "filter_type": 34,
+      "filter_type_name": "unknown",
+      "argument": "com.sandboxlore.hardened_runtime.test1",
+      "decision": "error",
+      "stage": "preflight"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "run_id": "4fd631af-2ce8-4600-99d2-10eb7984a0e4",
+      "expectation_id": "hardened:notifications:deny-distributed",
+      "operation": "distributed-notification-post",
+      "filter_type": 34,
+      "filter_type_name": "unknown",
+      "argument": "com.sandboxlore.hardened_runtime.test2",
+      "decision": "error",
+      "stage": "preflight"
+    }
+  ]
+}

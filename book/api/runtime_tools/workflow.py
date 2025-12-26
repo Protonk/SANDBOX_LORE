@@ -12,6 +12,7 @@ This module centralizes:
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -57,6 +58,14 @@ class ProfileSpec:
 def _load_json(path: Path) -> Mapping[str, Any]:
     with path.open("r", encoding="utf-8") as fh:
         return json.load(fh)
+
+
+def _run_id_from_env() -> Optional[str]:
+    run_id = os.environ.get("SANDBOX_LORE_RUN_ID")
+    if not run_id:
+        return None
+    run_id = run_id.strip()
+    return run_id or None
 
 
 def _ensure_blob(profile_path: Path, build_dir: Path) -> Path:
@@ -235,6 +244,7 @@ def build_cut(
     runtime_results_path: Path | str,
     staging_root: Path | str,
     world_id: Optional[str] = None,
+    run_id: Optional[str] = None,
 ) -> models.RuntimeCut:
     """
     Produce a complete runtime cut in the staging_root:
@@ -248,7 +258,12 @@ def build_cut(
     staging_root = path_utils.ensure_absolute(staging_root, REPO_ROOT)
     staging_root.mkdir(parents=True, exist_ok=True)
 
-    observations = normalize.normalize_matrix_paths(expected_matrix_path, runtime_results_path, world_id=world_id)
+    observations = normalize.normalize_matrix_paths(
+        expected_matrix_path,
+        runtime_results_path,
+        world_id=world_id,
+        run_id=run_id,
+    )
     expected_doc = _load_json(path_utils.ensure_absolute(Path(expected_matrix_path), REPO_ROOT))
 
     traces_dir = staging_root / "traces"
@@ -353,7 +368,8 @@ def run_profiles(
         key_specific_rules=key_rules,
     )
 
-    cut = build_cut(matrix_path, runtime_results_path, out_dir / "runtime_mappings", world_id=world)
+    run_id = _run_id_from_env()
+    cut = build_cut(matrix_path, runtime_results_path, out_dir / "runtime_mappings", world_id=world, run_id=run_id)
     summary = classify_mismatches(matrix_doc, _load_json(runtime_results_path), world, classification_strategy)
     mismatch_path = out_dir / "mismatch_summary.json"
     mismatch_path.write_text(json.dumps(summary, indent=2))

@@ -8,116 +8,83 @@
     "notes": "per-scenario traces"
   },
   "traces": {
-    "adv:struct_flat:allow-ok-root": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_allow-ok-root.jsonl"
+    "bucket4:v1_read:read_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket4_v1_read_read__etc_hosts.jsonl"
     ],
-    "adv:struct_flat:allow-ok-deep": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_allow-ok-deep.jsonl"
+    "bucket4:v1_read:write_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket4_v1_read_write__etc_hosts.jsonl"
     ],
-    "adv:struct_flat:deny-blocked": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_deny-blocked.jsonl"
+    "bucket4:v1_read:read_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket4_v1_read_read__tmp_foo.jsonl"
     ],
-    "adv:struct_flat:deny-outside": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_deny-outside.jsonl"
+    "bucket5:v11_read_subpath:read_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket5_v11_read_subpath_read__tmp_foo.jsonl"
     ],
-    "adv:struct_flat:write-ok-root": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_write-ok-root.jsonl"
+    "bucket5:v11_read_subpath:read_/tmp/bar": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket5_v11_read_subpath_read__tmp_bar.jsonl"
     ],
-    "adv:struct_flat:write-ok-deep": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_write-ok-deep.jsonl"
+    "bucket5:v11_read_subpath:write_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/bucket5_v11_read_subpath_write__tmp_foo.jsonl"
     ],
-    "adv:struct_flat:write-blocked": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_write-blocked.jsonl"
+    "allow_all|file-read*|/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/allow_all_file-read_etc_hosts.jsonl"
     ],
-    "adv:struct_flat:write-outside": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_flat_write-outside.jsonl"
+    "allow_all|file-read*|/tmp/sbpl_rt/read.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/allow_all_file-read_tmp_sbpl_rt_read.txt.jsonl"
     ],
-    "adv:struct_nested:allow-ok-root": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_allow-ok-root.jsonl"
+    "allow_all|file-write*|/tmp/sbpl_rt/write.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/allow_all_file-write_tmp_sbpl_rt_write.txt.jsonl"
     ],
-    "adv:struct_nested:allow-ok-deep": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_allow-ok-deep.jsonl"
+    "metafilter_any|file-read*|/tmp/foo.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/metafilter_any_file-read_tmp_foo.txt.jsonl"
     ],
-    "adv:struct_nested:deny-blocked": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_deny-blocked.jsonl"
+    "metafilter_any|file-read*|/tmp/bar.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/metafilter_any_file-read_tmp_bar.txt.jsonl"
     ],
-    "adv:struct_nested:deny-outside": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_deny-outside.jsonl"
+    "metafilter_any|file-read*|/tmp/qux.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/metafilter_any_file-read_tmp_qux.txt.jsonl"
     ],
-    "adv:struct_nested:write-ok-root": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_write-ok-root.jsonl"
+    "metafilter_any|file-read*|/tmp/baz.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/metafilter_any_file-read_tmp_baz.txt.jsonl"
     ],
-    "adv:struct_nested:write-ok-deep": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_write-ok-deep.jsonl"
+    "metafilter_any|file-write*|/tmp/baz.txt": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/metafilter_any_file-write_tmp_baz.txt.jsonl"
     ],
-    "adv:struct_nested:write-blocked": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_write-blocked.jsonl"
+    "sys:bsd:read_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_bsd_read__etc_hosts.jsonl"
     ],
-    "adv:struct_nested:write-outside": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_struct_nested_write-outside.jsonl"
+    "sys:bsd:write_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_bsd_write__etc_hosts.jsonl"
     ],
-    "adv:path_edges:allow-tmp": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_allow-tmp.jsonl"
+    "sys:bsd:read_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_bsd_read__tmp_foo.jsonl"
     ],
-    "adv:path_edges:deny-private": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_deny-private.jsonl"
+    "sys:bsd:write_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_bsd_write__tmp_foo.jsonl"
     ],
-    "adv:path_edges:allow-subpath": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_allow-subpath.jsonl"
+    "sys:airlock:read_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_airlock_read__etc_hosts.jsonl"
     ],
-    "adv:path_edges:deny-dotdot": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_deny-dotdot.jsonl"
+    "sys:airlock:write_/etc/hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_airlock_write__etc_hosts.jsonl"
     ],
-    "adv:path_edges:write-tmp": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_write-tmp.jsonl"
+    "sys:airlock:read_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_airlock_read__tmp_foo.jsonl"
     ],
-    "adv:path_edges:write-private": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_write-private.jsonl"
+    "sys:airlock:write_/tmp/foo": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/sys_airlock_write__tmp_foo.jsonl"
     ],
-    "adv:path_edges:write-subpath": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_write-subpath.jsonl"
+    "runtime:strict_1:read_ok": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/runtime_strict_1_read_ok.jsonl"
     ],
-    "adv:path_edges:write-dotdot": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_write-dotdot.jsonl"
+    "runtime:strict_1:write_ok": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/runtime_strict_1_write_ok.jsonl"
     ],
-    "adv:path_alias:alias-tmp": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_alias_alias-tmp.jsonl"
+    "runtime:strict_1:read_hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/runtime_strict_1_read_hosts.jsonl"
     ],
-    "adv:path_alias:alias-private": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_alias_alias-private.jsonl"
-    ],
-    "adv:mach_simple_allow:allow-cfprefsd": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_simple_allow_allow-cfprefsd.jsonl"
-    ],
-    "adv:mach_simple_allow:deny-bogus": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_simple_allow_deny-bogus.jsonl"
-    ],
-    "adv:mach_simple_variants:allow-cfprefsd": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_simple_variants_allow-cfprefsd.jsonl"
-    ],
-    "adv:mach_simple_variants:deny-bogus": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_simple_variants_deny-bogus.jsonl"
-    ],
-    "adv:mach_local_literal:allow-cfprefsd-local": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_local_literal_allow-cfprefsd-local.jsonl"
-    ],
-    "adv:mach_local_literal:deny-bogus-local": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_local_literal_deny-bogus-local.jsonl"
-    ],
-    "adv:mach_local_regex:allow-cfprefsd-local": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_local_regex_allow-cfprefsd-local.jsonl"
-    ],
-    "adv:mach_local_regex:deny-bogus-local": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_local_regex_deny-bogus-local.jsonl"
-    ],
-    "adv:net_outbound_allow:tcp-loopback": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_allow_tcp-loopback.jsonl"
-    ],
-    "adv:net_outbound_deny:tcp-loopback": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_deny_tcp-loopback.jsonl"
-    ],
-    "adv:flow_divert_require_all_tcp:tcp-loopback": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_flow_divert_require_all_tcp_tcp-loopback.jsonl"
+    "runtime:strict_1:write_hosts": [
+      "book/experiments/runtime-checks/out/runtime_mappings/traces/runtime_strict_1_write_hosts.jsonl"
     ]
   }
 }

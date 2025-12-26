@@ -9,12 +9,12 @@
   },
   "phase_histograms": {
     "overall": {
-      "total": 40,
+      "total": 43,
       "stages": {
         "apply": 0,
         "bootstrap": 0,
         "preflight": 0,
-        "probe": 40
+        "probe": 43
       },
       "blocked": {
         "total": 0,
@@ -22,9 +22,9 @@
         "by_kind": {}
       },
       "probe": {
-        "total": 40,
-        "allow": 8,
-        "deny": 32,
+        "total": 43,
+        "allow": 10,
+        "deny": 33,
         "mismatches": 14
       }
     },
@@ -50,12 +50,12 @@
         }
       },
       "path_edges": {
-        "total": 8,
+        "total": 9,
         "stages": {
           "apply": 0,
           "bootstrap": 0,
           "preflight": 0,
-          "probe": 8
+          "probe": 9
         },
         "blocked": {
           "total": 0,
@@ -63,9 +63,9 @@
           "by_kind": {}
         },
         "probe": {
-          "total": 8,
+          "total": 9,
           "allow": 0,
-          "deny": 8,
+          "deny": 9,
           "mismatches": 4
         }
       },
@@ -130,12 +130,12 @@
         }
       },
       "network": {
-        "total": 6,
+        "total": 8,
         "stages": {
           "apply": 0,
           "bootstrap": 0,
           "preflight": 0,
-          "probe": 6
+          "probe": 8
         },
         "blocked": {
           "total": 0,
@@ -143,8 +143,8 @@
           "by_kind": {}
         },
         "probe": {
-          "total": 6,
-          "allow": 4,
+          "total": 8,
+          "allow": 6,
           "deny": 2,
           "mismatches": 0
         }
@@ -833,6 +833,35 @@
       "impact": null,
       "scenario_id": "adv:path_edges:allow-subpath"
     },
+    "adv:path_edges:allow-subpath-normalized": {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:path_edges",
+      "expectations": [
+        {
+          "expectation_id": "adv:path_edges:allow-subpath-normalized",
+          "profile_id": "adv:path_edges",
+          "operation": "file-read*",
+          "target": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+          "expected": "deny",
+          "probe_name": "allow-subpath-normalized"
+        }
+      ],
+      "results": {
+        "total": 1,
+        "matches": 1,
+        "mismatches": 0,
+        "total_including_blocked": 1,
+        "blocked": {
+          "total": 0,
+          "by_stage": {},
+          "by_kind": {}
+        },
+        "status": "ok"
+      },
+      "mismatches": [],
+      "impact": null,
+      "scenario_id": "adv:path_edges:allow-subpath-normalized"
+    },
     "adv:path_edges:deny-dotdot": {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
       "profile_id": "adv:path_edges",
@@ -1328,7 +1357,7 @@
           "expectation_id": "adv:net_outbound_allow:tcp-loopback",
           "profile_id": "adv:net_outbound_allow",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54932",
+          "target": "127.0.0.1:62646",
           "expected": "allow",
           "probe_name": "tcp-loopback"
         }
@@ -1357,7 +1386,7 @@
           "expectation_id": "adv:net_outbound_allow:tcp-loopback-2",
           "profile_id": "adv:net_outbound_allow",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54933",
+          "target": "127.0.0.1:62647",
           "expected": "allow",
           "probe_name": "tcp-loopback-2"
         }
@@ -1386,7 +1415,7 @@
           "expectation_id": "adv:net_outbound_deny:tcp-loopback",
           "profile_id": "adv:net_outbound_deny",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54932",
+          "target": "127.0.0.1:62646",
           "expected": "deny",
           "probe_name": "tcp-loopback"
         }
@@ -1415,7 +1444,7 @@
           "expectation_id": "adv:net_outbound_deny:tcp-loopback-2",
           "profile_id": "adv:net_outbound_deny",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54933",
+          "target": "127.0.0.1:62647",
           "expected": "deny",
           "probe_name": "tcp-loopback-2"
         }
@@ -1444,7 +1473,7 @@
           "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
           "profile_id": "adv:flow_divert_require_all_tcp",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54932",
+          "target": "127.0.0.1:62646",
           "expected": "allow",
           "probe_name": "tcp-loopback"
         }
@@ -1473,7 +1502,7 @@
           "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback-2",
           "profile_id": "adv:flow_divert_require_all_tcp",
           "operation": "network-outbound",
-          "target": "127.0.0.1:54933",
+          "target": "127.0.0.1:62647",
           "expected": "allow",
           "probe_name": "tcp-loopback-2"
         }
@@ -1493,6 +1522,64 @@
       "mismatches": [],
       "impact": null,
       "scenario_id": "adv:flow_divert_require_all_tcp:tcp-loopback-2"
+    },
+    "adv:flow_divert_partial_tcp:tcp-loopback": {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:flow_divert_partial_tcp",
+      "expectations": [
+        {
+          "expectation_id": "adv:flow_divert_partial_tcp:tcp-loopback",
+          "profile_id": "adv:flow_divert_partial_tcp",
+          "operation": "network-outbound",
+          "target": "127.0.0.1:62646",
+          "expected": "allow",
+          "probe_name": "tcp-loopback"
+        }
+      ],
+      "results": {
+        "total": 1,
+        "matches": 1,
+        "mismatches": 0,
+        "total_including_blocked": 1,
+        "blocked": {
+          "total": 0,
+          "by_stage": {},
+          "by_kind": {}
+        },
+        "status": "ok"
+      },
+      "mismatches": [],
+      "impact": null,
+      "scenario_id": "adv:flow_divert_partial_tcp:tcp-loopback"
+    },
+    "adv:flow_divert_partial_tcp:tcp-loopback-2": {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:flow_divert_partial_tcp",
+      "expectations": [
+        {
+          "expectation_id": "adv:flow_divert_partial_tcp:tcp-loopback-2",
+          "profile_id": "adv:flow_divert_partial_tcp",
+          "operation": "network-outbound",
+          "target": "127.0.0.1:62647",
+          "expected": "allow",
+          "probe_name": "tcp-loopback-2"
+        }
+      ],
+      "results": {
+        "total": 1,
+        "matches": 1,
+        "mismatches": 0,
+        "total_including_blocked": 1,
+        "blocked": {
+          "total": 0,
+          "by_stage": {},
+          "by_kind": {}
+        },
+        "status": "ok"
+      },
+      "mismatches": [],
+      "impact": null,
+      "scenario_id": "adv:flow_divert_partial_tcp:tcp-loopback-2"
     }
   }
 }

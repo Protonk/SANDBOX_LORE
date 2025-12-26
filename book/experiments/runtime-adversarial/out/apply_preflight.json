@@ -1,10 +1,11 @@
 {
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
   "profile": "book/experiments/runtime-adversarial/sb/apply_preflight_allow.sb",
   "runner": "book/experiments/runtime-checks/sandbox_runner",
   "parent_chain": [
     {
-      "pid": 25110,
+      "pid": 63691,
       "source": "libproc",
       "ppid": 1,
       "comm": "Python",
@@ -22,11 +23,11 @@
   "parent_chain_source": "libproc",
   "procinfo": [
     {
-      "pid": 25110,
+      "pid": 63691,
       "command": [
         "/bin/launchctl",
         "procinfo",
-        "25110"
+        "63691"
       ],
       "status": "error",
       "returncode": 1,
@@ -54,6 +55,10 @@
     "has_app_sandbox_entitlement": false,
     "entitlements_present": false
   },
+  "sandbox_check_self": {
+    "source": "sandbox_check",
+    "error": "dlopen(libsystem_sandbox.dylib, 0x0006): tried: 'libsystem_sandbox.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibsystem_sandbox.dylib' (no such file), '/usr/lib/libsystem_sandbox.dylib' (no such file, not in dyld cache), 'libsystem_sandbox.dylib' (no such file)"
+  },
   "status": "ok",
   "command": [
     "book/experiments/runtime-checks/sandbox_runner",
@@ -72,7 +77,7 @@
     "err_class": "ok",
     "err_class_source": "none"
   },
-  "apply_marker_pid": 25114,
+  "apply_marker_pid": 63695,
   "apply_ok": true,
   "failure_stage": null,
   "preexisting_sandbox_suspected": false,

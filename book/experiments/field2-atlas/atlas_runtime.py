@@ -28,6 +28,8 @@ DEFAULT_RUNTIME_EVENTS = [
     REPO_ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_events.normalized.json",
 ]
 DEFAULT_HISTORICAL_EVENTS = REPO_ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "historical_runtime_events.json"
+DEFAULT_RUN_MANIFEST = REPO_ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "run_manifest.json"
+DEFAULT_BASELINE_RESULTS = REPO_ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "baseline_results.json"
 DEFAULT_ANCHOR_MAP = REPO_ROOT / "book" / "graph" / "mappings" / "anchors" / "anchor_filter_map.json"
 DEFAULT_OUTPUT = Path(__file__).with_name("out") / "runtime" / "field2_runtime_results.json"
 
@@ -72,6 +74,19 @@ def _load_runtime_events(paths: list[Path], tier: str) -> list[Dict[str, Any]]:
                 row["tier"] = tier
                 events.append(row)
     return events
+
+
+def _load_baseline_results(path: Path) -> Dict[tuple[str, str], Dict[str, Any]]:
+    if not path.exists():
+        return {}
+    doc = load_json(path)
+    out: Dict[tuple[str, str], Dict[str, Any]] = {}
+    for row in doc.get("results") or []:
+        profile_id = row.get("profile_id")
+        probe_name = row.get("probe_name")
+        if profile_id and probe_name:
+            out[(profile_id, probe_name)] = row
+    return out
 
 
 def _index_runtime_events(events: list[Dict[str, Any]]) -> Dict[tuple[str, str], Dict[str, Any]]:
@@ -164,6 +179,7 @@ def build_runtime_results(
     historical_events = _load_runtime_events([DEFAULT_HISTORICAL_EVENTS], tier="historical")
     events_by_key = _index_runtime_events(events)
     historical_by_key = _index_runtime_events(historical_events)
+    baseline_by_key = _load_baseline_results(DEFAULT_BASELINE_RESULTS)
     signatures = runtime_doc.get("signatures") or {}
     profiles_meta = runtime_doc.get("profiles_metadata") or {}
     mapping_status = (runtime_doc.get("metadata") or {}).get("status")
@@ -262,17 +278,18 @@ def build_runtime_results(
                     "result_tier": result_tier,
                     "result_source": result_source,
                     "mapping_status": mapping_status,
-                    "path_observation": path_observation,
-                    "latest_attempt": (
-                        {
-                            "runtime_status": event.get("runtime_status"),
-                            "failure_stage": event.get("failure_stage"),
-                            "failure_kind": event.get("failure_kind"),
-                            "source": event.get("source"),
-                        }
-                        if event
-                        else None
-                    ),
+                "path_observation": path_observation,
+                "latest_attempt": (
+                    {
+                        "runtime_status": event.get("runtime_status"),
+                        "failure_stage": event.get("failure_stage"),
+                        "failure_kind": event.get("failure_kind"),
+                        "run_id": event.get("run_id"),
+                        "source": event.get("source"),
+                    }
+                    if event
+                    else None
+                ),
                     "anchor_match": (
                         {
                             "anchor": anchor_match.get("anchor"),
@@ -304,6 +321,34 @@ def build_runtime_results(
             }
         if fid == 0 and path_witness:
             base_record["path_canonicalization_witness"] = path_witness
+        if fid == 2560:
+            control_profile = "adv:flow_divert_partial_tcp"
+            control_probe = "tcp-loopback"
+            control_event = events_by_key.get((control_profile, control_probe))
+            control_probe_info = _lookup_probe(runtime_doc, control_profile, control_probe)
+            control = {
+                "partial_triple": {
+                    "profile_id": control_profile,
+                    "probe_name": control_probe,
+                    "expected": (control_probe_info or {}).get("expected"),
+                    "actual": control_event.get("actual") if control_event else None,
+                    "runtime_status": control_event.get("runtime_status") if control_event else None,
+                    "source": control_event.get("source") if control_event else None,
+                },
+                "baseline": {
+                    "source": path_utils.to_repo_relative(DEFAULT_BASELINE_RESULTS, repo_root=REPO_ROOT)
+                    if DEFAULT_BASELINE_RESULTS.exists()
+                    else None,
+                    "record": baseline_by_key.get((profile_id, probe_name)),
+                },
+            }
+            discriminating = None
+            if control_event and result is not None:
+                discriminating = control_event.get("actual") != result
+            control["discriminating"] = discriminating
+            if discriminating is False:
+                control["notes"] = "control non-discriminating (same decision as require-all variant)"
+            base_record["control_witness"] = control
         results.append(base_record)
 
     seed_ids = {entry["field2"] for entry in seeds_doc.get("seeds", [])}
@@ -323,6 +368,12 @@ def build_runtime_results(
                 for path in DEFAULT_RUNTIME_EVENTS
                 if path.exists()
             ],
+            "run_manifest": path_utils.to_repo_relative(DEFAULT_RUN_MANIFEST, repo_root=REPO_ROOT)
+            if DEFAULT_RUN_MANIFEST.exists()
+            else None,
+            "baseline_results": path_utils.to_repo_relative(DEFAULT_BASELINE_RESULTS, repo_root=REPO_ROOT)
+            if DEFAULT_BASELINE_RESULTS.exists()
+            else None,
             "historical_runtime_events": [
                 path_utils.to_repo_relative(DEFAULT_HISTORICAL_EVENTS, repo_root=REPO_ROOT)
                 for _ in [DEFAULT_HISTORICAL_EVENTS]

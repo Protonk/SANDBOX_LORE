@@ -10,15 +10,19 @@ Current artifacts:
 - `traces/golden_traces.jsonl` — normalized probe rows for the golden set from runtime-checks.
 - `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set; includes `metadata`.
 - `runtime_signatures.json` — small IR derived from validation outputs (`field2_ir.json` + normalized runtime results) summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/generate_runtime_signatures.py` (which runs the validation driver `--tag smoke`) and folded into CARTON.
+- `runtime_callout_oracle.json` — sandbox_check oracle lane derived from seatbelt-callout markers (decision-only; not syscall outcomes).
 - CARTON: see `book/api/carton/CARTON.json` for frozen hashes/paths of the runtime mappings/IR that are included in CARTON for Sonoma 14.4.1.
 
-Status update (apply-gated):
-- Latest refresh hit apply-stage EPERM (`sandbox_init`), so runtime-checks and runtime-adversarial probes are currently recorded as apply-gated rather than decision-stage outcomes.
-- `runtime_signatures.json`, `runtime_coverage.json`, and `expectations.json` now reflect the blocked outcomes; treat allow/deny results as tentative until a clean apply path is available.
+Status update (launchd staged run):
+- Latest refresh ran via the launchd-staged path (`run_via_launchctl.py`), which avoids the Desktop TCC block by staging to `/private/tmp`; decision-stage outcomes are current for runtime-checks and runtime-adversarial.
+- Clean-channel runs now emit `book/experiments/runtime-checks/out/run_manifest.json` and `book/experiments/runtime-adversarial/out/run_manifest.json` and generators refuse to promote decision-stage artifacts unless `channel=launchd_clean`.
+- `sys:airlock` remains preflight-blocked on this host; treat that profile as blocked evidence.
+- `runtime_signatures.json` and `runtime_coverage.json` remain `partial` due to scoped mismatches (structural/path families), not due to apply gates.
 
 Claims and limits (current host cut):
-- Apply-stage blocking means current runtime evidence is limited to “attempted but blocked”; do not treat allow/deny outcomes as decision-stage truth until the gate clears.
-- The `/tmp` → `/private/tmp` boundary is still recorded (now via normalized path fields and the focused VFS canonicalization experiment) and remains a known divergence outside the PolicyGraph model.
+- Decision-stage outcomes are current for runtime-checks and runtime-adversarial; mismatches remain in structural/path families and keep coverage/status at `partial`.
+- The sandbox_check oracle lane (`runtime_callout_oracle.json`) is additive evidence only; do not treat it as syscall outcomes.
+- The `/tmp` → `/private/tmp` boundary is still recorded (via normalized path fields and the focused VFS canonicalization experiment) and remains a known divergence outside the PolicyGraph model.
 - Use `book/graph/mappings/vocab/ops_coverage.json` and explicit status fields to gauge what is currently runtime-backed vs blocked on this host.
 
 Role in the substrate:
@@ -28,5 +32,7 @@ Role in the substrate:
  - Lifecycle traces record higher-level policy inputs (entitlements/extension attempts) and their outcomes, grounding lifecycle concepts without rerunning brittle probes.
 
 Regeneration:
+- Rerun runtime-checks and runtime-adversarial via their `run_via_launchctl.py` wrappers so `run_manifest.json` is emitted; generators will refuse to promote decision-stage artifacts unless the run manifest says `channel=launchd_clean`.
 - Rerun `book/graph/concepts/validation/out/semantic/runtime_results.json` (via `runtime-checks`) and normalize into this folder using the loader (see `expectations.json` for the expected shape). Keep host/build metadata aligned with `validation/out/metadata.json`.
 - Rerun `book/graph/mappings/runtime/generate_lifecycle.py` after updating lifecycle probes in `book/graph/concepts/validation/out/lifecycle/` to refresh `lifecycle.json` and `lifecycle_traces/`.
+- Rerun `book/graph/mappings/runtime/generate_runtime_callout_oracle.py` to refresh the sandbox_check oracle lane.

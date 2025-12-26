@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+
+(allow signal (target self) (with report))
+(allow signal (target same-sandbox) (with report))

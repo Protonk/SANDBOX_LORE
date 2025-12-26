@@ -28,12 +28,20 @@ ADV_EXPECTED = ROOT / "book/experiments/runtime-adversarial/out/expected_matrix.
 ADV_RESULTS = ROOT / "book/experiments/runtime-adversarial/out/runtime_results.json"
 BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 OUT = ROOT / "book/graph/mappings/runtime/runtime_callout_oracle.json"
+RUN_MANIFEST_CHECKS = ROOT / "book/experiments/runtime-checks/out/run_manifest.json"
+RUN_MANIFEST_ADV = ROOT / "book/experiments/runtime-adversarial/out/run_manifest.json"
 
 
 def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
+    channel = manifest.get("channel")
+    if channel != "launchd_clean":
+        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
 
 
 def sha256_path(path: Path) -> str:
@@ -69,11 +77,19 @@ def main() -> None:
         raise SystemExit(f"missing runtime IR: {RUNTIME_IR}")
 
     world_id = baseline_world()
+    run_manifest_checks = load_json(RUN_MANIFEST_CHECKS)
+    if not run_manifest_checks:
+        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
+    require_clean_manifest(run_manifest_checks, "runtime-checks")
     runtime_ir = load_json(RUNTIME_IR)
     observations = load_runtime_observations(runtime_ir)
 
     adv_present = ADV_EXPECTED.exists() and ADV_RESULTS.exists()
     if adv_present:
+        run_manifest_adv = load_json(RUN_MANIFEST_ADV)
+        if not run_manifest_adv:
+            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
+        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
         observations.extend(runtime_normalize.normalize_matrix_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id))
 
     doc = runtime_views.build_callout_oracle(observations)
@@ -81,6 +97,10 @@ def main() -> None:
     inputs: List[Path] = [RUNTIME_IR]
     if adv_present:
         inputs.extend([ADV_EXPECTED, ADV_RESULTS])
+    if RUN_MANIFEST_CHECKS.exists():
+        inputs.append(RUN_MANIFEST_CHECKS)
+    if adv_present and RUN_MANIFEST_ADV.exists():
+        inputs.append(RUN_MANIFEST_ADV)
     input_rel = [path_utils.to_repo_relative(p, ROOT) for p in inputs]
     input_hashes = {path_utils.to_repo_relative(p, ROOT): sha256_path(p) for p in inputs if p.exists()}
 

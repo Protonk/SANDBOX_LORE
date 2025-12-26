@@ -133,6 +133,109 @@
 - Status: partial (downloads path-class failure observed at mkdirat; open not reached).
 - Follow-up: use fs_op_funnel.js when mapping downloads path-class failures; add path_substr config if log volume grows.
 
+- Action: updated book/api/entitlementjail/wait.py to create missing FIFO and avoid blocking opens for attach waits.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id get-task-allow --probe-id probe_catalog --script book/experiments/frida-testing/hooks/smoke.js --skip-capabilities --service-name ProbeService_get-task-allow
+- Result: command timed out; frida attach failed with "refused to load frida-agent, or terminated during injection"; run_xpc/manifest not written.
+- Artifacts: book/experiments/frida-testing/out/15defc62-509e-4e93-98c3-c5e9efa18561/frida/events.jsonl.
+- Status: blocked (pre-fix hang).
+- Follow-up: retry after wait.py fix with shorter attach window.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id get-task-allow --probe-id probe_catalog --script book/experiments/frida-testing/hooks/smoke.js --skip-capabilities --service-name ProbeService_get-task-allow --attach-seconds 5 --hold-open-seconds 0 --attach-timeout-s 5
+- Result: command timed out again; frida attach failed with "refused to load frida-agent, or terminated during injection"; run_xpc/manifest not written.
+- Artifacts: book/experiments/frida-testing/out/a1c5cfa5-3efa-49d4-b926-b7eb27ad4d4a/frida/events.jsonl.
+- Status: blocked (pre-fix hang).
+- Follow-up: retry after wait.py fix with shorter attach window.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id get-task-allow --probe-id probe_catalog --script book/experiments/frida-testing/hooks/smoke.js --skip-capabilities --service-name ProbeService_get-task-allow --attach-seconds 5 --hold-open-seconds 0 --attach-timeout-s 5
+- Result: run-xpc failed with NSCocoaErrorDomain Code 4097 (xpc_error); frida attach error ProcessNotRespondingError; manifest written.
+- Artifacts: book/experiments/frida-testing/out/9a1301d7-c4c5-483b-a107-d27505905225/manifest.json; book/experiments/frida-testing/out/9a1301d7-c4c5-483b-a107-d27505905225/ej/run_xpc.json; book/experiments/frida-testing/out/9a1301d7-c4c5-483b-a107-d27505905225/frida/events.jsonl.
+- Status: blocked (get-task-allow xpc_error during attach).
+- Follow-up: treat get-task-allow as unstable for Frida attach on this host; use fully_injectable.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/smoke.js --skip-capabilities --service-name ProbeService_fully_injectable --attach-seconds 5 --hold-open-seconds 0 --attach-timeout-s 5
+- Result: run-xpc ok; frida attach succeeded; pid_matches_service_pid true.
+- Artifacts: book/experiments/frida-testing/out/1459e42d-3293-4521-9f27-5e4305ac6cf0/manifest.json; book/experiments/frida-testing/out/1459e42d-3293-4521-9f27-5e4305ac6cf0/ej/run_xpc.json; book/experiments/frida-testing/out/1459e42d-3293-4521-9f27-5e4305ac6cf0/frida/events.jsonl.
+- Status: ok (fully_injectable attach still works after update).
+- Follow-up: use fully_injectable for attach-first hooks; keep get-task-allow as blocked.
+
+- Action: extended fs_open_funnel.js to include readlink/readlinkat symbol coverage.
+- Action: added sandbox_check_trace.js (sandbox_check/extension_issue trace hook).
+- Action: added execmem_trace.js (mmap/mprotect/dlopen/pthread_jit_write_protect_np trace hook).
+- Action: expanded fs_open_funnel.js error filter to include errno 2/22 for readlink/ENOENT coverage.
+- Action: added sandbox_check_minimal.js (sandbox_check-only tracing).
+- Action: added on_trigger callback support in book/api/entitlementjail/wait.py to enable post-trigger attach windows.
+- Action: added --attach-stage and --post-trigger-attach-delay-s to run_ej_frida.py (attach after trigger).
+
+- Prep: created /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_frida_denied.txt with chmod 000 to force an EACCES open.
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op --script book/experiments/frida-testing/hooks/fs_open_funnel.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --probe-args --op open_read --path /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_frida_denied.txt --allow-unsafe-path
+- Result: run-xpc permission_error (errno=13) with deny_evidence=captured; funnel candidates now include readlink/readlinkat; funnel-hit events captured for open/open with errno 13 and backtraces into InProcessProbeCore.probeFsOp; no readlink hits in this run.
+- Artifacts: book/experiments/frida-testing/out/d36438ca-f9d1-4d8d-9840-0f31c090ffd6/manifest.json; book/experiments/frida-testing/out/d36438ca-f9d1-4d8d-9840-0f31c090ffd6/ej/run_xpc.json; book/experiments/frida-testing/out/d36438ca-f9d1-4d8d-9840-0f31c090ffd6/frida/events.jsonl.
+- Status: ok (hooks installed; readlink coverage present but not exercised).
+- Follow-up: if readlink coverage is needed, run fs_op --op readlink with a denied path or broaden logging to include non-EACCES errors.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_check_trace.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest
+- Result: run-xpc failed with NSCocoaErrorDomain Code 4097 (xpc_error); Frida attached and installed hooks; sandbox_check_trace reported candidate symbols but no sandbox-call events recorded before service exit.
+- Artifacts: book/experiments/frida-testing/out/fdd4679d-599f-498e-b474-e32fc243c09c/manifest.json; book/experiments/frida-testing/out/fdd4679d-599f-498e-b474-e32fc243c09c/ej/run_xpc.json; book/experiments/frida-testing/out/fdd4679d-599f-498e-b474-e32fc243c09c/frida/events.jsonl.
+- Status: blocked (xpc_error; sandbox_check calls not observed).
+- Follow-up: retry with a different probe or drop the sandbox_check hooks if they destabilize the service.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op --script book/experiments/frida-testing/hooks/sandbox_check_trace.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --probe-args --op stat --path-class tmp --target specimen_file
+- Result: run-xpc failed with NSCocoaErrorDomain Code 4097 (xpc_error); no sandbox-call events recorded.
+- Artifacts: book/experiments/frida-testing/out/4f40aa49-92c8-41b9-9b20-4dd8d0634e68/manifest.json; book/experiments/frida-testing/out/4f40aa49-92c8-41b9-9b20-4dd8d0634e68/ej/run_xpc.json; book/experiments/frida-testing/out/4f40aa49-92c8-41b9-9b20-4dd8d0634e68/frida/events.jsonl.
+- Status: blocked (xpc_error; sandbox_check calls not observed).
+- Follow-up: treat sandbox_check trace as destabilizing for fully_injectable unless a safer attach mode is found.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/execmem_trace.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest
+- Result: run-xpc ok; execmem_trace captured mmap and dlopen/dlclose calls (no PROT_EXEC/MAP_JIT in this run).
+- Artifacts: book/experiments/frida-testing/out/cb747a39-41a8-4e1b-874d-ef732c15eb0a/manifest.json; book/experiments/frida-testing/out/cb747a39-41a8-4e1b-874d-ef732c15eb0a/ej/run_xpc.json; book/experiments/frida-testing/out/cb747a39-41a8-4e1b-874d-ef732c15eb0a/frida/events.jsonl.
+- Status: partial (execmem surfaces observed; no exec/JIT flags in probe_catalog).
+- Follow-up: run a JIT-focused probe (jit_map_jit) to confirm MAP_JIT capture.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id jit_map_jit --script book/experiments/frida-testing/hooks/execmem_trace.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest
+- Result: run-xpc ok; execmem_trace captured MAP_JIT mmap calls and pthread_jit_write_protect_np toggles with backtraces into InProcessProbeCore.probeJitMapJit.
+- Artifacts: book/experiments/frida-testing/out/5a6cbff3-8dcb-4a5c-b125-c7298bcfeab2/manifest.json; book/experiments/frida-testing/out/5a6cbff3-8dcb-4a5c-b125-c7298bcfeab2/ej/run_xpc.json; book/experiments/frida-testing/out/5a6cbff3-8dcb-4a5c-b125-c7298bcfeab2/frida/events.jsonl.
+- Status: ok (MAP_JIT surfaces captured under fully_injectable).
+- Follow-up: consider a jit_rwx_legacy run if RWX mmap evidence is needed.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op --script book/experiments/frida-testing/hooks/fs_open_funnel.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --probe-args --op readlink --path-class tmp --target specimen_file
+- Result: run-xpc not_found (errno=2) with deny_evidence=captured; fs_open_funnel captured readlink with errno 2 and backtrace into InProcessProbeCore.probeFsOp; run_xpc exit_code -15 observed.
+- Artifacts: book/experiments/frida-testing/out/21f80aa0-315d-4b55-9f74-de0098be48f8/manifest.json; book/experiments/frida-testing/out/21f80aa0-315d-4b55-9f74-de0098be48f8/ej/run_xpc.json; book/experiments/frida-testing/out/21f80aa0-315d-4b55-9f74-de0098be48f8/frida/events.jsonl.
+- Status: ok (readlink hook exercised; errno 2 captured).
+- Follow-up: if we need an EACCES readlink witness, try a direct path outside the container with --allow-unsafe-path.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id jit_rwx_legacy --script book/experiments/frida-testing/hooks/execmem_trace.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest
+- Result: run-xpc permission_error (errno=13) with deny_evidence=captured; execmem_trace captured mmap with PROT_EXEC (prot=7) returning -1 and backtrace into InProcessProbeCore.probeJitRwxLegacy.
+- Artifacts: book/experiments/frida-testing/out/1f3eadb2-ee07-40c3-aefd-d22f027392de/manifest.json; book/experiments/frida-testing/out/1f3eadb2-ee07-40c3-aefd-d22f027392de/ej/run_xpc.json; book/experiments/frida-testing/out/1f3eadb2-ee07-40c3-aefd-d22f027392de/frida/events.jsonl.
+- Status: partial (RWX attempt observed; mmap failed with errno 13).
+- Follow-up: compare with jit_map_jit to keep MAP_JIT vs RWX results aligned.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_check_minimal.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest
+- Result: run-xpc failed with NSCocoaErrorDomain Code 4097 (xpc_error); hooks installed (sandbox_check + sandbox_check_bulk) but no sandbox-minimal-call events observed before exit.
+- Artifacts: book/experiments/frida-testing/out/e25b0c21-6ef6-45da-a85e-03e3cd365ff5/manifest.json; book/experiments/frida-testing/out/e25b0c21-6ef6-45da-a85e-03e3cd365ff5/ej/run_xpc.json; book/experiments/frida-testing/out/e25b0c21-6ef6-45da-a85e-03e3cd365ff5/frida/events.jsonl.
+- Status: blocked (sandbox_check hooking still destabilizes the XPC service).
+- Follow-up: treat libsystem_sandbox hooks as unsafe on this host; consider post-run attachment or symbol-free alternatives if sandbox_check evidence is required.
+
+- Prep: created /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_readlink_blocked/deny_link (symlink) and chmod 000 on parent dir to force readlink EACCES.
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op --script book/experiments/frida-testing/hooks/fs_open_funnel.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --probe-args --op readlink --path /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_readlink_blocked/deny_link --allow-unsafe-path
+- Result: run-xpc permission_error (errno=13) with deny_evidence=captured; fs_open_funnel captured readlink errno 13 with backtrace into InProcessProbeCore.probeFsOp; run_xpc exit_code -15 observed.
+- Artifacts: book/experiments/frida-testing/out/5475128c-90e3-4b02-bf8a-2b27b202c873/manifest.json; book/experiments/frida-testing/out/5475128c-90e3-4b02-bf8a-2b27b202c873/ej/run_xpc.json; book/experiments/frida-testing/out/5475128c-90e3-4b02-bf8a-2b27b202c873/frida/events.jsonl.
+- Status: ok (EACCES readlink witness captured).
+- Follow-up: note run_xpc exit_code -15; keep an eye on whether it recurs for direct-path ops.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op --script book/experiments/frida-testing/hooks/sandbox_check_minimal.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --attach-stage post-trigger --post-trigger-attach-delay-s 0.2 --probe-args --op stat --path-class tmp --target specimen_file
+- Result: run-xpc not_found (errno=2) with deny_evidence=not_found; attach succeeded post-trigger (pid_matches_service_pid true); no sandbox-minimal-call events observed.
+- Artifacts: book/experiments/frida-testing/out/a4aa9464-c65d-4f81-847f-c7b4f001d3ef/manifest.json; book/experiments/frida-testing/out/a4aa9464-c65d-4f81-847f-c7b4f001d3ef/ej/run_xpc.json; book/experiments/frida-testing/out/a4aa9464-c65d-4f81-847f-c7b4f001d3ef/frida/events.jsonl.
+- Status: partial (post-trigger attach avoids xpc_error, but no sandbox_check calls observed).
+- Follow-up: attempt a delayed probe that waits on a FIFO to give hooks time to install.
+
+- Prep: created /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_fsop_wait.fifo and triggered it after 3 seconds to gate the fs_op_wait probe.
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id fs_op_wait --script book/experiments/frida-testing/hooks/sandbox_check_minimal.js --skip-capabilities --service-name ProbeService_fully_injectable --no-prepare-selftest --attach-stage post-trigger --post-trigger-attach-delay-s 0.2 --probe-args --op stat --path-class tmp --target specimen_file --wait-fifo /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_fsop_wait.fifo --wait-timeout-ms 10000
+- Result: run-xpc not_found (errno=2) with deny_evidence=not_found; attach succeeded post-trigger; no sandbox-minimal-call events observed during the gated probe.
+- Artifacts: book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/manifest.json; book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/ej/run_xpc.json; book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/frida/events.jsonl.
+- Status: partial (sandbox_check still not observed even with gated probe).
+- Follow-up: consider other probes likely to call sandbox_check, or treat userland sandbox_check as absent for these probes.
+
 ## Entry template
 - Command:
 - Result:

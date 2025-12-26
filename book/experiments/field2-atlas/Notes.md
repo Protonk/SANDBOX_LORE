@@ -16,3 +16,4 @@
 - Rebuilt atlas runtime/summary outputs; field2=0 now carries requested/observed/normalized path observations plus a `path_canonicalization_witness` from `adv:path_alias`, and field2 1/2560 now have explicit attempted (blocked) runtime candidates.
 - Added historical runtime witness carry-forward in `atlas_runtime.py` so apply-gated runs can still report last-known-good results as `runtime_backed_historical` when available.
 - Decoupled observed-path collection from sandbox apply by using unsandboxed F_GETPATH; path normalization evidence now survives apply-gated runs.
+- Refreshed via launchd clean channel; field2=1 mismatch now has a bounded packet in `book/experiments/runtime-adversarial/out/mismatch_packets.jsonl`, and field2=2560 carries a partial-triple control + baseline witness in `out/runtime/field2_runtime_results.json`.

@@ -7,6 +7,7 @@ observer capture without external tooling.
 
 from __future__ import annotations
 
+import errno
 import os
 import subprocess
 import threading
@@ -83,18 +84,31 @@ def _extract_wait_spec(args: List[str]) -> Tuple[Optional[str], Optional[str], O
     return wait_path, wait_mode, wait_timeout_ms
 
 
-def _trigger_fifo(path: Path, *, nonblocking: bool = False) -> Optional[str]:
+def _trigger_fifo(path: Path, *, nonblocking: bool = False, timeout_s: float = 2.0) -> Optional[str]:
     try:
-        # FIFO writes block until a reader is present unless O_NONBLOCK is set.
-        flags = os.O_WRONLY
+        flags = os.O_WRONLY | os.O_NONBLOCK
         if nonblocking:
-            flags |= os.O_NONBLOCK
-        fd = os.open(str(path), flags)
-        try:
-            os.write(fd, b"go")
-        finally:
-            os.close(fd)
-        return None
+            fd = os.open(str(path), flags)
+            try:
+                os.write(fd, b"go")
+            finally:
+                os.close(fd)
+            return None
+        deadline = time.monotonic() + max(timeout_s, 0.0)
+        while time.monotonic() <= deadline:
+            try:
+                fd = os.open(str(path), flags)
+            except OSError as exc:
+                if exc.errno == errno.ENXIO:
+                    time.sleep(0.05)
+                    continue
+                return f"{type(exc).__name__}: {exc}"
+            try:
+                os.write(fd, b"go")
+            finally:
+                os.close(fd)
+            return None
+        return "TimeoutError: fifo reader not ready"
     except Exception as exc:
         return f"{type(exc).__name__}: {exc}"
 
@@ -104,6 +118,26 @@ def _trigger_exists(path: Path) -> Optional[str]:
         # Existence-based waits trigger by creating a file.
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("go")
+        return None
+    except Exception as exc:
+        return f"{type(exc).__name__}: {exc}"
+
+
+def _wait_for_path(path: Path, timeout_s: float) -> bool:
+    deadline = time.monotonic() + max(timeout_s, 0.0)
+    while time.monotonic() <= deadline:
+        if path.exists():
+            return True
+        time.sleep(0.05)
+    return path.exists()
+
+
+def _ensure_fifo(path: Path) -> Optional[str]:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            return None
+        os.mkfifo(str(path))
         return None
     except Exception as exc:
         return f"{type(exc).__name__}: {exc}"
@@ -127,6 +161,7 @@ def _run_wait_command(
     wait_ready_timeout_s: float,
     process_timeout_s: Optional[float],
     on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
+    on_trigger: Optional[Callable[[Dict[str, object]], None]] = None,
     extra_meta: Optional[Dict[str, object]] = None,
 ) -> Dict[str, object]:
     """Run run-xpc with wait/attach flags and trigger the wait mechanism."""
@@ -204,6 +239,16 @@ def _run_wait_command(
                 time.sleep(trigger_delay_s)
             trigger_at = time.time()
             if wait_mode == "fifo":
+                wait_path_ready = _wait_for_path(Path(str(wait_path)), timeout_s=1.0)
+                wait_info["wait_path_ready"] = wait_path_ready
+                if not wait_path_ready:
+                    wait_info["wait_path_ready_timeout_s"] = 1.0
+                    wait_path_create_error = _ensure_fifo(Path(str(wait_path)))
+                    if wait_path_create_error:
+                        wait_info["wait_path_create_error"] = wait_path_create_error
+                    else:
+                        wait_info["wait_path_created"] = True
+            if wait_mode == "fifo":
                 trigger_error = _trigger_fifo(Path(str(wait_path)))
             else:
                 trigger_error = _trigger_exists(Path(str(wait_path)))
@@ -214,6 +259,20 @@ def _run_wait_command(
                     "error": trigger_error,
                 }
             )
+            if on_trigger is not None:
+                try:
+                    on_trigger(
+                        {
+                            "wait_path": wait_path,
+                            "wait_mode": wait_mode,
+                            "trigger": trigger_events[-1],
+                            "trigger_events": list(trigger_events),
+                            "wait_timeout_ms": wait_timeout_ms,
+                        }
+                    )
+                    wait_info["on_trigger_called"] = True
+                except Exception as exc:
+                    wait_info["on_trigger_error"] = f"{type(exc).__name__}: {exc}"
             if post_trigger:
                 # A secondary trigger helps validate wait behavior under reuse.
                 if post_trigger_delay_s > 0:
@@ -378,6 +437,7 @@ def run_wait_xpc(
     wait_ready_timeout_s: float = 15.0,
     process_timeout_s: Optional[float] = None,
     on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
+    on_trigger: Optional[Callable[[Dict[str, object]], None]] = None,
     use_profile: bool = True,
 ) -> Dict[str, object]:
     """Run run-xpc with explicit wait args (wait flags are separate from probe args). on_wait_ready runs before triggering."""
@@ -409,6 +469,7 @@ def run_wait_xpc(
         wait_ready_timeout_s=wait_ready_timeout_s,
         process_timeout_s=process_timeout_s,
         on_wait_ready=on_wait_ready,
+        on_trigger=on_trigger,
         extra_meta={
             "profile_id": profile_id,
             "service_id": service_id,
@@ -434,6 +495,7 @@ def run_probe_wait(
     wait_ready_timeout_s: float = 10.0,
     process_timeout_s: Optional[float] = None,
     on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
+    on_trigger: Optional[Callable[[Dict[str, object]], None]] = None,
     use_profile: bool = True,
 ) -> Dict[str, object]:
     """Run run-xpc where the probe itself carries wait flags (legacy pattern). on_wait_ready runs before triggering."""
@@ -465,6 +527,7 @@ def run_probe_wait(
         wait_ready_timeout_s=wait_ready_timeout_s,
         process_timeout_s=process_timeout_s,
         on_wait_ready=on_wait_ready,
+        on_trigger=on_trigger,
         extra_meta={
             "profile_id": profile_id,
             "service_id": service_id,

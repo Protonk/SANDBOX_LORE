@@ -1,0 +1,42 @@
+{
+  "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+  "run_id": "65312c5f-21dd-48c0-b980-c5c9487b3307",
+  "results": [
+    {
+      "operation": "file-read*",
+      "target": "/tmp/runtime-adv/edges/okdir/item.txt",
+      "status": "allow",
+      "observed_path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+      "observed_path_source": "unsandboxed_fd_path",
+      "name": "baseline:adv:path_edges:allow-subpath",
+      "profile_id": "adv:path_edges",
+      "probe_name": "allow-subpath"
+    },
+    {
+      "operation": "file-read*",
+      "target": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+      "status": "allow",
+      "observed_path": "/private/tmp/runtime-adv/edges/okdir/item.txt",
+      "observed_path_source": "unsandboxed_fd_path",
+      "name": "baseline:adv:path_edges:allow-subpath-normalized",
+      "profile_id": "adv:path_edges",
+      "probe_name": "allow-subpath-normalized"
+    },
+    {
+      "operation": "network-outbound",
+      "target": "127.0.0.1:62646",
+      "status": "allow",
+      "name": "baseline:adv:flow_divert_require_all_tcp:tcp-loopback",
+      "profile_id": "adv:flow_divert_require_all_tcp",
+      "probe_name": "tcp-loopback"
+    },
+    {
+      "operation": "network-outbound",
+      "target": "127.0.0.1:62646",
+      "status": "allow",
+      "name": "baseline:adv:flow_divert_partial_tcp:tcp-loopback",
+      "profile_id": "adv:flow_divert_partial_tcp",
+      "probe_name": "tcp-loopback"
+    }
+  ]
+}

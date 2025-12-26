@@ -1,0 +1,8 @@
+{"t_ns":1766763875457888000,"pid":59951,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766763875458053000,"pid":59951,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766763875500520000,"pid":59951,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766763876078227000,"pid":59951,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766763876081038000,"pid":59951,"msg":{"type":"send","payload":{"kind":"sandbox-minimal-candidates","module":"libsystem_sandbox.dylib","count":2,"names":["sandbox_check","sandbox_check_bulk"]}}}
+{"t_ns":1766763876081084000,"pid":59951,"msg":{"type":"send","payload":{"kind":"sandbox-minimal-hook","module":"libsystem_sandbox.dylib","symbol":"sandbox_check","addr":"0x195000000"}}}
+{"t_ns":1766763876081527000,"pid":59951,"msg":{"type":"send","payload":{"kind":"sandbox-minimal-hook","module":"libsystem_sandbox.dylib","symbol":"sandbox_check_bulk","addr":"0x195001600"}}}
+{"t_ns":1766763895871383000,"pid":59951,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

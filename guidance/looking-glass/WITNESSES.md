@@ -1,0 +1,102 @@
+# looking-glass — WITNESSES (boundary objects & controls)
+
+This bundle lists SANDBOX_LORE’s current **boundary objects**: small witness sets that constrain what can be true on this host baseline. It is designed for a *design partner* who can’t inspect the repo directly.
+
+When a question spans layers (SBPL ↔ compiled graphs ↔ runtime ↔ kernel ↔ environment), don’t answer it by storytelling. **Pick the witness that should decide it**, then propose the smallest move that strengthens or reuses that witness.
+
+## How to use this
+
+- Treat each witness as a **decision primitive**: “If this holds, we can safely design X; if not, we need Y next.”
+- Prefer **controls** over narrative: passing neighbors, one-variable toggles, and stage-labeled outcomes.
+- Keep “how we know” explicit: dyld extraction + compiled structure + runtime probes + Ghidra/KC (when available) are meant to interlock.
+
+## Evidence braid (syncretic, by design)
+
+- **Dyld**: extracted `libsandbox` / `libsystem_sandbox` slices + manifests, used to harvest stable tables.
+- **Compiled structure**: decode headers/op-tables/nodes/literals and summarize canonical blobs.
+- **Runtime**: stage-aware harness runs against expectation matrices, with minimal probes.
+- **Ghidra/KC**: xrefs and evaluator-shape constraints (including *negative results* that constrain design).
+- **Lifecycle**: sandboxed app harnesses + contract-shaped outputs (future end-to-end stories).
+
+---
+
+## Core witness examples (use these in design conversations)
+
+### 1) Dyld vocab spine (Operations + Filters)
+- **Decides:** what ops/filters (names+IDs) exist on this host.
+- **Evidence braid:** dyld extraction → harvested tables → published vocab mappings; pinned by a dyld slice manifest.
+- **Controls:** count/order invariants; spot-check a few IDs.
+- **Confounder:** scope (naming ≠ behavior).
+- **Ask user for:** ops/filters counts + 3 sample entries + dyld manifest excerpt.
+
+### 2) Canonical compiled-profile anchors (blobs → stable digests)
+- **Decides:** what the curated system profiles look like structurally (op_count/op-table/tags/literals).
+- **Evidence braid:** canonical blobs → digests/static checks/attestations → consumed by other mappings/tools.
+- **Controls:** stable identity + “re-decode yields same summary.”
+- **Confounder:** stage (apply-gated ≠ runnable).
+- **Ask user for:** one digest excerpt for `sys:bsd` and `sys:airlock`.
+
+### 3) Tag layout island (bounded subset we can decode)
+- **Decides:** which tags have reliable record layouts for literal/regex operands.
+- **Evidence braid:** decode canonical profiles → tag exemplars → published layout map + guardrails.
+- **Controls:** “layout sanity” excerpt on canonical corpus.
+- **Confounder:** scope (layout ≠ semantic meaning).
+- **Ask user for:** covered tags + record size + one exemplar decode.
+
+### 4) Op-table bucket signatures (synthetic SBPL probes)
+- **Decides:** how bucket patterns shift under small SBPL changes (structural fingerprints).
+- **Evidence braid:** SBPL microprofiles → compile → decode → bucket patterns + per-entry signatures.
+- **Controls:** one-edit deltas; single-op baselines.
+- **Confounder:** scope (buckets are opaque labels until witnessed otherwise).
+- **Ask user for:** one “ops-set → bucket pattern” row + one signature snippet.
+
+### 5) Apply-gate corpus (attach-time `EPERM` ≠ denial)
+- **Decides:** whether `EPERM` is an apply/attach gate vs a PolicyGraph decision.
+- **Evidence braid:** wrapper stage markers (compile/apply split) + minimized failing vs passing neighbor + unified-log reason string + Ghidra xrefs into sandbox kext.
+- **Controls:** compile succeeds but apply fails; bounded log window; neighbor control.
+- **Confounder:** surround (harness identity / parent environment).
+- **Ask user for:** one witness row (stage+errno) + the log line + the kext-xref summary.
+
+### 6) VFS canonicalization suite (path literals vs runtime reality)
+- **Decides:** which path spellings actually match for specific alias families (notably `/tmp` ↔ `/private/tmp`).
+- **Evidence braid:** tri-profile design (alias-only/canon-only/both) + structural decodes + runtime results + observed FD paths where available.
+- **Controls:** the tri-profile matrix (it is the control).
+- **Confounder:** scope (family/operation specific).
+- **Ask user for:** the suite’s “what canonicalizes, what doesn’t” summary paragraph.
+
+### 7) Runtime “golden families” (narrow, but semantic)
+- **Decides:** do we have repeatable decision-stage allow/deny cases?
+- **Evidence braid:** expectation matrices + stage-aware runs + normalized traces; strongest today in mach/network families, with file/path families still bounded by mismatches.
+- **Controls:** baseline (unsandboxed) control + clean-channel run control.
+- **Confounder:** stage (nested sandboxes, staging roots, path normalization).
+- **Ask user for:** one run manifest excerpt (channel/staging) + one trace snippet for mach or network.
+
+### 8) Field2 closure (bounded unknowns + kernel constraints)
+- **Decides:** whether the u16 payload slot yields a clean semantic map (or a hi/lo split).
+- **Evidence braid:** inventories over canonical/probe blobs + Ghidra evaluator work showing raw-u16 handling + explicit u16-role declarations per tag.
+- **Controls:** unknown set scoped to tags whose u16 role is “filter vocab id.”
+- **Confounder:** scope (unknown ≠ meaningless; it means “not yet mapped”).
+- **Ask user for:** closure summary + one snippet of the “raw-u16” kernel observation.
+
+### 9) Lifecycle scaffold (EntitlementJail / App Sandbox harness)
+- **Decides:** do we have an instrumented way to ask entitlement/app-sandbox questions without freehanding?
+- **Evidence braid:** sandboxed app + CLI contract fixtures + structured outputs meant to host future end-to-end witnesses.
+- **Controls:** contract fixtures (output shape pinned).
+- **Confounder:** surround/stack (TCC, hardened runtime, SIP can dominate).
+- **Ask user for:** fixture summary + one example output schema snippet.
+
+---
+
+## Summary table (pick the boundary object first; the table is the last stop)
+
+| Witness | Decides | Evidence braid | Best control | Primary confounder | Ask user for |
+|---|---|---|---|---|---|
+| Dyld vocab spine | ops/filters names+IDs | dyld → tables → mappings | count/order invariants | scope | counts + 3 entries + dyld manifest |
+| Canonical profile anchors | structural “what ships” | blobs → digests/attestations | re-decode stability | stage | one digest excerpt |
+| Tag layout island | decodable tag subset | decode → layouts → guardrails | exemplar decode | scope | covered tags + exemplar |
+| Op-table buckets | bucket shifts/signatures | SBPL → compile → signatures | one-edit deltas | scope | one bucket-pattern row |
+| Apply-gate corpus | attach-time EPERM | markers + logs + kext xrefs | failing+neighbor | surround/stage | witness row + log line |
+| VFS canonicalization | path matching reality | tri-profiles + runtime | tri-profile matrix | scope | suite summary paragraph |
+| Runtime golden families | repeatable semantics | matrix + stage + traces | baseline + clean channel | stage | run manifest + trace snippet |
+| Field2 closure | bounded unknowns | inventories + Ghidra eval | role-scoped unknown set | scope | closure summary excerpt |
+| Lifecycle scaffold | entitlement questions | app harness + fixtures | contract fixtures | surround/stack | fixture + schema snippet |

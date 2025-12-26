@@ -21,6 +21,7 @@ class RuntimeObservation:
     world_id: str
     profile_id: str
     scenario_id: str
+    run_id: Optional[str] = None
     expectation_id: Optional[str] = None
     operation: str = ""
     target: Optional[str] = None
@@ -33,6 +34,11 @@ class RuntimeObservation:
     expected: Optional[str] = None
     actual: Optional[str] = None
     match: Optional[bool] = None
+    primary_intent: Optional[Dict[str, Any]] = None
+    reached_primary_op: Optional[bool] = None
+    first_denial_op: Optional[str] = None
+    first_denial_filters: Optional[List[Dict[str, Any]]] = None
+    decision_path: Optional[str] = None
     runtime_status: Optional[str] = None
     errno: Optional[int] = None
     errno_name: Optional[str] = None
@@ -43,6 +49,7 @@ class RuntimeObservation:
     runner_info: Optional[Dict[str, Any]] = None
     seatbelt_callouts: Optional[List[Dict[str, Any]]] = None
     entitlement_checks: Optional[List[Dict[str, Any]]] = None
+    probe_details: Optional[Dict[str, Any]] = None
     violation_summary: Optional[str] = None
     command: Optional[List[str]] = None
     stdout: Optional[str] = None
