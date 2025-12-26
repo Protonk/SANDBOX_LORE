@@ -1,0 +1,11 @@
+{"t_ns":1766711874956514000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766711874956651000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766711875020344000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766711876119332000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766711876121561000,"pid":79525,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"open","addr":"0x189d0dda8"}}}
+{"t_ns":1766711876121949000,"pid":79525,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"openat","addr":"0x189d1de14"}}}
+{"t_ns":1766711876122300000,"pid":79525,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"fopen","addr":"0x189be8c20"}}}
+{"t_ns":1766711876122602000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-config"}}}
+{"t_ns":1766711876274306000,"pid":79525,"msg":{"type":"send","payload":{"kind":"self-open","status":"attempt","path":"/Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_noaccess","source":"rpc"}}}
+{"t_ns":1766711876369098000,"pid":79525,"msg":{"type":"send","payload":{"kind":"fs-open","symbol":"open","tid":9731,"path":"/Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable/Data/tmp/ej_noaccess","flags":0,"mode":0,"rv":-1,"errno":13,"bt":["0x100ff004c","0x100fed534","0x100ee6ea4","0x1010325fc","0x101019f44","0x1010325fc","0x101019f44","0x10101aa4c","0x10101a52c","0x100ede53c","0x100ee30d4","0x10108b094","0x10108b094","0x101093ce0","0x101093ce0","0x1010325fc"]}}}
+{"t_ns":1766711877173209000,"pid":79525,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

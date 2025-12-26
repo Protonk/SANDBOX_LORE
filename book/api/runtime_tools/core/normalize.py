@@ -19,6 +19,11 @@ from book.api import path_utils
 from book.api.runtime_tools.core import contract as rt_contract
 from book.api.runtime_tools.core import models
 
+# Host-bound alias map derived from vfs-canonicalization (partial).
+_PATH_ALIAS_PREFIXES = (
+    ("/tmp", "/private/tmp"),
+)
+
 
 def _strip_sbpl_apply_markers(stderr: Optional[str]) -> Optional[str]:
     """
@@ -28,6 +33,45 @@ def _strip_sbpl_apply_markers(stderr: Optional[str]) -> Optional[str]:
     canonical normalized runtime IR payload.
     """
     return rt_contract.strip_tool_markers(stderr)
+
+def _extract_path_observation(stderr: Optional[str]) -> Dict[str, Optional[str]]:
+    if not stderr:
+        return {"path": None, "source": "not_attempted"}
+    for line in stderr.splitlines():
+        if line.startswith("F_GETPATH:"):
+            return {"path": line.split(":", 1)[1].strip() or None, "source": "fd_path"}
+        if line.startswith("F_GETPATH_ERROR:"):
+            return {"path": None, "source": "error"}
+        if line.startswith("F_GETPATH_UNAVAILABLE"):
+            return {"path": None, "source": "unavailable"}
+    return {"path": None, "source": "not_attempted"}
+
+def _probe_path_observation(probe: Mapping[str, Any]) -> Dict[str, Optional[str]]:
+    path_obs = probe.get("path_observation")
+    if not isinstance(path_obs, Mapping):
+        return {"path": None, "source": None}
+    path = path_obs.get("observed_path") or path_obs.get("path")
+    source = path_obs.get("observed_path_source") or path_obs.get("source")
+    return {"path": path, "source": source}
+
+
+def _normalize_path(requested: Optional[str], observed: Optional[str]) -> Dict[str, Optional[str]]:
+    if observed:
+        return {"path": observed, "source": "observed_path"}
+    if not requested:
+        return {"path": None, "source": None}
+    for prefix, replacement in _PATH_ALIAS_PREFIXES:
+        if requested == prefix:
+            return {"path": replacement, "source": "alias_map"}
+        if requested.startswith(prefix + "/"):
+            return {"path": replacement + requested[len(prefix):], "source": "alias_map"}
+    return {"path": requested, "source": "requested_path"}
+
+
+def _is_path_operation(op: Optional[str]) -> bool:
+    if not op:
+        return False
+    return op.startswith("file-") or op in {"file-read*", "file-write*", "file-read-data", "file-write-data"}
 
 
 def _validate_probe_contract(
@@ -242,6 +286,14 @@ def normalize_matrix(
             stderr_canonical = _strip_sbpl_apply_markers(stderr_raw)
             rt_contract.assert_no_tool_markers_in_stderr(stderr_canonical)
 
+            requested_path = target if _is_path_operation(op) else None
+            obs = _extract_path_observation(stderr_canonical) if requested_path else {"path": None, "source": None}
+            if requested_path and obs.get("path") is None:
+                probe_obs = _probe_path_observation(probe)
+                if probe_obs.get("path") is not None or probe_obs.get("source") is not None:
+                    obs = probe_obs
+            norm = _normalize_path(requested_path, obs.get("path")) if requested_path else {"path": None, "source": None}
+
             observations.append(
                 models.RuntimeObservation(
                     world_id=resolved_world,
@@ -250,6 +302,11 @@ def normalize_matrix(
                     expectation_id=expectation_id,
                     operation=op or "",
                     target=target,
+                    requested_path=requested_path,
+                    observed_path=obs.get("path"),
+                    observed_path_source=obs.get("source"),
+                    normalized_path=norm.get("path"),
+                    normalized_path_source=norm.get("source"),
                     probe_name=probe_name or expectation_rec.get("name"),
                     expected=expected_decision,
                     actual=actual_decision,
@@ -476,6 +533,9 @@ def normalize_metadata_results(
         stderr_canonical = _strip_sbpl_apply_markers(stderr_raw)
         rt_contract.assert_no_tool_markers_in_stderr(stderr_canonical)
 
+        requested_path = target if _is_path_operation(op) else None
+        norm = _normalize_path(requested_path, None) if requested_path else {"path": None, "source": None}
+
         notes_parts: List[str] = []
         if probe_name:
             notes_parts.append(f"probe={probe_name}")
@@ -492,6 +552,11 @@ def normalize_metadata_results(
                 expectation_id=expectation_id,
                 operation=op,
                 target=target,
+                requested_path=requested_path,
+                observed_path=None,
+                observed_path_source=None,
+                normalized_path=norm.get("path"),
+                normalized_path_source=norm.get("source"),
                 probe_name=probe_name,
                 expected=None,
                 actual=actual,

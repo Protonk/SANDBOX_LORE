@@ -1,22 +1,25 @@
 [
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
       "/private/etc/hosts"
     ],
+    "errno": 1,
     "expectation_id": "bucket4:v1_read:read_/etc/hosts",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -35,37 +38,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "bucket4:v1_read:read_/etc/hosts",
-    "stderr": "",
-    "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
       "/private/etc/hosts"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "bucket4:v1_read:write_/etc/hosts",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -85,35 +89,39 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "bucket4:v1_read:write_/etc/hosts",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/v1_read.bucket4_v1_read.runtime.sb",
       "/private/tmp/foo"
     ],
+    "errno": 1,
     "expectation_id": "bucket4:v1_read:read_/tmp/foo",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -132,35 +140,39 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "bucket4:v1_read:read_/tmp/foo",
-    "stderr": "",
-    "stdout": "runtime-checks foo\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/foo",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
       "/private/tmp/foo"
     ],
+    "errno": 1,
     "expectation_id": "bucket5:v11_read_subpath:read_/tmp/foo",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -179,37 +191,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "bucket5:v11_read_subpath:read_/tmp/foo",
-    "stderr": "",
-    "stdout": "runtime-checks foo\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/foo",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
       "/private/tmp/bar"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "bucket5:v11_read_subpath:read_/tmp/bar",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "preflight": {
@@ -229,37 +242,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
     "runtime_status": "errno",
     "scenario_id": "bucket5:v11_read_subpath:read_/tmp/bar",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/bar",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/v11_read_subpath.bucket5_v11_read_subpath.runtime.sb",
       "/private/tmp/foo"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "bucket5:v11_read_subpath:write_/tmp/foo",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -279,29 +293,30 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "bucket5:v11_read_subpath:write_/tmp/foo",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/foo",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_apply",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
-      "book/api/SBPL-wrapper/wrapper",
+      "book/tools/sbpl/wrapper/wrapper",
       "--preflight",
       "enforce",
       "--blob",
@@ -314,7 +329,7 @@
       {
         "entitlement": "com.apple.private.security.message-filter",
         "marker_schema_version": 1,
-        "pid": 25682,
+        "pid": 82564,
         "present": false,
         "rc": 0,
         "stage": "pre_apply",
@@ -322,9 +337,12 @@
         "value_type": "absent"
       }
     ],
+    "errno": 1,
     "expectation_id": "allow_all|file-read*|/etc/hosts",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -347,30 +365,31 @@
       "apply_model": "exec_wrapper",
       "apply_timing": "pre_exec",
       "entrypoint": "SBPL-wrapper",
-      "entrypoint_path": "book/api/SBPL-wrapper/wrapper",
-      "entrypoint_sha256": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a",
+      "entrypoint_path": "book/tools/sbpl/wrapper/wrapper",
+      "entrypoint_sha256": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a"
+      "tool_build_id": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "allow_all|file-read*|/etc/hosts",
-    "stderr": "",
-    "stdout": "##\n# Host Database\n#\n# localhost is used to configure the loopback interface\n# when the system is booting.  Do not change this entry.\n##\n127.0.0.1\tlocalhost\n255.255.255.255\tbroadcasthost\n::1             localhost\n",
+    "stderr": "sandbox_apply: Operation not permitted\n",
+    "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_apply",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
-      "book/api/SBPL-wrapper/wrapper",
+      "book/tools/sbpl/wrapper/wrapper",
       "--preflight",
       "enforce",
       "--blob",
@@ -383,7 +402,7 @@
       {
         "entitlement": "com.apple.private.security.message-filter",
         "marker_schema_version": 1,
-        "pid": 25684,
+        "pid": 82566,
         "present": false,
         "rc": 0,
         "stage": "pre_apply",
@@ -391,9 +410,12 @@
         "value_type": "absent"
       }
     ],
+    "errno": 1,
     "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -416,30 +438,31 @@
       "apply_model": "exec_wrapper",
       "apply_timing": "pre_exec",
       "entrypoint": "SBPL-wrapper",
-      "entrypoint_path": "book/api/SBPL-wrapper/wrapper",
-      "entrypoint_sha256": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a",
+      "entrypoint_path": "book/tools/sbpl/wrapper/wrapper",
+      "entrypoint_sha256": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a"
+      "tool_build_id": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
-    "stderr": "",
-    "stdout": "runtime-checks read\n",
+    "stderr": "sandbox_apply: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/sbpl_rt/read.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_apply",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
-      "book/api/SBPL-wrapper/wrapper",
+      "book/tools/sbpl/wrapper/wrapper",
       "--preflight",
       "enforce",
       "--blob",
@@ -453,7 +476,7 @@
       {
         "entitlement": "com.apple.private.security.message-filter",
         "marker_schema_version": 1,
-        "pid": 25686,
+        "pid": 82568,
         "present": false,
         "rc": 0,
         "stage": "pre_apply",
@@ -461,9 +484,12 @@
         "value_type": "absent"
       }
     ],
+    "errno": 1,
     "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_apply_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-write*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -486,36 +512,40 @@
       "apply_model": "exec_wrapper",
       "apply_timing": "pre_exec",
       "entrypoint": "SBPL-wrapper",
-      "entrypoint_path": "book/api/SBPL-wrapper/wrapper",
-      "entrypoint_sha256": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a",
+      "entrypoint_path": "book/tools/sbpl/wrapper/wrapper",
+      "entrypoint_sha256": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "528ba6c6a4fdec1e149f2730ad2161e230247bd22f7842545152555a0bec9e7a"
+      "tool_build_id": "2a4ead954fcceb103a5409d6057ab6803f206a11fc94554638c1b6a2aa065bb3"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
-    "stderr": "",
+    "stderr": "sandbox_apply: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/sbpl_rt/write.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
       "/private/tmp/foo.txt"
     ],
+    "errno": 1,
     "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -534,35 +564,39 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "metafilter_any|file-read*|/tmp/foo.txt",
-    "stderr": "",
-    "stdout": "foo\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/foo.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
       "/private/tmp/bar.txt"
     ],
+    "errno": 1,
     "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -581,35 +615,39 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "metafilter_any|file-read*|/tmp/bar.txt",
-    "stderr": "",
-    "stdout": "bar\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/bar.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
       "/private/tmp/qux.txt"
     ],
+    "errno": 1,
     "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -628,37 +666,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "metafilter_any|file-read*|/tmp/qux.txt",
-    "stderr": "",
-    "stdout": "qux\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/tmp/qux.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
       "/private/tmp/baz.txt"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "metafilter_any|file-read*|/tmp/baz.txt",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "preflight": {
@@ -678,37 +717,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
     "runtime_status": "errno",
     "scenario_id": "metafilter_any|file-read*|/tmp/baz.txt",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/baz.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/metafilter_any.runtime_metafilter_any.runtime.sb",
       "/private/tmp/baz.txt"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "metafilter_any|file-write*|/tmp/baz.txt",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -728,37 +768,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "metafilter_any|file-write*|/tmp/baz.txt",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/baz.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
       "/private/etc/hosts"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "sys:bsd:read_/etc/hosts",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "preflight": {
@@ -778,37 +819,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
     "runtime_status": "errno",
     "scenario_id": "sys:bsd:read_/etc/hosts",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
       "/private/etc/hosts"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "sys:bsd:write_/etc/hosts",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -828,37 +870,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "sys:bsd:write_/etc/hosts",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
       "/private/tmp/foo"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "sys:bsd:read_/tmp/foo",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "preflight": {
@@ -878,37 +921,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
     "runtime_status": "errno",
     "scenario_id": "sys:bsd:read_/tmp/foo",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/foo",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/bsd.sys_bsd.runtime.sb",
       "/private/tmp/foo"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "sys:bsd:write_/tmp/foo",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -928,15 +972,16 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "sys:bsd:write_/tmp/foo",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/tmp/foo",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
@@ -1244,23 +1289,26 @@
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
       "/private/tmp/strict_ok/allow.txt"
     ],
+    "errno": 1,
     "expectation_id": "runtime:strict_1:read_ok",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-read*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -1279,35 +1327,39 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "runtime:strict_1:read_ok",
-    "stderr": "",
-    "stdout": "strict allow\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+    "stdout": "",
     "target": "/private/tmp/strict_ok/allow.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
-    "actual": "allow",
+    "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
       "/private/tmp/strict_ok/allow.txt"
     ],
+    "errno": 1,
     "expectation_id": "runtime:strict_1:write_ok",
     "expected": "allow",
-    "match": true,
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
+    "match": false,
     "operation": "file-write*",
     "preflight": {
       "classification": "no_known_apply_gate_signature",
@@ -1326,37 +1378,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
-    "runtime_status": "success",
+    "runtime_status": "errno",
     "scenario_id": "runtime:strict_1:write_ok",
-    "stderr": "",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/private/tmp/strict_ok/allow.txt",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_reader",
       "book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
       "/private/etc/hosts"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "runtime:strict_1:read_hosts",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-read*",
     "preflight": {
@@ -1376,37 +1429,38 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_reader",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_reader",
-      "entrypoint_sha256": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e",
+      "entrypoint_sha256": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "5af5d148787993f29efdcaf577a3f474b9d37d0da9c6bd1832ac1da86ca2e12e"
+      "tool_build_id": "9e84e162afdadcdb5007b1fe978b4d6adfdef947911b319e494cf400e92890a1"
     },
     "runtime_status": "errno",
     "scenario_id": "runtime:strict_1:read_hosts",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   },
   {
     "actual": "deny",
     "apply_report": {
       "api": "sandbox_init",
-      "err_class": "ok",
-      "err_class_source": "none",
-      "errbuf": null,
-      "errno": 0,
-      "rc": 0
+      "err_class": "errno_eperm",
+      "err_class_source": "errno_only",
+      "errbuf": "Operation not permitted",
+      "errno": 1,
+      "rc": -1
     },
     "command": [
       "book/experiments/runtime-checks/sandbox_writer",
       "book/experiments/runtime-checks/out/runtime_profiles/strict_1.runtime_strict_1.runtime.sb",
       "/private/etc/hosts"
     ],
-    "errno": 2,
+    "errno": 1,
     "expectation_id": "runtime:strict_1:write_hosts",
     "expected": "deny",
-    "failure_kind": "probe_nonzero_exit",
-    "failure_stage": "probe",
+    "failure_kind": "sandbox_init_failed",
+    "failure_stage": "apply",
     "match": true,
     "operation": "file-write*",
     "preflight": {
@@ -1426,15 +1480,16 @@
       "apply_timing": "pre_syscall",
       "entrypoint": "sandbox_writer",
       "entrypoint_path": "book/experiments/runtime-checks/sandbox_writer",
-      "entrypoint_sha256": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1",
+      "entrypoint_sha256": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7",
       "preexisting_sandbox_suspected": false,
-      "tool_build_id": "ec8330a5bf28154c20e9dd645b319a546712bee28a5ace7a92b56ad2e32485b1"
+      "tool_build_id": "9259579f33774fb82cbb474d3b6acbdbd6c1ff064f53f2af2a91e1e390e33fe7"
     },
     "runtime_status": "errno",
     "scenario_id": "runtime:strict_1:write_hosts",
-    "stderr": "open target: Operation not permitted\n",
+    "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
     "stdout": "",
     "target": "/etc/hosts",
+    "violation_summary": "EPERM",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"
   }
 ]

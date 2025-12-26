@@ -1,2 +1,0 @@
-{"t_ns":1766454229858823000,"pid":null,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
-{"t_ns":1766454229858963000,"pid":null,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}

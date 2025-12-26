@@ -27,12 +27,14 @@ def test_adversarial_artifacts_present_and_annotated():
         "adv:struct_flat",
         "adv:struct_nested",
         "adv:path_edges",
+        "adv:path_alias",
         "adv:mach_simple_allow",
         "adv:mach_simple_variants",
         "adv:mach_local_literal",
         "adv:mach_local_regex",
         "adv:net_outbound_allow",
         "adv:net_outbound_deny",
+        "adv:flow_divert_require_all_tcp",
     }
     # Shapes must stay aligned.
     assert set(runtime_results.keys()) == set(expected_matrix.get("profiles", {}).keys())

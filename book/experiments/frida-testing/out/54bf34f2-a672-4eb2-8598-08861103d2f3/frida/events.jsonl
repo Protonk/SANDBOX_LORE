@@ -1,0 +1,15 @@
+{"t_ns":1766711760781673000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766711760781795000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766711760846243000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766711761934020000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766711761936031000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"__open","addr":"0x189d02c48"}}}
+{"t_ns":1766711761936253000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"open","addr":"0x189d0dda8"}}}
+{"t_ns":1766711761936749000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"__open$INODE64"}}}
+{"t_ns":1766711761936859000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"open$INODE64"}}}
+{"t_ns":1766711761936942000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"openat","addr":"0x189d1de14"}}}
+{"t_ns":1766711761937170000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"__openat","addr":"0x189d03a5c"}}}
+{"t_ns":1766711761937439000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"openat$INODE64"}}}
+{"t_ns":1766711761937544000,"pid":79095,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"__openat$INODE64"}}}
+{"t_ns":1766711761937604000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-config"}}}
+{"t_ns":1766711761938044000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"script-config-error","error":"unable to find method 'configure'"}}}
+{"t_ns":1766711782580523000,"pid":79095,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

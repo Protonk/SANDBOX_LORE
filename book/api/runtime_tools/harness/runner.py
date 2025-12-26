@@ -6,6 +6,7 @@ Consolidated home for the former `golden_runner`.
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import os
@@ -24,6 +25,7 @@ READER = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_reader
 WRITER = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_writer"
 WRAPPER = REPO_ROOT / "book" / "tools" / "sbpl" / "wrapper" / "wrapper"
 MACH_PROBE = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "mach_probe"
+FILE_PROBE = REPO_ROOT / "book" / "api" / "runtime_tools" / "native" / "file_probe" / "file_probe"
 
 CAT = "/bin/cat"
 SH = "/bin/sh"
@@ -81,6 +83,39 @@ def ensure_fixtures(fixture_root: Path = Path("/tmp")) -> None:
     ok_dir.mkdir(parents=True, exist_ok=True)
     (ok_dir / "allow.txt").write_text("param ok allow\n")
 
+def _is_path_operation(op: Optional[str]) -> bool:
+    if not op:
+        return False
+    return op.startswith("file-") or op in {"file-read*", "file-write*", "file-read-data", "file-write-data"}
+
+
+def _observe_path_unsandboxed(path: Optional[str]) -> Optional[Dict[str, Any]]:
+    if not path or not isinstance(path, str) or not path.startswith("/"):
+        return None
+    try:
+        fd = os.open(path, os.O_RDONLY)
+    except OSError as exc:
+        return {
+            "observed_path": None,
+            "observed_path_source": "unsandboxed_error",
+            "observed_path_errno": exc.errno,
+        }
+    try:
+        buf = fcntl.fcntl(fd, fcntl.F_GETPATH, b"\0" * 1024)
+        observed = buf.split(b"\0", 1)[0].decode("utf-8", errors="replace")
+        return {"observed_path": observed, "observed_path_source": "unsandboxed_fd_path"}
+    except OSError as exc:
+        return {
+            "observed_path": None,
+            "observed_path_source": "unsandboxed_error",
+            "observed_path_errno": exc.errno,
+        }
+    finally:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+
 
 def classify_profile_status(probes: List[Dict[str, Any]], skipped_reason: str | None = None) -> tuple[str, str | None]:
     if skipped_reason:
@@ -135,17 +170,23 @@ def run_probe(profile: Path, probe: Dict[str, Any], profile_mode: str | None, wr
     reader_mode = False
     writer_mode = False
     if op == "file-read*":
+        use_file_probe = probe.get("driver") == "file_probe" and FILE_PROBE.exists() and target
+        if use_file_probe:
+            cmd = [str(FILE_PROBE), "read", target]
         # In blob mode, the wrapper applies the compiled profile; use /bin/cat
         # as the in-sandbox probe so we don't re-run sandbox_init on a .sb.bin.
-        if not blob_mode and READER.exists():
+        elif not blob_mode and READER.exists():
             cmd = [str(READER), str(profile), target]
             reader_mode = True
         else:
             cmd = [CAT, target]
     elif op == "file-write*":
+        use_file_probe = probe.get("driver") == "file_probe" and FILE_PROBE.exists() and target
+        if use_file_probe:
+            cmd = [str(FILE_PROBE), "write", target]
         # Same rule as file-read*: avoid sandbox_init-on-binary by using /bin/sh
         # inside the blob-applied wrapper process.
-        if not blob_mode and WRITER.exists():
+        elif not blob_mode and WRITER.exists():
             cmd = [str(WRITER), str(profile), target]
             writer_mode = True
         else:
@@ -299,6 +340,9 @@ def run_matrix(
         probes = rec.get("probes") or []
         probe_results = []
         for probe in probes:
+            path_observation = None
+            if _is_path_operation(probe.get("operation")):
+                path_observation = _observe_path_unsandboxed(probe.get("target"))
             if preflight_blocked:
                 actual = None
                 raw = {"command": [], "exit_code": None, "stdout": "", "stderr": ""}
@@ -389,7 +433,11 @@ def run_matrix(
                 runner_info = None
 
             if runner_info is not None:
-                runner_info["preexisting_sandbox_suspected"] = failure_kind == "apply_already_sandboxed"
+                preexisting = failure_kind == "apply_already_sandboxed"
+                if failure_stage == "apply" and isinstance(apply_report, dict):
+                    if apply_report.get("err_class") == "errno_eperm":
+                        preexisting = True
+                runner_info["preexisting_sandbox_suspected"] = preexisting
 
             if runner_info is not None and entrypoint_path and entrypoint_path.exists():
                 runner_info["entrypoint_path"] = to_repo_relative(entrypoint_path, REPO_ROOT)
@@ -429,6 +477,7 @@ def run_matrix(
                     "match": (expected == actual) if actual is not None else None,
                     "runtime_result": runtime_result,
                     "violation_summary": violation_summary,
+                    **({"path_observation": path_observation} if path_observation else {}),
                     **{**raw, "command": relativize_command(raw.get("command") or [], REPO_ROOT)},
                     **(
                         {"notes": "preflight blocked: known apply-gate signature"}

@@ -126,6 +126,7 @@ def _run_wait_command(
     post_trigger_delay_s: float,
     wait_ready_timeout_s: float,
     process_timeout_s: Optional[float],
+    on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
     extra_meta: Optional[Dict[str, object]] = None,
 ) -> Dict[str, object]:
     """Run run-xpc with wait/attach flags and trigger the wait mechanism."""
@@ -176,6 +177,7 @@ def _run_wait_command(
         time.sleep(0.05)
 
     # Some probes do not emit wait-ready; fall back to the declared args.
+    wait_ready_seen = wait_event.is_set()
     wait_path = wait_info.get("wait_path") or wait_path_hint
     wait_mode = wait_info.get("mode") or wait_mode_hint
 
@@ -183,6 +185,20 @@ def _run_wait_command(
     if wait_path is None:
         wait_info["wait_ready_missing"] = True
     else:
+        if wait_ready_seen and on_wait_ready is not None:
+            try:
+                on_wait_ready(
+                    {
+                        "wait_path": wait_path,
+                        "wait_mode": wait_mode,
+                        "wait_ready_line": wait_info.get("wait_ready_line"),
+                        "wait_ready_at_unix_s": wait_info.get("wait_ready_at_unix_s"),
+                        "wait_timeout_ms": wait_timeout_ms,
+                    }
+                )
+                wait_info["on_wait_ready_called"] = True
+            except Exception as exc:
+                wait_info["on_wait_ready_error"] = f"{type(exc).__name__}: {exc}"
         if proc.poll() is None:
             if trigger_delay_s > 0:
                 time.sleep(trigger_delay_s)
@@ -298,11 +314,13 @@ def _run_wait_command(
         "stdout_json": stdout_json,
         "stdout_json_error": None if stdout_json is not None else ("stdout_empty" if not stdout_text else "stdout_not_json"),
         "wait_ready_line": wait_info.get("wait_ready_line"),
+        "wait_ready_seen": wait_ready_seen,
         "wait_path": wait_path,
         "wait_mode": wait_mode,
         "wait_ready_at_unix_s": wait_info.get("wait_ready_at_unix_s"),
         "trigger_events": trigger_events,
         "wait_info": wait_info,
+        "on_wait_ready_error": wait_info.get("on_wait_ready_error"),
         "wait_timeout_ms": wait_timeout_ms,
         "trigger_delay_s": trigger_delay_s,
         "post_trigger": post_trigger,
@@ -359,9 +377,10 @@ def run_wait_xpc(
     post_trigger_delay_s: float = 0.2,
     wait_ready_timeout_s: float = 15.0,
     process_timeout_s: Optional[float] = None,
+    on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
     use_profile: bool = True,
 ) -> Dict[str, object]:
-    """Run run-xpc with explicit wait args (wait flags are separate from probe args)."""
+    """Run run-xpc with explicit wait args (wait flags are separate from probe args). on_wait_ready runs before triggering."""
     cmd = [str(EJ), "run-xpc"]
     cmd, capture_path, log_capture_mode, log_capture_log_name = _prepare_log_capture(cmd, log_path)
     cmd += observer_args()
@@ -389,6 +408,7 @@ def run_wait_xpc(
         post_trigger_delay_s=post_trigger_delay_s,
         wait_ready_timeout_s=wait_ready_timeout_s,
         process_timeout_s=process_timeout_s,
+        on_wait_ready=on_wait_ready,
         extra_meta={
             "profile_id": profile_id,
             "service_id": service_id,
@@ -413,9 +433,10 @@ def run_probe_wait(
     post_trigger_delay_s: float = 0.2,
     wait_ready_timeout_s: float = 10.0,
     process_timeout_s: Optional[float] = None,
+    on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
     use_profile: bool = True,
 ) -> Dict[str, object]:
-    """Run run-xpc where the probe itself carries wait flags (legacy pattern)."""
+    """Run run-xpc where the probe itself carries wait flags (legacy pattern). on_wait_ready runs before triggering."""
     cmd = [str(EJ), "run-xpc"]
     cmd, capture_path, log_capture_mode, log_capture_log_name = _prepare_log_capture(cmd, log_path)
     cmd += observer_args()
@@ -443,6 +464,7 @@ def run_probe_wait(
         post_trigger_delay_s=post_trigger_delay_s,
         wait_ready_timeout_s=wait_ready_timeout_s,
         process_timeout_s=process_timeout_s,
+        on_wait_ready=on_wait_ready,
         extra_meta={
             "profile_id": profile_id,
             "service_id": service_id,

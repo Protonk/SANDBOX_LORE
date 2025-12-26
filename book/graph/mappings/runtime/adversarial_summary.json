@@ -1,9 +1,8 @@
 {
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-  "profiles": 9,
-  "expectations": 36,
+  "profiles": 11,
+  "expectations": 37,
   "mismatch_counts": {
-    "path_normalization": 2,
-    "unexpected_deny": 2
+    "apply_gate": 20
   }
 }

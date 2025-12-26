@@ -1,7 +1,0 @@
-{"t_ns":1766454806991989000,"pid":null,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
-{"t_ns":1766454806992019000,"pid":null,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
-{"t_ns":1766454807034867000,"pid":null,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
-{"t_ns":1766454811381806000,"pid":80654,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
-{"t_ns":1766454811383190000,"pid":80654,"msg":{"type":"send","payload":{"kind":"smoke","pid":80654,"arch":"arm64","platform":"darwin"}}}
-{"t_ns":1766454811383259000,"pid":80654,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach-sleep"}}}
-{"t_ns":1766454813392290000,"pid":80654,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"application-requested"}}}

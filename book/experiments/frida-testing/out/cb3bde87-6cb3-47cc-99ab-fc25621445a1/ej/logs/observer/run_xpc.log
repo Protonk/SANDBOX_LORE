@@ -1,0 +1,40 @@
+{
+  "data": {
+    "correlation_id": "53ACE838-161E-49E8-BF13-DE51B354ADC5",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-25 18:01:27",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
+    "observed_deny": false,
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 87917,
+    "plan_id": "frida-testing:ej-frida",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_jit_rwx_legacy(87917)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"87917\")))",
+    "process_name": "ProbeService_jit_rwx_legacy",
+    "row_id": "frida-testing:ej-frida.cb3bde87-6cb3-47cc-99ab-fc25621445a1",
+    "start": "2025-12-25 18:01:16"
+  },
+  "generated_at_unix_ms": 1766714482714,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 1
+}

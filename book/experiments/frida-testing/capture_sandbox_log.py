@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Legacy: replaced by EntitlementJail observer/log capture in run_ej_frida.py.
 import argparse
 import json
 import subprocess

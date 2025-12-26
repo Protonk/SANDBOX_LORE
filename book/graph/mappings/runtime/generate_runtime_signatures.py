@@ -21,9 +21,11 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, Tuple
 
-from book.api.runtime_tools.core import normalize as runtime_normalize
-
 ROOT = Path(__file__).resolve().parents[4]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from book.api.runtime_tools.core import normalize as runtime_normalize
 RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"

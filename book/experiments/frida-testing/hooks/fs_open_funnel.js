@@ -59,10 +59,24 @@ const XATTR_NAMES = new Set([
   'flistxattr'
 ]);
 
+const MUTATE_NAMES = new Set([
+  'creat',
+  'mkdir',
+  'mkdirat',
+  'rename',
+  'renameat',
+  'renamex_np',
+  'renameatx_np',
+  'unlink',
+  'unlinkat',
+  'rmdir'
+]);
+
 function shouldHook(name) {
   if (name === 'syscall' || name === '__syscall') return true;
   const normalized = normalizeSymbol(name);
   if (META_NAMES.has(normalized) || XATTR_NAMES.has(normalized)) return true;
+  if (MUTATE_NAMES.has(normalized)) return true;
   if (normalized.startsWith('openat')) return true;
   if (normalized.startsWith('open')) return true;
   if (name.includes('openat_authenticated_np')) return true;
@@ -77,6 +91,7 @@ function classifySignature(symbol) {
   const normalized = normalizeSymbol(symbol);
   if (META_NAMES.has(normalized)) return normalized;
   if (XATTR_NAMES.has(normalized)) return normalized;
+  if (MUTATE_NAMES.has(normalized)) return normalized;
   if (normalized.includes('openat')) return 'openat';
   if (normalized.includes('open')) return 'open';
   return 'unknown';
@@ -179,6 +194,42 @@ for (const moduleName of MODULES) {
           this.path = readPath(args[0]);
         } else if (sig === 'flistxattr') {
           this.fd = args[0].toInt32();
+        } else if (sig === 'creat') {
+          this.path = readPath(args[0]);
+          this.mode = args[1].toInt32();
+        } else if (sig === 'mkdir') {
+          this.path = readPath(args[0]);
+          this.mode = args[1].toInt32();
+        } else if (sig === 'mkdirat') {
+          this.dirfd = args[0].toInt32();
+          this.path = readPath(args[1]);
+          this.mode = args[2].toInt32();
+        } else if (sig === 'rename') {
+          this.path = readPath(args[0]);
+          this.path2 = readPath(args[1]);
+        } else if (sig === 'renamex_np') {
+          this.path = readPath(args[0]);
+          this.path2 = readPath(args[1]);
+          this.flags = args[2].toInt32();
+        } else if (sig === 'renameat') {
+          this.dirfd = args[0].toInt32();
+          this.path = readPath(args[1]);
+          this.dirfd2 = args[2].toInt32();
+          this.path2 = readPath(args[3]);
+        } else if (sig === 'renameatx_np') {
+          this.dirfd = args[0].toInt32();
+          this.path = readPath(args[1]);
+          this.dirfd2 = args[2].toInt32();
+          this.path2 = readPath(args[3]);
+          this.flags = args[4].toInt32();
+        } else if (sig === 'unlink') {
+          this.path = readPath(args[0]);
+        } else if (sig === 'unlinkat') {
+          this.dirfd = args[0].toInt32();
+          this.path = readPath(args[1]);
+          this.flags = args[2].toInt32();
+        } else if (sig === 'rmdir') {
+          this.path = readPath(args[0]);
         }
       },
       onLeave(retval) {
@@ -196,8 +247,10 @@ for (const moduleName of MODULES) {
           tid: this.tid,
           syscall_num: this.syscall_num,
           dirfd: this.dirfd,
+          dirfd2: this.dirfd2,
           fd: this.fd,
           path: this.path,
+          path2: this.path2,
           name: this.name,
           flags: this.flags,
           mode: this.mode,

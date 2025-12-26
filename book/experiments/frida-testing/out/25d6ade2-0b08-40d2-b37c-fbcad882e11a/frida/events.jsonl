@@ -1,0 +1,7 @@
+{"t_ns":1766713389576821000,"pid":83976,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766713389576938000,"pid":83976,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766713389645037000,"pid":83976,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766713390679402000,"pid":83976,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766713390681516000,"pid":83976,"msg":{"type":"send","payload":{"kind":"sandbox-trace-capability","module":"libsystem_sandbox.dylib","has_sandbox_set_trace_path":false,"has_sandbox_vtrace_enable":false,"has_sandbox_vtrace_report":false}}}
+{"t_ns":1766713390681596000,"pid":83976,"msg":{"type":"send","payload":{"kind":"sandbox-trace-unavailable","module":"libsystem_sandbox.dylib","path":"/tmp/frida_sbtrace.83976.log"}}}
+{"t_ns":1766713411603858000,"pid":83976,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

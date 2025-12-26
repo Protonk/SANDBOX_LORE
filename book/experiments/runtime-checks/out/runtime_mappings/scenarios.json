@@ -11,24 +11,27 @@
     "overall": {
       "total": 26,
       "stages": {
-        "apply": 0,
+        "apply": 22,
         "bootstrap": 0,
         "preflight": 4,
-        "probe": 22
+        "probe": 0
       },
       "blocked": {
-        "total": 4,
+        "total": 26,
         "by_stage": {
+          "apply": 22,
           "preflight": 4
         },
         "by_kind": {
+          "sandbox_init_failed": 19,
+          "sandbox_apply_failed": 3,
           "preflight_apply_gate_signature": 4
         }
       },
       "probe": {
-        "total": 22,
-        "allow": 11,
-        "deny": 11,
+        "total": 0,
+        "allow": 0,
+        "deny": 0,
         "mismatches": 0
       }
     },
@@ -36,84 +39,99 @@
       "bucket4": {
         "total": 3,
         "stages": {
-          "apply": 0,
+          "apply": 3,
           "bootstrap": 0,
           "preflight": 0,
-          "probe": 3
+          "probe": 0
         },
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 3,
+          "by_stage": {
+            "apply": 3
+          },
+          "by_kind": {
+            "sandbox_init_failed": 3
+          }
         },
         "probe": {
-          "total": 3,
-          "allow": 2,
-          "deny": 1,
+          "total": 0,
+          "allow": 0,
+          "deny": 0,
           "mismatches": 0
         }
       },
       "bucket5": {
         "total": 3,
         "stages": {
-          "apply": 0,
+          "apply": 3,
           "bootstrap": 0,
           "preflight": 0,
-          "probe": 3
+          "probe": 0
         },
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 3,
+          "by_stage": {
+            "apply": 3
+          },
+          "by_kind": {
+            "sandbox_init_failed": 3
+          }
         },
         "probe": {
-          "total": 3,
-          "allow": 1,
-          "deny": 2,
+          "total": 0,
+          "allow": 0,
+          "deny": 0,
           "mismatches": 0
         }
       },
       "runtime": {
         "total": 12,
         "stages": {
-          "apply": 0,
+          "apply": 12,
           "bootstrap": 0,
           "preflight": 0,
-          "probe": 12
+          "probe": 0
         },
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 12,
+          "by_stage": {
+            "apply": 12
+          },
+          "by_kind": {
+            "sandbox_apply_failed": 3,
+            "sandbox_init_failed": 9
+          }
         },
         "probe": {
-          "total": 12,
-          "allow": 8,
-          "deny": 4,
+          "total": 0,
+          "allow": 0,
+          "deny": 0,
           "mismatches": 0
         }
       },
       "sys": {
         "total": 8,
         "stages": {
-          "apply": 0,
+          "apply": 4,
           "bootstrap": 0,
           "preflight": 4,
-          "probe": 4
+          "probe": 0
         },
         "blocked": {
-          "total": 4,
+          "total": 8,
           "by_stage": {
+            "apply": 4,
             "preflight": 4
           },
           "by_kind": {
+            "sandbox_init_failed": 4,
             "preflight_apply_gate_signature": 4
           }
         },
         "probe": {
-          "total": 4,
+          "total": 0,
           "allow": 0,
-          "deny": 4,
+          "deny": 0,
           "mismatches": 0
         }
       }
@@ -134,18 +152,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "bucket4:v1_read:read_/etc/hosts",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/etc/hosts",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "bucket4:v1_read:read_/etc/hosts"
     },
@@ -163,16 +198,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -192,18 +231,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "bucket4:v1_read:read_/tmp/foo",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/foo",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "bucket4:v1_read:read_/tmp/foo"
     },
@@ -221,18 +277,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "bucket5:v11_read_subpath:read_/tmp/foo",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/foo",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "bucket5:v11_read_subpath:read_/tmp/foo"
     },
@@ -250,16 +323,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -279,16 +356,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -308,18 +389,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_apply_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "allow_all|file-read*|/etc/hosts",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/etc/hosts",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_apply_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox_apply: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "allow_all|file-read*|/etc/hosts"
     },
@@ -337,18 +435,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_apply_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/sbpl_rt/read.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_apply_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox_apply: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "allow_all|file-read*|/tmp/sbpl_rt/read.txt"
     },
@@ -366,18 +481,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_apply_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-write*",
+          "target": "/tmp/sbpl_rt/write.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_apply_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox_apply: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt"
     },
@@ -395,18 +527,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "metafilter_any|file-read*|/tmp/foo.txt",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/foo.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "metafilter_any|file-read*|/tmp/foo.txt"
     },
@@ -424,18 +573,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "metafilter_any|file-read*|/tmp/bar.txt",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/bar.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "metafilter_any|file-read*|/tmp/bar.txt"
     },
@@ -453,18 +619,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "metafilter_any|file-read*|/tmp/qux.txt",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/tmp/qux.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "metafilter_any|file-read*|/tmp/qux.txt"
     },
@@ -482,16 +665,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -511,16 +698,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -540,16 +731,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -569,16 +764,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -598,16 +797,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -627,16 +830,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -840,18 +1047,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "runtime:strict_1:read_ok",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-read*",
+          "target": "/private/tmp/strict_ok/allow.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "runtime:strict_1:read_ok"
     },
@@ -869,18 +1093,35 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
-      "mismatches": [],
+      "mismatches": [
+        {
+          "expectation_id": "runtime:strict_1:write_ok",
+          "expected": "allow",
+          "actual": "deny",
+          "operation": "file-write*",
+          "target": "/private/tmp/strict_ok/allow.txt",
+          "failure_stage": "apply",
+          "failure_kind": "sandbox_init_failed",
+          "mismatch_type": "apply_gate",
+          "violation_summary": "EPERM",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n"
+        }
+      ],
       "impact": null,
       "scenario_id": "runtime:strict_1:write_ok"
     },
@@ -898,16 +1139,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,
@@ -927,16 +1172,20 @@
         }
       ],
       "results": {
-        "total": 1,
-        "matches": 1,
+        "total": 0,
+        "matches": 0,
         "mismatches": 0,
         "total_including_blocked": 1,
         "blocked": {
-          "total": 0,
-          "by_stage": {},
-          "by_kind": {}
+          "total": 1,
+          "by_stage": {
+            "apply": 1
+          },
+          "by_kind": {
+            "sandbox_init_failed": 1
+          }
         },
-        "status": "ok"
+        "status": "blocked"
       },
       "mismatches": [],
       "impact": null,

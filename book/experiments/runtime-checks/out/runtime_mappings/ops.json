@@ -12,56 +12,23 @@
       "op_name": "file-read*",
       "op_id": 21,
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-      "probes": 14,
-      "matches": 14,
+      "probes": 0,
+      "matches": 0,
       "mismatches": 0,
       "probes_including_blocked": 16,
       "blocked": {
-        "total": 2,
+        "total": 16,
         "by_stage": {
+          "apply": 14,
           "preflight": 2
         },
         "by_kind": {
+          "sandbox_init_failed": 12,
+          "sandbox_apply_failed": 2,
           "preflight_apply_gate_signature": 2
         }
       },
-      "examples": [
-        {
-          "scenario_id": "bucket4:v1_read:read_/etc/hosts",
-          "expectation_id": "bucket4:v1_read:read_/etc/hosts",
-          "expected": "allow",
-          "actual": "allow",
-          "match": true
-        },
-        {
-          "scenario_id": "bucket4:v1_read:read_/tmp/foo",
-          "expectation_id": "bucket4:v1_read:read_/tmp/foo",
-          "expected": "allow",
-          "actual": "allow",
-          "match": true
-        },
-        {
-          "scenario_id": "bucket5:v11_read_subpath:read_/tmp/foo",
-          "expectation_id": "bucket5:v11_read_subpath:read_/tmp/foo",
-          "expected": "allow",
-          "actual": "allow",
-          "match": true
-        },
-        {
-          "scenario_id": "bucket5:v11_read_subpath:read_/tmp/bar",
-          "expectation_id": "bucket5:v11_read_subpath:read_/tmp/bar",
-          "expected": "deny",
-          "actual": "deny",
-          "match": true
-        },
-        {
-          "scenario_id": "allow_all|file-read*|/etc/hosts",
-          "expectation_id": "allow_all|file-read*|/etc/hosts",
-          "expected": "allow",
-          "actual": "allow",
-          "match": true
-        }
-      ],
+      "examples": [],
       "scenarios": [
         "allow_all|file-read*|/etc/hosts",
         "allow_all|file-read*|/tmp/sbpl_rt/read.txt",
@@ -80,62 +47,29 @@
         "sys:bsd:read_/etc/hosts",
         "sys:bsd:read_/tmp/foo"
       ],
-      "coverage_status": "ok"
+      "coverage_status": "brittle"
     },
     "file-write*": {
       "op_name": "file-write*",
       "op_id": 29,
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-      "probes": 8,
-      "matches": 8,
+      "probes": 0,
+      "matches": 0,
       "mismatches": 0,
       "probes_including_blocked": 10,
       "blocked": {
-        "total": 2,
+        "total": 10,
         "by_stage": {
+          "apply": 8,
           "preflight": 2
         },
         "by_kind": {
+          "sandbox_init_failed": 7,
+          "sandbox_apply_failed": 1,
           "preflight_apply_gate_signature": 2
         }
       },
-      "examples": [
-        {
-          "scenario_id": "bucket4:v1_read:write_/etc/hosts",
-          "expectation_id": "bucket4:v1_read:write_/etc/hosts",
-          "expected": "deny",
-          "actual": "deny",
-          "match": true
-        },
-        {
-          "scenario_id": "bucket5:v11_read_subpath:write_/tmp/foo",
-          "expectation_id": "bucket5:v11_read_subpath:write_/tmp/foo",
-          "expected": "deny",
-          "actual": "deny",
-          "match": true
-        },
-        {
-          "scenario_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
-          "expectation_id": "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
-          "expected": "allow",
-          "actual": "allow",
-          "match": true
-        },
-        {
-          "scenario_id": "metafilter_any|file-write*|/tmp/baz.txt",
-          "expectation_id": "metafilter_any|file-write*|/tmp/baz.txt",
-          "expected": "deny",
-          "actual": "deny",
-          "match": true
-        },
-        {
-          "scenario_id": "sys:bsd:write_/etc/hosts",
-          "expectation_id": "sys:bsd:write_/etc/hosts",
-          "expected": "deny",
-          "actual": "deny",
-          "match": true
-        }
-      ],
+      "examples": [],
       "scenarios": [
         "allow_all|file-write*|/tmp/sbpl_rt/write.txt",
         "bucket4:v1_read:write_/etc/hosts",
@@ -148,7 +82,7 @@
         "sys:bsd:write_/etc/hosts",
         "sys:bsd:write_/tmp/foo"
       ],
-      "coverage_status": "ok"
+      "coverage_status": "brittle"
     }
   }
 }

@@ -1,0 +1,40 @@
+{
+  "data": {
+    "correlation_id": "784C9EFD-D3F8-4E11-848C-3512CD6A3FD0",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-25 17:48:11",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
+    "observed_deny": false,
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 84589,
+    "plan_id": "frida-testing:ej-frida",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_debuggable(84589)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"84589\")))",
+    "process_name": "ProbeService_debuggable",
+    "row_id": "frida-testing:ej-frida.c134a17d-2147-4031-9874-610a2e9de20b.capabilities_snapshot",
+    "start": "2025-12-25 17:48:01"
+  },
+  "generated_at_unix_ms": 1766713687389,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 1
+}

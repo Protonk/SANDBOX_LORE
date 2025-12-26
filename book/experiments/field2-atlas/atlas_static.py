@@ -12,8 +12,14 @@ Output: `out/static/field2_records.jsonl`, one JSON object per field2 seed.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
+
+# Ensure repository root is on sys.path for `book` imports when run directly.
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from book.api import path_utils
 

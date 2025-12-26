@@ -7,8 +7,8 @@
       "book/experiments/runtime-adversarial/out/impact_map.json"
     ],
     "input_hashes": {
-      "book/graph/mappings/runtime_cuts/ops.json": "b00464ea35ef9fa9880a244afd6d7754bf7ebafa9353b3136386b56c8aff1341",
-      "book/graph/mappings/runtime_cuts/scenarios.json": "3c726c9e094c1703d024de171dbd84b6f1adc464520b724daca5877c06f60724"
+      "book/graph/mappings/runtime_cuts/ops.json": "029cd10a7b18caf0b995e69bd421024b20239ea24b93c5ebd30cdd33de1ee633",
+      "book/graph/mappings/runtime_cuts/scenarios.json": "40e199aac7dd3207e31339b007d025559cbd39c74a1f7cea60b4598c94a70037"
     },
     "source_jobs": [
       "experiment:runtime-checks",
@@ -19,11 +19,35 @@
     "mismatches": [
       {
         "op_name": "file-read*",
+        "expectation_id": "adv:path_alias:alias-private"
+      },
+      {
+        "op_name": "file-read*",
+        "expectation_id": "adv:path_alias:alias-tmp"
+      },
+      {
+        "op_name": "file-read*",
         "expectation_id": "adv:path_edges:allow-subpath"
       },
       {
         "op_name": "file-read*",
         "expectation_id": "adv:path_edges:allow-tmp"
+      },
+      {
+        "op_name": "file-read*",
+        "expectation_id": "adv:struct_flat:allow-ok-deep"
+      },
+      {
+        "op_name": "file-read*",
+        "expectation_id": "adv:struct_flat:allow-ok-root"
+      },
+      {
+        "op_name": "file-read*",
+        "expectation_id": "adv:struct_nested:allow-ok-deep"
+      },
+      {
+        "op_name": "file-read*",
+        "expectation_id": "adv:struct_nested:allow-ok-root"
       },
       {
         "op_name": "file-write*",
@@ -32,12 +56,54 @@
       {
         "op_name": "file-write*",
         "expectation_id": "adv:path_edges:write-tmp"
+      },
+      {
+        "op_name": "file-write*",
+        "expectation_id": "adv:struct_flat:write-ok-deep"
+      },
+      {
+        "op_name": "file-write*",
+        "expectation_id": "adv:struct_flat:write-ok-root"
+      },
+      {
+        "op_name": "file-write*",
+        "expectation_id": "adv:struct_nested:write-ok-deep"
+      },
+      {
+        "op_name": "file-write*",
+        "expectation_id": "adv:struct_nested:write-ok-root"
+      },
+      {
+        "op_name": "mach-lookup",
+        "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local"
+      },
+      {
+        "op_name": "mach-lookup",
+        "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local"
+      },
+      {
+        "op_name": "mach-lookup",
+        "expectation_id": "adv:mach_simple_allow:allow-cfprefsd"
+      },
+      {
+        "op_name": "mach-lookup",
+        "expectation_id": "adv:mach_simple_variants:allow-cfprefsd"
+      },
+      {
+        "op_name": "network-outbound",
+        "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback"
+      },
+      {
+        "op_name": "network-outbound",
+        "expectation_id": "adv:net_outbound_allow:tcp-loopback"
       }
     ],
     "mismatch_summary": {
-      "total_mismatches": 4,
-      "total_disallowed_mismatches": 4,
-      "tags": {}
+      "total_mismatches": 20,
+      "total_disallowed_mismatches": 20,
+      "tags": {
+        "apply_gate": 20
+      }
     },
     "provenance": {
       "runtime_story": {
@@ -52,8 +118,8 @@
           "book/graph/mappings/runtime_cuts/scenarios.json"
         ],
         "input_hashes": {
-          "book/graph/mappings/runtime_cuts/ops.json": "b00464ea35ef9fa9880a244afd6d7754bf7ebafa9353b3136386b56c8aff1341",
-          "book/graph/mappings/runtime_cuts/scenarios.json": "3c726c9e094c1703d024de171dbd84b6f1adc464520b724daca5877c06f60724"
+          "book/graph/mappings/runtime_cuts/ops.json": "029cd10a7b18caf0b995e69bd421024b20239ea24b93c5ebd30cdd33de1ee633",
+          "book/graph/mappings/runtime_cuts/scenarios.json": "40e199aac7dd3207e31339b007d025559cbd39c74a1f7cea60b4598c94a70037"
         }
       }
     }
@@ -62,6 +128,8 @@
     "file-read*": {
       "op_id": 21,
       "runtime_signatures": [
+        "adv:path_alias:alias-private",
+        "adv:path_alias:alias-tmp",
         "adv:path_edges:allow-subpath",
         "adv:path_edges:allow-tmp",
         "adv:path_edges:deny-dotdot",
@@ -76,17 +144,25 @@
         "adv:struct_nested:deny-outside"
       ],
       "counts": {
-        "runtime_signatures": 12
+        "runtime_signatures": 14
       },
       "status": "partial",
       "mismatches": [
+        "adv:path_alias:alias-private",
+        "adv:path_alias:alias-tmp",
         "adv:path_edges:allow-subpath",
-        "adv:path_edges:allow-tmp"
+        "adv:path_edges:allow-tmp",
+        "adv:struct_flat:allow-ok-deep",
+        "adv:struct_flat:allow-ok-root",
+        "adv:struct_nested:allow-ok-deep",
+        "adv:struct_nested:allow-ok-root"
       ],
       "mismatch_summary": {
-        "total_mismatches": 2,
-        "total_disallowed_mismatches": 2,
-        "tags": {}
+        "total_mismatches": 8,
+        "total_disallowed_mismatches": 8,
+        "tags": {
+          "apply_gate": 8
+        }
       }
     },
     "file-write*": {
@@ -111,12 +187,18 @@
       "status": "partial",
       "mismatches": [
         "adv:path_edges:write-subpath",
-        "adv:path_edges:write-tmp"
+        "adv:path_edges:write-tmp",
+        "adv:struct_flat:write-ok-deep",
+        "adv:struct_flat:write-ok-root",
+        "adv:struct_nested:write-ok-deep",
+        "adv:struct_nested:write-ok-root"
       ],
       "mismatch_summary": {
-        "total_mismatches": 2,
-        "total_disallowed_mismatches": 2,
-        "tags": {}
+        "total_mismatches": 6,
+        "total_disallowed_mismatches": 6,
+        "tags": {
+          "apply_gate": 6
+        }
       }
     },
     "mach-lookup": {
@@ -134,31 +216,42 @@
       "counts": {
         "runtime_signatures": 8
       },
-      "status": "ok",
-      "mismatches": [],
+      "status": "partial",
+      "mismatches": [
+        "adv:mach_local_literal:allow-cfprefsd-local",
+        "adv:mach_local_regex:allow-cfprefsd-local",
+        "adv:mach_simple_allow:allow-cfprefsd",
+        "adv:mach_simple_variants:allow-cfprefsd"
+      ],
       "mismatch_summary": {
-        "total_mismatches": 0,
-        "total_disallowed_mismatches": 0,
-        "tags": {}
+        "total_mismatches": 4,
+        "total_disallowed_mismatches": 4,
+        "tags": {
+          "apply_gate": 4
+        }
       }
     },
     "network-outbound": {
       "op_id": 112,
       "runtime_signatures": [
+        "adv:flow_divert_require_all_tcp:tcp-loopback",
         "adv:net_outbound_allow:tcp-loopback",
-        "adv:net_outbound_allow:tcp-loopback-2",
-        "adv:net_outbound_deny:tcp-loopback",
-        "adv:net_outbound_deny:tcp-loopback-2"
+        "adv:net_outbound_deny:tcp-loopback"
       ],
       "counts": {
-        "runtime_signatures": 4
+        "runtime_signatures": 3
       },
-      "status": "ok",
-      "mismatches": [],
+      "status": "partial",
+      "mismatches": [
+        "adv:flow_divert_require_all_tcp:tcp-loopback",
+        "adv:net_outbound_allow:tcp-loopback"
+      ],
       "mismatch_summary": {
-        "total_mismatches": 0,
-        "total_disallowed_mismatches": 0,
-        "tags": {}
+        "total_mismatches": 2,
+        "total_disallowed_mismatches": 2,
+        "tags": {
+          "apply_gate": 2
+        }
       }
     }
   }

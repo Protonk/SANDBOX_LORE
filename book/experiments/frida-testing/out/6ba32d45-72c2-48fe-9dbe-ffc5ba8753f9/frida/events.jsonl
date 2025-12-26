@@ -1,0 +1,9 @@
+{"t_ns":1766711817689966000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766711817690065000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766711817762231000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766711819006964000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766711819009196000,"pid":79306,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"open","addr":"0x189d0dda8"}}}
+{"t_ns":1766711819009534000,"pid":79306,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"openat","addr":"0x189d1de14"}}}
+{"t_ns":1766711819009896000,"pid":79306,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"fopen","addr":"0x189be8c20"}}}
+{"t_ns":1766711819010174000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-config"}}}
+{"t_ns":1766711819107416000,"pid":79306,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

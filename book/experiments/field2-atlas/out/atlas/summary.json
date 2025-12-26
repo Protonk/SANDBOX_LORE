@@ -1,7 +1,6 @@
 {
   "by_status": {
-    "no_runtime_candidate": 2,
-    "runtime_backed": 3
+    "runtime_backed_historical": 5
   },
   "total": 5
 }

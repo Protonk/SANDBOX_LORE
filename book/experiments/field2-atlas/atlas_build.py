@@ -13,8 +13,14 @@ Outputs:
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
+
+# Ensure repository root is on sys.path for `book` imports when run directly.
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from book.api import path_utils
 
@@ -61,7 +67,14 @@ def _load_runtime_results(path: Path) -> Dict[int, Dict[str, Any]]:
 def _derive_status(static_entry: Dict[str, Any] | None, runtime_entry: Dict[str, Any] | None) -> str:
     if runtime_entry:
         status = runtime_entry.get("status")
-        if status in {"runtime_backed", "missing_probe", "missing_actual", "no_runtime_candidate"}:
+        if status in {
+            "runtime_backed",
+            "runtime_backed_historical",
+            "runtime_attempted_blocked",
+            "missing_probe",
+            "missing_actual",
+            "no_runtime_candidate",
+        }:
             return status
     if static_entry:
         return "static_only"

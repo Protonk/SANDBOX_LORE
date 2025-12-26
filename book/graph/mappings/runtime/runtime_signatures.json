@@ -1,13 +1,30 @@
 {
   "expected_matrix": {
     "profiles": {
+      "adv:flow_divert_require_all_tcp": {
+        "blob": "book/experiments/runtime-adversarial/sb/flow_divert_require_all_tcp.sb",
+        "family": "network",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "classification": "covered_mismatch_disallowed",
+            "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+            "expected": "allow",
+            "name": "tcp-loopback",
+            "operation": "network-outbound",
+            "scenario_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+            "target": "127.0.0.1"
+          }
+        ],
+        "semantic_group": "network:flow-divert-require-all"
+      },
       "adv:mach_local_literal": {
         "blob": "book/experiments/runtime-adversarial/sb/mach_local_literal.sb",
         "family": "mach_local",
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
             "expected": "allow",
             "mode": "local",
@@ -35,7 +52,7 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
             "expected": "allow",
             "mode": "local",
@@ -63,7 +80,7 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
             "expected": "allow",
             "name": "allow-cfprefsd",
@@ -89,7 +106,7 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
             "expected": "allow",
             "name": "allow-cfprefsd",
@@ -115,22 +132,13 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:net_outbound_allow:tcp-loopback",
             "expected": "allow",
             "name": "tcp-loopback",
             "operation": "network-outbound",
             "scenario_id": "adv:net_outbound_allow:tcp-loopback",
-            "target": "127.0.0.1:63953"
-          },
-          {
-            "classification": "covered_ok",
-            "expectation_id": "adv:net_outbound_allow:tcp-loopback-2",
-            "expected": "allow",
-            "name": "tcp-loopback-2",
-            "operation": "network-outbound",
-            "scenario_id": "adv:net_outbound_allow:tcp-loopback-2",
-            "target": "127.0.0.1:63954"
+            "target": "127.0.0.1"
           }
         ],
         "semantic_group": "network:outbound-allow"
@@ -147,19 +155,36 @@
             "name": "tcp-loopback",
             "operation": "network-outbound",
             "scenario_id": "adv:net_outbound_deny:tcp-loopback",
-            "target": "127.0.0.1:63953"
-          },
-          {
-            "classification": "covered_ok",
-            "expectation_id": "adv:net_outbound_deny:tcp-loopback-2",
-            "expected": "deny",
-            "name": "tcp-loopback-2",
-            "operation": "network-outbound",
-            "scenario_id": "adv:net_outbound_deny:tcp-loopback-2",
-            "target": "127.0.0.1:63954"
+            "target": "127.0.0.1"
           }
         ],
         "semantic_group": "network:outbound-deny"
+      },
+      "adv:path_alias": {
+        "blob": "book/experiments/runtime-adversarial/sb/path_alias.sb",
+        "family": "path_alias",
+        "mode": "sbpl",
+        "probes": [
+          {
+            "classification": "covered_mismatch_disallowed",
+            "expectation_id": "adv:path_alias:alias-tmp",
+            "expected": "allow",
+            "name": "alias-tmp",
+            "operation": "file-read*",
+            "scenario_id": "adv:path_alias:alias-tmp",
+            "target": "/tmp/runtime-adv/alias/allow.txt"
+          },
+          {
+            "classification": "covered_mismatch_disallowed",
+            "expectation_id": "adv:path_alias:alias-private",
+            "expected": "allow",
+            "name": "alias-private",
+            "operation": "file-read*",
+            "scenario_id": "adv:path_alias:alias-private",
+            "target": "/private/tmp/runtime-adv/alias/allow.txt"
+          }
+        ],
+        "semantic_group": "paths:alias-canonicalization"
       },
       "adv:path_edges": {
         "blob": "book/experiments/runtime-adversarial/sb/path_edges.sb",
@@ -247,7 +272,7 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_flat:allow-ok-root",
             "expected": "allow",
             "name": "allow-ok-root",
@@ -256,7 +281,7 @@
             "target": "/tmp/runtime-adv/struct/ok/allowed.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_flat:allow-ok-deep",
             "expected": "allow",
             "name": "allow-ok-deep",
@@ -283,7 +308,7 @@
             "target": "/tmp/runtime-adv/struct/outside.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_flat:write-ok-root",
             "expected": "allow",
             "name": "write-ok-root",
@@ -292,7 +317,7 @@
             "target": "/tmp/runtime-adv/struct/ok/allowed.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_flat:write-ok-deep",
             "expected": "allow",
             "name": "write-ok-deep",
@@ -327,7 +352,7 @@
         "mode": "sbpl",
         "probes": [
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_nested:allow-ok-root",
             "expected": "allow",
             "name": "allow-ok-root",
@@ -336,7 +361,7 @@
             "target": "/tmp/runtime-adv/struct/ok/allowed.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_nested:allow-ok-deep",
             "expected": "allow",
             "name": "allow-ok-deep",
@@ -363,7 +388,7 @@
             "target": "/tmp/runtime-adv/struct/outside.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_nested:write-ok-root",
             "expected": "allow",
             "name": "write-ok-root",
@@ -372,7 +397,7 @@
             "target": "/tmp/runtime-adv/struct/ok/allowed.txt"
           },
           {
-            "classification": "covered_ok",
+            "classification": "covered_mismatch_disallowed",
             "expectation_id": "adv:struct_nested:write-ok-deep",
             "expected": "allow",
             "name": "write-ok-deep",
@@ -665,19 +690,19 @@
   },
   "expected_summary": {
     "file-read*": {
-      "coverage_ratio": 0.42857142857142855,
+      "coverage_ratio": 0.4666666666666667,
       "covered_mismatch_allowed": 0,
-      "covered_mismatch_disallowed": 2,
-      "covered_ok": 10,
-      "covered_rows": 12,
-      "total_expected_rows": 28,
+      "covered_mismatch_disallowed": 8,
+      "covered_ok": 6,
+      "covered_rows": 14,
+      "total_expected_rows": 30,
       "uncovered": 16
     },
     "file-write*": {
       "coverage_ratio": 0.5454545454545454,
       "covered_mismatch_allowed": 0,
-      "covered_mismatch_disallowed": 2,
-      "covered_ok": 10,
+      "covered_mismatch_disallowed": 6,
+      "covered_ok": 6,
       "covered_rows": 12,
       "total_expected_rows": 22,
       "uncovered": 10
@@ -685,8 +710,8 @@
     "mach-lookup": {
       "coverage_ratio": 1.0,
       "covered_mismatch_allowed": 0,
-      "covered_mismatch_disallowed": 0,
-      "covered_ok": 8,
+      "covered_mismatch_disallowed": 4,
+      "covered_ok": 4,
       "covered_rows": 8,
       "total_expected_rows": 8,
       "uncovered": 0
@@ -694,10 +719,10 @@
     "network-outbound": {
       "coverage_ratio": 1.0,
       "covered_mismatch_allowed": 0,
-      "covered_mismatch_disallowed": 0,
-      "covered_ok": 4,
-      "covered_rows": 4,
-      "total_expected_rows": 4,
+      "covered_mismatch_disallowed": 2,
+      "covered_ok": 1,
+      "covered_rows": 3,
+      "total_expected_rows": 3,
       "uncovered": 0
     }
   },
@@ -1444,7 +1469,7 @@
   },
   "metadata": {
     "input_hashes": {
-      "expected_matrix": "a9394e3ca52d2010397f7870d4461431f3d8deb347e219b39b5e08c9593416e6"
+      "expected_matrix": "de76d3f97a0b938567532cbf048888b6db6ab57b9267286906bf1c4d310ac11a"
     },
     "inputs": [
       "book/graph/mappings/runtime_cuts/runtime_story.json",
@@ -1455,12 +1480,12 @@
       "book/experiments/runtime-adversarial/out/expected_matrix.json",
       "book/experiments/runtime-adversarial/out/runtime_results.json"
     ],
-    "notes": "Derived from runtime_story with coverage gating; status cannot exceed runtime_coverage. Disallowed mismatches present: 4.",
+    "notes": "Derived from runtime_story with coverage gating; status cannot exceed runtime_coverage. Disallowed mismatches present: 20.",
     "provenance": {
       "runtime_coverage": {
         "input_hashes": {
-          "book/graph/mappings/runtime_cuts/ops.json": "b00464ea35ef9fa9880a244afd6d7754bf7ebafa9353b3136386b56c8aff1341",
-          "book/graph/mappings/runtime_cuts/scenarios.json": "3c726c9e094c1703d024de171dbd84b6f1adc464520b724daca5877c06f60724"
+          "book/graph/mappings/runtime_cuts/ops.json": "029cd10a7b18caf0b995e69bd421024b20239ea24b93c5ebd30cdd33de1ee633",
+          "book/graph/mappings/runtime_cuts/scenarios.json": "40e199aac7dd3207e31339b007d025559cbd39c74a1f7cea60b4598c94a70037"
         },
         "inputs": [
           "book/graph/mappings/runtime_cuts/ops.json",
@@ -1468,11 +1493,21 @@
           "book/experiments/runtime-adversarial/out/impact_map.json"
         ],
         "mismatch_summary": {
-          "tags": {},
-          "total_disallowed_mismatches": 4,
-          "total_mismatches": 4
+          "tags": {
+            "apply_gate": 20
+          },
+          "total_disallowed_mismatches": 20,
+          "total_mismatches": 20
         },
         "mismatches": [
+          {
+            "expectation_id": "adv:path_alias:alias-private",
+            "op_name": "file-read*"
+          },
+          {
+            "expectation_id": "adv:path_alias:alias-tmp",
+            "op_name": "file-read*"
+          },
           {
             "expectation_id": "adv:path_edges:allow-subpath",
             "op_name": "file-read*"
@@ -1482,20 +1517,76 @@
             "op_name": "file-read*"
           },
           {
+            "expectation_id": "adv:struct_flat:allow-ok-deep",
+            "op_name": "file-read*"
+          },
+          {
+            "expectation_id": "adv:struct_flat:allow-ok-root",
+            "op_name": "file-read*"
+          },
+          {
+            "expectation_id": "adv:struct_nested:allow-ok-deep",
+            "op_name": "file-read*"
+          },
+          {
+            "expectation_id": "adv:struct_nested:allow-ok-root",
+            "op_name": "file-read*"
+          },
+          {
             "expectation_id": "adv:path_edges:write-subpath",
             "op_name": "file-write*"
           },
           {
             "expectation_id": "adv:path_edges:write-tmp",
             "op_name": "file-write*"
+          },
+          {
+            "expectation_id": "adv:struct_flat:write-ok-deep",
+            "op_name": "file-write*"
+          },
+          {
+            "expectation_id": "adv:struct_flat:write-ok-root",
+            "op_name": "file-write*"
+          },
+          {
+            "expectation_id": "adv:struct_nested:write-ok-deep",
+            "op_name": "file-write*"
+          },
+          {
+            "expectation_id": "adv:struct_nested:write-ok-root",
+            "op_name": "file-write*"
+          },
+          {
+            "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
+            "op_name": "mach-lookup"
+          },
+          {
+            "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
+            "op_name": "mach-lookup"
+          },
+          {
+            "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
+            "op_name": "mach-lookup"
+          },
+          {
+            "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
+            "op_name": "mach-lookup"
+          },
+          {
+            "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+            "op_name": "network-outbound"
+          },
+          {
+            "expectation_id": "adv:net_outbound_allow:tcp-loopback",
+            "op_name": "network-outbound"
           }
         ],
         "notes": "Runtime coverage derived from runtime_story; mismatches allowed only when tagged in impact_map.json.",
         "provenance": {
           "runtime_story": {
             "input_hashes": {
-              "book/graph/mappings/runtime_cuts/ops.json": "b00464ea35ef9fa9880a244afd6d7754bf7ebafa9353b3136386b56c8aff1341",
-              "book/graph/mappings/runtime_cuts/scenarios.json": "3c726c9e094c1703d024de171dbd84b6f1adc464520b724daca5877c06f60724"
+              "book/graph/mappings/runtime_cuts/ops.json": "029cd10a7b18caf0b995e69bd421024b20239ea24b93c5ebd30cdd33de1ee633",
+              "book/graph/mappings/runtime_cuts/scenarios.json": "40e199aac7dd3207e31339b007d025559cbd39c74a1f7cea60b4598c94a70037"
             },
             "inputs": [
               "book/graph/mappings/runtime_cuts/ops.json",
@@ -1518,8 +1609,8 @@
       },
       "runtime_story": {
         "input_hashes": {
-          "book/graph/mappings/runtime_cuts/ops.json": "b00464ea35ef9fa9880a244afd6d7754bf7ebafa9353b3136386b56c8aff1341",
-          "book/graph/mappings/runtime_cuts/scenarios.json": "3c726c9e094c1703d024de171dbd84b6f1adc464520b724daca5877c06f60724"
+          "book/graph/mappings/runtime_cuts/ops.json": "029cd10a7b18caf0b995e69bd421024b20239ea24b93c5ebd30cdd33de1ee633",
+          "book/graph/mappings/runtime_cuts/scenarios.json": "40e199aac7dd3207e31339b007d025559cbd39c74a1f7cea60b4598c94a70037"
         },
         "inputs": [
           "book/graph/mappings/runtime_cuts/ops.json",
@@ -1543,6 +1634,16 @@
   },
   "mismatches": [
     {
+      "expectation_id": "adv:path_alias:alias-private",
+      "op_name": "file-read*",
+      "scenario_id": "adv:path_alias:alias-private"
+    },
+    {
+      "expectation_id": "adv:path_alias:alias-tmp",
+      "op_name": "file-read*",
+      "scenario_id": "adv:path_alias:alias-tmp"
+    },
+    {
       "expectation_id": "adv:path_edges:allow-subpath",
       "op_name": "file-read*",
       "scenario_id": "adv:path_edges:allow-subpath"
@@ -1553,6 +1654,26 @@
       "scenario_id": "adv:path_edges:allow-tmp"
     },
     {
+      "expectation_id": "adv:struct_flat:allow-ok-deep",
+      "op_name": "file-read*",
+      "scenario_id": "adv:struct_flat:allow-ok-deep"
+    },
+    {
+      "expectation_id": "adv:struct_flat:allow-ok-root",
+      "op_name": "file-read*",
+      "scenario_id": "adv:struct_flat:allow-ok-root"
+    },
+    {
+      "expectation_id": "adv:struct_nested:allow-ok-deep",
+      "op_name": "file-read*",
+      "scenario_id": "adv:struct_nested:allow-ok-deep"
+    },
+    {
+      "expectation_id": "adv:struct_nested:allow-ok-root",
+      "op_name": "file-read*",
+      "scenario_id": "adv:struct_nested:allow-ok-root"
+    },
+    {
       "expectation_id": "adv:path_edges:write-subpath",
       "op_name": "file-write*",
       "scenario_id": "adv:path_edges:write-subpath"
@@ -1561,9 +1682,62 @@
       "expectation_id": "adv:path_edges:write-tmp",
       "op_name": "file-write*",
       "scenario_id": "adv:path_edges:write-tmp"
+    },
+    {
+      "expectation_id": "adv:struct_flat:write-ok-deep",
+      "op_name": "file-write*",
+      "scenario_id": "adv:struct_flat:write-ok-deep"
+    },
+    {
+      "expectation_id": "adv:struct_flat:write-ok-root",
+      "op_name": "file-write*",
+      "scenario_id": "adv:struct_flat:write-ok-root"
+    },
+    {
+      "expectation_id": "adv:struct_nested:write-ok-deep",
+      "op_name": "file-write*",
+      "scenario_id": "adv:struct_nested:write-ok-deep"
+    },
+    {
+      "expectation_id": "adv:struct_nested:write-ok-root",
+      "op_name": "file-write*",
+      "scenario_id": "adv:struct_nested:write-ok-root"
+    },
+    {
+      "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
+      "op_name": "mach-lookup",
+      "scenario_id": "adv:mach_local_literal:allow-cfprefsd-local"
+    },
+    {
+      "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
+      "op_name": "mach-lookup",
+      "scenario_id": "adv:mach_local_regex:allow-cfprefsd-local"
+    },
+    {
+      "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
+      "op_name": "mach-lookup",
+      "scenario_id": "adv:mach_simple_allow:allow-cfprefsd"
+    },
+    {
+      "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
+      "op_name": "mach-lookup",
+      "scenario_id": "adv:mach_simple_variants:allow-cfprefsd"
+    },
+    {
+      "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+      "op_name": "network-outbound",
+      "scenario_id": "adv:flow_divert_require_all_tcp:tcp-loopback"
+    },
+    {
+      "expectation_id": "adv:net_outbound_allow:tcp-loopback",
+      "op_name": "network-outbound",
+      "scenario_id": "adv:net_outbound_allow:tcp-loopback"
     }
   ],
   "profiles_metadata": {
+    "adv:flow_divert_require_all_tcp": {
+      "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb"
+    },
     "adv:mach_local_literal": {
       "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb"
     },
@@ -1581,6 +1755,9 @@
     },
     "adv:net_outbound_deny": {
       "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_deny.adv_net_outbound_deny.runtime.sb"
+    },
+    "adv:path_alias": {
+      "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb"
     },
     "adv:path_edges": {
       "runtime_profile": "book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb"
@@ -1608,38 +1785,114 @@
     }
   },
   "scenarios": {
+    "adv:flow_divert_require_all_tcp:tcp-loopback": {
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:flow_divert_require_all_tcp:tcp-loopback"
+      ],
+      "expected_row_ids": [
+        "adv:flow_divert_require_all_tcp:tcp-loopback"
+      ],
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "network-outbound",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "127.0.0.1",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
+        "adv:flow_divert_require_all_tcp:tcp-loopback"
+      ],
+      "op_id": 112,
+      "op_name": "network-outbound",
+      "passed_probes": [],
+      "profile_id": "adv:flow_divert_require_all_tcp",
+      "results": {
+        "blocked": {
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
+        },
+        "matches": 0,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
+        "total_including_blocked": 1
+      },
+      "runtime_only": false,
+      "scenario_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+      "status": "partial"
+    },
     "adv:mach_local_literal:allow-cfprefsd-local": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:mach_local_literal:allow-cfprefsd-local"
+      ],
       "expected_row_ids": [
         "adv:mach_local_literal:allow-cfprefsd-local"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 96,
-      "op_name": "mach-lookup",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "mach-lookup",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "com.apple.cfprefsd.agent",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:mach_local_literal:allow-cfprefsd-local"
       ],
+      "op_id": 96,
+      "op_name": "mach-lookup",
+      "passed_probes": [],
       "profile_id": "adv:mach_local_literal",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_local_literal:allow-cfprefsd-local",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_local_literal:deny-bogus-local": {
-      "coverage_status": "ok",
+      "coverage_status": "partial",
       "disallowed_mismatches": [],
       "expected_row_ids": [
         "adv:mach_local_literal:deny-bogus-local"
@@ -1654,52 +1907,79 @@
       "profile_id": "adv:mach_local_literal",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_local_literal:deny-bogus-local",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_local_regex:allow-cfprefsd-local": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:mach_local_regex:allow-cfprefsd-local"
+      ],
       "expected_row_ids": [
         "adv:mach_local_regex:allow-cfprefsd-local"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 96,
-      "op_name": "mach-lookup",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "mach-lookup",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "com.apple.cfprefsd.agent",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:mach_local_regex:allow-cfprefsd-local"
       ],
+      "op_id": 96,
+      "op_name": "mach-lookup",
+      "passed_probes": [],
       "profile_id": "adv:mach_local_regex",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_local_regex:allow-cfprefsd-local",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_local_regex:deny-bogus-local": {
-      "coverage_status": "ok",
+      "coverage_status": "partial",
       "disallowed_mismatches": [],
       "expected_row_ids": [
         "adv:mach_local_regex:deny-bogus-local"
@@ -1714,52 +1994,79 @@
       "profile_id": "adv:mach_local_regex",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_local_regex:deny-bogus-local",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_simple_allow:allow-cfprefsd": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:mach_simple_allow:allow-cfprefsd"
+      ],
       "expected_row_ids": [
         "adv:mach_simple_allow:allow-cfprefsd"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 96,
-      "op_name": "mach-lookup",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "mach-lookup",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "com.apple.cfprefsd.agent",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:mach_simple_allow:allow-cfprefsd"
       ],
+      "op_id": 96,
+      "op_name": "mach-lookup",
+      "passed_probes": [],
       "profile_id": "adv:mach_simple_allow",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_simple_allow:allow-cfprefsd",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_simple_allow:deny-bogus": {
-      "coverage_status": "ok",
+      "coverage_status": "partial",
       "disallowed_mismatches": [],
       "expected_row_ids": [
         "adv:mach_simple_allow:deny-bogus"
@@ -1774,52 +2081,79 @@
       "profile_id": "adv:mach_simple_allow",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_simple_allow:deny-bogus",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_simple_variants:allow-cfprefsd": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:mach_simple_variants:allow-cfprefsd"
+      ],
       "expected_row_ids": [
         "adv:mach_simple_variants:allow-cfprefsd"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 96,
-      "op_name": "mach-lookup",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "mach-lookup",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "com.apple.cfprefsd.agent",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:mach_simple_variants:allow-cfprefsd"
       ],
+      "op_id": 96,
+      "op_name": "mach-lookup",
+      "passed_probes": [],
       "profile_id": "adv:mach_simple_variants",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_simple_variants:allow-cfprefsd",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:mach_simple_variants:deny-bogus": {
-      "coverage_status": "ok",
+      "coverage_status": "partial",
       "disallowed_mismatches": [],
       "expected_row_ids": [
         "adv:mach_simple_variants:deny-bogus"
@@ -1834,82 +2168,79 @@
       "profile_id": "adv:mach_simple_variants",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:mach_simple_variants:deny-bogus",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:net_outbound_allow:tcp-loopback": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:net_outbound_allow:tcp-loopback"
+      ],
       "expected_row_ids": [
         "adv:net_outbound_allow:tcp-loopback"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 112,
-      "op_name": "network-outbound",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:net_outbound_allow:tcp-loopback",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "network-outbound",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "127.0.0.1",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:net_outbound_allow:tcp-loopback"
       ],
+      "op_id": 112,
+      "op_name": "network-outbound",
+      "passed_probes": [],
       "profile_id": "adv:net_outbound_allow",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:net_outbound_allow:tcp-loopback",
-      "status": "ok"
-    },
-    "adv:net_outbound_allow:tcp-loopback-2": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
-      "expected_row_ids": [
-        "adv:net_outbound_allow:tcp-loopback-2"
-      ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 112,
-      "op_name": "network-outbound",
-      "passed_probes": [
-        "adv:net_outbound_allow:tcp-loopback-2"
-      ],
-      "profile_id": "adv:net_outbound_allow",
-      "results": {
-        "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
-        },
-        "matches": 1,
-        "mismatches": 0,
-        "status": "ok",
-        "total": 1,
-        "total_including_blocked": 1
-      },
-      "runtime_only": false,
-      "scenario_id": "adv:net_outbound_allow:tcp-loopback-2",
-      "status": "ok"
+      "status": "partial"
     },
     "adv:net_outbound_deny:tcp-loopback": {
-      "coverage_status": "ok",
+      "coverage_status": "partial",
       "disallowed_mismatches": [],
       "expected_row_ids": [
         "adv:net_outbound_deny:tcp-loopback"
@@ -1924,49 +2255,129 @@
       "profile_id": "adv:net_outbound_deny",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
       "scenario_id": "adv:net_outbound_deny:tcp-loopback",
-      "status": "ok"
+      "status": "partial"
     },
-    "adv:net_outbound_deny:tcp-loopback-2": {
-      "coverage_status": "ok",
-      "disallowed_mismatches": [],
+    "adv:path_alias:alias-private": {
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:path_alias:alias-private"
+      ],
       "expected_row_ids": [
-        "adv:net_outbound_deny:tcp-loopback-2"
+        "adv:path_alias:alias-private"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 112,
-      "op_name": "network-outbound",
-      "passed_probes": [
-        "adv:net_outbound_deny:tcp-loopback-2"
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:path_alias:alias-private",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/private/tmp/runtime-adv/alias/allow.txt",
+          "violation_summary": "EPERM"
+        }
       ],
-      "profile_id": "adv:net_outbound_deny",
+      "mismatches": [
+        "adv:path_alias:alias-private"
+      ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
+      "profile_id": "adv:path_alias",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
-      "scenario_id": "adv:net_outbound_deny:tcp-loopback-2",
-      "status": "ok"
+      "scenario_id": "adv:path_alias:alias-private",
+      "status": "partial"
+    },
+    "adv:path_alias:alias-tmp": {
+      "coverage_status": "partial",
+      "disallowed_mismatches": [
+        "adv:path_alias:alias-tmp"
+      ],
+      "expected_row_ids": [
+        "adv:path_alias:alias-tmp"
+      ],
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:path_alias:alias-tmp",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/alias/allow.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
+        "adv:path_alias:alias-tmp"
+      ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
+      "profile_id": "adv:path_alias",
+      "results": {
+        "blocked": {
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
+        },
+        "matches": 0,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
+        "total_including_blocked": 1
+      },
+      "runtime_only": false,
+      "scenario_id": "adv:path_alias:alias-tmp",
+      "status": "partial"
     },
     "adv:path_edges:allow-subpath": {
       "coverage_status": "partial",
@@ -1982,14 +2393,16 @@
           "allowed": false,
           "expectation_id": "adv:path_edges:allow-subpath",
           "expected": "allow",
-          "failure_kind": "probe_nonzero_exit",
-          "failure_stage": "probe",
-          "mismatch_type": "unexpected_deny",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
           "operation": "file-read*",
-          "stderr": "open target: Operation not permitted\n",
-          "tags": [],
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
           "target": "/tmp/runtime-adv/edges/okdir/item.txt",
-          "violation_summary": null
+          "violation_summary": "EPERM"
         }
       ],
       "mismatches": [
@@ -2001,14 +2414,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
         "matches": 0,
-        "mismatches": 1,
-        "status": "brittle",
-        "total": 1,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2029,14 +2446,16 @@
           "allowed": false,
           "expectation_id": "adv:path_edges:allow-tmp",
           "expected": "allow",
-          "failure_kind": "probe_nonzero_exit",
-          "failure_stage": "probe",
-          "mismatch_type": "unexpected_deny",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
           "operation": "file-read*",
-          "stderr": "open target: Operation not permitted\n",
-          "tags": [],
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
           "target": "/tmp/runtime-adv/edges/a",
-          "violation_summary": null
+          "violation_summary": "EPERM"
         }
       ],
       "mismatches": [
@@ -2048,14 +2467,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
         "matches": 0,
-        "mismatches": 1,
-        "status": "brittle",
-        "total": 1,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2078,14 +2501,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2108,14 +2535,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2138,14 +2569,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2168,14 +2603,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2196,14 +2635,16 @@
           "allowed": false,
           "expectation_id": "adv:path_edges:write-subpath",
           "expected": "allow",
-          "failure_kind": "probe_nonzero_exit",
-          "failure_stage": "probe",
-          "mismatch_type": "unexpected_deny",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
           "operation": "file-write*",
-          "stderr": "open target: Operation not permitted\n",
-          "tags": [],
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
           "target": "/tmp/runtime-adv/edges/okdir/item.txt",
-          "violation_summary": null
+          "violation_summary": "EPERM"
         }
       ],
       "mismatches": [
@@ -2215,14 +2656,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
         "matches": 0,
-        "mismatches": 1,
-        "status": "brittle",
-        "total": 1,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2243,14 +2688,16 @@
           "allowed": false,
           "expectation_id": "adv:path_edges:write-tmp",
           "expected": "allow",
-          "failure_kind": "probe_nonzero_exit",
-          "failure_stage": "probe",
-          "mismatch_type": "unexpected_deny",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
           "operation": "file-write*",
-          "stderr": "open target: Operation not permitted\n",
-          "tags": [],
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
           "target": "/tmp/runtime-adv/edges/a",
-          "violation_summary": null
+          "violation_summary": "EPERM"
         }
       ],
       "mismatches": [
@@ -2262,14 +2709,18 @@
       "profile_id": "adv:path_edges",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
         "matches": 0,
-        "mismatches": 1,
-        "status": "brittle",
-        "total": 1,
+        "mismatches": 0,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2278,28 +2729,51 @@
     },
     "adv:struct_flat:allow-ok-deep": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_flat:allow-ok-deep"
+      ],
       "expected_row_ids": [
         "adv:struct_flat:allow-ok-deep"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 21,
-      "op_name": "file-read*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_flat:allow-ok-deep",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_flat:allow-ok-deep"
       ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2308,28 +2782,51 @@
     },
     "adv:struct_flat:allow-ok-root": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_flat:allow-ok-root"
+      ],
       "expected_row_ids": [
         "adv:struct_flat:allow-ok-root"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 21,
-      "op_name": "file-read*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_flat:allow-ok-root",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_flat:allow-ok-root"
       ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2352,14 +2849,18 @@
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2382,14 +2883,18 @@
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2412,14 +2917,18 @@
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2428,28 +2937,51 @@
     },
     "adv:struct_flat:write-ok-deep": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_flat:write-ok-deep"
+      ],
       "expected_row_ids": [
         "adv:struct_flat:write-ok-deep"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 29,
-      "op_name": "file-write*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_flat:write-ok-deep",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-write*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_flat:write-ok-deep"
       ],
+      "op_id": 29,
+      "op_name": "file-write*",
+      "passed_probes": [],
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2458,28 +2990,51 @@
     },
     "adv:struct_flat:write-ok-root": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_flat:write-ok-root"
+      ],
       "expected_row_ids": [
         "adv:struct_flat:write-ok-root"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 29,
-      "op_name": "file-write*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_flat:write-ok-root",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-write*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_flat:write-ok-root"
       ],
+      "op_id": 29,
+      "op_name": "file-write*",
+      "passed_probes": [],
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2502,14 +3057,18 @@
       "profile_id": "adv:struct_flat",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2518,28 +3077,51 @@
     },
     "adv:struct_nested:allow-ok-deep": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_nested:allow-ok-deep"
+      ],
       "expected_row_ids": [
         "adv:struct_nested:allow-ok-deep"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 21,
-      "op_name": "file-read*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_nested:allow-ok-deep",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_nested:allow-ok-deep"
       ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2548,28 +3130,51 @@
     },
     "adv:struct_nested:allow-ok-root": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_nested:allow-ok-root"
+      ],
       "expected_row_ids": [
         "adv:struct_nested:allow-ok-root"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 21,
-      "op_name": "file-read*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_nested:allow-ok-root",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-read*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_nested:allow-ok-root"
       ],
+      "op_id": 21,
+      "op_name": "file-read*",
+      "passed_probes": [],
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2592,14 +3197,18 @@
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2622,14 +3231,18 @@
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2652,14 +3265,18 @@
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2668,28 +3285,51 @@
     },
     "adv:struct_nested:write-ok-deep": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_nested:write-ok-deep"
+      ],
       "expected_row_ids": [
         "adv:struct_nested:write-ok-deep"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 29,
-      "op_name": "file-write*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_nested:write-ok-deep",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-write*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_nested:write-ok-deep"
       ],
+      "op_id": 29,
+      "op_name": "file-write*",
+      "passed_probes": [],
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2698,28 +3338,51 @@
     },
     "adv:struct_nested:write-ok-root": {
       "coverage_status": "partial",
-      "disallowed_mismatches": [],
+      "disallowed_mismatches": [
+        "adv:struct_nested:write-ok-root"
+      ],
       "expected_row_ids": [
         "adv:struct_nested:write-ok-root"
       ],
-      "failed_probes": [],
-      "mismatches": [],
-      "op_id": 29,
-      "op_name": "file-write*",
-      "passed_probes": [
+      "failed_probes": [
+        {
+          "actual": "deny",
+          "allowed": false,
+          "expectation_id": "adv:struct_nested:write-ok-root",
+          "expected": "allow",
+          "failure_kind": "sandbox_init_failed",
+          "failure_stage": "apply",
+          "mismatch_type": "apply_gate",
+          "operation": "file-write*",
+          "stderr": "sandbox initialization failed: Operation not permitted\nsandbox_init failed: Operation not permitted\n",
+          "tags": [
+            "apply_gate"
+          ],
+          "target": "/tmp/runtime-adv/struct/ok/allowed.txt",
+          "violation_summary": "EPERM"
+        }
+      ],
+      "mismatches": [
         "adv:struct_nested:write-ok-root"
       ],
+      "op_id": 29,
+      "op_name": "file-write*",
+      "passed_probes": [],
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2742,14 +3405,18 @@
       "profile_id": "adv:struct_nested",
       "results": {
         "blocked": {
-          "by_kind": {},
-          "by_stage": {},
-          "total": 0
+          "by_kind": {
+            "sandbox_init_failed": 1
+          },
+          "by_stage": {
+            "apply": 1
+          },
+          "total": 1
         },
-        "matches": 1,
+        "matches": 0,
         "mismatches": 0,
-        "status": "ok",
-        "total": 1,
+        "status": "blocked",
+        "total": 0,
         "total_including_blocked": 1
       },
       "runtime_only": false,
@@ -2758,29 +3425,34 @@
     }
   },
   "signatures": {
+    "adv:flow_divert_require_all_tcp": {
+      "tcp-loopback": "deny"
+    },
     "adv:mach_local_literal": {
-      "allow-cfprefsd-local": "allow",
+      "allow-cfprefsd-local": "deny",
       "deny-bogus-local": "deny"
     },
     "adv:mach_local_regex": {
-      "allow-cfprefsd-local": "allow",
+      "allow-cfprefsd-local": "deny",
       "deny-bogus-local": "deny"
     },
     "adv:mach_simple_allow": {
-      "allow-cfprefsd": "allow",
+      "allow-cfprefsd": "deny",
       "deny-bogus": "deny"
     },
     "adv:mach_simple_variants": {
-      "allow-cfprefsd": "allow",
+      "allow-cfprefsd": "deny",
       "deny-bogus": "deny"
     },
     "adv:net_outbound_allow": {
-      "tcp-loopback": "allow",
-      "tcp-loopback-2": "allow"
+      "tcp-loopback": "deny"
     },
     "adv:net_outbound_deny": {
-      "tcp-loopback": "deny",
-      "tcp-loopback-2": "deny"
+      "tcp-loopback": "deny"
+    },
+    "adv:path_alias": {
+      "alias-private": "deny",
+      "alias-tmp": "deny"
     },
     "adv:path_edges": {
       "allow-subpath": "deny",
@@ -2793,23 +3465,23 @@
       "write-tmp": "deny"
     },
     "adv:struct_flat": {
-      "allow-ok-deep": "allow",
-      "allow-ok-root": "allow",
+      "allow-ok-deep": "deny",
+      "allow-ok-root": "deny",
       "deny-blocked": "deny",
       "deny-outside": "deny",
       "write-blocked": "deny",
-      "write-ok-deep": "allow",
-      "write-ok-root": "allow",
+      "write-ok-deep": "deny",
+      "write-ok-root": "deny",
       "write-outside": "deny"
     },
     "adv:struct_nested": {
-      "allow-ok-deep": "allow",
-      "allow-ok-root": "allow",
+      "allow-ok-deep": "deny",
+      "allow-ok-root": "deny",
       "deny-blocked": "deny",
       "deny-outside": "deny",
       "write-blocked": "deny",
-      "write-ok-deep": "allow",
-      "write-ok-root": "allow",
+      "write-ok-deep": "deny",
+      "write-ok-root": "deny",
       "write-outside": "deny"
     }
   }

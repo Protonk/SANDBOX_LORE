@@ -3,7 +3,22 @@
 const LOG_SUCCESSES = false;
 const INCLUDE_BT = true;
 const MAX_BT_FRAMES = 20;
-const SELF_OPEN_DELAY_MS = 50;
+const SELF_OPEN_DELAY_MS = 150;
+
+const SELFTEST_CONFIG = {
+  path: null,
+  source: null
+};
+
+rpc.exports = {
+  configure: function (opts) {
+    if (opts && opts.selftest_path) {
+      SELFTEST_CONFIG.path = String(opts.selftest_path);
+      SELFTEST_CONFIG.source = 'rpc';
+    }
+    return SELFTEST_CONFIG;
+  }
+};
 
 const pError = Module.getGlobalExportByName('__error');
 const fError = pError ? new NativeFunction(pError, 'pointer', []) : null;
@@ -142,18 +157,33 @@ function resolveHome() {
   return null;
 }
 
-function selfOpen() {
+function resolveSelftestPath() {
+  if (SELFTEST_CONFIG.path) {
+    return { path: SELFTEST_CONFIG.path, source: SELFTEST_CONFIG.source || 'rpc' };
+  }
+  const envPath = envValue('FRIDA_SELFTEST_PATH');
+  if (envPath) {
+    return { path: envPath, source: 'env' };
+  }
   const home = resolveHome();
-  const targetPath = home ? `${home}/tmp/ej_noaccess` : '/tmp/ej_noaccess';
+  if (home) {
+    return { path: `${home}/tmp/ej_noaccess`, source: 'home' };
+  }
+  return { path: '/tmp/ej_noaccess', source: 'default' };
+}
+
+function selfOpen() {
+  const resolved = resolveSelftestPath();
+  const targetPath = resolved.path;
   const openAddr = Module.getGlobalExportByName('open');
   if (!openAddr) {
-    send({ kind: 'self-open', status: 'open-missing', path: targetPath });
+    send({ kind: 'self-open', status: 'open-missing', path: targetPath, source: resolved.source });
     return;
   }
   const closeAddr = Module.getGlobalExportByName('close');
   const openFn = new NativeFunction(openAddr, 'int', ['pointer', 'int', 'int']);
   const closeFn = closeAddr ? new NativeFunction(closeAddr, 'int', ['int']) : null;
-  send({ kind: 'self-open', status: 'attempt', path: targetPath });
+  send({ kind: 'self-open', status: 'attempt', path: targetPath, source: resolved.source });
   const cPath = Memory.allocUtf8String(targetPath);
   const fd = openFn(cPath, 0, 0);
   if (fd >= 0 && closeFn) {

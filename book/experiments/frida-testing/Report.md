@@ -1,119 +1,110 @@
 # frida-testing
 
 ## Purpose
-Explore whether Frida-based instrumentation can provide host-bound runtime witnesses for sandbox behavior on the Sonoma 14.4.1 baseline. This experiment is exploratory; there is no host witness yet, and no claims are promoted beyond substrate theory.
+Establish attach-first Frida witnesses for in-process sandbox behavior using EntitlementJail's process zoo on the Sonoma baseline. This experiment is exploratory; it does not promote claims beyond substrate theory without fresh host evidence.
 
 ## Baseline & scope
 - world_id: sonoma-14.4.1-23E224-arm64-dyld-2c0602c5 (baseline: book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json)
-- Scope: Frida tooling, minimal probes, and runtime logs captured under this experiment.
-- Out of scope: cross-version behavior, new vocabulary names, and promotion to mappings/CARTON without validation outputs.
+- Tools: EntitlementJail.app (book/tools/entitlement/EntitlementJail.app), Frida Python bindings, and book.api.entitlementjail.
+- Scope: attach-first instrumentation inside EntitlementJail XPC services, with observer-first deny evidence capture.
+- Out of scope: spawn-based Frida flows, new operation/filter names, or promotion to mappings/CARTON without validation outputs.
 
 ## Deliverables / expected outcomes
-- Bootstrap assets: target binary, Frida hooks, and a Python runner using the Frida API.
-- Runtime logs or traces in `book/experiments/frida-testing/out/`, with repo-relative paths.
-- Notes entries documenting runs, including failures or apply-stage gates.
+- Attach-first harness: book/experiments/frida-testing/run_ej_frida.py.
+- Hook scripts: book/experiments/frida-testing/hooks/ (fs_open, fs_open_selftest, sandbox_trace, etc.).
+- Output layout with manifest and observer logs under book/experiments/frida-testing/out/<run_id>/.
 
 ## Plan & execution log
-- Planned: verify the Frida CLI and Python bindings used by this repo's venv.
-- Planned: define a minimal probe target and capture a first trace/log.
-- Planned: map any observations to existing operations/filters or record as "we don't know yet".
-- Planned: attach-first smoke witness using EntitlementJail; treat spawn as unstable on this host.
-- Completed: added a minimal target, hook scripts, and a Python runner.
-- Completed: attach-first plumbing witnesses against `open_loop` (smoke, export inventory, fs_open errno events).
-- Attempted: spawn-based fs_open and sandbox export runs (terminated before emitting events).
-- Attempted: attach-first smoke run against EntitlementJail CLI (runner exception; helper + target crashed).
-- Attempted: attach-first smoke run against EntitlementJail `ProbeService_debuggable` XPC target (runner exception; target killed with code-signing invalid page).
-- Completed: attach-first smoke run against EntitlementJail `ProbeService_fully_injectable` XPC target using `run-xpc --hold-open`.
-- Completed: export inventory against `ProbeService_fully_injectable` (libsystem_sandbox.dylib export list).
-- Attempted: fs_open against `ProbeService_fully_injectable`; hook installed but no fs-open events (fs_op executed in a different PID).
-- Attempted: attach-first smoke run against `ProbeService_debuggable` with `--hold-open` (runner exception; target killed with code-signing invalid page).
-- Completed: fs_open self-open witness inside `ProbeService_fully_injectable` using `fs_open_selftest.js` (errno event observed).
-- Completed: extracted Frida runner core into `book/api/frida/runner.py` and kept `book/experiments/frida-testing/run_frida.py` as a CLI wrapper.
-- Completed: expanded fs_open hook coverage to include open/openat $NOCANCEL and __open* variants.
-- Completed: added `interceptor_selftest.js` and `fs_open_funnel.js` to validate Interceptor and discover open-call paths.
-- Attempted: initial Interceptor selftest run failed due to a missing `Process.enumerateEnvironment` API.
-- Completed: Interceptor selftest on `ProbeService_fully_injectable` confirmed hook firing and errno capture.
-- Completed: added `sandbox_trace.js` and `parse_sandbox_trace.py` for sandbox trace gating.
-- Attempted: sandbox trace hook initial run failed due to missing `Module.findExportByName`.
-- Completed: sandbox trace hook runs but reports `sandbox_set_trace_path` missing in `libsystem_sandbox.dylib` for `ProbeService_fully_injectable` (no trace file).
-- Completed: expanded file-decision funnel (metadata/xattr/open) and observed `__open` + `open` errno hits during fs_op.
-- Completed: upgraded sandbox trace to a capability ladder (set_trace, vtrace, unavailable).
-- Completed: added unified-log capture helpers for sandbox deny fallbacks.
-- Completed: collapsed `fs_open.js` to a minimal hook pack and revalidated fs_op observability.
-- Completed: unified-log capture alongside fs_op with summary output.
-- Completed: unified-log capture sanity run (no predicate) to validate NDJSON parsing.
-- Completed: sandbox-broad predicate capture alongside fs_op (parsed NDJSON records present).
-- Attempted: deny-focused predicate capture alongside fs_op (header-only capture).
-- Completed: no-predicate sanity run with updated capture helper (parsed NDJSON records present).
-- Attempted: sandbox-broad capture with service-name correlation (header-only capture).
-- Attempted: deny-focused capture with service-name correlation (header-only capture).
+- Completed: added on_wait_ready callback support in book/api/entitlementjail/wait.py to attach Frida before FIFO trigger.
+- Completed: added run_ej_frida.py harness that runs capabilities_snapshot, attaches Frida, and captures EntitlementJail observer output.
+- Completed: updated fs_open_selftest.js to accept a container-correct selftest path via RPC (FRIDA_SELFTEST_PATH fallback).
+- Completed: labeled legacy unified-log scripts as deprecated; observer-first capture is now the default.
+- Completed: removed legacy run artifacts from book/experiments/frida-testing/out/.
+- Completed: probe_catalog + smoke (run_id d8e2c72a-493d-4518-9dfa-b18b57a41e83) attached successfully; observer output captured (selftest prep failed; not needed).
+- Completed: fs_op + smoke (run_id 41d1a763-bfc3-4dbf-9920-0335d001383b) attached successfully; run-xpc ok.
+- Completed: fs_op + fs_open.js (run_id 54bf34f2-a672-4eb2-8598-08861103d2f3) attached successfully; hooks installed, no fs-open events because open succeeded (LOG_SUCCESSES=false).
+- Completed: fs_op + fs_open.js (run_id 9e49bf0d-da44-4b2a-a928-af6a7ba6f274) attached successfully; permission_error with deny_evidence=not_found; no fs-open events observed.
+- Completed: fs_op + fs_open.js (run_id c1fe32d2-b058-43ff-81ca-836e346af8fa) attached successfully; explicit tmp_dir path with chmod 000 produced errno 13 fs-open events and deny_evidence=captured.
+- Attempted: fs_op + fs_open_selftest (run_id e1ee3f59-b895-49ab-ba4b-62d0bd27999b) failed with XPC connection error.
+- Attempted: fs_op + fs_open_selftest (run_id 6ba32d45-72c2-48fe-9dbe-ffc5ba8753f9) failed with XPC connection error.
+- Attempted: fs_op + fs_open_selftest (run_id 3317ec42-abe3-4ecb-a233-7e9ed5d3ca53) failed with XPC connection error even with trigger delay.
+- Completed: probe_catalog + fs_open_selftest (run_id b218b156-0b63-4265-8dc5-7aec41de3981) attached successfully; self-open emitted errno 13 (EACCES) fs-open event.
+- Completed: fs_op + fs_open_funnel.js (run_id 88533003-dc07-4b5a-96fa-30a157789c21) attached successfully; no funnel-hit events for errno 1/13 under downloads path-class.
+- Completed: fs_op + fs_open_funnel.js (run_id dd0955c2-864a-4471-96b8-4b97e609f8b3) attached successfully; mkdirat returned errno 1 while creating the downloads harness dir (deny evidence captured).
+- Completed: fs_op + fs_op_funnel.js (run_id da23cd52-d323-41ae-bac7-a50f8aefe3cd) logged mkdir/mkdirat calls regardless of errno (errno 17 in tmp, errno 2/1 in downloads harness path).
+- Completed: probe_catalog + discover_sandbox_exports.js (run_id eca03911-40f3-4df0-a74d-9aba5f0c0c1e) enumerated libsystem_sandbox exports (87 sandbox_* symbols).
+- Completed: probe_catalog + sandbox_trace.js (run_id 25d6ade2-0b08-40d2-b37c-fbcad882e11a) reported no sandbox_set_trace_path/vtrace exports (trace unavailable).
+- Attempted: fs_op + fs_open_selftest under debuggable (run_id 59e0530c-0817-49ad-ad0c-d824c7186b2c) timed out; Frida attach failed (no run_xpc/manifest).
+- Attempted: fs_op + fs_open_selftest under debuggable (run_id c134a17d-2147-4031-9874-610a2e9de20b) timed out again; Frida attach failed (no run_xpc/manifest).
+- Attempted: fs_op + fs_open_selftest under plugin_host_relaxed (run_id 6baf62bd-00c2-4bca-9d9c-aa6cd4807187) run-xpc ok but Frida attach denied.
+- Attempted: probe_catalog + smoke under dyld_env_enabled (run_id c15262bf-19b2-47c3-bc38-76234fd4bc3e) run-xpc ok but Frida attach denied.
+- Attempted: probe_catalog + smoke under jit_map_jit (run_id 56efece2-00ed-4814-89a6-94de7649056a) run-xpc ok but Frida attach denied.
+- Attempted: probe_catalog + smoke under jit_rwx_legacy (run_id cb3bde87-6cb3-47cc-99ab-fc25621445a1) run-xpc ok but Frida attach denied.
 
 ## Evidence & artifacts
-- Bootstrap target: `book/experiments/frida-testing/targets/open_loop.c`.
-- Bootstrap binary: `book/experiments/frida-testing/targets/open_loop`.
-- Hooks: `book/experiments/frida-testing/hooks/fs_open.js`, `book/experiments/frida-testing/hooks/fs_open_selftest.js`, `book/experiments/frida-testing/hooks/fs_open_funnel.js`, `book/experiments/frida-testing/hooks/interceptor_selftest.js`, `book/experiments/frida-testing/hooks/sandbox_trace.js`, and `book/experiments/frida-testing/hooks/discover_sandbox_exports.js`.
-- Smoke hook: `book/experiments/frida-testing/hooks/smoke.js`.
-- Runner: `book/api/frida/runner.py` (core) and `book/experiments/frida-testing/run_frida.py` (CLI wrapper).
-- Trace parser: `book/experiments/frida-testing/parse_sandbox_trace.py`.
-- Sandbox log capture: `book/experiments/frida-testing/capture_sandbox_log.py` and `book/experiments/frida-testing/parse_sandbox_log.py`.
-- Diagnostic-only: `book/experiments/frida-testing/hooks/fs_open_funnel.js` (use only when symbol paths regress).
+- Harness: book/experiments/frida-testing/run_ej_frida.py.
+- Hooks: book/experiments/frida-testing/hooks/fs_open.js, book/experiments/frida-testing/hooks/fs_open_selftest.js, book/experiments/frida-testing/hooks/fs_open_funnel.js, book/experiments/frida-testing/hooks/fs_op_funnel.js, book/experiments/frida-testing/hooks/discover_sandbox_exports.js, book/experiments/frida-testing/hooks/sandbox_trace.js.
+- EntitlementJail wait API: book/api/entitlementjail/wait.py (on_wait_ready callback).
+- Successful runs:
+  - book/experiments/frida-testing/out/d8e2c72a-493d-4518-9dfa-b18b57a41e83/manifest.json (probe_catalog + smoke).
+  - book/experiments/frida-testing/out/41d1a763-bfc3-4dbf-9920-0335d001383b/manifest.json (fs_op + smoke).
+  - book/experiments/frida-testing/out/54bf34f2-a672-4eb2-8598-08861103d2f3/manifest.json (fs_op + fs_open.js).
+  - book/experiments/frida-testing/out/9e49bf0d-da44-4b2a-a928-af6a7ba6f274/manifest.json (fs_op + fs_open.js + downloads path-class; no fs-open events).
+  - book/experiments/frida-testing/out/c1fe32d2-b058-43ff-81ca-836e346af8fa/manifest.json (fs_op + fs_open.js + explicit tmp_dir path; fs-open events captured).
+  - book/experiments/frida-testing/out/88533003-dc07-4b5a-96fa-30a157789c21/manifest.json (fs_op + fs_open_funnel.js + downloads path-class; no funnel-hit events).
+  - book/experiments/frida-testing/out/dd0955c2-864a-4471-96b8-4b97e609f8b3/manifest.json (fs_op + fs_open_funnel.js + downloads path-class; mkdirat errno 1).
+  - book/experiments/frida-testing/out/da23cd52-d323-41ae-bac7-a50f8aefe3cd/manifest.json (fs_op + fs_op_funnel.js + downloads path-class; mkdir/mkdirat errno evidence).
+  - book/experiments/frida-testing/out/eca03911-40f3-4df0-a74d-9aba5f0c0c1e/manifest.json (probe_catalog + discover_sandbox_exports.js).
+  - book/experiments/frida-testing/out/25d6ade2-0b08-40d2-b37c-fbcad882e11a/manifest.json (probe_catalog + sandbox_trace.js; trace unavailable).
+  - book/experiments/frida-testing/out/b218b156-0b63-4265-8dc5-7aec41de3981/manifest.json (probe_catalog + fs_open_selftest).
+- Partial runs (Frida attach denied):
+  - book/experiments/frida-testing/out/6baf62bd-00c2-4bca-9d9c-aa6cd4807187/manifest.json (fs_op + fs_open_selftest under plugin_host_relaxed).
+  - book/experiments/frida-testing/out/c15262bf-19b2-47c3-bc38-76234fd4bc3e/manifest.json (probe_catalog + smoke under dyld_env_enabled).
+  - book/experiments/frida-testing/out/56efece2-00ed-4814-89a6-94de7649056a/manifest.json (probe_catalog + smoke under jit_map_jit).
+  - book/experiments/frida-testing/out/cb3bde87-6cb3-47cc-99ab-fc25621445a1/manifest.json (probe_catalog + smoke under jit_rwx_legacy).
+- Timed-out runs (manifest missing):
+  - book/experiments/frida-testing/out/59e0530c-0817-49ad-ad0c-d824c7186b2c/ej/capabilities_snapshot.json (debuggable; Frida attach failed; run_xpc missing).
+  - book/experiments/frida-testing/out/c134a17d-2147-4031-9874-610a2e9de20b/ej/capabilities_snapshot.json (debuggable; Frida attach failed; run_xpc missing).
+- Blocked runs (XPC connection error):
+  - book/experiments/frida-testing/out/e1ee3f59-b895-49ab-ba4b-62d0bd27999b/manifest.json.
+  - book/experiments/frida-testing/out/6ba32d45-72c2-48fe-9dbe-ffc5ba8753f9/manifest.json.
+  - book/experiments/frida-testing/out/3317ec42-abe3-4ecb-a233-7e9ed5d3ca53/manifest.json.
+- Output layout (fresh runs only):
+  - book/experiments/frida-testing/out/<run_id>/manifest.json
+  - book/experiments/frida-testing/out/<run_id>/ej/run_xpc.json
+  - book/experiments/frida-testing/out/<run_id>/ej/logs/run_xpc.log
+  - book/experiments/frida-testing/out/<run_id>/ej/logs/observer/<...>
+  - book/experiments/frida-testing/out/<run_id>/frida/meta.json
+  - book/experiments/frida-testing/out/<run_id>/frida/events.jsonl
 
-- Unified-log sanity run (no predicate):
-  - Run `book/experiments/frida-testing/out/8c89469f-5489-4285-b34e-a54e871625e5`: `sandbox_log_summary.json` reports `parsed_lines=5449` and `total_lines=5449`.
-  - Run `book/experiments/frida-testing/out/a987670e-67a4-458b-9e4a-8254e5e2ddcb`: `sandbox_log_summary.json` reports `parsed_lines=3980` and `total_lines=3980`.
+## Run recipe (attach-first)
+Example (Tier 2 profile requires --ack-risk):
 
-- Attach-first plumbing witness (baseline target `open_loop`):
-  - Run `book/experiments/frida-testing/out/0bd798d6-5986-4a26-a19c-28f7d577f240` (smoke): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, event kinds `{"runner-start":1,"stage":4,"smoke":1,"session-detached":1}`.
-  - Run `book/experiments/frida-testing/out/903d8465-79c3-4ddf-ab01-83892c4a409c` (discover_sandbox_exports): script sha256 `7051d15476ac8e44336368b57daf858a55f8cb13e923ff819b4dc0371f2826ce`, event kinds `{"runner-start":1,"stage":4,"exports":1,"session-detached":1}`.
-    - Export payload: module `libsystem_sandbox.dylib`, count `87`, first 10 names: `sandbox_builtin_query`, `sandbox_check`, `sandbox_check_bulk`, `sandbox_check_by_audit_token`, `sandbox_check_by_reference`, `sandbox_check_by_uniqueid`, `sandbox_check_message_filter_integer`, `sandbox_check_message_filter_string`, `sandbox_check_process_signal_target`, `sandbox_check_protected_app_container`.
-  - Run `book/experiments/frida-testing/out/4f161bec-6ef0-4614-b070-58e9596f03a2` (fs_open): script sha256 `724999594e57ad1c0ef73405ab1935bbb2ebe1c0b98adde90f824c2915c0372c`, event kinds `{"runner-start":1,"stage":4,"hook-installed":3,"fs-open":10,"session-detached":1}`; errno histogram `{"13":10}` using the deterministic deny path `/tmp/frida_testing_noaccess`.
-
-- Earlier failures (pre-plumbing):
-- Run `book/experiments/frida-testing/out/04968c5a-ab8b-45d9-8d41-84f11f223d64` (fs_open): script sha256 `666ea5243d87d008b41e5a444ae30f8cbced3802462ae659dc66db02659ab135`, event kinds `{}` (events.jsonl empty).
-- Run `book/experiments/frida-testing/out/64dfc33f-3275-4656-94c3-a427dd129a95` (discover_sandbox_exports): script sha256 `7051d15476ac8e44336368b57daf858a55f8cb13e923ff819b4dc0371f2826ce`, event kinds `{}` (events.jsonl empty).
-- Run `book/experiments/frida-testing/out/5b0825cf-b3be-4a24-9a98-37fd4da5cb2f` (smoke attach to EntitlementJail CLI): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, event kinds `{\"runner-exception\": 1}`.
-
-## EntitlementJail runs
-- Run `book/experiments/frida-testing/out/6bf9e68e-1984-410d-9c9d-bc7b4a0023b8` (smoke attach to EntitlementJail `ProbeService_debuggable`): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, runner kinds `{\"runner-start\":1,\"stage\":2,\"runner-exception\":1}`.
-- Run `book/experiments/frida-testing/out/fadc03b3-eaf8-4b4c-a8e0-176f476a31ce` (smoke attach to EntitlementJail `ProbeService_debuggable` with `--hold-open`): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, runner kinds `{\"runner-start\":1,\"stage\":2,\"runner-exception\":1}`.
-- Run `book/experiments/frida-testing/out/539ea0e4-fd01-4b23-b698-17e5256afc3f` (smoke attach to EntitlementJail `ProbeService_fully_injectable`): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, event kinds `{\"runner-start\":1,\"stage\":4,\"smoke\":1,\"session-detached\":1}`.
-- Run `book/experiments/frida-testing/out/9fc56e61-bd29-4e04-b2a8-c3497114d624` (discover_sandbox_exports on `ProbeService_fully_injectable`): script sha256 `7051d15476ac8e44336368b57daf858a55f8cb13e923ff819b4dc0371f2826ce`, event kinds `{\"runner-start\":1,\"stage\":4,\"exports\":1,\"session-detached\":1}`.
-  - Export payload: module `libsystem_sandbox.dylib`, count `87`, first 10 names: `sandbox_builtin_query`, `sandbox_check`, `sandbox_check_bulk`, `sandbox_check_by_audit_token`, `sandbox_check_by_reference`, `sandbox_check_by_uniqueid`, `sandbox_check_message_filter_integer`, `sandbox_check_message_filter_string`, `sandbox_check_process_signal_target`, `sandbox_check_protected_app_container`.
-- Run `book/experiments/frida-testing/out/c014afa1-e042-4373-a69a-510be8632aca` (fs_open attach to `ProbeService_fully_injectable`): script sha256 `724999594e57ad1c0ef73405ab1935bbb2ebe1c0b98adde90f824c2915c0372c`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":3,\"session-detached\":1}`; no `fs-open` events observed.
-- Run `book/experiments/frida-testing/out/6d8f44e4-1fa0-4f99-bab6-bb13f6858257` (smoke attach to EntitlementJail `ProbeService_fully_injectable`): script sha256 `d8711d9b959eb7a6275892f43b9130f3c825cbd15d8c0313fdc4a1a0e989b150`, event kinds `{\"runner-start\":1,\"stage\":4,\"smoke\":1,\"session-detached\":1}`.
-- Run `book/experiments/frida-testing/out/673e5a1e-1fab-4010-a74e-9a91b217f830` (discover_sandbox_exports on `ProbeService_fully_injectable`): script sha256 `7051d15476ac8e44336368b57daf858a55f8cb13e923ff819b4dc0371f2826ce`, event kinds `{\"runner-start\":1,\"stage\":4,\"exports\":1,\"session-detached\":1}`.
-  - Export payload: module `libsystem_sandbox.dylib`, count `87`, first 10 names: `sandbox_builtin_query`, `sandbox_check`, `sandbox_check_bulk`, `sandbox_check_by_audit_token`, `sandbox_check_by_reference`, `sandbox_check_by_uniqueid`, `sandbox_check_message_filter_integer`, `sandbox_check_message_filter_string`, `sandbox_check_process_signal_target`, `sandbox_check_protected_app_container`.
-- Run `book/experiments/frida-testing/out/56577123-16b4-4335-be63-3478e63a7c88` (fs_open self-open on `ProbeService_fully_injectable`): script sha256 `151ffdc95b52c5afbb92263537a761643d24522815e15804a726ec73fef02e52`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":3,\"self-open\":1,\"fs-open\":1,\"session-detached\":1}`; errno histogram `{\"13\":1}` for the service container tmp path `ej_noaccess`.
-- Run `book/experiments/frida-testing/out/cb34ec8c-6798-4811-9793-9b4c99efe912` (attach wait + fs_op on `ProbeService_fully_injectable`): script sha256 `724999594e57ad1c0ef73405ab1935bbb2ebe1c0b98adde90f824c2915c0372c`, runner kinds `{\"runner-start\":1,\"stage\":4,\"session-detached\":1}`, send kinds `{\"hook-installed\":3}`; wait metadata recorded in the `run-xpc` JSON output (normalized_outcome ok).
-- Run `book/experiments/frida-testing/out/690fb15e-6664-48eb-8031-54d6068f3206` (attach wait + fs_op direct-path on `ProbeService_fully_injectable`): script sha256 `724999594e57ad1c0ef73405ab1935bbb2ebe1c0b98adde90f824c2915c0372c`, runner kinds `{\"runner-start\":1,\"stage\":4,\"session-detached\":1}`, send kinds `{\"hook-installed\":3}`; fs_op returned errno 13 (permission_error) in `run-xpc` output.
-- Run `book/experiments/frida-testing/out/bb6437a1-e7d8-4734-a4ee-a857b3762208` (attach wait + fs_op direct-path on `ProbeService_fully_injectable` with expanded hook coverage): script sha256 `b6e605a6a7624d32ba86d16dac9071c02585273fbce502a5c26354459ca50352`, runner kinds `{\"runner-start\":1,\"stage\":4,\"session-detached\":1}`, send kinds `{\"hook-installed\":9}`; fs_op returned errno 13 (permission_error) in `run-xpc` output.
-- Run `book/experiments/frida-testing/out/9bf3d548-783e-4d67-9ded-0699d2ec4050` (interceptor_selftest initial attempt on `ProbeService_fully_injectable`): script sha256 `53b9b9a8a80dcc66bf9f261954c16f70cfd92135be950fb4f9be80d43edd861b`, event kinds `{\"runner-start\":1,\"stage\":4,\"error\":1,\"session-detached\":1}`; error `TypeError: not a function` from `Process.enumerateEnvironment`.
-- Run `book/experiments/frida-testing/out/cdbf72da-d118-4875-babb-1498bc770e4a` (interceptor_selftest on `ProbeService_fully_injectable`): script sha256 `6a6b574339e2beafa77dc544b6c4ebc8a394951ac42b2c0264b2751be9e3e951`, event kinds `{\"runner-start\":1,\"stage\":4,\"interceptor-selftest\":3,\"session-detached\":1}`; hook fired on `open` with errno 2 for `/tmp/frida_testing_noaccess`.
-- Run `book/experiments/frida-testing/out/c5b2484c-3e8d-4f26-9074-f59742f45e20` (fs_open_funnel on `ProbeService_fully_injectable`): script sha256 `8516afb5331a9794b4737a4ea588e8d5774ed1af576c29dd924251d0de21d808`, event kinds `{\"runner-start\":1,\"stage\":4,\"funnel-candidates\":1,\"funnel-hook\":16,\"session-detached\":1}`; candidates include `__open*`, `open*`, and `guarded_open_dprotected_np`; no `funnel-hit` events observed.
-- Run `book/experiments/frida-testing/out/75b513c6-b674-4a04-8988-3cdc87874958` (fs_open_funnel with syscall hooks on `ProbeService_fully_injectable`): script sha256 `4664b1c9996004669fcc84d7400bc1b1d68c1f86da83efe7df3fe6ce94c707dc`, event kinds `{\"runner-start\":1,\"stage\":4,\"funnel-candidates\":1,\"funnel-hook\":18,\"session-detached\":1}`; candidates include `__open*`, `open*`, `openat*`, `__syscall`, and `syscall`; no `funnel-hit` events observed.
-- Run `book/experiments/frida-testing/out/18ef5758-937a-4e9c-b54d-db999d23a270` (sandbox_trace initial attempt on `ProbeService_fully_injectable`): script sha256 `6207b3a1c2378a1e26a6454003b9e8710c2f0a8f9e315d478b66bf776708465a`, event kinds `{\"runner-start\":1,\"stage\":4,\"error\":1,\"session-detached\":1}`; error `TypeError: not a function` from `Module.findExportByName`.
-- Run `book/experiments/frida-testing/out/227d3232-9da5-463d-bab4-2f7bbbfc03ae` (sandbox_trace on `ProbeService_fully_injectable`): script sha256 `e0753d40450b1135c1b4ad79d6d902108de9a9bac9a642f826f2173c8359ba04`, event kinds `{\"runner-start\":1,\"stage\":4,\"sandbox-trace\":1,\"session-detached\":1}`; trace status `symbol-missing`, summary in `book/experiments/frida-testing/out/227d3232-9da5-463d-bab4-2f7bbbfc03ae/sandbox_trace_summary.json` (trace_exists false).
-- Run `book/experiments/frida-testing/out/0ee1b6e3-f000-4037-aaee-23ce3e7f0098` (file-decision funnel on `ProbeService_fully_injectable`): script sha256 `43976ac03198182d3977e66631b3f2762eab4c72fd28db5a2dc4c67b246f17f0`, event kinds `{\"runner-start\":1,\"stage\":4,\"funnel-candidates\":3,\"funnel-hook\":41,\"funnel-hit\":2,\"session-detached\":1}`; `funnel-hit` events observed for `__open` and `open` with errno 13 on the deny path.
-- Run `book/experiments/frida-testing/out/218aba7d-9290-4955-b82a-11b40266be0f` (sandbox_trace capability ladder on `ProbeService_fully_injectable`): script sha256 `d535a5973d9e738dcc2c49885b29a356ca262ca0c3c9567839513b1f3627eacf`, event kinds `{\"runner-start\":1,\"stage\":4,\"sandbox-trace-capability\":1,\"sandbox-trace-unavailable\":1,\"session-detached\":1}`; vtrace and set_trace both unavailable.
-- Run `book/experiments/frida-testing/out/797832ba-a22c-41ba-8f2a-370f87f97713` (minimal fs_open on `ProbeService_fully_injectable`): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"fs-open\":2,\"session-detached\":1}`; `fs-open` events observed for `__open` and `open` with errno 13 on the deny path.
-- Run `book/experiments/frida-testing/out/29f6de6c-7972-40ff-84e0-8b4a3e46c5b9` (fs_open + unified-log capture on `ProbeService_fully_injectable`): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"session-detached\":1}`; sandbox log summary in `book/experiments/frida-testing/out/29f6de6c-7972-40ff-84e0-8b4a3e46c5b9/sandbox_log_summary.json` shows `parsed_lines=0` and `deny_events=0` (header-only capture).
-- Run `book/experiments/frida-testing/out/c956e438-fd59-4ed1-b8b7-685b7e7f2747` (fs_open + sandbox-broad unified-log capture on `ProbeService_fully_injectable`): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"fs-open\":10,\"session-detached\":1}`; sandbox log summary shows `parsed_lines=11`, `deny_events=0`.
-- Run `book/experiments/frida-testing/out/b968dd05-c5f1-40c2-a8b1-f462711a3a78` (fs_open + deny-focused unified-log capture on `ProbeService_fully_injectable`): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"fs-open\":10,\"session-detached\":1}`; sandbox log summary shows `parsed_lines=0`, `deny_events=0` (header-only capture).
-- Run `book/experiments/frida-testing/out/404b099b-6158-4278-8088-c8e191dd3ce7` (sandbox-broad capture with service-name correlation): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":2,\"runner-exception\":1}`; runner error `helper exited during launch (status=9)`; sandbox log summary shows `parsed_lines=1` (header-only capture).
-- Run `book/experiments/frida-testing/out/a4c207ff-e0a9-43b1-ad70-18435bca2276` (sandbox-broad capture with service-name correlation): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"fs-open\":10,\"session-detached\":1}`; sandbox log summary shows `parsed_lines=0`, `deny_events=0` (header-only capture).
-- Run `book/experiments/frida-testing/out/f5c538d6-89b0-4a92-9115-31229ce5252a` (deny-focused capture with service-name correlation): script sha256 `743c172570ddcfd40f3a562978efbeeedd9de6c865cdfcd5d6b51c68444a98e5`, event kinds `{\"runner-start\":1,\"stage\":4,\"hook-installed\":4,\"hook-missing\":4,\"session-detached\":1}`; sandbox log summary shows `parsed_lines=0`, `deny_events=0` (header-only capture).
+```sh
+./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py \
+  --profile-id fully_injectable \
+  --ack-risk fully_injectable \
+  --probe-id fs_op \
+  --script book/experiments/frida-testing/hooks/fs_open_selftest.js \
+  --probe-args --op open_read --path-class tmp --target specimen_file
+```
+Note: --probe-args consumes the remainder of the command line; keep it last.
 
 ## Blockers / risks
-- Spawn runs are terminating before any send() payloads are recorded; treat spawn as unstable on this host until proven otherwise.
-- Attach-first smoke run triggered frida-helper and target crashes; the helper crash suggests a Frida-layer instability and the target died with a code signing invalid-page kill.
-- Attach-first smoke run against `ProbeService_debuggable` also ended in a code signing invalid-page kill, with a frida-helper SIGILL crash reported.
-- `ProbeService_fully_injectable` is attachable (smoke + export inventory); `fs_open` events can be forced via self-open, but `fs_op` does not emit fs-open events even when run in the same PID via `--attach`.
-- `sandbox_set_trace_path` and vtrace exports are unavailable from `libsystem_sandbox.dylib` in `ProbeService_fully_injectable`, so in-process trace gating is blocked for this target.
-- File-decision funnel and the minimal fs_open pack now observe `__open` and `open` errno 13 hits in `libsystem_kernel.dylib` during fs_op; the open path is confirmed.
-- Unified-log capture works without predicates, but deny-focused predicates still yield header-only captures; the fallback stream remains partial for this target.
-- Running sudo log stream from this harness is not permitted, so root-level unified-log visibility is untested here.
-- Running Frida inside the Codex harness sandbox can produce misleading “plumbing” crashes (for example, `frida.get_local_device()` SIGSEGV); run `frida-testing` captures from a normal Terminal session.
+- Frida spawn remains unstable on this host; this experiment is attach-first only (partial, no current witness).
+- Attach-first fs_op runs with fs_open_selftest repeatedly failed with NSCocoaErrorDomain Code 4097 (XPC connection error); treat fs_open_selftest + fs_op as blocked until a new attach strategy is available.
+- Frida attach can crash inside the Codex harness sandbox; run captures from a normal Terminal session.
+- sandbox_set_trace_path / vtrace exports were not present in libsystem_sandbox.dylib for fully_injectable (run_id 25d6ade2-0b08-40d2-b37c-fbcad882e11a); trace unavailable (blocked).
+- fs_op with downloads path-class produced permission_error without fs-open events; extended funnel captured mkdirat errno 1 during harness dir creation, indicating failure before open (partial).
+- Frida attach failed for debuggable, plugin_host_relaxed, dyld_env_enabled, jit_map_jit, and jit_rwx_legacy (injection refused / permission denied), limiting profile coverage.
+- If multiple service PIDs exist, the attach PID may not match data.details.service_pid; check manifest.json for pid_matches_service_pid.
 
 ## Next steps
-- If the unified-log stream stays empty, retry with a broader predicate (drop PID or deny-only) and compare summaries.
-- Keep the minimal fs_open pack as the default hook for fs_op, and treat the funnel as diagnostics-only.
+- For deterministic fs-open error events, use an explicit tmp_dir path (chmod 000) with fs_op --path --allow-unsafe-path; this yielded errno 13 events and deny evidence.
+- If fs-open events are still missing, use fs_open_funnel.js to widen symbol coverage before extending fs_open.js.
+- If downloads path-class attribution is required, use fs_op_funnel.js and focus on mkdirat/rename paths rather than open hooks.
+- If a future EntitlementJail build reintroduces sandbox_set_trace_path or vtrace exports, rerun sandbox_trace.js and record the new status.
+- If deny evidence is needed, use EntitlementJail observer output and keep attribution explicit.
+
+## Appendix: legacy runs
+Legacy run artifacts were removed from book/experiments/frida-testing/out/. No current host witness remains; treat any inference as substrate-only until new runs are captured.

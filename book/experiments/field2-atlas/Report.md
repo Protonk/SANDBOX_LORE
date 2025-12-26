@@ -14,21 +14,21 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 
 ## Outputs (current)
 - `out/static/field2_records.jsonl` — one record per seed with tag IDs, anchors, and system-profile placements for that field2; all seeds present by construction.
-- `out/runtime/field2_runtime_results.json` — one entry per seed, each tagged to a concrete runtime scenario (profile, operation, expected/result, scenario_id). Seeds without a candidate would be marked explicitly, but the current slice has one probe per seed.
-- `out/atlas/field2_atlas.json` — static + runtime merged per field2 with a coarse status (`runtime_backed` vs `static_only`/`no_runtime_candidate`).
+- `out/runtime/field2_runtime_results.json` — one entry per seed, each tagged to a concrete runtime scenario (profile, operation, expected/result, scenario_id). Seeds without a candidate are marked `no_runtime_candidate`.
+- `out/atlas/field2_atlas.json` — static + runtime merged per field2 with a coarse status (`runtime_backed`, `runtime_backed_historical`, `runtime_attempted_blocked`, `static_only`, `no_runtime_candidate`).
 - `out/atlas/summary.json` — counts by status to show field2 coverage at a glance.
 
 ## Status
-- Static: `ok` for the seed slice including new seed `2560` (characterized static-only).
-- Runtime: **partial** — reuses existing runtime signatures (mach path/global/local and path_edges) and tags each to a seed; no new harness runs yet. Baseline seeds are `runtime_backed`; static-only seeds (1, 2560) are `no_runtime_candidate`.
-- Atlas: `runtime_backed` for baseline seeds, `no_runtime_candidate` for static-only add-ons; rebuilt after the refreshed field2 inventory (UDP network variant, fcntl/right-name sweeps) with seed 2560 included. Will expand as seeds/probes are added.
+- Static: `ok` for the seed slice including seed `2560` (characterized static-only).
+- Runtime: **partial** — refreshed via the runtime-checks + runtime-adversarial harness runs and re-derived `runtime_signatures.json`, but the latest runtime-adversarial run is apply-gated (`sandbox_init` EPERM), so current attempts are recorded as `runtime_attempted_blocked`. The atlas now keeps last-known-good runtime results as `runtime_backed_historical` when a historical witness is available. Path normalization evidence is still captured (requested vs normalized) and a dedicated path-alias witness now shows `/tmp` resolving to `/private/tmp`.
+- Atlas: `runtime_attempted_blocked` for the seed slice when the latest run is apply-gated, or `runtime_backed_historical` when an older decision-stage witness exists; rebuilt after the refreshed runtime signatures and static inventory.
 
 ## Case studies (seed slice)
-- Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*) and currently returns `deny` in the signature set.
-- Field2 5 (`global-name`): Present in `sys:bsd` tag 27 and many mach/path probes; anchors include `preferences/logging` and `/etc/hosts`. Runtime scenario `field2-5-mach-global` exercises `mach-lookup` for `com.apple.cfprefsd.agent` and returns `allow`.
-- Field2 7 (`local`): Present in `sys:sample` tags 3/7/8 and network/mach probes; anchors include `/etc/hosts` and blocked `flow-divert`. Runtime scenario `field2-7-mach-local` hits `mach-lookup` for the same name with a local-mode probe and returns `allow`.
-- Field2 1 (`mount-relative-path`): Added as a nearby static-only neighbor (same ops/profiles as seed0). Anchored via `/etc/hosts` and present in `sys:sample` tag 8; no runtime probe yet (`no_runtime_candidate`).
-- Field2 2560 (`flow-divert triple`): Characterized static token for combined domain/type/proto in flow-divert probes; tag0/u16_role=filter_vocab_id with literal `com.apple.flow-divert`, target op `network-outbound`, no runtime probe yet (`no_runtime_candidate` after regeneration).
+- Field2 0 (`path`): Appears on path-centric tags in `sys:sample` and multiple probes; anchors include `/etc/hosts` and `/tmp/foo`. Runtime scenario `field2-0-path_edges` targets path edges (file-read*) but is currently apply-gated (`sandbox_init` EPERM). The canonicalization boundary is now explicit: the runtime record carries `requested_path=/tmp/...`, `normalized_path=/private/tmp/...`, and a `path_canonicalization_witness` sourced from the `adv:path_alias` twin-probe profile.
+- Field2 5 (`global-name`): Present in `sys:bsd` tag 27 and many mach/path probes; anchors include `preferences/logging` and `/etc/hosts`. Runtime scenario `field2-5-mach-global` (mach-lookup `com.apple.cfprefsd.agent`) is currently apply-gated.
+- Field2 7 (`local`): Present in `sys:sample` tags 3/7/8 and network/mach probes; anchors include `/etc/hosts` and blocked `flow-divert`. Runtime scenario `field2-7-mach-local` is currently apply-gated.
+- Field2 1 (`mount-relative-path`): Added as a nearby static-only neighbor (same ops/profiles as seed0). Anchored via `/etc/hosts` and present in `sys:sample` tag 8; now tied to `adv:path_edges` (`allow-subpath`) but currently apply-gated.
+- Field2 2560 (`flow-divert triple`): Characterized static token for combined domain/type/proto in flow-divert probes; tag0/u16_role=filter_vocab_id with literal `com.apple.flow-divert`, target op `network-outbound`. Runtime scenario `adv:flow_divert_require_all_tcp` attempts a loopback TCP connect under the require-all domain/type/protocol profile and is currently apply-gated.
 
 ## Evidence & artifacts
 - Seeds: `book/experiments/field2-atlas/field2_seeds.json`
@@ -38,6 +38,6 @@ This is the canonical example of a field2-first view. It is intentionally narrow
 - Helpers: `atlas_static.py`, `atlas_runtime.py`, `atlas_build.py`; guardrail `book/tests/test_field2_atlas.py`.
 
 ## Next steps
-- Run the runtime wrapper against fresh probes as they appear (mark `blocked`/`deny` explicitly).
-- Regenerate static/runtime/atlas outputs to incorporate seed 2560 and keep anchors/tag layouts aligned.
-- Decide whether to keep the atlas as a fixed exemplar (0/5/7) or add a small second batch with the same field2-first framing and tests.
+- Resolve the apply gate blocking runtime-adversarial (sandbox_init EPERM); re-run the harness once a clean apply path is available so runtime-backed statuses can be restored.
+- If apply-gate persists, capture it as a bounded discrepancy (what changed vs prior runs) and keep `runtime_attempted_blocked` statuses explicit rather than forcing allow/deny interpretations.
+- Keep the runtime corpus current via the standard harness + validation pipeline, then refresh `atlas_runtime.py` and `atlas_build.py`.

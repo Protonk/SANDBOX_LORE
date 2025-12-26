@@ -80,6 +80,12 @@
     "adv:path_edges:write-dotdot": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_edges_write-dotdot.jsonl"
     ],
+    "adv:path_alias:alias-tmp": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_alias_alias-tmp.jsonl"
+    ],
+    "adv:path_alias:alias-private": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_path_alias_alias-private.jsonl"
+    ],
     "adv:mach_simple_allow:allow-cfprefsd": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_mach_simple_allow_allow-cfprefsd.jsonl"
     ],
@@ -107,14 +113,11 @@
     "adv:net_outbound_allow:tcp-loopback": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_allow_tcp-loopback.jsonl"
     ],
-    "adv:net_outbound_allow:tcp-loopback-2": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_allow_tcp-loopback-2.jsonl"
-    ],
     "adv:net_outbound_deny:tcp-loopback": [
       "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_deny_tcp-loopback.jsonl"
     ],
-    "adv:net_outbound_deny:tcp-loopback-2": [
-      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_net_outbound_deny_tcp-loopback-2.jsonl"
+    "adv:flow_divert_require_all_tcp:tcp-loopback": [
+      "book/experiments/runtime-adversarial/out/runtime_mappings/traces/adv_flow_divert_require_all_tcp_tcp-loopback.jsonl"
     ]
   }
 }

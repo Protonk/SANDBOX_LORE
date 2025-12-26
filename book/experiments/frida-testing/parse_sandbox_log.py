@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Legacy: prefer EntitlementJail observer reports for deny evidence parsing.
 import argparse
 import json
 import re

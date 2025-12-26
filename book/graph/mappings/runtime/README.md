@@ -12,14 +12,14 @@ Current artifacts:
 - `runtime_signatures.json` — small IR derived from validation outputs (`field2_ir.json` + normalized runtime results) summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/generate_runtime_signatures.py` (which runs the validation driver `--tag smoke`) and folded into CARTON.
 - CARTON: see `book/api/carton/CARTON.json` for frozen hashes/paths of the runtime mappings/IR that are included in CARTON for Sonoma 14.4.1.
 
-Status update (permissive host):
-- Latest refresh ran under the permissive host context (`--yolo`), so apply-stage EPERM cleared for runtime-checks and runtime-adversarial probes.
-- `runtime_signatures.json`, `runtime_coverage.json`, and `expectations.json` now reflect decision-stage outcomes again; `sys:airlock` remains preflight-blocked and `path_edges` mismatches persist as the known VFS-canonicalization boundary.
+Status update (apply-gated):
+- Latest refresh hit apply-stage EPERM (`sandbox_init`), so runtime-checks and runtime-adversarial probes are currently recorded as apply-gated rather than decision-stage outcomes.
+- `runtime_signatures.json`, `runtime_coverage.json`, and `expectations.json` now reflect the blocked outcomes; treat allow/deny results as tentative until a clean apply path is available.
 
 Claims and limits (current host cut):
-- For the operations that have both runtime-checks and runtime-adversarial coverage today—file-read*, file-write*, and mach-lookup—the decoded PolicyGraph IR (vocab, op-table, tag layouts where used, and graphs) agrees with kernel enforcement even under adversarial SBPL constructions (structural/metafilter variants and mach global/local literal/regex probes).
-- The one systematic divergence observed so far is `/tmp` → `/private/tmp` behavior in a synthetic path profile, attributed to VFS canonicalization outside the PolicyGraph model and recorded as such; it is not treated as a decoder bug.
-- This justifies treating the static IR as a dependable stand-in for kernel behavior for those covered ops on this host, but not as a universal theorem over all 196 operations; use `book/graph/mappings/vocab/ops_coverage.json` to see which ops have runtime evidence, and extend `runtime-adversarial` when you need similar backing for others.
+- Apply-stage blocking means current runtime evidence is limited to “attempted but blocked”; do not treat allow/deny outcomes as decision-stage truth until the gate clears.
+- The `/tmp` → `/private/tmp` boundary is still recorded (now via normalized path fields and the focused VFS canonicalization experiment) and remains a known divergence outside the PolicyGraph model.
+- Use `book/graph/mappings/vocab/ops_coverage.json` and explicit status fields to gauge what is currently runtime-backed vs blocked on this host.
 
 Role in the substrate:
 - Adds the enforcement layer to the static mappings: which Operations (by vocab ID) and inputs were allowed/denied under specific compiled profiles on this host.

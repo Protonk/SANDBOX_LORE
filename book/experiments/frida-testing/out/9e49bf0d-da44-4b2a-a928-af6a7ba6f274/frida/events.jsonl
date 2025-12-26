@@ -1,0 +1,13 @@
+{"t_ns":1766712789701787000,"pid":81388,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766712789701905000,"pid":81388,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766712789782348000,"pid":81388,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766712790975445000,"pid":81388,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766712790977501000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"__open","addr":"0x189d02c48"}}}
+{"t_ns":1766712790977704000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"open","addr":"0x189d0dda8"}}}
+{"t_ns":1766712790978197000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"__open$INODE64"}}}
+{"t_ns":1766712790978296000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"open$INODE64"}}}
+{"t_ns":1766712790978339000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"openat","addr":"0x189d1de14"}}}
+{"t_ns":1766712790978659000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-installed","symbol":"__openat","addr":"0x189d03a5c"}}}
+{"t_ns":1766712790978907000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"openat$INODE64"}}}
+{"t_ns":1766712790978991000,"pid":81388,"msg":{"type":"send","payload":{"kind":"hook-missing","symbol":"__openat$INODE64"}}}
+{"t_ns":1766712812131875000,"pid":81388,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

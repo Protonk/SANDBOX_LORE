@@ -24,6 +24,11 @@ class RuntimeObservation:
     expectation_id: Optional[str] = None
     operation: str = ""
     target: Optional[str] = None
+    requested_path: Optional[str] = None
+    observed_path: Optional[str] = None
+    observed_path_source: Optional[str] = None
+    normalized_path: Optional[str] = None
+    normalized_path_source: Optional[str] = None
     probe_name: Optional[str] = None
     expected: Optional[str] = None
     actual: Optional[str] = None

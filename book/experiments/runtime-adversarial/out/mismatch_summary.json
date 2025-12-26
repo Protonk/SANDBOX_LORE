@@ -1,7 +1,103 @@
 {
   "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
-  "generated_by": "book/api/runtime_tools/runtime_pipeline.py",
+  "generated_by": "book/api/runtime_tools/workflow.py",
   "mismatches": [
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:allow-ok-root",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":10612}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:allow-ok-deep",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":10613}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:write-ok-root",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":10616}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_flat",
+      "expectation_id": "adv:struct_flat:write-ok-deep",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_flat.adv_struct_flat.runtime.sb\",\"pid\":10617}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:allow-ok-root",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":10620}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:allow-ok-deep",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":10621}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:write-ok-root",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/allowed.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":10624}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:struct_nested",
+      "expectation_id": "adv:struct_nested:write-ok-deep",
+      "operation": "file-write*",
+      "path": "/tmp/runtime-adv/struct/ok/deep/nested.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/struct_nested.adv_struct_nested.runtime.sb\",\"pid\":10625}\nsandbox_init failed: Operation not permitted\n"
+    },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
       "profile_id": "adv:path_edges",
@@ -10,9 +106,9 @@
       "path": "/tmp/runtime-adv/edges/a",
       "expected": "allow",
       "actual": "deny",
-      "mismatch_type": "path_normalization",
-      "violation_summary": null,
-      "notes": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26699}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26699}\nopen target: Operation not permitted\n"
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":10628}\nsandbox_init failed: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -22,9 +118,9 @@
       "path": "/tmp/runtime-adv/edges/okdir/item.txt",
       "expected": "allow",
       "actual": "deny",
-      "mismatch_type": "path_normalization",
-      "violation_summary": null,
-      "notes": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26701}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26701}\nopen target: Operation not permitted\n"
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":10630}\nsandbox_init failed: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -34,9 +130,9 @@
       "path": "/tmp/runtime-adv/edges/a",
       "expected": "allow",
       "actual": "deny",
-      "mismatch_type": "unexpected_deny",
-      "violation_summary": null,
-      "notes": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26703}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26703}\nopen target: Operation not permitted\n"
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":10632}\nsandbox_init failed: Operation not permitted\n"
     },
     {
       "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
@@ -46,13 +142,108 @@
       "path": "/tmp/runtime-adv/edges/okdir/item.txt",
       "expected": "allow",
       "actual": "deny",
-      "mismatch_type": "unexpected_deny",
-      "violation_summary": null,
-      "notes": "{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"errno\":0,\"err_class\":\"ok\",\"err_class_source\":\"none\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26705}\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"applied\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":0,\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":26705}\nopen target: Operation not permitted\n"
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_edges.adv_path_edges.runtime.sb\",\"pid\":10634}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:path_alias",
+      "expectation_id": "adv:path_alias:alias-tmp",
+      "operation": "file-read*",
+      "path": "/tmp/runtime-adv/alias/allow.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":10636}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:path_alias",
+      "expectation_id": "adv:path_alias:alias-private",
+      "operation": "file-read*",
+      "path": "/private/tmp/runtime-adv/alias/allow.txt",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/path_alias.adv_path_alias.runtime.sb\",\"pid\":10637}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_simple_allow",
+      "expectation_id": "adv:mach_simple_allow:allow-cfprefsd",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_allow.adv_mach_simple_allow.runtime.sb\",\"pid\":10638}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_simple_variants",
+      "expectation_id": "adv:mach_simple_variants:allow-cfprefsd",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/mach_simple_variants.adv_mach_simple_variants.runtime.sb\",\"pid\":10640}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_local_literal",
+      "expectation_id": "adv:mach_local_literal:allow-cfprefsd-local",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_literal.adv_mach_local_literal.runtime.sb\",\"pid\":10642}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:mach_local_regex",
+      "expectation_id": "adv:mach_local_regex:allow-cfprefsd-local",
+      "operation": "mach-lookup",
+      "path": "com.apple.cfprefsd.agent",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/mach_local_regex.adv_mach_local_regex.runtime.sb\",\"pid\":10644}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:net_outbound_allow",
+      "expectation_id": "adv:net_outbound_allow:tcp-loopback",
+      "operation": "network-outbound",
+      "path": "127.0.0.1",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/net_outbound_allow.adv_net_outbound_allow.runtime.sb\",\"pid\":10646}\nsandbox_init failed: Operation not permitted\n"
+    },
+    {
+      "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5",
+      "profile_id": "adv:flow_divert_require_all_tcp",
+      "expectation_id": "adv:flow_divert_require_all_tcp:tcp-loopback",
+      "operation": "network-outbound",
+      "path": "127.0.0.1",
+      "expected": "allow",
+      "actual": "deny",
+      "mismatch_type": "apply_gate",
+      "violation_summary": "EPERM",
+      "notes": "sandbox initialization failed: Operation not permitted\n{\"tool\":\"sbpl-apply\",\"marker_schema_version\":1,\"stage\":\"apply\",\"mode\":\"sbpl\",\"api\":\"sandbox_init\",\"rc\":-1,\"errno\":1,\"errbuf\":\"Operation not permitted\",\"err_class\":\"errno_eperm\",\"err_class_source\":\"errno_only\",\"profile\":\"/Users/achyland/Desktop/VM-BRIDGE/SANDBOX_LORE/book/experiments/runtime-adversarial/out/runtime_profiles/flow_divert_require_all_tcp.adv_flow_divert_require_all_tcp.runtime.sb\",\"pid\":10648}\nsandbox_init failed: Operation not permitted\n"
     }
   ],
   "counts": {
-    "path_normalization": 2,
-    "unexpected_deny": 2
+    "apply_gate": 20
   }
 }
