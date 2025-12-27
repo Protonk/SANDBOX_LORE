@@ -1,71 +1,35 @@
-# Zero-knowledge guide to the macOS sandbox
+# Zero-knowledge guide to the macOS sandbox (Seatbelt)
 
-SANDBOX_LORE is a host-specific, local-only universe for understanding the macOS Seatbelt sandbox around 2024–2025. It fixes a single “world” (one Sonoma-era Mac) and builds a layered explanation of how sandbox profiles, compiled graphs, and runtime behavior fit together.
+SANDBOX_LORE is a host-bound, local-first synthetic textbook about the macOS Seatbelt sandbox, produced through a “zero-knowledge” loop of proposal and verification across humans and software agents. Agents propose structure, mappings, and explanations; the project accepts them only when they can be tied back to a small set of witnesses such as decoded binaries, stable tables, canonical profile digests, or controlled runtime observations. The project treats “plausible explanation” as a failure mode and builds a model where definitions, diagrams, tools, and worked examples are anchored in concrete artifacts and repeatable runs that a reader can regenerate and inspect. Hopefully, this protects the work from a common failure mode in systems security writing where structural facts, runtime behavior, and surrounding controls blend into a single plausible story.
 
-The project is designed to:
-- Fix a workable model of Seatbelt internals and the App Sandbox on this host.
-- Capture a stable vocabulary and concept graph tied to real artifacts.
-- Provide runnable, inspectable labs and experiments that can be regenerated locally.
+## End-to-end monitoring of a confounded, censored stack
 
-## SANDBOX_LORE
+On this host, Seatbelt mediates named Operations by evaluating compiled PolicyGraphs. SBPL is the source language used to express rules, but the system enforces compiled graph-based profiles. SANDBOX_LORE aims to make this lifecycle legible end to end: how operations and filters are named and identified on the host; how SBPL compiles into graph structure; how profiles stack and interact with dynamic mechanisms like sandbox extensions; and how the runtime reaches an allow/deny decision for a specific action. 
 
-At a high level, SANDBOX_LORE is a host-specific description of Seatbelt for a single macOS Sonoma machine, built in layers:
+Seatbelt sits in a stack; many failures that look like “sandbox denials” are produced elsewhere or produced earlier in the lifecycle. SANDBOX_LORE keeps several invariants close to the surface because they repeatedly decide what can be concluded on this host.
 
-- A **substrate** defining the world and the vocabulary the project is allowed to use. From this substrate we generate a fixed list of concepts.
-- A **concept inventory** and validation harness sit between theory and artifacts, tracking which evidence backs what ideas
-- **CARTON** – an intermediate representation between artifacts, concepts, and code which distributes machine-readable artifacts and tooling **into** vocabularies, op-tables, tag layouts, system-profile digests, and selected runtime/lifecycle manifests. 
+Stage matters. There is a meaningful difference between compile, apply/attach, process exec/bootstrap, and operation checks. An `EPERM` at apply time is an environment gate rather than a policy decision, and it must be modeled separately from decision-stage allow/deny.
 
-This allows us to build a **machine-readible resource** which is both regenerable from the repo and a host baseline and not dependent on any expertise of any particular agent, human or otherwise.
+Path strings are not stable. Filesystem and VFS canonicalization can make path-based expectations fail even when the profile looks correct at the string level, and the project treats canonicalization as something to be tested rather than assumed.
 
-## Host Baseline & Evidence Model
+Policy is layered. Effective outcomes are produced by a stack of profiles and extensions, and adjacent systems can dominate observed behavior. TCC, hardened runtime rules, and SIP/platform protections are treated as surrounding constraints that can impersonate “sandbox behavior” and must be accounted for in any behavioral case study.
 
-The project deliberately fixes a narrow but detailed world:
+## Where the project is today
 
-- **Host baseline**
-  - macOS Sonoma 14.4.1 (23E224), Apple Silicon.
-  - SIP enabled.
-  - Seatbelt as a TrustedBSD MACF module with SBPL-compiled, graph-based profiles.
+The textbook is written “about a world,” macOS Sonoma 14.4.1 (23E224) on Apple Silicon with SIP enabled. All mappings, vocabulary, decoded structures, and behavioral summaries in this repo are intended to be true of that baseline unless explicitly promoted with additional host coverage.
 
-- **Evidence priorities**
-  - Static artifacts on this host—compiled profiles, dyld cache slices, decoded PolicyGraphs, vocab tables, and mapping JSONs—are the primary external reality.
-  - The substrate docs under `book/substrate/` are assumed correct for this host unless the repo explicitly revises them.
-  - Runtime behavior, entitlements, extensions, and kernel-dispatch work are in progress and must carry explicit status: `ok`, `partial`, `brittle`, or `blocked`, never silently upgraded to fact.
+We have a credible static atlas of Seatbelt. This atlas has a host-derived operation and filter vocabulary that functions as the naming and ID spine for further work. It can decode and summarize real compiled profile blobs in terms of headers, operation tables, node/tag layouts for a meaningful subset, and pooled literal/regex data. A curated set of canonical system profiles serves as structural anchors: they are extracted, fingerprinted, decoded, and cross-checked enough to support downstream mapping and guardrail tests. The tooling reflects that posture by treating profile byte work, decoding, digesting, and structural validation as core infrastructure rather than ad hoc scripts.
 
-- **Two views of policy**
-  - SBPL and compiled profiles are treated as two views of the same policy; concepts are phrased so they make sense in both the language and the binary graph.
-  - Operation and Filter vocabularies live in versioned mapping files and must not be invented ad hoc or assumed stable across OS versions without an explicit mapping.
+The frontier is semantic closure: tying structure to meaning to runtime behavior with a small number of strong, repeatable witnesses. Runtime evidence exists but covers a narrow slice of the operation space and a narrow set of profile shapes. Apply-time gating on this host blocks naïve validation for some platform-derived profiles and some attachment identities, which means “just run the real system profile and observe” is not universally available. End-to-end lifecycle stories are present as scaffolding and partial experiments: the shape of the pipeline from entitlements and app metadata through parameterized policy and compiled layers to observed decisions is clear, but it is not yet a broadly reliable, promoted story across many entitlements and services. Some compiled-node payload fields remain intentionally under-interpreted where stable semantic witnesses are missing, and the project prefers bounded unknowns over guessed decoders.
 
-For a compact narrative of these assumptions and the surrounding ecosystem (TCC, hardened runtime, SIP), see:
+## Why this project exists
 
-- `book/substrate/Orientation.md` – architecture and policy lifecycle.
-- `book/substrate/Concepts.md` – core Seatbelt concepts and definitions.
+Seatbelt has many partial explanations in public: fragments of file formats, scattered reverse-engineering notes, and runtime anecdotes. SANDBOX_LORE is attempting to produce something different on purpose: a single inspectable account with enough internal wiring that it can notice when it stops being true. For security engineers, reverse-engineers, tool authors, and anyone who has to reason about macOS policy behavior under change, the value is a coherent model that can be diffed, regenerated, and extended rather than re-learned from scratch.
 
-## Repository Layout
+Because the model is expressed as both prose and machine-readable artifacts, it is also intended to be a substrate for tools and agents. The project’s long-term direction includes an API-shaped view of the textbook’s concepts so that automation can ask questions in the book’s terms and receive answers that are constrained by the host’s vocabulary, mappings, and witnesses.
 
-Detailed navigation and norms live in layered `AGENTS.md` files in each subtree.
+A host-extension pipeline is the forward-looking path that turns this from a one-off atlas into a comparative one. If additional hosts can be added by running a defined extraction and validation pipeline, the result becomes a versioned picture of how Seatbelt changes across releases: which operations and filters appear or vanish, how canonical profiles evolve structurally, and where lifecycle behavior shifts. The repo’s method is also part of its point: it is an attempt to show that humans and agents can converge on a high-fidelity, reusable technical resource without trading away falsifiability.
 
-- `book/`  
-  Textbook, labs, and tooling:
-  - Chapters and profiles that tell the sandbox story in human-readable form.
-  - Examples and experiments that serve as runnable labs and probes.
-  - API tooling for working with compiled profiles, runtime checks, and CARTON-backed mappings.
-  - Runtime evidence production via `book/api/runtime_tools` (plan-based runs and promotion packets).
-  - A graph layer (`book/graph/`) that holds the concept inventory, validation harness, and stable host-specific mappings that feed into CARTON.
+## How to approach the repo
 
-- `dumps/`  
-  Reverse-engineering artifacts for this macOS build. Some subtrees contain local-only host data. See `dumps/AGENTS.md` before running tools or adding files here.
-
-- `AGENTS.md`  
-  Project-wide guardrails for agents: host baseline, evidence priorities, and modeling constraints.
-
-- `book/substrate/`  
-  Orientation, Concepts, Appendix, Environment, and State; frozen theory of Seatbelt and its environment for this host.
-
-- `guidance/`  
-  Compressed context bundles for agents.
-
-- `status/`  
-  Meta-level assessments and audits
-
-- `troubles/`  
-  Records of crashes, decoding problems, runtime failures, and other issues that need follow-up.
+Start by adopting the project’s constraints: a fixed host baseline, a fixed vocabulary spine, and explicit evidence statuses. Read the substrate material to understand the project’s definitions and lifecycle model, then treat the concept inventory and witness artifacts as the source of truth about what is grounded versus what remains provisional on this host. When extending the work, prefer producing small boundary objects with clear stage labels and controls; that is the mechanism by which progress accumulates instead of resetting.

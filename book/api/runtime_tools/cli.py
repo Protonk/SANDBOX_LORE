@@ -1,6 +1,27 @@
 #!/usr/bin/env python3
 """
-Unified CLI for runtime tools.
+runtime_tools CLI entrypoint (service contract).
+
+This CLI is the stable "human and agent" interface to runtime_tools. It exposes:
+- Plan-based runs via `run --plan ...` (recommended for experiments).
+- Bundle lifecycle helpers (`validate-bundle`, `reindex-bundle`, `emit-promotion`).
+- Registry and plan introspection (`list-*`, `describe-*`, `*-lint`).
+- Legacy matrix-based helpers (normalize/cut/story/golden) for existing runtime
+  mapping workflows.
+
+The CLI delegates all plan execution and artifact IO to `book.api.runtime_tools.api`.
+It does not implement channel logic, locking, or bundle writing itself; those
+contracts are enforced by the library layer so non-CLI callers get identical
+behavior.
+
+Assumptions:
+- Commands are run from within the repo (or with paths resolvable against it).
+- Plan runs write into a bundle root that contains run-scoped directories
+  (`out/<run_id>/...`) and a `LATEST` pointer updated only after commit.
+
+Refusals:
+- The CLI does not guess promotability; strict promotion packet emission is an
+  explicit opt-in (`emit-promotion --require-promotable`).
 """
 
 from __future__ import annotations
@@ -35,8 +56,13 @@ def _default_runtime_results() -> Path:
 def run_command(args: argparse.Namespace) -> int:
     if args.plan:
         out_dir = args.out or args.plan.parent / "out"
-        channel = ChannelSpec(channel=args.channel, require_clean=(args.channel == "launchd_clean"))
-        runtime_api.run_plan(
+        channel = ChannelSpec(
+            channel=args.channel,
+            require_clean=(args.channel == "launchd_clean"),
+            lock_mode=args.lock_mode,
+            lock_timeout_seconds=args.lock_timeout_seconds,
+        )
+        bundle = runtime_api.run_plan(
             args.plan,
             out_dir,
             channel=channel,
@@ -44,8 +70,9 @@ def run_command(args: argparse.Namespace) -> int:
             only_scenarios=args.only_scenario,
             dry_run=args.dry,
         )
-        print(f"[+] wrote {out_dir}")
-        return 0
+        print(f"[+] wrote {bundle.out_dir}")
+        print(f"[+] updated {out_dir / 'LATEST'}")
+        return 0 if bundle.status not in {"failed"} else 1
     if args.dry:
         raise SystemExit("--dry requires --plan")
     out_dir = args.out or (BOOK_ROOT / "profiles" / "golden-triple")
@@ -155,7 +182,11 @@ def describe_profile_command(args: argparse.Namespace) -> int:
 
 
 def emit_promotion_command(args: argparse.Namespace) -> int:
-    packet = runtime_api.emit_promotion_packet(args.bundle, args.out)
+    packet = runtime_api.emit_promotion_packet(args.bundle, args.out, require_promotable=args.require_promotable)
+    promotability = packet.get("promotability") or {}
+    if not promotability.get("promotable_decision_stage"):
+        reasons = promotability.get("reasons") or []
+        print(f"[!] not promotable: {reasons}")
     print(f"[+] wrote {args.out}")
     return 0
 
@@ -213,6 +244,16 @@ def registry_lint_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def reindex_bundle_command(args: argparse.Namespace) -> int:
+    if args.repair and args.strict:
+        raise SystemExit("--repair and --strict are mutually exclusive")
+    if not args.repair and not args.strict:
+        raise SystemExit("must pass either --strict or --repair")
+    runtime_api.reindex_bundle(args.bundle, repair=args.repair)
+    print("[+] bundle ok" if args.strict else "[+] bundle reindexed")
+    return 0
+
+
 def run_all_command(args: argparse.Namespace) -> int:
     run = workflow.run_from_matrix(
         args.matrix,
@@ -235,6 +276,8 @@ def main(argv: list[str] | None = None) -> int:
     ap_run.add_argument("--matrix", type=Path, default=_default_matrix(), help="Path to expected_matrix.json")
     ap_run.add_argument("--out", type=Path, help="Output directory")
     ap_run.add_argument("--channel", type=str, default="direct", help="Channel (launchd_clean|direct)")
+    ap_run.add_argument("--lock-mode", type=str, default="fail", choices=["fail", "wait"], help="Bundle lock mode")
+    ap_run.add_argument("--lock-timeout-seconds", type=float, default=30.0, help="Bundle lock timeout (wait mode)")
     ap_run.add_argument("--only-profile", action="append", default=[], help="Limit to a profile_id (plan mode)")
     ap_run.add_argument("--only-scenario", action="append", default=[], help="Limit to an expectation_id (plan mode)")
     ap_run.add_argument("--dry", action="store_true", help="Validate/emit plan artifacts without running probes")
@@ -311,11 +354,18 @@ def main(argv: list[str] | None = None) -> int:
     ap_emit = sub.add_parser("emit-promotion", help="Emit a promotion packet from a run bundle.")
     ap_emit.add_argument("--bundle", type=Path, required=True, help="Run bundle output directory")
     ap_emit.add_argument("--out", type=Path, required=True, help="Output path for promotion packet")
+    ap_emit.add_argument("--require-promotable", action="store_true", help="Fail unless decision-stage promotable")
     ap_emit.set_defaults(func=emit_promotion_command)
 
     ap_validate = sub.add_parser("validate-bundle", help="Validate a run bundle artifact index.")
     ap_validate.add_argument("--bundle", type=Path, required=True, help="Run bundle output directory")
     ap_validate.set_defaults(func=validate_bundle_command)
+
+    ap_reindex = sub.add_parser("reindex-bundle", help="Verify or repair an artifact_index.json.")
+    ap_reindex.add_argument("--bundle", type=Path, required=True, help="Run bundle output directory")
+    ap_reindex.add_argument("--strict", action="store_true", help="Fail on missing/digest mismatch")
+    ap_reindex.add_argument("--repair", action="store_true", help="Recompute artifact_index digests/sizes")
+    ap_reindex.set_defaults(func=reindex_bundle_command)
 
     ap_status = sub.add_parser("status", help="Report runtime_tools environment readiness.")
     ap_status.set_defaults(func=status_command)

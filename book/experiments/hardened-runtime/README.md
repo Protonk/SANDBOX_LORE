@@ -21,7 +21,7 @@ python -m book.api.runtime_tools run \
 ```
 
 ## Outputs and how to read them
-The run emits artifacts under `book/experiments/hardened-runtime/out/`. Every JSON artifact carries a `schema_version`. The canonical entrypoint is the Artifact Index:
+The run emits artifacts under `book/experiments/hardened-runtime/out/<run_id>/` and updates `book/experiments/hardened-runtime/out/LATEST`. Every JSON artifact carries a `schema_version`. The canonical entrypoint is the Artifact Index:
 
 - `artifact_index.json` lists file paths, digests, schema versions, and producer metadata.
 - `run_manifest.json` records channel, world id, staging root, and apply-preflight context.

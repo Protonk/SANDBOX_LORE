@@ -1,131 +1,52 @@
 """
 Unified runtime tooling for the Sonoma baseline.
 
-This package consolidates:
-- Runtime observation/normalization helpers.
-- Runtime mapping builders + story adapters.
-- Derived projections and workflow helpers.
-- The runtime harness runner/golden generator.
+This package exposes a *public* repo-wide API surface for producing and consuming
+runtime evidence in a tier-disciplined way on this host baseline.
 
-Preferred imports:
-- from book.api.runtime_tools import core, harness, mapping, workflow, api
-- from book.api.runtime_tools.core import models, normalize, contract
-- from book.api.runtime_tools.api import run_plan, load_bundle, validate_bundle
-  (plan-based execution + artifact bundle handling).
-
-Keep top-level convenience exports intentionally small and stable.
+Stability contract:
+- The supported import surface is this package (`book.api.runtime_tools`).
+- The supported symbols are listed in `__all__` and documented in
+  `book/api/runtime_tools/PUBLIC_API.md`.
+- Submodules (e.g. `core/`, `harness/`, `mapping/`, `workflow.py`) exist for
+  internal implementation and legacy helpers, but they are not part of the
+  stable public API unless exported here.
 """
 
 from __future__ import annotations
 
-from . import api as api  # noqa: F401
-from . import cli as cli  # noqa: F401
-from . import core as core  # noqa: F401
-from . import harness as harness  # noqa: F401
-from . import mapping as mapping  # noqa: F401
-from . import workflow as workflow  # noqa: F401
-
-from .core.models import (  # noqa: F401
-    WORLD_ID,
-    RuntimeCut,
-    RuntimeObservation,
-    RuntimeRun,
-)
-from .core.normalize import (  # noqa: F401
-    derive_expectation_id,
-    make_scenario_id,
-    normalize_matrix,
-    normalize_matrix_paths,
-    normalize_metadata_results,
-    observation_to_dict,
-    write_matrix_observations,
-    write_metadata_observations,
-)
-from .mapping.story import (  # noqa: F401
-    build_story,
-    story_to_coverage,
-    story_to_signatures,
-    write_story,
-)
-from .mapping.views import (  # noqa: F401
-    CalloutOracleRow,
-    CalloutVsSyscallRow,
-    build_callout_oracle,
-    build_callout_vs_syscall,
-)
-from .workflow import (  # noqa: F401
-    build_cut,
-    promote_cut,
-    run_from_matrix,
-)
-from .api import (  # noqa: F401
+from .api import (
     RunBundle,
     ValidationResult,
-    run_plan,
-    load_bundle,
-    validate_bundle,
     emit_promotion_packet,
+    load_bundle,
+    open_bundle_unverified,
+    reindex_bundle,
+    run_plan,
     runtime_status,
+    validate_bundle,
 )
-from .inventory import (  # noqa: F401
-    build_runtime_inventory,
-)
-from .plan import (  # noqa: F401
-    load_plan,
-    plan_digest,
-    list_plans,
-    lint_plan,
-)
-from .registry import (  # noqa: F401
-    list_registries,
-    list_probes,
+from .channels.spec import ChannelName, ChannelSpec, LockMode
+from .inventory import build_runtime_inventory
+from .plan import lint_plan, list_plans, load_plan, plan_digest
+from .registry import (
+    lint_registry,
     list_profiles,
+    list_probes,
+    list_registries,
     resolve_probe,
     resolve_profile,
-    lint_registry,
 )
 
 __all__ = [
-    "cli",
-    "core",
-    "harness",
-    "mapping",
-    "workflow",
-    "api",
-    "WORLD_ID",
-    "RuntimeCut",
-    "RuntimeObservation",
-    "RuntimeRun",
-    "derive_expectation_id",
-    "make_scenario_id",
-    "normalize_matrix",
-    "normalize_matrix_paths",
-    "normalize_metadata_results",
-    "observation_to_dict",
-    "write_matrix_observations",
-    "write_metadata_observations",
-    "build_story",
-    "write_story",
-    "story_to_coverage",
-    "story_to_signatures",
-    "CalloutOracleRow",
-    "CalloutVsSyscallRow",
-    "build_callout_oracle",
-    "build_callout_vs_syscall",
-    "build_cut",
-    "promote_cut",
-    "run_from_matrix",
-    "RunBundle",
-    "ValidationResult",
-    "run_plan",
-    "load_bundle",
-    "validate_bundle",
-    "emit_promotion_packet",
-    "runtime_status",
-    "build_runtime_inventory",
+    # Channels
+    "ChannelName",
+    "ChannelSpec",
+    "LockMode",
+    # Plan/registry discovery
     "load_plan",
-    "plan_digest",
     "list_plans",
+    "plan_digest",
     "lint_plan",
     "list_registries",
     "list_probes",
@@ -133,4 +54,16 @@ __all__ = [
     "resolve_probe",
     "resolve_profile",
     "lint_registry",
+    # Execution + bundle lifecycle
+    "RunBundle",
+    "ValidationResult",
+    "run_plan",
+    "load_bundle",
+    "validate_bundle",
+    "emit_promotion_packet",
+    "runtime_status",
+    "open_bundle_unverified",
+    "reindex_bundle",
+    # Inventory (repo sweep)
+    "build_runtime_inventory",
 ]

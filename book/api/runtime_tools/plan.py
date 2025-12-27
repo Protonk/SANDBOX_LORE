@@ -1,8 +1,27 @@
 """
-Plan-data loader and compiler for runtime tools.
+runtime_tools plan-data (service contract).
 
-Plans reference registry profile/probe descriptors and are compiled into
-ProfileSpec entries for the shared harness runner.
+This module defines the stable "plan JSON" surface for plan-based runtime runs.
+Plans are data: a plan points at a registry, chooses a set of profiles, and
+declares which lanes (scenario/baseline/oracle) are expected.
+
+Responsibilities:
+- Load and validate `plan.json` (schema + required keys).
+- Compute a deterministic plan digest used for drift detection.
+- Compile a plan into `workflow.ProfileSpec` objects consumed by the shared
+  harness runner (no experiment imports required).
+- Provide discovery (`list-plans`) and linting (`plan-lint`) helpers for agents.
+
+Assumptions / guarantees:
+- Registry data is loaded via `book.api.runtime_tools.registry` and is expected
+  to be stable, data-driven JSON (probe/profile descriptors).
+- Compilation is deterministic: the same plan + registry inputs yield the same
+  profile list and the same plan digest.
+
+Non-goals / refusals:
+- This module does not execute probes, stage the repo, or manage channels.
+- This module does not interpret sandbox semantics; it only wires probe/profile
+  descriptors into a runnable harness configuration.
 """
 
 from __future__ import annotations

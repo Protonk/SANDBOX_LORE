@@ -1,0 +1,40 @@
+{
+  "data": {
+    "correlation_id": "5B50CF87-0926-4B57-B850-C0503366E536",
+    "deny_lines": [],
+    "duration_ms": null,
+    "end": "2025-12-27 10:57:42",
+    "last": null,
+    "layer_attribution": {
+      "seatbelt": "observer_only"
+    },
+    "log_error": null,
+    "log_rc": 0,
+    "log_stderr": "",
+    "log_stdout": "Timestamp                       (process)[PID]    ",
+    "log_truncated": false,
+    "mode": "show",
+    "observed_deny": false,
+    "observed_lines": 1,
+    "observer_schema_version": 1,
+    "pid": 70830,
+    "plan_id": "frida-testing:ej-frida",
+    "predicate": "((eventMessage CONTAINS[c] \"Sandbox: ProbeService_minimal(70830)\") OR ((eventMessage CONTAINS[c] \"deny\") AND (eventMessage CONTAINS[c] \"70830\")))",
+    "process_name": "ProbeService_minimal",
+    "row_id": "frida-testing:ej-frida.9b94fb08-cf29-482f-ab86-dac6995b8801.capabilities_snapshot",
+    "start": "2025-12-27 10:57:38"
+  },
+  "generated_at_unix_ms": 1766861860540,
+  "kind": "sandbox_log_observer_report",
+  "result": {
+    "errno": null,
+    "error": null,
+    "exit_code": 0,
+    "normalized_outcome": null,
+    "ok": true,
+    "rc": null,
+    "stderr": null,
+    "stdout": null
+  },
+  "schema_version": 2
+}

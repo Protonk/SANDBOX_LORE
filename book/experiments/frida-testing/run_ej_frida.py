@@ -40,6 +40,26 @@ def write_json(path: Path, payload: Dict[str, object]) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True))
 
 
+def load_frida_config(args: argparse.Namespace, repo_root: Path) -> Optional[Dict[str, object]]:
+    if args.frida_config and args.frida_config_path:
+        raise SystemExit("use only one of --frida-config or --frida-config-path")
+    config = None
+    if args.frida_config:
+        try:
+            config = json.loads(args.frida_config)
+        except Exception as exc:
+            raise SystemExit(f"invalid --frida-config JSON: {exc}")
+    elif args.frida_config_path:
+        config_path = path_utils.ensure_absolute(args.frida_config_path, repo_root)
+        try:
+            config = json.loads(config_path.read_text())
+        except Exception as exc:
+            raise SystemExit(f"invalid --frida-config-path JSON: {exc}")
+    if config is not None and not isinstance(config, dict):
+        raise SystemExit("frida config must be a JSON object")
+    return config
+
+
 def find_pids_by_name(process_name: str) -> Tuple[List[int], Optional[str]]:
     try:
         out = subprocess.check_output(["pgrep", "-x", process_name], text=True).strip()
@@ -190,6 +210,8 @@ def main() -> int:
         help="Probe args (pass after --probe-args)",
     )
     ap.add_argument("--script", required=True, help="Frida JS hook script")
+    ap.add_argument("--frida-config", help="JSON object for script configure()")
+    ap.add_argument("--frida-config-path", help="Path to JSON file for script configure()")
     ap.add_argument(
         "--out-dir",
         default="book/experiments/frida-testing/out",
@@ -225,6 +247,7 @@ def main() -> int:
 
     repo_root = path_utils.find_repo_root()
     world_id = baseline_world_id(repo_root)
+    base_frida_config = load_frida_config(args, repo_root)
 
     if args.profile_id == "fully_injectable" and not args.ack_risk:
         raise SystemExit("fully_injectable requires --ack-risk fully_injectable")
@@ -314,7 +337,11 @@ def main() -> int:
             attach_meta["pid_error"] = attach_meta.get("pid_error") or "pid_not_found"
             return
         attach_meta["pid"] = pid
-        config = {"selftest_path": selftest_path} if selftest_path else None
+        config = dict(base_frida_config) if base_frida_config else {}
+        if selftest_path:
+            config["selftest_path"] = selftest_path
+        if not config:
+            config = None
         frida_capture = FridaCapture(
             pid=pid,
             script_path=script_path,

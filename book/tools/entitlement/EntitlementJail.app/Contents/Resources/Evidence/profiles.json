@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-27T00:25:12Z",
+  "generated_at": "2025-12-27T17:22:52Z",
   "profiles": [
     {
       "bundle_id": "com.yourteam.entitlement-jail.ProbeService_bookmarks_app_scope",
@@ -68,6 +68,43 @@
         "probe",
         "rwx_legacy",
         "sandbox"
+      ]
+    },
+    {
+      "bundle_id": "com.yourteam.entitlement-jail.ProbeService_fully_injectable_extensions",
+      "entitlements": {
+        "com.apple.security.app-sandbox": true,
+        "com.apple.security.cs.allow-dyld-environment-variables": true,
+        "com.apple.security.cs.allow-jit": true,
+        "com.apple.security.cs.allow-unsigned-executable-memory": true,
+        "com.apple.security.cs.disable-library-validation": true,
+        "com.apple.security.get-task-allow": true,
+        "com.apple.security.temporary-exception.sbpl": [
+          "(allow file-issue-extension (extension-class \"com.apple.app-sandbox.read\"))",
+          "(allow file-issue-extension (extension-class \"com.apple.app-sandbox.read-write\"))"
+        ]
+      },
+      "entitlements_error": null,
+      "kind": "probe",
+      "label": "fully injectable extensions",
+      "profile_id": "fully_injectable_extensions",
+      "risk_reasons": [
+        "temporary_exception_sbpl",
+        "allow_dyld_env",
+        "allow_jit",
+        "allow_unsigned_exec_mem"
+      ],
+      "risk_tier": 2,
+      "service_name": "ProbeService_fully_injectable_extensions",
+      "tags": [
+        "disable_library_validation",
+        "dyld_env",
+        "get_task_allow",
+        "jit",
+        "probe",
+        "rwx_legacy",
+        "sandbox",
+        "temporary_exception_sbpl"
       ]
     },
     {

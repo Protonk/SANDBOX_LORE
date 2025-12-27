@@ -11,6 +11,8 @@ Current artifacts:
 - `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set; includes `metadata`.
 - `runtime_signatures.json` — small IR derived from promotion packets plus `field2_ir.json`, summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/promote_from_packets.py` and folded into CARTON.
 - `runtime_callout_oracle.json` — sandbox_check oracle lane derived from seatbelt-callout markers (decision-only; not syscall outcomes).
+- `packet_set.json` — ordered list of promotion packets considered for promotion on this host baseline (config input).
+- `promotion_receipt.json` — machine-readable receipt showing which packets were used/rejected (and why) for the current promoted cut.
 - CARTON: see `book/api/carton/CARTON.json` for frozen hashes/paths of the runtime mappings/IR that are included in CARTON for Sonoma 14.4.1.
 
 Status update (launchd clean run):
@@ -33,5 +35,5 @@ Role in the substrate:
 
 Regeneration:
 - Rerun runtime-checks and runtime-adversarial via the runtime_tools launchd-clean channel so promotion packets are emitted; generators refuse to promote decision-stage artifacts unless the run manifest says `channel=launchd_clean`.
-- Run `book/graph/mappings/runtime/promote_from_packets.py` to rebuild `runtime_cuts/`, `runtime_story`, `runtime_coverage`, `runtime_callout_oracle`, and `runtime_signatures.json` from promotion packets.
+- Run `book/graph/mappings/runtime/promote_from_packets.py` (defaults to `packet_set.json`) to rebuild `runtime_cuts/`, `runtime_story`, `runtime_coverage`, `runtime_callout_oracle`, and `runtime_signatures.json` from promotion packets, and to refresh `promotion_receipt.json`.
 - Rerun `book/graph/mappings/runtime/generate_lifecycle.py` after updating lifecycle probes in `book/graph/concepts/validation/out/lifecycle/` to refresh `lifecycle.json` and `lifecycle_traces/`.

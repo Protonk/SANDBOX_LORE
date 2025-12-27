@@ -134,6 +134,8 @@
 - Follow-up: use fs_op_funnel.js when mapping downloads path-class failures; add path_substr config if log volume grows.
 
 - Action: updated book/api/entitlementjail/wait.py to create missing FIFO and avoid blocking opens for attach waits.
+- Action: added sandbox_export_isolation.js and --frida-config support in run_ej_frida.py for per-export libsystem_sandbox isolation.
+- Action: added sandbox_export_isolation input configs under book/experiments/frida-testing/out/inputs/sandbox_export_isolation/.
 
 - Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id get-task-allow --probe-id probe_catalog --script book/experiments/frida-testing/hooks/smoke.js --skip-capabilities --service-name ProbeService_get-task-allow
 - Result: command timed out; frida attach failed with "refused to load frida-agent, or terminated during injection"; run_xpc/manifest not written.
@@ -235,6 +237,128 @@
 - Artifacts: book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/manifest.json; book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/ej/run_xpc.json; book/experiments/frida-testing/out/31a9fdb4-2192-4988-8dc5-3a23aef6e181/frida/events.jsonl.
 - Status: partial (sandbox_check still not observed even with gated probe).
 - Follow-up: consider other probes likely to call sandbox_check, or treat userland sandbox_check as absent for these probes.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_check.json --no-prepare-selftest
+- Result: run-xpc failed at session start; XPC connection invalidated; open_session_failed with NSCocoaErrorDomain Code 4099 (error 159 - Sandbox restriction); no Frida attach (pid_candidates empty; frida meta/events missing).
+- Artifacts: book/experiments/frida-testing/out/61944b88-78c8-480d-8176-320210f47308/manifest.json; book/experiments/frida-testing/out/61944b88-78c8-480d-8176-320210f47308/ej/run_xpc.json.
+- Status: blocked (Codex harness sandbox blocked EntitlementJail XPC session).
+- Follow-up: rerun from a normal Terminal session outside the harness; confirm EntitlementJail service launch before attaching.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_check_bulk.json --no-prepare-selftest
+- Result: run-xpc failed at session start; XPC connection invalidated; open_session_failed with NSCocoaErrorDomain Code 4099 (error 159 - Sandbox restriction); no Frida attach (pid_candidates empty; frida meta/events missing).
+- Artifacts: book/experiments/frida-testing/out/068168b1-205a-4b94-8a82-aeb3cac0888e/manifest.json; book/experiments/frida-testing/out/068168b1-205a-4b94-8a82-aeb3cac0888e/ej/run_xpc.json.
+- Status: blocked (Codex harness sandbox blocked EntitlementJail XPC session).
+- Follow-up: rerun from a normal Terminal session outside the harness; confirm EntitlementJail service launch before attaching.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_check.json --no-prepare-selftest
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_export_isolation installed sandbox_check hook; no sandbox-export-call events observed (probe_catalog does not call sandbox_check); session detached on process exit.
+- Artifacts: book/experiments/frida-testing/out/0c400964-8763-4fcf-ae93-8ffc25866b70/manifest.json; book/experiments/frida-testing/out/0c400964-8763-4fcf-ae93-8ffc25866b70/ej/run_xpc.json; book/experiments/frida-testing/out/0c400964-8763-4fcf-ae93-8ffc25866b70/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed in probe_catalog).
+- Follow-up: run probe_id sandbox_check with --operation <sandbox-op> to exercise the hook.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_check_bulk.json --no-prepare-selftest
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_export_isolation installed sandbox_check_bulk hook; no sandbox-export-call events observed (probe_catalog does not call sandbox_check_bulk); session detached on process exit.
+- Artifacts: book/experiments/frida-testing/out/71cbf237-598d-40cf-aeac-60d7f538fde2/manifest.json; book/experiments/frida-testing/out/71cbf237-598d-40cf-aeac-60d7f538fde2/ej/run_xpc.json; book/experiments/frida-testing/out/71cbf237-598d-40cf-aeac-60d7f538fde2/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed in probe_catalog).
+- Follow-up: run probe_id sandbox_check with --operation <sandbox-op> to exercise the hook.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id sandbox_check --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_check.json --no-prepare-selftest --probe-args --operation file-read-data --path /etc/hosts
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_check hook installed; sandbox-export-call observed with args ["file-read-data", "/etc/hosts"] and ret_i32 1; session detached on process exit.
+- Artifacts: book/experiments/frida-testing/out/2960d7bd-3555-402d-b301-93001d0988d5/manifest.json; book/experiments/frida-testing/out/2960d7bd-3555-402d-b301-93001d0988d5/ej/run_xpc.json; book/experiments/frida-testing/out/2960d7bd-3555-402d-b301-93001d0988d5/frida/events.jsonl.
+- Status: partial (sandbox_check hook captured a call under the dedicated probe).
+- Follow-up: use sandbox_export_isolation.js with sandbox_extension_* exports to identify hooks that install cleanly; consider a dedicated extension-issue probe if no calls are observed.
+
+- Action: escalation request was rejected by the harness policy; extension isolation runs proceeded in the default sandbox.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id sandbox_check --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_issue_file.json --no-prepare-selftest --probe-args --operation file-read-data --path /etc/hosts
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_extension_issue_file hook installed; no sandbox-export-call events observed during sandbox_check probe.
+- Artifacts: book/experiments/frida-testing/out/359239c3-a0d2-4750-9ed8-dad37b29eabc/manifest.json; book/experiments/frida-testing/out/359239c3-a0d2-4750-9ed8-dad37b29eabc/ej/run_xpc.json; book/experiments/frida-testing/out/359239c3-a0d2-4750-9ed8-dad37b29eabc/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed).
+- Follow-up: try a dedicated extension issue/consume/release selftest to force calls.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id sandbox_check --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_issue_mach.json --no-prepare-selftest --probe-args --operation file-read-data --path /etc/hosts
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_extension_issue_mach hook installed; no sandbox-export-call events observed during sandbox_check probe.
+- Artifacts: book/experiments/frida-testing/out/7feb2f90-026e-41b6-a89a-0950680b6103/manifest.json; book/experiments/frida-testing/out/7feb2f90-026e-41b6-a89a-0950680b6103/ej/run_xpc.json; book/experiments/frida-testing/out/7feb2f90-026e-41b6-a89a-0950680b6103/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed).
+- Follow-up: try a dedicated extension issue/consume/release selftest to force calls.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id sandbox_check --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_consume.json --no-prepare-selftest --probe-args --operation file-read-data --path /etc/hosts
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_extension_consume hook installed; no sandbox-export-call events observed during sandbox_check probe.
+- Artifacts: book/experiments/frida-testing/out/f20641ce-63e7-40b6-9d38-3659fcb1246a/manifest.json; book/experiments/frida-testing/out/f20641ce-63e7-40b6-9d38-3659fcb1246a/ej/run_xpc.json; book/experiments/frida-testing/out/f20641ce-63e7-40b6-9d38-3659fcb1246a/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed).
+- Follow-up: try a dedicated extension issue/consume/release selftest to force calls.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id sandbox_check --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_release.json --no-prepare-selftest --probe-args --operation file-read-data --path /etc/hosts
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_extension_release hook installed; no sandbox-export-call events observed during sandbox_check probe.
+- Artifacts: book/experiments/frida-testing/out/99e1a08e-f60e-49cf-a2b3-61b9d4d89b3a/manifest.json; book/experiments/frida-testing/out/99e1a08e-f60e-49cf-a2b3-61b9d4d89b3a/ej/run_xpc.json; book/experiments/frida-testing/out/99e1a08e-f60e-49cf-a2b3-61b9d4d89b3a/frida/events.jsonl.
+- Status: partial (hook installed without XPC error; no calls observed).
+- Follow-up: try a dedicated extension issue/consume/release selftest to force calls.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable --ack-risk fully_injectable --probe-id probe_catalog --script book/experiments/frida-testing/hooks/sandbox_extension_selftest.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_selftest.json
+- Result: run-xpc ok; attach succeeded (pid_matches_service_pid true); sandbox_extension_selftest attempted sandbox_extension_issue_file for /etc/hosts with extension com.apple.app-sandbox.read; issue failed errno 1; no consume/release.
+- Artifacts: book/experiments/frida-testing/out/3866d936-2c9b-4322-a361-60821ab25ae9/manifest.json; book/experiments/frida-testing/out/3866d936-2c9b-4322-a361-60821ab25ae9/ej/run_xpc.json; book/experiments/frida-testing/out/3866d936-2c9b-4322-a361-60821ab25ae9/frida/events.jsonl.
+- Status: partial (extension issue attempt captured; issuance blocked).
+- Follow-up: try alternate extension classes or paths if a successful issuance witness is required.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id fs_op --script book/experiments/frida-testing/hooks/smoke.js --probe-args --op create --path-class tmp --target specimen_file --name ej_extension.txt
+- Result: run-xpc ok; file_path under entitlement-jail-harness/fs-op/<run_dir>/ej_extension.txt; follow-up check found the file missing (ENOENT), suggesting run_dir cleanup before extension issue.
+- Artifacts: book/experiments/frida-testing/out/d5968de8-abeb-459f-9cc1-10bb4e997522/manifest.json; book/experiments/frida-testing/out/d5968de8-abeb-459f-9cc1-10bb4e997522/ej/run_xpc.json; book/experiments/frida-testing/out/d5968de8-abeb-459f-9cc1-10bb4e997522/frida/events.jsonl.
+- Status: partial (fs_op create ok; harness file not persistent across runs).
+- Follow-up: avoid run_dir paths for extension issuance; use allow-unsafe paths or a persistent harness location.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_issue_file.json --probe-args --op issue_file --class com.apple.app-sandbox.read --path /Users/achyland/Library/Containers/com.yourteam.entitlement-jail.ProbeService_fully_injectable_extensions/Data/tmp/entitlement-jail-harness/fs-op/17FFE3AC-7E23-4F47-88D1-E4274612F75E/ej_extension.txt
+- Result: issue_failed (errno 2, No such file or directory); sandbox_export_isolation installed hook but no token returned.
+- Artifacts: book/experiments/frida-testing/out/976bbb19-00f8-4590-b48f-062dae251f11/manifest.json; book/experiments/frida-testing/out/976bbb19-00f8-4590-b48f-062dae251f11/ej/run_xpc.json; book/experiments/frida-testing/out/976bbb19-00f8-4590-b48f-062dae251f11/frida/events.jsonl.
+- Status: partial (probe ran; harness path missing at issue time).
+- Follow-up: use allow-unsafe path or a persistent file.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id fs_op --script book/experiments/frida-testing/hooks/smoke.js --probe-args --op create --path-class tmp --target base --name ej_extension.txt
+- Result: op_failed (errno 21, Is a directory); file_path resolves to tmp dir; --name ignored for target base.
+- Artifacts: book/experiments/frida-testing/out/a26f236f-166c-4321-817c-a995f951a426/manifest.json; book/experiments/frida-testing/out/a26f236f-166c-4321-817c-a995f951a426/ej/run_xpc.json; book/experiments/frida-testing/out/a26f236f-166c-4321-817c-a995f951a426/frida/events.jsonl.
+- Status: blocked (target base does not accept name for create).
+- Follow-up: use direct path with --allow-unsafe-path or a different target.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id fs_op --script book/experiments/frida-testing/hooks/smoke.js --probe-args --op create --path-class tmp --target harness_dir --name ej_extension.txt
+- Result: op_failed (errno 21, Is a directory); file_path resolves to harness_dir; --name ignored for target harness_dir.
+- Artifacts: book/experiments/frida-testing/out/8a907c5b-79af-4e6e-9381-b1485c6dd6bf/manifest.json; book/experiments/frida-testing/out/8a907c5b-79af-4e6e-9381-b1485c6dd6bf/ej/run_xpc.json; book/experiments/frida-testing/out/8a907c5b-79af-4e6e-9381-b1485c6dd6bf/frida/events.jsonl.
+- Status: blocked (target harness_dir does not accept name for create).
+- Follow-up: use direct path with --allow-unsafe-path or a different target.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_issue_file.json --probe-args --op issue_file --class com.apple.app-sandbox.read --path /etc/hosts --allow-unsafe-path
+- Result: run-xpc ok; token returned in stdout; sandbox_export_isolation captured sandbox_extension_issue_file call with args [com.apple.app-sandbox.read, /etc/hosts].
+- Artifacts: book/experiments/frida-testing/out/0bc59fb9-6ef6-448b-8fb2-29a403913b3e/manifest.json; book/experiments/frida-testing/out/0bc59fb9-6ef6-448b-8fb2-29a403913b3e/ej/run_xpc.json; book/experiments/frida-testing/out/0bc59fb9-6ef6-448b-8fb2-29a403913b3e/frida/events.jsonl.
+- Status: partial (issue succeeds; consume/release still failing).
+- Follow-up: test consume/release token semantics.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id minimal --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_consume.json --probe-args --op consume --token 09902b0d559a762b7462af2cc6cf44908dbb1c9fb9fd47f42acf882467b52886
+- Result: consume_failed (errno 22, Invalid argument); Frida attach denied (PermissionDeniedError).
+- Artifacts: book/experiments/frida-testing/out/9b94fb08-cf29-482f-ab86-dac6995b8801/manifest.json; book/experiments/frida-testing/out/9b94fb08-cf29-482f-ab86-dac6995b8801/ej/run_xpc.json; book/experiments/frida-testing/out/9b94fb08-cf29-482f-ab86-dac6995b8801/frida/events.jsonl.
+- Status: blocked (minimal profile not injectable; consume failed).
+- Follow-up: retry with full token and/or fully_injectable_extensions to capture calls.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id minimal --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_consume.json --probe-args --op consume --token '09902b0d559a762b7462af2cc6cf44908dbb1c9fb9fd47f42acf882467b52886;00;00000000;00000000;00000000;000000000000001a;com.apple.app-sandbox.read;01;01000011;0000000004bce707;01;/private/etc/hosts'
+- Result: consume_failed (errno 17, File exists); Frida attach denied (PermissionDeniedError).
+- Artifacts: book/experiments/frida-testing/out/3636ac13-d8f1-43c8-a2fb-e15ea5f7dab5/manifest.json; book/experiments/frida-testing/out/3636ac13-d8f1-43c8-a2fb-e15ea5f7dab5/ej/run_xpc.json; book/experiments/frida-testing/out/3636ac13-d8f1-43c8-a2fb-e15ea5f7dab5/frida/events.jsonl.
+- Status: blocked (minimal profile not injectable; consume failed).
+- Follow-up: capture consume under fully_injectable_extensions to see return behavior.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id minimal --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_release.json --probe-args --op release --token '09902b0d559a762b7462af2cc6cf44908dbb1c9fb9fd47f42acf882467b52886;00;00000000;00000000;00000000;000000000000001a;com.apple.app-sandbox.read;01;01000011;0000000004bce707;01;/private/etc/hosts'
+- Result: release_failed (errno 22, Invalid argument); Frida attach denied (PermissionDeniedError).
+- Artifacts: book/experiments/frida-testing/out/1d2adecd-8894-488a-96b7-5eedd27593ca/manifest.json; book/experiments/frida-testing/out/1d2adecd-8894-488a-96b7-5eedd27593ca/ej/run_xpc.json; book/experiments/frida-testing/out/1d2adecd-8894-488a-96b7-5eedd27593ca/frida/events.jsonl.
+- Status: blocked (minimal profile not injectable; release failed).
+- Follow-up: retry release under fully_injectable_extensions.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_consume.json --probe-args --op consume --token '09902b0d559a762b7462af2cc6cf44908dbb1c9fb9fd47f42acf882467b52886;00;00000000;00000000;00000000;000000000000001a;com.apple.app-sandbox.read;01;01000011;0000000004bce707;01;/private/etc/hosts'
+- Result: consume_failed (errno 17, File exists); sandbox_export_isolation captured sandbox_extension_consume call (ret_i32 2).
+- Artifacts: book/experiments/frida-testing/out/15d6f3ec-da32-4fe9-a765-407c3990ac82/manifest.json; book/experiments/frida-testing/out/15d6f3ec-da32-4fe9-a765-407c3990ac82/ej/run_xpc.json; book/experiments/frida-testing/out/15d6f3ec-da32-4fe9-a765-407c3990ac82/frida/events.jsonl.
+- Status: partial (consume call captured; outcome still failing).
+- Follow-up: determine whether EEXIST indicates token already consumed or path already allowed.
+
+- Command: ./.venv/bin/python book/experiments/frida-testing/run_ej_frida.py --profile-id fully_injectable_extensions --ack-risk fully_injectable_extensions --probe-id sandbox_extension --script book/experiments/frida-testing/hooks/sandbox_export_isolation.js --frida-config-path book/experiments/frida-testing/out/inputs/sandbox_export_isolation/sandbox_extension_release.json --probe-args --op release --token '09902b0d559a762b7462af2cc6cf44908dbb1c9fb9fd47f42acf882467b52886;00;00000000;00000000;00000000;000000000000001a;com.apple.app-sandbox.read;01;01000011;0000000004bce707;01;/private/etc/hosts'
+- Result: release_failed (errno 22, Invalid argument); sandbox_export_isolation captured sandbox_extension_release call (ret_i32 -1).
+- Artifacts: book/experiments/frida-testing/out/335f82f3-3a70-4070-818d-22a7d3bfe3cd/manifest.json; book/experiments/frida-testing/out/335f82f3-3a70-4070-818d-22a7d3bfe3cd/ej/run_xpc.json; book/experiments/frida-testing/out/335f82f3-3a70-4070-818d-22a7d3bfe3cd/frida/events.jsonl.
+- Status: partial (release call captured; outcome still failing).
+- Follow-up: clarify token semantics with EntitlementJail maintainers.
 
 ## Entry template
 - Command:

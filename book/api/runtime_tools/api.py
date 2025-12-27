@@ -1,17 +1,37 @@
 """
-Public runtime_tools API surface for plan-based execution.
+runtime_tools service API (plan execution + bundle lifecycle).
+
+This module is the orchestration layer for plan-based runtime runs. It is
+responsible for:
+- Running a plan (`plan.json`) under a specified channel (direct or launchd_clean).
+- Producing a run-scoped bundle directory at `out/<run_id>/...`.
+- Writing lifecycle markers (`run_status.json`, `run_manifest.json`) and a stable
+  commit barrier (`artifact_index.json`).
+- Updating `out/LATEST` only after the run-scoped bundle is committed so callers
+  can safely resolve a bundle root to the newest committed run.
+
+This module assumes the plan-data and registries are valid inputs. It guarantees
+that bundle state is explicit (`run_status.state` is in_progress/complete/failed),
+that strict bundle loads verify digests, and that promotion packet emission
+enforces clean-channel gating rather than trusting caller intent.
+
+This module deliberately refuses to "repair" bundles implicitly; repairs are
+explicit (`reindex_bundle`) and leave an audit log. Mapping generation remains
+outside runtime_tools; the contract boundary is the promotion packet.
 """
 
 from __future__ import annotations
 
-import hashlib
+import contextlib
+import fcntl
 import json
 import os
 import shutil
+import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Iterator, Optional, Tuple
 
 from book.api import path_utils
 from . import baseline as baseline_lane
@@ -24,11 +44,19 @@ from .core import normalize
 from .core import models
 from .channels import ChannelSpec
 from .channels import launchd_clean
+from .artifacts.reader import load_bundle_index_strict as _load_bundle_index_strict
+from .artifacts.reader import open_bundle_unverified as _open_bundle_unverified
+from .artifacts.reader import resolve_bundle_dir as _resolve_bundle_dir_impl
+from .artifacts.writer import write_artifact_index as _write_artifact_index_impl
+from .artifacts.writer import write_json_atomic as _write_json_atomic
+from .artifacts.writer import write_text_atomic as _write_text_atomic
+from .promotion_packet import emit_promotion_packet as _emit_promotion_packet_impl
 
 
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
 
 RUN_MANIFEST_SCHEMA_VERSION = "runtime-tools.run_manifest.v0.1"
+RUN_STATUS_SCHEMA_VERSION = "runtime-tools.run_status.v0.1"
 SUMMARY_SCHEMA_VERSION = "runtime-tools.summary.v0.1"
 RUNTIME_RESULTS_SCHEMA_VERSION = "runtime-tools.runtime_results.v0.1"
 ARTIFACT_INDEX_SCHEMA_VERSION = "runtime-tools.artifact_index.v0.1"
@@ -38,6 +66,7 @@ BASELINE_SCHEMA_VERSION = "runtime-tools.baseline_results.v0.1"
 STATUS_SCHEMA_VERSION = "runtime-tools.status.v0.1"
 
 CORE_ARTIFACTS = [
+    "run_status.json",
     "run_manifest.json",
     "apply_preflight.json",
     "baseline_results.json",
@@ -65,17 +94,6 @@ class RunBundle:
 class ValidationResult:
     ok: bool
     errors: list[str]
-
-
-def _sha256_path(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        while True:
-            chunk = fh.read(1024 * 1024)
-            if not chunk:
-                break
-            h.update(chunk)
-    return h.hexdigest()
 
 
 def _run_id() -> str:
@@ -117,8 +135,84 @@ def runtime_status(repo_root: Optional[Path] = None) -> Dict[str, Any]:
 
 
 def _write_json(path: Path, payload: Dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2))
+    _write_json_atomic(path, payload)
+
+
+def _write_text(path: Path, text: str) -> None:
+    _write_text_atomic(path, text)
+
+
+@contextlib.contextmanager
+def _bundle_lock(
+    lock_path: Path,
+    *,
+    mode: str,
+    timeout_seconds: float,
+) -> Iterator[None]:
+    # Bundle-root lock used to prevent concurrent writers corrupting `LATEST` or
+    # interleaving artifact writes under the same output root.
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    fh = lock_path.open("a+")
+    fh.seek(0)
+    fh.truncate()
+    fh.write(f"pid={os.getpid()}\n")
+    fh.flush()
+
+    start = time.monotonic()
+    if mode not in {"fail", "wait"}:
+        raise ValueError(f"invalid lock_mode: {mode!r}")
+    while True:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            break
+        except BlockingIOError:
+            if mode == "fail":
+                raise RuntimeError(f"runtime_tools bundle is locked: {lock_path}")
+            if time.monotonic() - start >= timeout_seconds:
+                raise RuntimeError(f"runtime_tools lock timeout after {timeout_seconds}s: {lock_path}")
+            time.sleep(0.05)
+    try:
+        yield None
+    finally:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_UN)
+        finally:
+            fh.close()
+
+
+def _resolve_bundle_dir(bundle_dir: Path) -> Tuple[Path, Optional[str]]:
+    # Bundle roots resolve via `out/LATEST` to the most recent committed run.
+    return _resolve_bundle_dir_impl(bundle_dir, repo_root=REPO_ROOT)
+
+
+def _write_run_status(
+    *,
+    out_dir: Path,
+    run_id: str,
+    world_id: str,
+    channel: str,
+    plan_id: str,
+    plan_digest: str,
+    state: str,
+    error: Optional[str] = None,
+    failure_stage: Optional[str] = None,
+) -> Path:
+    payload: Dict[str, Any] = {
+        "schema_version": RUN_STATUS_SCHEMA_VERSION,
+        "run_id": run_id,
+        "world_id": world_id,
+        "channel": channel,
+        "plan_id": plan_id,
+        "plan_digest": plan_digest,
+        "state": state,
+        "writer_pid": os.getpid(),
+        "updated_at_unix": time.time(),
+        "error": error,
+        "failure_stage": failure_stage,
+    }
+    path = out_dir / "run_status.json"
+    _write_json(path, payload)
+    return path
 
 
 def _annotate_runtime_results(path: Path, schema_version: str, run_id: str) -> None:
@@ -255,50 +349,24 @@ def _write_artifact_index(
     world_id: str,
     schema_version: str,
     expected_artifacts: Optional[Iterable[str]] = None,
+    *,
+    status_override: Optional[str] = None,
 ) -> Path:
-    artifacts = []
-    missing = []
-    for name in expected_artifacts or CORE_ARTIFACTS:
-        path = out_dir / name
-        if not path.exists():
-            missing.append(path_utils.to_repo_relative(path, repo_root=REPO_ROOT))
-            continue
-        artifacts.append(
-            {
-                "path": path_utils.to_repo_relative(path, repo_root=REPO_ROOT),
-                "file_size": path.stat().st_size,
-                "sha256": _sha256_path(path),
-                "schema_version": _extract_schema_version(path),
-            }
-        )
-    index = {
-        "schema_version": schema_version,
-        "run_id": run_id,
-        "world_id": world_id,
-        "artifacts": artifacts,
-        "missing": missing,
-        "status": "ok" if not missing else "partial",
-    }
-    path = out_dir / "artifact_index.json"
-    _write_json(path, index)
-    return path
+    # The artifact index is the bundle commit barrier (written last).
+    return _write_artifact_index_impl(
+        out_dir,
+        run_id=run_id,
+        world_id=world_id,
+        schema_version=schema_version,
+        expected_artifacts=expected_artifacts or CORE_ARTIFACTS,
+        repo_root=REPO_ROOT,
+        status_override=status_override,
+    )
 
 
 def load_bundle(out_dir: Path) -> Dict[str, Any]:
-    out_dir = path_utils.ensure_absolute(out_dir, REPO_ROOT)
-    index_path = out_dir / "artifact_index.json"
-    if not index_path.exists():
-        raise FileNotFoundError(f"missing artifact_index.json in {out_dir}")
-    index = json.loads(index_path.read_text())
-    artifacts = index.get("artifacts") or []
-    for entry in artifacts:
-        path = path_utils.ensure_absolute(Path(entry["path"]), REPO_ROOT)
-        if not path.exists():
-            raise FileNotFoundError(f"missing artifact: {entry['path']}")
-        expected = entry.get("sha256")
-        if expected and _sha256_path(path) != expected:
-            raise ValueError(f"digest mismatch for {entry['path']}")
-    return index
+    # Strict loader: refuses in-progress bundles and verifies digests.
+    return _load_bundle_index_strict(out_dir, repo_root=REPO_ROOT)
 
 
 def validate_bundle(out_dir: Path) -> ValidationResult:
@@ -307,7 +375,7 @@ def validate_bundle(out_dir: Path) -> ValidationResult:
         index = load_bundle(out_dir)
     except Exception as exc:
         return ValidationResult(ok=False, errors=[str(exc)])
-    if index.get("status") not in {"ok", "partial"}:
+    if index.get("status") not in {"ok", "partial", "failed"}:
         errors.append(f"unexpected bundle status: {index.get('status')}")
     missing = index.get("missing") or []
     if missing:
@@ -315,50 +383,72 @@ def validate_bundle(out_dir: Path) -> ValidationResult:
     return ValidationResult(ok=not errors, errors=errors)
 
 
-def emit_promotion_packet(out_dir: Path, out_path: Path) -> Dict[str, Any]:
-    out_dir = path_utils.ensure_absolute(out_dir, REPO_ROOT)
-    packet = {
-        "schema_version": "runtime-tools.promotion_packet.v0.1",
-        "run_manifest": path_utils.to_repo_relative(out_dir / "run_manifest.json", repo_root=REPO_ROOT),
-        "expected_matrix": path_utils.to_repo_relative(out_dir / "expected_matrix.json", repo_root=REPO_ROOT),
-        "runtime_results": path_utils.to_repo_relative(out_dir / "runtime_results.json", repo_root=REPO_ROOT),
-        "runtime_events": path_utils.to_repo_relative(out_dir / "runtime_events.normalized.json", repo_root=REPO_ROOT),
-        "baseline_results": path_utils.to_repo_relative(out_dir / "baseline_results.json", repo_root=REPO_ROOT),
-        "oracle_results": path_utils.to_repo_relative(out_dir / "oracle_results.json", repo_root=REPO_ROOT),
-        "mismatch_packets": path_utils.to_repo_relative(out_dir / "mismatch_packets.jsonl", repo_root=REPO_ROOT),
-        "summary": path_utils.to_repo_relative(out_dir / "summary.json", repo_root=REPO_ROOT),
+def open_bundle_unverified(out_dir: Path) -> Dict[str, Any]:
+    return _open_bundle_unverified(out_dir, repo_root=REPO_ROOT)
+
+
+def reindex_bundle(out_dir: Path, *, repair: bool = False) -> Dict[str, Any]:
+    bundle_dir, _run_id = _resolve_bundle_dir(out_dir)
+    bundle_dir = path_utils.ensure_absolute(bundle_dir, REPO_ROOT)
+
+    if not repair:
+        _ = load_bundle(bundle_dir)
+        return {"status": "ok", "bundle_dir": str(path_utils.to_repo_relative(bundle_dir, repo_root=REPO_ROOT))}
+
+    status_path = bundle_dir / "run_status.json"
+    if status_path.exists():
+        state = (json.loads(status_path.read_text()).get("state") or "").strip()
+        if state == "in_progress":
+            raise RuntimeError("refusing to repair an in-progress bundle")
+
+    manifest_path = bundle_dir / "run_manifest.json"
+    run_id = None
+    world_id = None
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text())
+        run_id = manifest.get("run_id")
+        world_id = manifest.get("world_id")
+    run_id = run_id or _run_id() or "unknown"
+    world_id = world_id or models.WORLD_ID
+
+    before = open_bundle_unverified(bundle_dir)
+    _write_artifact_index(
+        bundle_dir,
+        run_id,
+        world_id,
+        ARTIFACT_INDEX_SCHEMA_VERSION,
+        expected_artifacts=[p for p in CORE_ARTIFACTS if (bundle_dir / p).exists()],
+    )
+    after = open_bundle_unverified(bundle_dir)
+    repair_log = {
+        "schema_version": "runtime-tools.repair_log.v0.1",
+        "bundle_dir": str(path_utils.to_repo_relative(bundle_dir, repo_root=REPO_ROOT)),
+        "repaired_at_unix": time.time(),
+        "before": {
+            "missing": before.get("missing"),
+            "digest_mismatches": before.get("digest_mismatches"),
+        },
+        "after": {
+            "missing": after.get("missing"),
+            "digest_mismatches": after.get("digest_mismatches"),
+        },
     }
-    impact_map = out_dir / "impact_map.json"
-    if impact_map.exists():
-        packet["impact_map"] = path_utils.to_repo_relative(impact_map, repo_root=REPO_ROOT)
-    out_path = path_utils.ensure_absolute(out_path, REPO_ROOT)
-    _write_json(out_path, packet)
-    return packet
+    _write_json(bundle_dir / "repair_log.json", repair_log)
+    return {"status": "repaired", "bundle_dir": str(path_utils.to_repo_relative(bundle_dir, repo_root=REPO_ROOT))}
+
+
+def emit_promotion_packet(out_dir: Path, out_path: Path, *, require_promotable: bool = False) -> Dict[str, Any]:
+    # Packet emission enforces clean-channel gating and records promotability.
+    return _emit_promotion_packet_impl(
+        out_dir,
+        out_path,
+        repo_root=REPO_ROOT,
+        require_promotable=require_promotable,
+    )
 
 
 def build_runtime_inventory(repo_root: Path, out_path: Path) -> Dict[str, Any]:
     return runtime_inventory.build_runtime_inventory(repo_root=repo_root, out_path=out_path)
-
-
-def _extract_schema_version(path: Path) -> Optional[str]:
-    if path.suffix == ".jsonl":
-        for line in path.read_text().splitlines():
-            if not line.strip():
-                continue
-            try:
-                row = json.loads(line)
-            except Exception:
-                return None
-            return row.get("schema_version")
-        return None
-    if path.suffix == ".json":
-        try:
-            doc = json.loads(path.read_text())
-        except Exception:
-            return None
-        if isinstance(doc, dict):
-            return doc.get("schema_version")
-    return None
 
 
 def run_plan(
@@ -371,192 +461,288 @@ def run_plan(
     dry_run: bool = False,
 ) -> RunBundle:
     channel_spec = channel if isinstance(channel, ChannelSpec) else ChannelSpec(channel=channel)
-    if (
-        channel_spec.channel == "launchd_clean"
-        and os.environ.get("SANDBOX_LORE_LAUNCHD_CLEAN") != "1"
-        and not dry_run
-    ):
-        launchd_clean.run_via_launchctl(
-            plan_path=plan_path,
-            out_dir=out_dir,
-            channel_spec=channel_spec,
-            only_profiles=only_profiles,
-            only_scenarios=only_scenarios,
-        )
-        run_manifest = path_utils.ensure_absolute(out_dir, REPO_ROOT) / "run_manifest.json"
-        artifact_index = path_utils.ensure_absolute(out_dir, REPO_ROOT) / "artifact_index.json"
-        status = "ok"
-        if (path_utils.ensure_absolute(out_dir, REPO_ROOT) / "summary.json").exists():
-            status = json.loads((path_utils.ensure_absolute(out_dir, REPO_ROOT) / "summary.json").read_text()).get("status") or "ok"
-        return RunBundle(out_dir=path_utils.ensure_absolute(out_dir, REPO_ROOT), status=status, run_manifest=run_manifest, artifact_index=artifact_index)
-
     plan_doc = plan_loader.load_plan(plan_path)
     run_id = _run_id()
     world_id = plan_doc.get("world_id") or models.WORLD_ID
-    out_dir = path_utils.ensure_absolute(out_dir, REPO_ROOT)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_root = path_utils.ensure_absolute(out_dir, REPO_ROOT)
+    out_root.mkdir(parents=True, exist_ok=True)
     channel_name = _channel_from_env(channel_spec.channel)
 
-    schema_versions = plan_doc.get("schema_versions") or {}
-    run_manifest_schema = schema_versions.get("run_manifest", RUN_MANIFEST_SCHEMA_VERSION)
-    summary_schema = schema_versions.get("summary", SUMMARY_SCHEMA_VERSION)
-    runtime_results_schema = schema_versions.get("runtime_results", RUNTIME_RESULTS_SCHEMA_VERSION)
-    artifact_index_schema = schema_versions.get("artifact_index", ARTIFACT_INDEX_SCHEMA_VERSION)
-    mismatch_schema = schema_versions.get("mismatch_packet", MISMATCH_PACKET_SCHEMA_VERSION)
-    oracle_schema = schema_versions.get("oracle", ORACLE_SCHEMA_VERSION)
-    baseline_schema = schema_versions.get("baseline", BASELINE_SCHEMA_VERSION)
-
-    lanes = plan_doc.get("lanes") or {}
-    effective_lanes = dict(lanes)
-    if dry_run:
-        effective_lanes.update({"scenario": False, "baseline": False, "oracle": False})
-    profiles = plan_loader.compile_profiles(
-        plan_doc,
-        only_profiles=only_profiles,
-        only_scenarios=only_scenarios,
-    )
-    if not profiles:
-        raise RuntimeError("plan resolved to zero profiles")
-
-    apply_preflight_doc = None
-    apply_preflight_profile = plan_doc.get("apply_preflight_profile")
-    if apply_preflight_profile and not dry_run:
-        profile_path = path_utils.ensure_absolute(Path(apply_preflight_profile), REPO_ROOT)
-        runner_path = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_runner"
-        apply_preflight_doc = apply_preflight.run_apply_preflight(
-            world_id=world_id,
-            profile_path=profile_path,
-            runner_path=runner_path,
-        )
-        apply_preflight_doc["schema_version"] = "runtime-tools.apply_preflight.v0.1"
-        _write_json(out_dir / "apply_preflight.json", apply_preflight_doc)
-
-    run_manifest = _write_run_manifest(
-        out_dir=out_dir,
-        world_id=world_id,
-        run_id=run_id,
-        channel=channel_name,
-        plan_id=plan_doc["plan_id"],
-        plan_digest=plan_loader.plan_digest(plan_doc),
-        schema_version=run_manifest_schema,
-        apply_preflight_doc={"path": "apply_preflight.json", "record": apply_preflight_doc}
-        if apply_preflight_doc
-        else None,
-        dry_run=dry_run,
-    )
-
-    if effective_lanes.get("scenario", True):
-        run = workflow.run_profiles(profiles, out_dir, world_id=world_id)
-        expected_matrix_path = out_dir / "expected_matrix.json"
-        expected_matrix_path.write_text((out_dir / "expected_matrix.generated.json").read_text())
-
-        runtime_results_path = out_dir / "runtime_results.json"
-        _annotate_runtime_results(runtime_results_path, runtime_results_schema, run_id)
-
-        normalize.write_matrix_observations(
-            expected_matrix_path,
-            runtime_results_path,
-            out_dir / "runtime_events.normalized.json",
-            world_id=world_id,
-            run_id=run_id,
+    # Critical section: we serialize writers at the bundle root.
+    # The lock protects run directory creation and the `LATEST` pointer update.
+    lock_path = out_root / ".runtime_tools.lock"
+    lock_ctx: contextlib.AbstractContextManager[None]
+    if channel_spec.lock:
+        lock_ctx = _bundle_lock(
+            lock_path,
+            mode=channel_spec.lock_mode,
+            timeout_seconds=float(channel_spec.lock_timeout_seconds),
         )
     else:
-        matrix_doc = workflow.build_matrix(world_id, profiles, out_dir / "sb_build")
-        (out_dir / "expected_matrix.generated.json").write_text(json.dumps(matrix_doc, indent=2))
-        (out_dir / "expected_matrix.json").write_text((out_dir / "expected_matrix.generated.json").read_text())
+        lock_ctx = contextlib.nullcontext()
 
-    if effective_lanes.get("baseline", True):
-        baseline_doc = baseline_lane.build_baseline_results(
+    with lock_ctx:
+        if (
+            channel_spec.channel == "launchd_clean"
+            and os.environ.get("SANDBOX_LORE_LAUNCHD_CLEAN") != "1"
+            and not dry_run
+        ):
+            # Clean-channel runs must start from an unsandboxed process context.
+            # We stage the repo, invoke a fresh worker via launchd, and sync the
+            # staged `out/<run_id>/...` bundle back into the repo output root.
+            launchd_clean.run_via_launchctl(
+                plan_path=plan_path,
+                out_dir=out_root,
+                channel_spec=channel_spec,
+                only_profiles=only_profiles,
+                only_scenarios=only_scenarios,
+                run_id=run_id,
+            )
+            run_dir = out_root / run_id
+            run_manifest = run_dir / "run_manifest.json"
+            artifact_index = run_dir / "artifact_index.json"
+            status = "failed"
+            if (run_dir / "summary.json").exists():
+                status = json.loads((run_dir / "summary.json").read_text()).get("status") or "failed"
+            return RunBundle(out_dir=run_dir, status=status, run_manifest=run_manifest, artifact_index=artifact_index)
+
+        run_dir = out_root / run_id
+        if run_dir.exists():
+            raise RuntimeError(f"run_dir already exists: {run_dir}")
+        run_dir.mkdir(parents=True, exist_ok=False)
+
+        schema_versions = plan_doc.get("schema_versions") or {}
+        run_manifest_schema = schema_versions.get("run_manifest", RUN_MANIFEST_SCHEMA_VERSION)
+        summary_schema = schema_versions.get("summary", SUMMARY_SCHEMA_VERSION)
+        runtime_results_schema = schema_versions.get("runtime_results", RUNTIME_RESULTS_SCHEMA_VERSION)
+        artifact_index_schema = schema_versions.get("artifact_index", ARTIFACT_INDEX_SCHEMA_VERSION)
+        mismatch_schema = schema_versions.get("mismatch_packet", MISMATCH_PACKET_SCHEMA_VERSION)
+        oracle_schema = schema_versions.get("oracle", ORACLE_SCHEMA_VERSION)
+        baseline_schema = schema_versions.get("baseline", BASELINE_SCHEMA_VERSION)
+
+        lanes = plan_doc.get("lanes") or {}
+        effective_lanes = dict(lanes)
+        if dry_run:
+            effective_lanes.update({"scenario": False, "baseline": False, "oracle": False})
+
+        profiles = plan_loader.compile_profiles(
+            plan_doc,
+            only_profiles=only_profiles,
+            only_scenarios=only_scenarios,
+        )
+        if not profiles:
+            raise RuntimeError("plan resolved to zero profiles")
+
+        plan_id = plan_doc["plan_id"]
+        plan_digest = plan_loader.plan_digest(plan_doc)
+
+        # First durable marker: record that the run has started and is writing.
+        _write_run_status(
+            out_dir=run_dir,
+            run_id=run_id,
+            world_id=world_id,
+            channel=channel_name,
+            plan_id=plan_id,
+            plan_digest=plan_digest,
+            state="in_progress",
+        )
+
+        error: Optional[str] = None
+        failure_stage: Optional[str] = None
+        apply_preflight_doc = None
+        run_manifest_path = run_dir / "run_manifest.json"
+        run_manifest = run_manifest_path
+        try:
+            apply_preflight_profile = plan_doc.get("apply_preflight_profile")
+            if apply_preflight_profile and not dry_run:
+                profile_path = path_utils.ensure_absolute(Path(apply_preflight_profile), REPO_ROOT)
+                runner_path = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_runner"
+                apply_preflight_doc = apply_preflight.run_apply_preflight(
+                    world_id=world_id,
+                    profile_path=profile_path,
+                    runner_path=runner_path,
+                )
+                apply_preflight_doc["schema_version"] = "runtime-tools.apply_preflight.v0.1"
+                _write_json(run_dir / "apply_preflight.json", apply_preflight_doc)
+
+            run_manifest = _write_run_manifest(
+                out_dir=run_dir,
+                world_id=world_id,
+                run_id=run_id,
+                channel=channel_name,
+                plan_id=plan_id,
+                plan_digest=plan_digest,
+                schema_version=run_manifest_schema,
+                apply_preflight_doc={"path": "apply_preflight.json", "record": apply_preflight_doc}
+                if apply_preflight_doc
+                else None,
+                dry_run=dry_run,
+            )
+
+            if effective_lanes.get("scenario", True):
+                _ = workflow.run_profiles(profiles, run_dir, world_id=world_id)
+                expected_matrix_path = run_dir / "expected_matrix.json"
+                expected_matrix_path.write_text((run_dir / "expected_matrix.generated.json").read_text())
+
+                runtime_results_path = run_dir / "runtime_results.json"
+                _annotate_runtime_results(runtime_results_path, runtime_results_schema, run_id)
+
+                normalize.write_matrix_observations(
+                    expected_matrix_path,
+                    runtime_results_path,
+                    run_dir / "runtime_events.normalized.json",
+                    world_id=world_id,
+                    run_id=run_id,
+                )
+            else:
+                matrix_doc = workflow.build_matrix(world_id, profiles, run_dir / "sb_build")
+                (run_dir / "expected_matrix.generated.json").write_text(json.dumps(matrix_doc, indent=2))
+                (run_dir / "expected_matrix.json").write_text((run_dir / "expected_matrix.generated.json").read_text())
+
+            if effective_lanes.get("baseline", True):
+                baseline_doc = baseline_lane.build_baseline_results(
+                    world_id,
+                    profiles=[{"profile_id": p.profile_id, "probes": p.probes} for p in profiles],
+                    run_id=run_id,
+                )
+                baseline_doc["schema_version"] = baseline_schema
+                _write_json(run_dir / "baseline_results.json", baseline_doc)
+
+            if effective_lanes.get("oracle", True):
+                _write_oracle_results(
+                    run_dir / "runtime_events.normalized.json",
+                    world_id,
+                    run_dir / "oracle_results.json",
+                )
+                oracle_doc = json.loads((run_dir / "oracle_results.json").read_text())
+                oracle_doc["schema_version"] = oracle_schema
+                _write_json(run_dir / "oracle_results.json", oracle_doc)
+
+            mismatch_packets = []
+            if effective_lanes.get("scenario", True) and (run_dir / "mismatch_summary.json").exists():
+                mismatch_packets = mismatch_lane.emit_packets(
+                    mismatch_summary=run_dir / "mismatch_summary.json",
+                    events_path=run_dir / "runtime_events.normalized.json",
+                    baseline_results=run_dir / "baseline_results.json",
+                    run_manifest=run_manifest,
+                    out_path=run_dir / "mismatch_packets.jsonl",
+                )
+            if mismatch_packets:
+                stamped = []
+                for row in mismatch_packets:
+                    row = dict(row)
+                    row["schema_version"] = mismatch_schema
+                    stamped.append(row)
+                (run_dir / "mismatch_packets.jsonl").write_text(
+                    "\n".join(json.dumps(p, sort_keys=True) for p in stamped) + "\n"
+                )
+            elif not (run_dir / "mismatch_packets.jsonl").exists():
+                (run_dir / "mismatch_packets.jsonl").write_text("")
+
+            if (run_dir / "mismatch_summary.json").exists():
+                mismatch_summary_doc = json.loads((run_dir / "mismatch_summary.json").read_text())
+            else:
+                mismatch_summary_doc = {
+                    "world_id": world_id,
+                    "generated_by": "book/api/runtime_tools/api.py",
+                    "mismatches": [],
+                    "counts": {},
+                }
+                _write_json(run_dir / "mismatch_summary.json", mismatch_summary_doc)
+        except Exception as exc:
+            # Failure path must still leave a readable bundle:
+            # emit empty mismatch artifacts so consumers don't crash on missing files.
+            error = str(exc)
+            failure_stage = "exception"
+            mismatch_summary_doc = {
+                "world_id": world_id,
+                "generated_by": "book/api/runtime_tools/api.py",
+                "mismatches": [],
+                "counts": {},
+                "error": error,
+            }
+            _write_json(run_dir / "mismatch_summary.json", mismatch_summary_doc)
+            if not (run_dir / "mismatch_packets.jsonl").exists():
+                (run_dir / "mismatch_packets.jsonl").write_text("")
+
+        status = "ok" if not mismatch_summary_doc.get("mismatches") else "partial"
+        if error:
+            status = "failed"
+        if dry_run and not error:
+            status = "dry"
+
+        scenario_count = sum(len(p.probes) for p in profiles)
+        _write_summary(
+            world_id=world_id,
+            run_id=run_id,
+            plan_id=plan_id,
+            plan_digest=plan_digest,
+            channel=channel_name,
+            lanes=effective_lanes,
+            expected_profiles=[p.profile_id for p in profiles],
+            profile_count=len(profiles),
+            scenario_count=scenario_count,
+            mismatch_summary=mismatch_summary_doc,
+            status=status,
+            out_json=run_dir / "summary.json",
+            out_md=run_dir / "summary.md",
+            schema_version=summary_schema,
+            dry_run=dry_run,
+        )
+
+        expected_artifacts = [
+            "run_status.json",
+            "run_manifest.json",
+            "mismatch_summary.json",
+            "mismatch_packets.jsonl",
+            "summary.json",
+            "summary.md",
+        ]
+        if effective_lanes.get("scenario", True):
+            expected_artifacts.extend(
+                [
+                    "expected_matrix.generated.json",
+                    "expected_matrix.json",
+                    "runtime_results.json",
+                    "runtime_events.normalized.json",
+                ]
+            )
+        else:
+            expected_artifacts.extend(
+                [
+                    "expected_matrix.generated.json",
+                    "expected_matrix.json",
+                ]
+            )
+        if apply_preflight_doc:
+            expected_artifacts.append("apply_preflight.json")
+        if effective_lanes.get("baseline", True):
+            expected_artifacts.append("baseline_results.json")
+        if effective_lanes.get("oracle", True):
+            expected_artifacts.append("oracle_results.json")
+
+        # Commit sequence (order matters):
+        # 1) finalize run_status.json
+        # 2) write artifact_index.json (bundle commit barrier)
+        # 3) update out/LATEST pointer
+        _write_run_status(
+            out_dir=run_dir,
+            run_id=run_id,
+            world_id=world_id,
+            channel=channel_name,
+            plan_id=plan_id,
+            plan_digest=plan_digest,
+            state="complete" if status not in {"failed"} else "failed",
+            error=error,
+            failure_stage=failure_stage,
+        )
+        artifact_index = _write_artifact_index(
+            run_dir,
+            run_id,
             world_id,
-            profiles=[{"profile_id": p.profile_id, "probes": p.probes} for p in profiles],
-            run_id=run_id,
+            artifact_index_schema,
+            expected_artifacts,
+            status_override="failed" if status == "failed" else None,
         )
-        baseline_doc["schema_version"] = baseline_schema
-        _write_json(out_dir / "baseline_results.json", baseline_doc)
-
-    if effective_lanes.get("oracle", True):
-        _write_oracle_results(out_dir / "runtime_events.normalized.json", world_id, out_dir / "oracle_results.json")
-        oracle_doc = json.loads((out_dir / "oracle_results.json").read_text())
-        oracle_doc["schema_version"] = oracle_schema
-        _write_json(out_dir / "oracle_results.json", oracle_doc)
-
-    mismatch_packets = []
-    if effective_lanes.get("scenario", True) and (out_dir / "mismatch_summary.json").exists():
-        mismatch_packets = mismatch_lane.emit_packets(
-            mismatch_summary=out_dir / "mismatch_summary.json",
-            events_path=out_dir / "runtime_events.normalized.json",
-            baseline_results=out_dir / "baseline_results.json",
-            run_manifest=run_manifest,
-            out_path=out_dir / "mismatch_packets.jsonl",
-        )
-    if mismatch_packets:
-        # Stamp schema version per packet.
-        stamped = []
-        for row in mismatch_packets:
-            row = dict(row)
-            row["schema_version"] = mismatch_schema
-            stamped.append(row)
-        (out_dir / "mismatch_packets.jsonl").write_text(
-            "\n".join(json.dumps(p, sort_keys=True) for p in stamped) + "\n"
-        )
-    elif not (out_dir / "mismatch_packets.jsonl").exists():
-        (out_dir / "mismatch_packets.jsonl").write_text("")
-
-    if (out_dir / "mismatch_summary.json").exists():
-        mismatch_summary_doc = json.loads((out_dir / "mismatch_summary.json").read_text())
-    else:
-        mismatch_summary_doc = {
-            "world_id": world_id,
-            "generated_by": "book/api/runtime_tools/api.py",
-            "mismatches": [],
-            "counts": {},
-        }
-        _write_json(out_dir / "mismatch_summary.json", mismatch_summary_doc)
-    status = "ok" if not mismatch_summary_doc.get("mismatches") else "partial"
-    if dry_run:
-        status = "dry"
-
-    scenario_count = sum(len(p.probes) for p in profiles)
-    _write_summary(
-        world_id=world_id,
-        run_id=run_id,
-        plan_id=plan_doc["plan_id"],
-        plan_digest=plan_loader.plan_digest(plan_doc),
-        channel=channel_name,
-        lanes=effective_lanes,
-        expected_profiles=[p.profile_id for p in profiles],
-        profile_count=len(profiles),
-        scenario_count=scenario_count,
-        mismatch_summary=mismatch_summary_doc,
-        status=status,
-        out_json=out_dir / "summary.json",
-        out_md=out_dir / "summary.md",
-        schema_version=summary_schema,
-        dry_run=dry_run,
-    )
-
-    expected_artifacts = [
-        "run_manifest.json",
-        "mismatch_summary.json",
-        "mismatch_packets.jsonl",
-        "summary.json",
-        "summary.md",
-    ]
-    if effective_lanes.get("scenario", True) or dry_run:
-        expected_artifacts.extend(
-            [
-                "expected_matrix.generated.json",
-                "expected_matrix.json",
-                "runtime_results.json",
-                "runtime_events.normalized.json",
-            ]
-        )
-    if apply_preflight_doc:
-        expected_artifacts.append("apply_preflight.json")
-    if effective_lanes.get("baseline", True):
-        expected_artifacts.append("baseline_results.json")
-    if effective_lanes.get("oracle", True):
-        expected_artifacts.append("oracle_results.json")
-
-    artifact_index = _write_artifact_index(out_dir, run_id, world_id, artifact_index_schema, expected_artifacts)
-    return RunBundle(out_dir=out_dir, status=status, run_manifest=run_manifest, artifact_index=artifact_index)
+        _write_text(out_root / "LATEST", f"{run_id}\n")
+        return RunBundle(out_dir=run_dir, status=status, run_manifest=run_manifest, artifact_index=artifact_index)

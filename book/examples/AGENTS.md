@@ -1,6 +1,7 @@
 # AGENTS
 
 This directory contains **16 standalone examples**. They fall into two broad groups:
+> Some examples are ported from 2011-era code; validate them on a specific world_id before generalizing any behavior.
 
 - **Sandbox behavior probes** – run code under (or next to) the sandbox to see how specific operations behave.
 - **Profile + regex tooling** – compile, extract, disassemble, and visualize sandbox profiles and their regex tables.

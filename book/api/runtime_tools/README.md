@@ -1,203 +1,67 @@
 # runtime_tools
 
-Unified runtime tooling for the Sonoma baseline (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`). This package merges normalization, mapping builders, projections, workflow helpers, and the runtime harness runner/golden generator into one documented surface. It replaces `book/api/runtime` and `book/api/runtime_harness`.
+Unified runtime evidence tooling for the Sonoma baseline (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`).
 
-- **Plan-based execution:** run plans through the shared `run_plan`/`run` entrypoint and the launchd clean channel.
-- **CLI:** `python -m book.api.runtime_tools <run|normalize|cut|story|golden|promote|mismatch|run-all|status|list-plans|describe-plan|plan-lint|registry-lint|list-registries|list-probes|list-profiles|describe-probe|describe-profile|emit-promotion|validate-bundle> ...`
-- **Python (preferred):** import subpackages from `book.api.runtime_tools` (`core`, `mapping`, `harness`, `workflow`, `api`).
-- **Native markers:** C/Swift helpers live under `book/api/runtime_tools/native/`.
+For agents, the two core ideas are:
+- **Plan-data in** (`book/experiments/**/plan.json` + registry JSON), no experiment imports required.
+- **Promotion packets out** (`promotion_packet.json`), which become the only supported input to mapping promotion and runtime consumers.
 
-See `book/api/README.md` for higher-level routing and deprecation notes.
+Reference contract/spec: `book/api/runtime_tools/SPEC.md`.
+Public API surface: `book/api/runtime_tools/PUBLIC_API.md`.
 
-## Quickstart (plan-based, no experiment imports)
+## Common CLI commands (agent-friendly)
 
 ```sh
+# 1) Discover and lint plan-data (no execution).
 python -m book.api.runtime_tools list-plans
 python -m book.api.runtime_tools plan-lint --plan book/experiments/hardened-runtime/plan.json
+python -m book.api.runtime_tools registry-lint --registry hardened-runtime
+
+# 2) Run via the clean channel (decision-stage lane).
 python -m book.api.runtime_tools run \
   --plan book/experiments/hardened-runtime/plan.json \
   --channel launchd_clean \
   --out book/experiments/hardened-runtime/out
+
+# 3) Validate and emit a promotion packet.
 python -m book.api.runtime_tools validate-bundle --bundle book/experiments/hardened-runtime/out
 python -m book.api.runtime_tools emit-promotion \
   --bundle book/experiments/hardened-runtime/out \
-  --out book/experiments/hardened-runtime/out/promotion_packet.json
+  --out book/experiments/hardened-runtime/out/promotion_packet.json \
+  --require-promotable
+
+# 4) Promote into runtime mappings (mapping layer stays outside runtime_tools).
 python book/graph/mappings/runtime/promote_from_packets.py \
   --packets book/experiments/hardened-runtime/out/promotion_packet.json \
   --out book/graph/mappings/runtime
 ```
 
-## CLI
+## Concepts (minimal)
 
-Runtime harness commands (matrix-based):
+**Lanes**
+- `scenario`: decision-stage run under the applied profile; produces `runtime_results.json` and `runtime_events.normalized.json`.
+- `baseline`: run the same probe inputs without applying a policy; used for attribution (ambient vs profile-shaped outcomes).
+- `oracle`: separate, explicitly weaker lane produced from callout/oracle views; never implies syscall observation.
 
-```sh
-# Generate golden decodes/expectations/traces from runtime-checks outputs.
-python -m book.api.runtime_tools golden \
-  --matrix book/experiments/runtime-checks/out/expected_matrix.json \
-  --runtime-results book/experiments/runtime-checks/out/runtime_results.json
+**Clean channel gating**
+- Decision-stage evidence is only treated as promotable when the run manifest indicates `channel=launchd_clean` and apply-preflight succeeded.
+- `emit-promotion --require-promotable` fails fast if the bundle cannot be treated as decision-stage promotable.
 
-# Run runtime probes for a matrix (writes runtime_results.json).
-python -m book.api.runtime_tools run \
-  --matrix book/profiles/golden-triple/expected_matrix.json \
-  --out book/profiles/golden-triple/
+**Bundle layout**
+- Plan runs write run-scoped bundles: `out/<run_id>/...`
+- `out/LATEST` points to the most recent *committed* run directory.
+- `artifact_index.json` is the commit barrier; strict bundle loads verify digests and refuse `run_status.state == in_progress`.
 
-# Build a runtime cut from matrix + results.
-python -m book.api.runtime_tools cut \
-  --matrix book/experiments/runtime-checks/out/expected_matrix.json \
-  --runtime-results book/experiments/runtime-checks/out/runtime_results.json \
-  --out /tmp/runtime_cut
-```
-
-Plan-based run (recommended for experiments):
-
-```sh
-python -m book.api.runtime_tools run \
-  --plan book/experiments/hardened-runtime/plan.json \
-  --channel launchd_clean \
-  --out book/experiments/hardened-runtime/out
-```
-
-Plan discovery and linting:
-
-```sh
-python -m book.api.runtime_tools list-plans
-python -m book.api.runtime_tools describe-plan --plan book/experiments/hardened-runtime/plan.json
-python -m book.api.runtime_tools plan-lint --plan book/experiments/hardened-runtime/plan.json
-python -m book.api.runtime_tools registry-lint --registry hardened-runtime
-```
-
-Dry run (plan validation + expected matrix only):
-
-```sh
-python -m book.api.runtime_tools run \
-  --plan book/experiments/hardened-runtime/plan.json \
-  --dry \
-  --out book/experiments/hardened-runtime/out
-```
-
-Environment readiness:
+## When you need repair or introspection
 
 ```sh
 python -m book.api.runtime_tools status
-```
-
-Registry helpers:
-
-```sh
-python -m book.api.runtime_tools list-registries
-python -m book.api.runtime_tools list-probes --registry hardened-runtime
-python -m book.api.runtime_tools describe-profile --registry hardened-runtime --profile hardened:sysctl_read
-```
-
-Bundle validation + promotion packet:
-
-```sh
 python -m book.api.runtime_tools validate-bundle --bundle book/experiments/hardened-runtime/out
-python -m book.api.runtime_tools emit-promotion \
-  --bundle book/experiments/hardened-runtime/out \
-  --out book/experiments/hardened-runtime/out/promotion_packet.json
+python -m book.api.runtime_tools reindex-bundle --bundle book/experiments/hardened-runtime/out --strict
+python -m book.api.runtime_tools reindex-bundle --bundle book/experiments/hardened-runtime/out --repair
 ```
 
-## Routing (Python)
+## Notes
 
-Pick the smallest tool for the job:
-
-- **core.models:** canonical dataclasses + `WORLD_ID`.
-- **core.normalize:** normalization helpers (`normalize_matrix_paths`, `write_matrix_observations`).
-- **core.contract:** versioned tool-marker parsing and runtime_result schema guards.
-- **mapping.build:** build runtime mappings (traces, scenarios, ops, indexes, manifest).
-- **mapping.story:** join op mappings + scenario summaries + vocab into a runtime story; emit legacy coverage/signatures.
-- **mapping.views:** derived projections that do not change failure_stage/failure_kind (e.g., callout vs syscall).
-- **harness.runner:** run an expected_matrix using the standard runtime probes and shims.
-- **harness.golden:** compile/decode golden profiles and normalize runtime-checks outputs.
-- **workflow:** higher-level helpers (build cuts, promote staged artifacts, run profiles end-to-end).
-
-Examples:
-
-```py
-from book.api.runtime_tools.core import normalize
-from book.api.runtime_tools.mapping import build
-
-observations = normalize.normalize_matrix_paths(
-    "book/profiles/golden-triple/expected_matrix.json",
-    "book/profiles/golden-triple/runtime_results.json",
-)
-index, _ = build.write_traces(
-    observations,
-    "book/graph/mappings/runtime/traces",
-)
-```
-
-```py
-from book.api.runtime_tools import workflow
-
-cut = workflow.build_cut(
-    "book/experiments/runtime-checks/out/expected_matrix.json",
-    "book/experiments/runtime-checks/out/runtime_results.json",
-    "/tmp/runtime_cut",
-)
-print(cut.manifest)
-```
-
-```py
-from book.api.runtime_tools.mapping import views
-
-comparison = views.build_callout_vs_syscall(observations)
-print(comparison["counts"])
-```
-
-```py
-from book.api.runtime_tools import api as runtime_api
-
-bundle = runtime_api.run_plan(
-    "book/experiments/hardened-runtime/plan.json",
-    "book/experiments/hardened-runtime/out",
-    channel="launchd_clean",
-)
-packet = runtime_api.emit_promotion_packet(bundle.out_dir, bundle.out_dir / "promotion_packet.json")
-print(packet["schema_version"])
-```
-
-## Plan naming and discovery
-
-- Convention: `book/experiments/<experiment>/plan.json`.
-- `list-plans` scans `book/experiments/**/plan.json` and reports `plan_id`, `registry_id`, and path.
-- Registry data lives in `book/api/runtime_tools/registry/index.json` and `book/experiments/*/registry/*.json`.
-
-## Templates
-
-Copy scaffolding for new probes/plans lives under `book/api/runtime_tools/templates/`.
-Use these as starting points, then run `plan-lint` and `registry-lint` before running.
-
-## Native tool markers
-
-Shared JSONL marker helpers for runtime tooling live here:
-
-- `book/api/runtime_tools/native/tool_markers.h`
-- `book/api/runtime_tools/native/ToolMarkers.swift`
-- `book/api/runtime_tools/native/seatbelt_callout_shim.c`
-- `book/api/runtime_tools/native/seatbelt_callout_shim.h`
-
-These emit versioned JSONL markers to stderr that are parsed by
-`core.contract` and stripped out of canonical normalized stderr. Use them in
-runtime probes and wrappers instead of ad-hoc stderr parsing.
-
-## File probe helper
-
-The minimal read/write probe used by runtime harnesses lives under:
-
-- `book/api/runtime_tools/native/file_probe/` (see its README for build/run)
-
-## Preflight and apply-gate guardrails
-
-The harness runner uses `book/tools/preflight` by default to avoid known
-apply-gate signatures on this host. Controls:
-
-- Disable globally: `SANDBOX_LORE_PREFLIGHT=0`
-- Force apply even if preflight flags a signature: `SANDBOX_LORE_PREFLIGHT_FORCE=1`
-- Per-profile override in `expected_matrix.json`: `"preflight": {"mode": "off"|"force"|"enforce"}`
-
-When preflight blocks a profile, the runtime result is marked `blocked` with
-`failure_stage: "preflight"`; this is evidence of a known apply-gate signature,
-not policy semantics.
+- Matrix-based commands (`normalize`, `cut`, `story`, `golden`, `run-all`) remain for legacy workflows. For new runtime evidence, prefer plan-based runs + promotion packets.
+- Templates for new probe families/plans live under `book/api/runtime_tools/templates/`.

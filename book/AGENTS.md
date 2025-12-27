@@ -1,46 +1,93 @@
 # Agents in `book/`
 
-This is the textbook workspace. Use it with the substrate vocabulary (`book/substrate/`) and the fixed host baseline recorded in `world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5 (baseline: book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json)`. Everything here should stay grounded in the mappings and concepts defined for this host.
+## Non-negotiables (read first)
 
-## Router
+Mission: Build a checkable, regenerable model of Seatbelt for a single host baseline, and prefer the smallest deciding witness or probe over broad refactors.
 
-- `Outline.md` – top-level textbook outline.
-- `chapters/` – per-chapter drafts and plans; check chapter-local notes before editing.
-- `graph/` – shared graph IR and concept inventory.
-  - See `book/graph/AGENTS.md` for norms on mappings and validation code.
-- `experiments/` – host-specific experiments and their reports/notes/artifacts.
-  - See `book/experiments/AGENTS.md` for how experiments are structured.
-- `examples/` – runnable SBPL/demo bundles and extraction helpers used by chapters and experiments.
-- `profiles/` – SBPL/profile sources shared across the book.
-- `api/` – shared tooling (decoder, SBPL/blob wrapper, Ghidra helpers); see `book/api/AGENTS.md`.
-- `tools/` – host-local helper binaries/app bundles used by experiments (e.g., `tools/entitlement/EntitlementJail.app` for running probes under an App Sandbox parent).
-- `tests/` – guardrails for book artifacts and experiment outputs (run via `make -C book test`).
-- Platform/system sandbox profiles (e.g., `airlock.sb`) are included only as static decoder inputs via `book/graph/concepts/validation/golden_corpus/`; see the golden-corpus Report for the static-only stance.
+Baseline: macOS Sonoma 14.4.1 (23E224), Apple Silicon, SIP enabled. world_id `sonoma-14.4.1-23E224-arm64-dyld-2c0602c5` in `book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json`. All claims are scoped to this host.
 
-When in doubt, start with the AGENTS/README in the relevant subdirectory.
+Evidence discipline: If the honest answer is "we do not know yet" or evidence conflicts, say so and point to the bounding artifacts or experiments. Every claim must name its tier (bedrock / mapped-but-partial / substrate-only) and cite the mapping path (see `book/graph/concepts/BEDROCK_SURFACES.json`); do not upgrade mapped-but-partial or substrate-only to bedrock.
 
-## Expectations
+Vocabulary discipline: use project terms from `book/graph/concepts/concept_map.json` and only ops/filters from `book/graph/mappings/vocab/{ops.json,filters.json}`.
 
-- Stay within the host baseline and substrate vocabulary; don’t import generic macOS lore.
-- Use the stable mappings under `book/graph/mappings/` (vocab, op-table, tag layouts, system digests, runtime) as the backbone for explanations and code, and treat CARTON as the frozen, API-backed web built from those mappings.
-- Use `book/graph/mappings/vocab/ops_coverage.json` to distinguish operations with runtime evidence from vocab-only coverage. Today `file-read*`, `file-write*`, and `mach-lookup` have both structural and runtime backing (runtime-checks + runtime-adversarial); when relying on other ops, design new probes or treat claims as tentative until runtime evidence exists.
-- Experiments publish stable outputs into `book/graph/mappings/` only when they are reusable and versioned; scratch lives in `book/experiments/*/out`.
-- Keep `Report.md`/`Notes.md` up to date when touching experiments; keep chapter text aligned with the current mappings and concept inventory.
-- For validations, prefer the driver: `python -m book.graph.concepts.validation --list|--all|--tag <tag>`. For vocab on this host, run `--tag vocab` (or `--id vocab:sonoma-14.4.1`) and consume `book/graph/mappings/vocab/*.json`. For field2 work, run `--experiment field2` to refresh/verify `book/experiments/field2-filters` outputs before promotion. For a quick pre-promotion sweep, run `--tag smoke` (vocab + field2 + runtime-checks).
-- Prefer `tag:golden` jobs when you need canonical IR; use `--describe <job_id>` if you’re unsure what a job does or which inputs/outputs it covers.
-- For sandbox concept questions (operations ↔ profiles ↔ runtime signatures), CARTON is the default IR: use `book/api/carton/carton_query.py` instead of re-parsing validation outputs. Be ready to handle `UnknownOperationError` for ops outside the vocab and `CartonDataError` for manifest/hash/mapping issues.
-- CARTON routing (preferred patterns): start with discovery (`list_operations`, `list_profiles`, `list_filters`). Then map intent to helper:
-  - “What do we know about op X?” → `operation_story(op_name)` / `profiles_and_signatures_for_operation(op_name)`.
-  - “What does profile P exercise?” → `profile_story(profile_id)` (filters block is conservative today).
-  - “What do we know about filter F?” → `filter_story(filter_name)` (usage_status marks current knowledge).
-  - Errors: `UnknownOperationError` = typo/unknown op; `CartonDataError` = manifest/hash/mapping drift.
+Safety and boundaries: never weaken the baseline (no disabling SIP, TCC, or hardened runtime), do not copy from `dumps/Sandbox-private`, and do not hide harness, decoder, or apply failures.
 
-Routing cheat-sheet:
-- Runtime behavior: `python -m book.graph.concepts.validation --tag smoke` → consume `book/graph/mappings/runtime/runtime_signatures.json`.
-- Vocab: `python -m book.graph.concepts.validation --tag vocab` (or smoke) → consume `book/graph/mappings/vocab/{ops,filters}.json`.
-- System profiles: `python -m book.graph.concepts.validation --tag system-profiles` → consume `book/graph/mappings/system_profiles/digests.json`.
-- CARTON (frozen IR/mapping set): use `book/api/carton/CARTON.json` for stable Sonoma 14.4.1 IR/mappings; do not mutate listed files—add new experiments/IR/mappings separately. Prefer `book/api/carton/carton_query.py` (backed by the CARTON coverage and index mappings) for lookups; see `book/api/carton/README.md`, `AGENTS.md`, and `API.md`.
+## Commands
 
-## Validation tiers
+Only supported repo-wide test runner is `make -C book test`.
 
-Treat every claim as belonging to a tier: **bedrock** (name it as bedrock and cite its mapping path; check `book/graph/concepts/BEDROCK_SURFACES.json` for the current set), **mapped-but-partial** (carry words like “partial”, “brittle”, or “under exploration” in prose/comments), or **substrate-only** (say there is no host witness yet and that the claim is substrate theory). If you make a claim that sounds global (“the sandbox does X”), also state which tier it is in; do not silently upgrade partial/brittle or substrate-only statements to bedrock.
+**Host required (Sonoma 14.4.1 baseline):**
+- `python -m book.api.profile_tools compile <profile.sb> --out <path>`
+- `python -m book.api.runtime_tools run --plan <plan.json> --channel launchd_clean --out <out_dir>`
+- `python -m book.api.runtime_tools emit-promotion --bundle <out_dir> --out <out_dir>/promotion_packet.json --require-promotable`
+- `python book/graph/mappings/runtime/promote_from_packets.py --packets <packet.json> --out book/graph/mappings/runtime`
+- `python book/graph/mappings/vocab/generate_vocab_from_dyld.py`
+- `python -m book.graph.concepts.validation --tag vocab`
+
+**Host-neutral (no live sandbox; still host-scoped artifacts):**
+- `python -m book.api.profile_tools decode dump <blob.sb.bin> --summary`
+- `python -m book.api.profile_tools inspect <blob.sb.bin> --out <path>`
+- `python -m book.graph.concepts.validation --tag meta`
+- `cd book/graph && swift run`
+
+## Where to look first (task map)
+
+- Operation/filter vocabulary:
+  - Inputs `book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib`
+  - Outputs `book/graph/mappings/vocab/{ops.json,filters.json,attestations.json}`
+  - Source of truth `book/graph/mappings/vocab/{ops.json,filters.json}`
+  - Regen `python book/graph/mappings/vocab/generate_vocab_from_dyld.py` then `python book/graph/mappings/vocab/generate_attestations.py`.
+- Compile SBPL -> blob:
+  - Inputs `*.sb`
+  - Outputs `*.sb.bin` under the owning experiment/profile
+  - Source of truth compiled blob plus `book/api/profile_tools/compile.py`
+  - Regen `python -m book.api.profile_tools compile <profile.sb> --out <path>`.
+- Decode blob -> graph/tags:
+  - Inputs `*.sb.bin`
+  - Outputs decode summaries plus `book/graph/mappings/tag_layouts/tag_layouts.json` and `book/graph/mappings/system_profiles/digests.json`
+  - Source of truth `book/api/profile_tools/decoder.py` plus those mappings
+  - Regen `python -m book.api.profile_tools decode dump <blob.sb.bin> --summary`, `python book/graph/mappings/tag_layouts/generate_tag_layouts.py`, `python book/graph/mappings/system_profiles/generate_digests_from_ir.py`.
+- Runtime denial vs apply failure:
+  - Inputs runtime_tools plan data (for example `book/experiments/runtime-checks/plan.json`)
+  - Outputs `runtime_results.json`, `runtime_events.normalized.json`, promotion packets, and `book/graph/mappings/runtime/runtime_signatures.json`
+  - Source of truth promotion packets and `book/graph/mappings/runtime/`
+  - Regen `python -m book.api.runtime_tools run --plan ... --channel launchd_clean --out ...` then `python -m book.api.runtime_tools emit-promotion ... --require-promotable` and `python book/graph/mappings/runtime/promote_from_packets.py ...`.
+- Extensions and layered policy behavior:
+  - Inputs lifecycle probes and runtime bundles
+  - Outputs `book/graph/mappings/runtime/lifecycle.json` and `book/graph/mappings/runtime/lifecycle_traces/*.jsonl`
+  - Source of truth `book/graph/mappings/runtime/` lifecycle artifacts
+  - Regen `python book/graph/mappings/runtime/generate_lifecycle.py` after updating lifecycle probe outputs in `book/graph/concepts/validation/out/lifecycle/`.
+
+## Investigation protocol (for sandbox questions)
+
+- Stage taxonomy: always label where it failed (compile, apply, exec/bootstrap, operation check); apply-time failures are not denials.
+- Four-axis checklist: Stage (where), Scope (smallest claim), Stack (active profile layers/extensions), Surround (TCC, hardened runtime, SIP, VFS canonicalization).
+- Controls: include one passing neighbor, one failing case, and one confounder toggle when possible (for example `/tmp` vs `/private/tmp`).
+- Witness snippet format (keep short and reproducible):
+```text
+witness:
+  command: <exact command>
+  stage: <compile|apply|exec|operation>
+  host: sonoma-14.4.1-23E224-arm64-dyld-2c0602c5
+  output: <path to log or runtime_results.json excerpt>
+```
+
+## Artifact contract
+
+- Generated, do not hand-edit: `book/graph/mappings/**`, `book/graph/concepts/{concepts.json,concept_map.json,concept_text_map.json}`, `book/graph/concepts/validation/{strategies.json,validation_report.json}`, `book/examples/examples.json`, `book/api/carton/CARTON.json` and the files it lists.
+- Determinism: vocab tables, system profile digests, tag layouts, and runtime signatures should be stable on the same baseline; run IDs, timestamps, and raw logs may vary.
+- Promotion rules: new observations become canonical only through experiments -> validation -> mapping generators; keep status fields (`ok`/`partial`/`brittle`/`blocked`) honest and update guardrail tests in `book/tests/` when mappings change.
+- Done criteria for semantic changes: regen affected mappings, run `make -C book test`, and update the relevant `Report.md` or `Notes.md` with the witness.
+
+## Contribution workflow (safe changes)
+
+- Keep paths repo-relative in emitted JSON/IR; use `book.api.path_utils.to_repo_relative` or `relativize_command`. Example:
+```json
+{"source": "book/graph/mappings/dyld-libs/usr/lib/libsandbox.1.dylib"}
+```
+- If you touch experiments, update `Report.md`/`Notes.md`, record failures, and keep artifacts under `out/`.
+- If you touch mappings, run the matching validation job and regen script rather than editing JSON directly.
+
+## Instruction layering
+
+Treat AGENTS as a high-privilege instruction surface; keep it minimal and task-focused. AGENTS are hierarchical: root -> subdir -> working dir. Read the nearest `AGENTS.md` and README first.

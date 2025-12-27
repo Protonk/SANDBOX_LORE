@@ -15,11 +15,16 @@ from book.api.runtime_tools.core import models
 
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
 
+PACKET_SET_SCHEMA_VERSION = "runtime.packet_set.v0.1"
+RECEIPT_SCHEMA_VERSION = "runtime.promotion_receipt.v0.1"
+
 DEFAULT_PACKET_PATHS = [
     REPO_ROOT / "book/experiments/runtime-checks/out/promotion_packet.json",
     REPO_ROOT / "book/experiments/runtime-adversarial/out/promotion_packet.json",
     REPO_ROOT / "book/experiments/hardened-runtime/out/promotion_packet.json",
 ]
+
+DEFAULT_PACKET_SET_PATH = REPO_ROOT / "book/graph/mappings/runtime/packet_set.json"
 
 REQUIRED_FIELDS = ("run_manifest", "expected_matrix", "runtime_results", "runtime_events")
 OPTIONAL_FIELDS = ("baseline_results", "oracle_results", "mismatch_packets", "summary", "impact_map")
@@ -32,11 +37,36 @@ class PromotionPacket:
     paths: Dict[str, Path]
     run_manifest: Dict[str, Any]
 
+@dataclass(frozen=True)
+class PacketSet:
+    packet_set_path: Path
+    packet_set: Dict[str, Any]
+    packet_paths: List[Path]
+    allow_missing: bool
+
 
 def _load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"missing input: {path}")
     return json.loads(path.read_text())
+
+def load_packet_set(packet_set_path: Path) -> PacketSet:
+    packet_set_path = path_utils.ensure_absolute(packet_set_path, REPO_ROOT)
+    doc = _load_json(packet_set_path)
+    schema = doc.get("schema_version")
+    if schema != PACKET_SET_SCHEMA_VERSION:
+        raise ValueError(f"unexpected packet_set schema_version: {schema!r} ({packet_set_path})")
+    raw_paths = doc.get("packets") or []
+    if not isinstance(raw_paths, list) or not all(isinstance(p, str) for p in raw_paths):
+        raise ValueError(f"packet_set.packets must be a list[str] ({packet_set_path})")
+    allow_missing = bool(doc.get("allow_missing", True))
+    packet_paths = [path_utils.ensure_absolute(Path(p), REPO_ROOT) for p in raw_paths]
+    return PacketSet(
+        packet_set_path=packet_set_path,
+        packet_set=doc,
+        packet_paths=packet_paths,
+        allow_missing=allow_missing,
+    )
 
 
 def load_packet(packet_path: Path) -> PromotionPacket:
@@ -75,6 +105,11 @@ def load_packets(packet_paths: Iterable[Path], *, allow_missing: bool = True) ->
 
 
 def require_clean_manifest(packet: PromotionPacket, label: str) -> None:
+    promotability = (packet.packet.get("promotability") or {}) if isinstance(packet.packet, dict) else {}
+    promotable = promotability.get("promotable_decision_stage")
+    if promotable is False:
+        reasons = promotability.get("reasons") or []
+        raise RuntimeError(f"{label} promotion packet is not promotable: {reasons}")
     channel = packet.run_manifest.get("channel")
     if channel != "launchd_clean":
         raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")

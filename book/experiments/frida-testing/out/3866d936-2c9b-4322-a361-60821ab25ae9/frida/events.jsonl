@@ -1,0 +1,8 @@
+{"t_ns":1766850968357496000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766850968357578000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766850968386972000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766850968986723000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766850968988177000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-config"}}}
+{"t_ns":1766850969140732000,"pid":31939,"msg":{"type":"send","payload":{"kind":"sandbox-extension-issue-attempt","extension":"com.apple.app-sandbox.read","path":"/etc/hosts","flags":0}}}
+{"t_ns":1766850969140952000,"pid":31939,"msg":{"type":"send","payload":{"kind":"sandbox-extension-issue-failed","errno":1}}}
+{"t_ns":1766850989028423000,"pid":31939,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

@@ -1,0 +1,6 @@
+{
+  "extension": "com.apple.app-sandbox.read",
+  "path": "/etc/hosts",
+  "flags": 0,
+  "delay_ms": 150
+}

@@ -1,8 +1,24 @@
 """
-Data-driven registry for runtime probes and profiles.
+runtime_tools registry loader (service contract).
 
-Registry entries are JSON descriptors loaded without importing experiment code.
-Probe/profile implementations are resolved only when a plan is compiled.
+Registries describe probes and SBPL profiles as data. They are the bridge
+between plan JSON ("run these profiles") and the runnable harness inputs.
+
+Responsibilities:
+- Load a registry index that maps registry_id -> {probes.json, profiles.json}.
+- Validate schemas for registry index, probes, and profiles.
+- Provide stable lookup helpers (`resolve_probe`, `resolve_profile`) used by
+  plan compilation.
+- Provide linting helpers that catch missing files and obvious descriptor drift.
+
+Key invariant:
+- Registries are loaded as JSON descriptors without importing experiment code.
+  This keeps `runtime_tools` usable from tooling/agents without side effects.
+
+Non-goals / refusals:
+- This module does not execute probes and does not interpret runtime evidence.
+- It does not auto-heal registries; descriptor drift should be fixed at the
+  source (the registry JSON and referenced files).
 """
 
 from __future__ import annotations

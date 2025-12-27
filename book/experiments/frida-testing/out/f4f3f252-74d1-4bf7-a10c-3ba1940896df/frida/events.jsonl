@@ -1,0 +1,8 @@
+{"t_ns":1766856873067140000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"runner-start"}}}
+{"t_ns":1766856873067258000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"stage","stage":"device"}}}
+{"t_ns":1766856873096589000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"stage","stage":"attach"}}}
+{"t_ns":1766856873747817000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-load"}}}
+{"t_ns":1766856873749165000,"pid":54323,"msg":{"type":"send","payload":{"kind":"smoke","pid":54323,"arch":"arm64","platform":"darwin","code_signing_policy":"optional"}}}
+{"t_ns":1766856873749210000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"stage","stage":"script-config"}}}
+{"t_ns":1766856873749529000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"script-config-error","error":"unable to find method 'configure'"}}}
+{"t_ns":1766856893783944000,"pid":54323,"msg":{"type":"runner","payload":{"kind":"session-detached","reason":"process-terminated"}}}

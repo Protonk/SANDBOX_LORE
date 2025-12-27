@@ -1,5 +1,29 @@
 """
-Launchd clean channel runner for runtime_tools plans.
+runtime_tools launchd_clean channel runner (service contract).
+
+This module provides the canonical "clean" execution channel for runtime_tools
+plan runs. It:
+- Stages the repo under a per-run directory (default: /private/tmp/...).
+- Uses launchctl to run a fresh Python worker in that staged repo so the worker
+  starts from a clean (unsandboxed) process context on this host.
+- Syncs the staged `out/<run_id>/...` bundle back into the original repo output
+  root and records launchctl stdout/stderr and the job plist as diagnostics.
+
+Assumptions:
+- The plan run is driven through `python -m book.api.runtime_tools run --plan ...`
+  inside the staged repo with `PYTHONPATH` set to the staged repo root.
+- The caller chooses the output root and holds any bundle-root lock; this module
+  focuses only on staging and launchd execution.
+
+Guarantees:
+- The staged run has a stable provenance stamp via environment markers
+  (`SANDBOX_LORE_LAUNCHD_CLEAN`, staging root, output root).
+- Staged artifacts are copied back into the original output root without
+  rewriting their contents (copy-only synchronization).
+
+Refusals:
+- This module does not interpret runtime evidence, does not validate bundles,
+  and does not build mappings. It only produces a clean-provenance run.
 """
 
 from __future__ import annotations
