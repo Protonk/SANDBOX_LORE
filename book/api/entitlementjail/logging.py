@@ -22,11 +22,8 @@ from book.api.entitlementjail.paths import LOG_OBSERVER, REPO_ROOT
 
 # Environment-driven toggles for observer behavior.
 #
-# v1 supported embedded observer capture inside `run-xpc`; v2 runs the observer
-# out-of-process only. Keep the env var for compatibility.
+# v2 runs the observer out-of-process only.
 LOG_OBSERVER_MODE = os.environ.get("EJ_LOG_OBSERVER", "external").lower()
-if LOG_OBSERVER_MODE == "embedded":
-    LOG_OBSERVER_MODE = "external"
 LOG_OBSERVER_LAST = os.environ.get("EJ_LOG_LAST", "10s")
 
 try:
@@ -43,10 +40,6 @@ def extract_details(stdout_json: Optional[Dict[str, object]]) -> Optional[Dict[s
         details = data.get("details")
         if isinstance(details, dict):
             return details
-    # Older shapes sometimes included details at the top-level.
-    details = stdout_json.get("details")
-    if isinstance(details, dict):
-        return details
     return None
 
 
@@ -65,8 +58,6 @@ def extract_service_pid(stdout_json: Optional[Dict[str, object]]) -> Optional[st
     # Prefer service_pid when present; fall back to probe_pid/pid for older outputs.
     for key in ("service_pid", "probe_pid", "pid"):
         value = details.get(key)
-        if isinstance(value, int):
-            return str(value)
         if isinstance(value, str) and value:
             return value
     return None

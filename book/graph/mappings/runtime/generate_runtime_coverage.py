@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 """
-Generate runtime/runtime_coverage.json from runtime story.
-
-Inputs:
-- book/graph/mappings/runtime_cuts/runtime_story.json
-- book/experiments/runtime-adversarial/out/impact_map.json (to allow scoped mismatches)
-- world baseline (host/world_id)
-
-Status is downgraded to partial if any op has disallowed mismatches.
+Generate runtime/runtime_coverage.json from runtime story + promotion packet inputs.
 """
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
+
+import sys
 
 ROOT = Path(__file__).resolve().parents[4]
 BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 RUNTIME_STORY = ROOT / "book/graph/mappings/runtime_cuts/runtime_story.json"
-IMPACT_MAP = ROOT / "book/experiments/runtime-adversarial/out/impact_map.json"
 OUT = ROOT / "book/graph/mappings/runtime/runtime_coverage.json"
-RUN_MANIFEST_CHECKS = ROOT / "book/experiments/runtime-checks/out/run_manifest.json"
-RUN_MANIFEST_ADV = ROOT / "book/experiments/runtime-adversarial/out/run_manifest.json"
+
+SCRIPT_ROOT = Path(__file__).resolve().parent
+if str(SCRIPT_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_ROOT))
+
+import promotion_packets
+from book.api import path_utils
 
 
 def load_json(path: Path) -> Dict[str, Any]:
@@ -31,10 +32,12 @@ def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
-    channel = manifest.get("channel")
-    if channel != "launchd_clean":
-        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
+def sha256_path(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def baseline_world() -> str:
@@ -57,22 +60,15 @@ def mismatch_tags(expectation_id: str, impact_map: Dict[str, Any]) -> set[str]:
     return set(entry.get("tags") or [])
 
 
-def main() -> None:
-    world_id = baseline_world()
-    story = load_json(RUNTIME_STORY)
-    impact_map = load_json(IMPACT_MAP)
-    run_manifest_checks = load_json(RUN_MANIFEST_CHECKS)
-    if not run_manifest_checks:
-        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
-    require_clean_manifest(run_manifest_checks, "runtime-checks")
-    if IMPACT_MAP.exists():
-        run_manifest_adv = load_json(RUN_MANIFEST_ADV)
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-
+def build_coverage(
+    story: Dict[str, Any],
+    impact_map: Dict[str, Any],
+    world_id: str,
+    inputs: List[str],
+    input_hashes: Dict[str, str] | None,
+    source_jobs: List[str],
+) -> Dict[str, Any]:
     story_meta = story.get("meta") or {}
-    story_inputs = story_meta.get("inputs") or ["book/graph/mappings/runtime_cuts/runtime_story.json"]
     coverage: Dict[str, Any] = {}
     disallowed = []
     global_tag_counts: Dict[str, int] = {}
@@ -116,13 +112,12 @@ def main() -> None:
         global_mismatch_total += op_mismatch_total
 
     overall_status = "ok" if not disallowed else "partial"
-    inputs = story_inputs + ["book/experiments/runtime-adversarial/out/impact_map.json"]
-    mapping = {
+    return {
         "metadata": {
             "world_id": world_id,
             "inputs": inputs,
-            "input_hashes": story_meta.get("input_hashes"),
-            "source_jobs": ["experiment:runtime-checks", "experiment:runtime-adversarial"],
+            "input_hashes": input_hashes,
+            "source_jobs": source_jobs,
             "status": overall_status,
             "notes": "Runtime coverage derived from runtime_story; mismatches allowed only when tagged in impact_map.json.",
             "mismatches": disallowed,
@@ -136,9 +131,54 @@ def main() -> None:
         "coverage": coverage,
     }
 
+
+def generate(packet_paths: List[Path] | None = None, impact_map_path: Path | None = None) -> Path:
+    world_id = baseline_world()
+    story = load_json(RUNTIME_STORY)
+    packets = promotion_packets.load_packets(packet_paths or promotion_packets.DEFAULT_PACKET_PATHS, allow_missing=True)
+    for packet in packets:
+        promotion_packets.require_clean_manifest(packet, str(packet.packet_path))
+
+    impact_map_path = (
+        path_utils.ensure_absolute(impact_map_path, ROOT) if impact_map_path else promotion_packets.select_impact_map(packets)
+    )
+    impact_map = load_json(impact_map_path) if impact_map_path else {}
+
+    story_meta = story.get("meta") or {}
+    story_inputs = story_meta.get("inputs") or ["book/graph/mappings/runtime_cuts/runtime_story.json"]
+    inputs = list(story_inputs)
+    input_hashes = dict(story_meta.get("input_hashes") or {})
+    source_jobs = ["promotion_packet"]
+    for packet in packets:
+        rel = path_utils.to_repo_relative(packet.packet_path, ROOT)
+        inputs.append(rel)
+        input_hashes[rel] = sha256_path(packet.packet_path)
+    if impact_map_path:
+        rel = path_utils.to_repo_relative(impact_map_path, ROOT)
+        inputs.append(rel)
+        input_hashes[rel] = sha256_path(impact_map_path)
+
+    mapping = build_coverage(
+        story=story,
+        impact_map=impact_map,
+        world_id=world_id,
+        inputs=inputs,
+        input_hashes=input_hashes or None,
+        source_jobs=source_jobs,
+    )
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(mapping, indent=2))
     print(f"[+] wrote {OUT}")
+    return OUT
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Generate runtime coverage from promotion packets.")
+    parser.add_argument("--packets", type=Path, action="append", help="Promotion packet paths")
+    parser.add_argument("--impact-map", type=Path, help="Override impact_map.json path")
+    args = parser.parse_args()
+    generate(packet_paths=args.packets, impact_map_path=args.impact_map)
 
 
 if __name__ == "__main__":

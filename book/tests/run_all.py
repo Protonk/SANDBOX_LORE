@@ -201,7 +201,7 @@ def run_all() -> int:
         total_ran += ran
         failures.extend(unit_failures)
 
-        for name, obj in vars(mod).items():
+        for name, obj in list(vars(mod).items()):
             if inspect.isfunction(obj) and name.startswith("test_"):
                 res = _run_callable(obj)
                 total_ran += 1

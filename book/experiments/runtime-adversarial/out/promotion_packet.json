@@ -7,5 +7,6 @@
   "baseline_results": "book/experiments/runtime-adversarial/out/baseline_results.json",
   "oracle_results": "book/experiments/runtime-adversarial/out/oracle_results.json",
   "mismatch_packets": "book/experiments/runtime-adversarial/out/mismatch_packets.jsonl",
-  "summary": "book/experiments/runtime-adversarial/out/summary.json"
+  "summary": "book/experiments/runtime-adversarial/out/summary.json",
+  "impact_map": "book/experiments/runtime-adversarial/out/impact_map.json"
 }

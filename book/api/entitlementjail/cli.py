@@ -2,7 +2,7 @@
 EntitlementJail CLI helpers.
 
 This module provides structured wrappers around the entitlement-jail CLI,
-including `xpc run` probe execution, matrix group runs, and evidence bundling.
+including one-shot probe execution, matrix group runs, and evidence bundling.
 It normalizes stdout/stderr into a consistent record and preserves enough
 metadata to correlate observer output with probes.
 """
@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence
 
 from book.api import path_utils
 from book.api.entitlementjail.logging import (
@@ -27,7 +27,13 @@ from book.api.entitlementjail.logging import (
     run_sandbox_log_observer,
     should_run_observer,
 )
-from book.api.entitlementjail.paths import EJ, REPO_ROOT
+from book.api.entitlementjail.paths import (
+    EJ,
+    EJ_EVIDENCE_MANIFEST,
+    EJ_EVIDENCE_PROFILES,
+    EJ_EVIDENCE_SYMBOLS,
+    REPO_ROOT,
+)
 from book.api.profile_tools.identity import baseline_world_id
 
 # Used to tag outputs with the fixed baseline world id.
@@ -41,67 +47,57 @@ def write_json(path: Path, payload: Dict[str, object]) -> None:
     print(f"[+] wrote {path_utils.to_repo_relative(path, REPO_ROOT)}")
 
 
-def run_cmd(cmd: List[str], *, cwd: Optional[Path] = None) -> Dict[str, object]:
+def run_cmd(
+    cmd: List[str],
+    *,
+    cwd: Optional[Path] = None,
+    timeout_s: Optional[float] = None,
+) -> Dict[str, object]:
     """Run a CLI command and return a structured result for logs/reports."""
+    started_at_unix_s = time.time()
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, cwd=str(cwd) if cwd else str(REPO_ROOT))
+        res = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=str(cwd) if cwd else str(REPO_ROOT),
+            timeout=timeout_s,
+        )
+        finished_at_unix_s = time.time()
         return {
             "command": path_utils.relativize_command(cmd, REPO_ROOT),
             "exit_code": res.returncode,
             "stdout": res.stdout,
             "stderr": res.stderr,
+            "timeout_s": timeout_s,
+            "cmd_started_at_unix_s": started_at_unix_s,
+            "cmd_finished_at_unix_s": finished_at_unix_s,
+            "cmd_duration_s": finished_at_unix_s - started_at_unix_s,
+        }
+    except subprocess.TimeoutExpired as exc:
+        finished_at_unix_s = time.time()
+        return {
+            "command": path_utils.relativize_command(cmd, REPO_ROOT),
+            "exit_code": None,
+            "stdout": exc.stdout or "",
+            "stderr": exc.stderr or "",
+            "error": "timeout",
+            "timed_out": True,
+            "timeout_s": timeout_s,
+            "cmd_started_at_unix_s": started_at_unix_s,
+            "cmd_finished_at_unix_s": finished_at_unix_s,
+            "cmd_duration_s": finished_at_unix_s - started_at_unix_s,
         }
     except Exception as exc:
+        finished_at_unix_s = time.time()
         return {
             "command": path_utils.relativize_command(cmd, REPO_ROOT),
             "error": f"{type(exc).__name__}: {exc}",
+            "timeout_s": timeout_s,
+            "cmd_started_at_unix_s": started_at_unix_s,
+            "cmd_finished_at_unix_s": finished_at_unix_s,
+            "cmd_duration_s": finished_at_unix_s - started_at_unix_s,
         }
-
-
-def copy_file(src: Path, dest: Path) -> Optional[str]:
-    # EntitlementJail writes logs under app-managed paths; copy into the repo.
-    if not src.exists():
-        return f"source_missing: {src}"
-    try:
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dest)
-    except Exception as exc:
-        return f"{type(exc).__name__}: {exc}"
-    return None
-
-
-def copy_tree(src: Path, dest: Path) -> Optional[str]:
-    # Used for matrix/evidence outputs that are emitted outside the repo.
-    if not src.exists():
-        return f"source_missing: {src}"
-    dest.mkdir(parents=True, exist_ok=True)
-    try:
-        for path in src.iterdir():
-            if path.is_dir():
-                shutil.copytree(path, dest / path.name, dirs_exist_ok=True)
-            else:
-                shutil.copy2(path, dest / path.name)
-    except Exception as exc:
-        return f"{type(exc).__name__}: {exc}"
-    return None
-
-
-def home_hint(path: Path) -> str:
-    # Preserve a human-readable hint without baking in an absolute repo path.
-    home = Path.home()
-    try:
-        rel = path.relative_to(home)
-        return f"$HOME/{rel}"
-    except Exception:
-        return str(path)
-
-
-def resolve_first_existing(candidates: Iterable[Path]) -> Path:
-    # Prefer the actual output location when the app is sandboxed.
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return next(iter(candidates))
 
 
 def maybe_parse_json(text: str) -> Optional[Dict[str, object]]:
@@ -161,8 +157,8 @@ def extract_stdout_text(stdout_json: Optional[Dict[str, object]]) -> Optional[st
     return None
 
 
-def parse_probe_catalog(stdout_json: Optional[Dict[str, object]]) -> Optional[List[str]]:
-    """Extract probe ids from the probe_catalog stdout JSON payload."""
+def parse_probe_catalog(stdout_json: Optional[Dict[str, object]]) -> Optional[Dict[str, object]]:
+    """Extract probe metadata + trace symbols from the probe_catalog stdout JSON payload."""
     payload_text = extract_stdout_text(stdout_json)
     if not payload_text:
         return None
@@ -170,22 +166,234 @@ def parse_probe_catalog(stdout_json: Optional[Dict[str, object]]) -> Optional[Li
         payload = json.loads(payload_text)
     except Exception:
         return None
-    probes = payload.get("probes") if isinstance(payload, dict) else None
+    if not isinstance(payload, dict):
+        return None
+    probes = payload.get("probes")
+    trace_symbols = payload.get("trace_symbols")
     if not isinstance(probes, list):
         return None
-    out: List[str] = []
+    probe_ids: List[str] = []
+    probe_metadata: List[Dict[str, object]] = []
     for probe in probes:
-        if isinstance(probe, dict):
-            probe_id = probe.get("probe_id")
-            if isinstance(probe_id, str):
-                out.append(probe_id)
-    return out
+        if not isinstance(probe, dict):
+            continue
+        probe_metadata.append(probe)
+        probe_id = probe.get("probe_id")
+        if isinstance(probe_id, str):
+            probe_ids.append(probe_id)
+    trace_entries: List[Dict[str, object]] = []
+    if isinstance(trace_symbols, list):
+        for entry in trace_symbols:
+            if isinstance(entry, dict):
+                trace_entries.append(entry)
+    return {
+        "generated_at_iso8601": payload.get("generated_at_iso8601")
+        if isinstance(payload.get("generated_at_iso8601"), str)
+        else None,
+        "schema_version": payload.get("schema_version") if isinstance(payload.get("schema_version"), int) else None,
+        "probes": probe_metadata,
+        "probe_ids": probe_ids,
+        "trace_symbols": trace_entries,
+    }
+
+
+def _normalize_path_value(value: object) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    path = Path(value)
+    if not path.is_absolute():
+        return value
+    return path_utils.to_repo_relative(path, REPO_ROOT)
+
+
+def _normalize_data_path(stdout_json: Optional[Dict[str, object]], key: str) -> None:
+    if not isinstance(stdout_json, dict):
+        return
+    data = stdout_json.get("data")
+    if not isinstance(data, dict):
+        return
+    normalized = _normalize_path_value(data.get(key))
+    if normalized is not None:
+        data[key] = normalized
+
+
+def _wrap_json_command(cmd: List[str], *, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    res = run_cmd(cmd, timeout_s=timeout_s)
+    stdout_json = maybe_parse_json(res.get("stdout", ""))
+    record: Dict[str, object] = {**res}
+    if stdout_json is not None:
+        record["stdout_json"] = stdout_json
+    else:
+        record["stdout_json_error"] = "stdout_json_missing"
+    return record
+
+
+def list_profiles(*, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "list-profiles"], timeout_s=timeout_s)
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        **record,
+    }
+
+
+def list_services(*, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "list-services"], timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "profiles_path")
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        **record,
+    }
+
+
+def show_profile(profile_id: str, *, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "show-profile", profile_id], timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "profiles_path")
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        "profile_id": profile_id,
+        **record,
+    }
+
+
+def describe_service(profile_id: str, *, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "describe-service", profile_id], timeout_s=timeout_s)
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        "profile_id": profile_id,
+        **record,
+    }
+
+
+def health_check(*, profile_id: Optional[str] = None, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    cmd = [str(EJ), "health-check"]
+    if profile_id:
+        cmd += ["--profile", profile_id]
+    record = _wrap_json_command(cmd, timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "profiles_path")
+    payload: Dict[str, object] = {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+    }
+    if profile_id:
+        payload["profile_id"] = profile_id
+    return {**payload, **record}
+
+
+def verify_evidence(*, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "verify-evidence"], timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "manifest_path")
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        **record,
+    }
+
+
+def inspect_macho(selector: str, *, timeout_s: Optional[float] = None) -> Dict[str, object]:
+    record = _wrap_json_command([str(EJ), "inspect-macho", selector], timeout_s=timeout_s)
+    stdout_json = record.get("stdout_json")
+    if isinstance(stdout_json, dict):
+        data = stdout_json.get("data")
+        if isinstance(data, dict):
+            for key in ("app_root", "manifest_path"):
+                normalized = _normalize_path_value(data.get(key))
+                if normalized is not None:
+                    data[key] = normalized
+            entry = data.get("entry")
+            if isinstance(entry, dict):
+                normalized = _normalize_path_value(entry.get("abs_path"))
+                if normalized is not None:
+                    entry["abs_path"] = normalized
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        "selector": selector,
+        **record,
+    }
+
+
+def run_matrix(
+    group: str,
+    *,
+    probe_id: str,
+    probe_args: Sequence[str] = (),
+    ack_risk: Optional[str] = None,
+    dest_dir: Path,
+    timeout_s: Optional[float] = None,
+) -> Dict[str, object]:
+    if dest_dir.exists():
+        shutil.rmtree(dest_dir, ignore_errors=True)
+    cmd = [str(EJ), "run-matrix", "--group", group, "--out", str(dest_dir), probe_id, *probe_args]
+    if ack_risk:
+        cmd += ["--ack-risk", ack_risk]
+    record = _wrap_json_command(cmd, timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "output_dir")
+    return {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        "group": group,
+        "probe_id": probe_id,
+        "probe_args": list(probe_args),
+        "out_dir": path_utils.to_repo_relative(dest_dir, REPO_ROOT),
+        **record,
+    }
+
+
+def quarantine_lab(
+    *,
+    profile_id: str,
+    payload_class: str,
+    payload_args: Sequence[str] = (),
+    timeout_s: Optional[float] = None,
+) -> Dict[str, object]:
+    show = show_profile(profile_id, timeout_s=timeout_s)
+    bundle_id = extract_profile_bundle_id(show.get("stdout_json"))
+    payload: Dict[str, object] = {
+        "world_id": WORLD_ID,
+        "entrypoint": path_utils.to_repo_relative(EJ, REPO_ROOT),
+        "profile_id": profile_id,
+        "bundle_id": bundle_id,
+        "show_profile": show,
+    }
+    if not bundle_id:
+        payload["error"] = "bundle_id_missing"
+        return payload
+
+    cmd = [str(EJ), "quarantine-lab", bundle_id, payload_class, *payload_args]
+    record = _wrap_json_command(cmd, timeout_s=timeout_s)
+    _normalize_data_path(record.get("stdout_json"), "output_dir")
+    payload["run"] = record
+    return payload
+
+
+def load_evidence_manifest() -> Dict[str, object]:
+    return {
+        "path": path_utils.to_repo_relative(EJ_EVIDENCE_MANIFEST, REPO_ROOT),
+        "data": json.loads(EJ_EVIDENCE_MANIFEST.read_text()),
+    }
+
+
+def load_evidence_profiles() -> Dict[str, object]:
+    return {
+        "path": path_utils.to_repo_relative(EJ_EVIDENCE_PROFILES, REPO_ROOT),
+        "data": json.loads(EJ_EVIDENCE_PROFILES.read_text()),
+    }
+
+
+def load_evidence_symbols() -> Dict[str, object]:
+    return {
+        "path": path_utils.to_repo_relative(EJ_EVIDENCE_SYMBOLS, REPO_ROOT),
+        "data": json.loads(EJ_EVIDENCE_SYMBOLS.read_text()),
+    }
 
 
 def run_xpc(
     *,
     profile_id: Optional[str] = None,
-    service_id: Optional[str] = None,
     probe_id: str,
     probe_args: Sequence[str] = (),
     log_path: Optional[Path] = None,
@@ -193,46 +401,42 @@ def run_xpc(
     row_id: Optional[str] = None,
     correlation_id: Optional[str] = None,
     ack_risk: Optional[str] = None,
+    timeout_s: Optional[float] = None,
 ) -> Dict[str, object]:
-    """Run a probe under a profile/service, capturing observer output when configured."""
-    if (profile_id is None) == (service_id is None):
-        raise ValueError("Provide exactly one of profile_id or service_id")
-    cmd = [str(EJ), "xpc", "run"]
-    if ack_risk:
-        # Tier-2 profiles require an explicit acknowledgement token.
-        cmd += ["--ack-risk", ack_risk]
+    """Run a probe under a profile, capturing observer output when configured."""
+    if not profile_id:
+        raise ValueError("profile_id is required for run_xpc")
 
+    started_at_unix_s = time.time()
+    probe_timeout_s = timeout_s or 25.0
+    cmd = [str(EJ), "xpc", "run", "--profile", profile_id]
+    if ack_risk:
+        cmd += ["--ack-risk", ack_risk]
     cmd += ["--plan-id", plan_id]
     if row_id:
         cmd += ["--row-id", row_id]
     if correlation_id:
         cmd += ["--correlation-id", correlation_id]
-    if profile_id is not None:
-        cmd += ["--profile", profile_id]
-    else:
-        # Caller can target a specific XPC bundle id instead of a profile.
-        cmd += ["--service", service_id]
     cmd += [probe_id, *probe_args]
-    started_at_unix_s = time.time()
-    res = run_cmd(cmd)
-    finished_at_unix_s = time.time()
 
-    stdout_text = res.get("stdout", "").strip()
+    res = run_cmd(cmd, timeout_s=probe_timeout_s)
+    finished_at_unix_s = time.time()
+    stdout_text = res.get("stdout", "")
+    stderr_text = res.get("stderr", "")
     stdout_json = maybe_parse_json(stdout_text)
+
     log_write_error = None
-    if log_path is not None and stdout_text:
+    if log_path is not None and stdout_json is not None:
         try:
             log_path.parent.mkdir(parents=True, exist_ok=True)
-            log_path.write_text(stdout_text + "\n")
+            log_path.write_text(json.dumps(stdout_json) + "\n")
         except Exception as exc:
             log_write_error = f"{type(exc).__name__}: {exc}"
 
-    observer: Optional[Dict[str, object]] = None
+    observer = None
     observer_log_path = None
     if log_path is not None and should_run_observer():
         observer_dest = log_path.parent / "observer" / f"{log_path.name}.observer.json"
-        observer_log_path = path_utils.to_repo_relative(observer_dest, REPO_ROOT)
-        observer_correlation_id = extract_correlation_id(stdout_json) or correlation_id
         observer = run_sandbox_log_observer(
             pid=extract_service_pid(stdout_json),
             process_name=extract_process_name(stdout_json),
@@ -242,12 +446,12 @@ def run_xpc(
             end_s=finished_at_unix_s,
             plan_id=plan_id,
             row_id=row_id,
-            correlation_id=observer_correlation_id,
+            correlation_id=extract_correlation_id(stdout_json) or correlation_id,
         )
+        observer_log_path = path_utils.to_repo_relative(observer_dest, REPO_ROOT)
 
     record: Dict[str, object] = {
         "profile_id": profile_id,
-        "service_id": service_id,
         "probe_id": probe_id,
         "probe_args": list(probe_args),
         "plan_id": plan_id,
@@ -256,20 +460,22 @@ def run_xpc(
         "started_at_unix_s": started_at_unix_s,
         "finished_at_unix_s": finished_at_unix_s,
         "duration_s": finished_at_unix_s - started_at_unix_s,
+        "command": res.get("command"),
+        "exit_code": res.get("exit_code"),
+        "stdout": stdout_text,
+        "stderr": stderr_text,
         "log_path": path_utils.to_repo_relative(log_path, REPO_ROOT) if log_path else None,
         "observer": observer,
         "observer_log_path": observer_log_path,
         "observer_status": observer_status(observer),
         "log_write_error": log_write_error,
-        **res,
+        "probe_timeout_s": probe_timeout_s,
+        "probe_error": res.get("error"),
     }
-    if stdout_text:
-        if stdout_json is not None:
-            record["stdout_json"] = stdout_json
-        else:
-            record["stdout_json_error"] = "stdout_not_json"
+    if stdout_json is not None:
+        record["stdout_json"] = stdout_json
     else:
-        record["stdout_json_error"] = "stdout_empty"
+        record["stdout_json_error"] = "stdout_json_missing"
     return record
 
 

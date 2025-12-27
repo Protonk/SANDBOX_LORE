@@ -22,11 +22,13 @@ if str(ROOT) not in sys.path:
 from book.api import path_utils
 from book.api.runtime_tools.mapping import story as rt_story
 
+SCRIPT_ROOT = Path(__file__).resolve().parent
+if str(SCRIPT_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_ROOT))
+
+import promotion_packets
+
 CUT_ROOT = ROOT / "book" / "graph" / "mappings" / "runtime_cuts"
-ADV_RUNTIME_OPS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "ops.json"
-ADV_RUNTIME_SCENARIOS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "scenarios.json"
-RUN_MANIFEST_CHECKS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "run_manifest.json"
-RUN_MANIFEST_ADV = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "run_manifest.json"
 
 
 def sha256_path(path: Path) -> str:
@@ -34,48 +36,7 @@ def sha256_path(path: Path) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def load_run_manifest(path: Path) -> dict:
-    if not path.exists():
-        return {}
-    try:
-        return json.loads(path.read_text())
-    except Exception:
-        return {}
-
-
-def require_clean_manifest(manifest: dict, label: str) -> None:
-    channel = manifest.get("channel")
-    if channel != "launchd_clean":
-        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
-
-
-def merge_story(base_doc: dict, extra_doc: dict) -> bool:
-    base_ops = base_doc.get("ops")
-    extra_ops = extra_doc.get("ops")
-    if not isinstance(base_ops, dict) or not isinstance(extra_ops, dict):
-        return False
-    merged = False
-    for key, extra_entry in extra_ops.items():
-        if key not in base_ops:
-            base_ops[key] = extra_entry
-            merged = True
-            continue
-        base_entry = base_ops.get(key) or {}
-        base_scenarios = base_entry.get("scenarios") or []
-        extra_scenarios = extra_entry.get("scenarios") or []
-        if not extra_scenarios:
-            continue
-        seen = {s.get("scenario_id") for s in base_scenarios if isinstance(s, dict)}
-        appended = [s for s in extra_scenarios if isinstance(s, dict) and s.get("scenario_id") not in seen]
-        if appended:
-            base_entry["scenarios"] = list(base_scenarios) + appended
-            base_ops[key] = base_entry
-            merged = True
-    base_doc["ops"] = base_ops
-    return merged
-
-
-def main() -> None:
+def generate(packet_paths: list[Path] | None = None) -> Path:
     manifest_path = CUT_ROOT / "runtime_manifest.json"
     if not manifest_path.exists():
         raise SystemExit(f"missing runtime manifest at {manifest_path}; run promotion first")
@@ -83,11 +44,13 @@ def main() -> None:
     manifest = json.loads(manifest_path.read_text())
     scenarios_path = path_utils.ensure_absolute(manifest.get("scenarios"), ROOT)
     ops_path = path_utils.ensure_absolute(manifest.get("ops"), ROOT)
-    run_manifest_checks = load_run_manifest(RUN_MANIFEST_CHECKS)
-    if not run_manifest_checks:
-        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
-    require_clean_manifest(run_manifest_checks, "runtime-checks")
-    run_manifest_adv = load_run_manifest(RUN_MANIFEST_ADV)
+
+    packets = promotion_packets.load_packets(
+        packet_paths or promotion_packets.DEFAULT_PACKET_PATHS,
+        allow_missing=True,
+    )
+    for packet in packets:
+        promotion_packets.require_clean_manifest(packet, str(packet.packet_path))
 
     story = rt_story.build_story(ops_path, scenarios_path)
     inputs = [
@@ -98,39 +61,22 @@ def main() -> None:
         inputs[0]: sha256_path(ops_path),
         inputs[1]: sha256_path(scenarios_path),
     }
-    if ADV_RUNTIME_OPS.exists() and ADV_RUNTIME_SCENARIOS.exists():
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-        adv_story = rt_story.build_story(ADV_RUNTIME_OPS, ADV_RUNTIME_SCENARIOS)
-        if merge_story(story, adv_story):
-            inputs.extend(
-                [
-                    path_utils.to_repo_relative(ADV_RUNTIME_OPS, ROOT),
-                    path_utils.to_repo_relative(ADV_RUNTIME_SCENARIOS, ROOT),
-                ]
-            )
-            input_hashes[path_utils.to_repo_relative(ADV_RUNTIME_OPS, ROOT)] = sha256_path(ADV_RUNTIME_OPS)
-            input_hashes[path_utils.to_repo_relative(ADV_RUNTIME_SCENARIOS, ROOT)] = sha256_path(ADV_RUNTIME_SCENARIOS)
     run_manifest_inputs = []
     run_ids = []
     repo_root_contexts = []
-    if run_manifest_checks:
-        run_manifest_inputs.append(path_utils.to_repo_relative(RUN_MANIFEST_CHECKS, ROOT))
-        if run_manifest_checks.get("run_id"):
-            run_ids.append(run_manifest_checks.get("run_id"))
-        if run_manifest_checks.get("repo_root_context"):
-            repo_root_contexts.append(run_manifest_checks.get("repo_root_context"))
-    if run_manifest_adv:
-        run_manifest_inputs.append(path_utils.to_repo_relative(RUN_MANIFEST_ADV, ROOT))
-        if run_manifest_adv.get("run_id"):
-            run_ids.append(run_manifest_adv.get("run_id"))
-        if run_manifest_adv.get("repo_root_context"):
-            repo_root_contexts.append(run_manifest_adv.get("repo_root_context"))
-    if run_manifest_inputs:
-        inputs.extend(run_manifest_inputs)
-        for rel in run_manifest_inputs:
-            input_hashes[rel] = sha256_path(path_utils.ensure_absolute(Path(rel), ROOT))
+    for packet in packets:
+        rel_packet = path_utils.to_repo_relative(packet.packet_path, ROOT)
+        inputs.append(rel_packet)
+        input_hashes[rel_packet] = sha256_path(packet.packet_path)
+        packet_manifest_path = packet.paths.get("run_manifest")
+        if packet_manifest_path:
+            rel_manifest = path_utils.to_repo_relative(packet_manifest_path, ROOT)
+            run_manifest_inputs.append(rel_manifest)
+            input_hashes[rel_manifest] = sha256_path(packet_manifest_path)
+        if packet.run_manifest.get("run_id"):
+            run_ids.append(packet.run_manifest.get("run_id"))
+        if packet.run_manifest.get("repo_root_context"):
+            repo_root_contexts.append(packet.run_manifest.get("repo_root_context"))
     meta = story.get("meta", {})
     meta["inputs"] = inputs
     meta["input_hashes"] = input_hashes
@@ -142,10 +88,9 @@ def main() -> None:
     manifest_meta = manifest.get("meta") or {}
     if manifest_meta.get("source_jobs"):
         meta["source_jobs"] = manifest_meta["source_jobs"]
-    if ADV_RUNTIME_OPS.exists() and ADV_RUNTIME_SCENARIOS.exists():
-        note = meta.get("notes") or ""
-        if "runtime-adversarial" not in note:
-            meta["notes"] = (note + " " if note else "") + "Includes runtime-adversarial runtime_mappings."
+    note = meta.get("notes") or ""
+    if "promotion packet" not in note:
+        meta["notes"] = (note + " " if note else "") + "Inputs derived from promotion packets."
     story["meta"] = meta
     out_path = CUT_ROOT / "runtime_story.json"
     rt_story.write_story(story, out_path)
@@ -153,6 +98,11 @@ def main() -> None:
     manifest["runtime_story"] = path_utils.to_repo_relative(out_path, ROOT)
     manifest_path.write_text(json.dumps(manifest, indent=2))
     print(f"[+] wrote runtime story to {out_path}")
+    return out_path
+
+
+def main() -> None:
+    generate()
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,6 +35,7 @@ ARTIFACT_INDEX_SCHEMA_VERSION = "runtime-tools.artifact_index.v0.1"
 MISMATCH_PACKET_SCHEMA_VERSION = "runtime-tools.mismatch_packet.v0.1"
 ORACLE_SCHEMA_VERSION = "runtime-tools.oracle_results.v0.1"
 BASELINE_SCHEMA_VERSION = "runtime-tools.baseline_results.v0.1"
+STATUS_SCHEMA_VERSION = "runtime-tools.status.v0.1"
 
 CORE_ARTIFACTS = [
     "run_manifest.json",
@@ -89,6 +91,31 @@ def _channel_from_env(default: str) -> str:
     return os.environ.get("SANDBOX_LORE_CHANNEL") or default
 
 
+def runtime_status(repo_root: Optional[Path] = None) -> Dict[str, Any]:
+    repo_root = path_utils.ensure_absolute(repo_root or REPO_ROOT, REPO_ROOT)
+    stage_used = os.environ.get("SANDBOX_LORE_STAGE_USED") == "1"
+    stage_root = os.environ.get("SANDBOX_LORE_STAGE_ROOT")
+    stage_output_root = os.environ.get("SANDBOX_LORE_STAGE_OUTPUT_ROOT")
+    clean_active = os.environ.get("SANDBOX_LORE_LAUNCHD_CLEAN") == "1"
+    status = {
+        "schema_version": STATUS_SCHEMA_VERSION,
+        "world_id": models.WORLD_ID,
+        "repo_root": str(path_utils.to_repo_relative(repo_root, repo_root=REPO_ROOT)),
+        "channel": _channel_from_env("direct"),
+        "clean_channel_active": clean_active,
+        "stage_used": stage_used,
+        "stage_root": stage_root,
+        "stage_output_root": stage_output_root,
+        "run_id": os.environ.get("SANDBOX_LORE_RUN_ID"),
+        "sandbox_check_self": apply_preflight.sandbox_check_self(),
+        "tools": {
+            "launchctl": bool(shutil.which("launchctl")),
+            "sandbox_runner": (REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_runner").exists(),
+        },
+    }
+    return status
+
+
 def _write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2))
@@ -142,23 +169,46 @@ def _write_summary(
     *,
     world_id: str,
     run_id: str,
+    plan_id: str,
+    plan_digest: str,
+    channel: str,
+    lanes: Dict[str, bool],
     expected_profiles: Iterable[str],
+    profile_count: int,
+    scenario_count: int,
     mismatch_summary: Dict[str, Any],
     status: str,
     out_json: Path,
     out_md: Path,
     schema_version: str,
+    dry_run: bool = False,
 ) -> None:
     summary = {
         "schema_version": schema_version,
         "world_id": world_id,
         "run_id": run_id,
         "status": status,
+        "plan_id": plan_id,
+        "plan_digest": plan_digest,
+        "channel": channel,
+        "lanes": lanes,
+        "profile_count": profile_count,
+        "scenario_count": scenario_count,
         "expected_profiles": list(expected_profiles),
         "mismatch_counts": mismatch_summary.get("counts") or {},
+        "dry_run": dry_run,
     }
     _write_json(out_json, summary)
-    lines = ["# Runtime Summary", "", f"Status: {status}", ""]
+    lines = [
+        "# Runtime Summary",
+        "",
+        f"Status: {status}",
+        f"Plan: {plan_id}",
+        f"Channel: {channel}",
+        f"Profiles: {profile_count}",
+        f"Scenarios: {scenario_count}",
+        "",
+    ]
     mismatches = mismatch_summary.get("mismatches") or []
     lines.append(f"Mismatches: {len(mismatches)}" if mismatches else "Mismatches: none")
     out_md.write_text("\n".join(lines) + "\n")
@@ -174,6 +224,7 @@ def _write_run_manifest(
     plan_digest: str,
     schema_version: str,
     apply_preflight_doc: Optional[Dict[str, Any]],
+    dry_run: bool = False,
 ) -> Path:
     stage_used = os.environ.get("SANDBOX_LORE_STAGE_USED") == "1"
     stage_root = os.environ.get("SANDBOX_LORE_STAGE_ROOT")
@@ -185,6 +236,7 @@ def _write_run_manifest(
         "channel": channel,
         "plan_id": plan_id,
         "plan_digest": plan_digest,
+        "dry_run": dry_run,
         "stage_used": stage_used,
         "stage_root": stage_root,
         "repo_root_context": stage_root if stage_used else str(REPO_ROOT),
@@ -276,6 +328,9 @@ def emit_promotion_packet(out_dir: Path, out_path: Path) -> Dict[str, Any]:
         "mismatch_packets": path_utils.to_repo_relative(out_dir / "mismatch_packets.jsonl", repo_root=REPO_ROOT),
         "summary": path_utils.to_repo_relative(out_dir / "summary.json", repo_root=REPO_ROOT),
     }
+    impact_map = out_dir / "impact_map.json"
+    if impact_map.exists():
+        packet["impact_map"] = path_utils.to_repo_relative(impact_map, repo_root=REPO_ROOT)
     out_path = path_utils.ensure_absolute(out_path, REPO_ROOT)
     _write_json(out_path, packet)
     return packet
@@ -313,9 +368,14 @@ def run_plan(
     channel: ChannelSpec | str = "direct",
     only_profiles: Optional[Iterable[str]] = None,
     only_scenarios: Optional[Iterable[str]] = None,
+    dry_run: bool = False,
 ) -> RunBundle:
     channel_spec = channel if isinstance(channel, ChannelSpec) else ChannelSpec(channel=channel)
-    if channel_spec.channel == "launchd_clean" and os.environ.get("SANDBOX_LORE_LAUNCHD_CLEAN") != "1":
+    if (
+        channel_spec.channel == "launchd_clean"
+        and os.environ.get("SANDBOX_LORE_LAUNCHD_CLEAN") != "1"
+        and not dry_run
+    ):
         launchd_clean.run_via_launchctl(
             plan_path=plan_path,
             out_dir=out_dir,
@@ -347,6 +407,9 @@ def run_plan(
     baseline_schema = schema_versions.get("baseline", BASELINE_SCHEMA_VERSION)
 
     lanes = plan_doc.get("lanes") or {}
+    effective_lanes = dict(lanes)
+    if dry_run:
+        effective_lanes.update({"scenario": False, "baseline": False, "oracle": False})
     profiles = plan_loader.compile_profiles(
         plan_doc,
         only_profiles=only_profiles,
@@ -357,7 +420,7 @@ def run_plan(
 
     apply_preflight_doc = None
     apply_preflight_profile = plan_doc.get("apply_preflight_profile")
-    if apply_preflight_profile:
+    if apply_preflight_profile and not dry_run:
         profile_path = path_utils.ensure_absolute(Path(apply_preflight_profile), REPO_ROOT)
         runner_path = REPO_ROOT / "book" / "experiments" / "runtime-checks" / "sandbox_runner"
         apply_preflight_doc = apply_preflight.run_apply_preflight(
@@ -379,9 +442,10 @@ def run_plan(
         apply_preflight_doc={"path": "apply_preflight.json", "record": apply_preflight_doc}
         if apply_preflight_doc
         else None,
+        dry_run=dry_run,
     )
 
-    if lanes.get("scenario", True):
+    if effective_lanes.get("scenario", True):
         run = workflow.run_profiles(profiles, out_dir, world_id=world_id)
         expected_matrix_path = out_dir / "expected_matrix.json"
         expected_matrix_path.write_text((out_dir / "expected_matrix.generated.json").read_text())
@@ -397,9 +461,11 @@ def run_plan(
             run_id=run_id,
         )
     else:
+        matrix_doc = workflow.build_matrix(world_id, profiles, out_dir / "sb_build")
+        (out_dir / "expected_matrix.generated.json").write_text(json.dumps(matrix_doc, indent=2))
         (out_dir / "expected_matrix.json").write_text((out_dir / "expected_matrix.generated.json").read_text())
 
-    if lanes.get("baseline", True):
+    if effective_lanes.get("baseline", True):
         baseline_doc = baseline_lane.build_baseline_results(
             world_id,
             profiles=[{"profile_id": p.profile_id, "probes": p.probes} for p in profiles],
@@ -408,14 +474,14 @@ def run_plan(
         baseline_doc["schema_version"] = baseline_schema
         _write_json(out_dir / "baseline_results.json", baseline_doc)
 
-    if lanes.get("oracle", True):
+    if effective_lanes.get("oracle", True):
         _write_oracle_results(out_dir / "runtime_events.normalized.json", world_id, out_dir / "oracle_results.json")
         oracle_doc = json.loads((out_dir / "oracle_results.json").read_text())
         oracle_doc["schema_version"] = oracle_schema
         _write_json(out_dir / "oracle_results.json", oracle_doc)
 
     mismatch_packets = []
-    if (out_dir / "mismatch_summary.json").exists():
+    if effective_lanes.get("scenario", True) and (out_dir / "mismatch_summary.json").exists():
         mismatch_packets = mismatch_lane.emit_packets(
             mismatch_summary=out_dir / "mismatch_summary.json",
             events_path=out_dir / "runtime_events.normalized.json",
@@ -447,16 +513,26 @@ def run_plan(
         }
         _write_json(out_dir / "mismatch_summary.json", mismatch_summary_doc)
     status = "ok" if not mismatch_summary_doc.get("mismatches") else "partial"
+    if dry_run:
+        status = "dry"
 
+    scenario_count = sum(len(p.probes) for p in profiles)
     _write_summary(
         world_id=world_id,
         run_id=run_id,
+        plan_id=plan_doc["plan_id"],
+        plan_digest=plan_loader.plan_digest(plan_doc),
+        channel=channel_name,
+        lanes=effective_lanes,
         expected_profiles=[p.profile_id for p in profiles],
+        profile_count=len(profiles),
+        scenario_count=scenario_count,
         mismatch_summary=mismatch_summary_doc,
         status=status,
         out_json=out_dir / "summary.json",
         out_md=out_dir / "summary.md",
         schema_version=summary_schema,
+        dry_run=dry_run,
     )
 
     expected_artifacts = [
@@ -466,7 +542,7 @@ def run_plan(
         "summary.json",
         "summary.md",
     ]
-    if lanes.get("scenario", True):
+    if effective_lanes.get("scenario", True) or dry_run:
         expected_artifacts.extend(
             [
                 "expected_matrix.generated.json",
@@ -477,9 +553,9 @@ def run_plan(
         )
     if apply_preflight_doc:
         expected_artifacts.append("apply_preflight.json")
-    if lanes.get("baseline", True):
+    if effective_lanes.get("baseline", True):
         expected_artifacts.append("baseline_results.json")
-    if lanes.get("oracle", True):
+    if effective_lanes.get("oracle", True):
         expected_artifacts.append("oracle_results.json")
 
     artifact_index = _write_artifact_index(out_dir, run_id, world_id, artifact_index_schema, expected_artifacts)

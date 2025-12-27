@@ -180,10 +180,9 @@ class FridaCapture:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--profile-id", required=True, help="EntitlementJail profile id")
-    ap.add_argument("--service-id", help="Override service bundle id (skip --profile)")
     ap.add_argument("--service-name", help="Override process name for attach")
     ap.add_argument("--ack-risk", help="Tier-2 ack token for EntitlementJail")
-    ap.add_argument("--probe-id", required=True, help="Probe id to run via run-xpc")
+    ap.add_argument("--probe-id", required=True, help="Probe id to run via xpc session")
     ap.add_argument(
         "--probe-args",
         nargs=argparse.REMAINDER,
@@ -239,9 +238,7 @@ def main() -> int:
     logs_dir.mkdir(parents=True, exist_ok=True)
     frida_dir.mkdir(parents=True, exist_ok=True)
 
-    use_profile = args.service_id is None
-    target_profile_id = args.profile_id if use_profile else None
-    target_service_id = args.service_id if not use_profile else None
+    target_profile_id = args.profile_id
 
     cap_record = None
     tmp_dir = None
@@ -250,7 +247,6 @@ def main() -> int:
         cap_log_path = logs_dir / "capabilities_snapshot.log"
         cap_record = ej_cli.run_xpc(
             profile_id=target_profile_id,
-            service_id=target_service_id,
             probe_id="capabilities_snapshot",
             probe_args=[],
             log_path=cap_log_path,
@@ -343,7 +339,6 @@ def main() -> int:
     wait_timeout_ms = max(max(args.attach_seconds, 0) * 1000, 15000)
     session = XpcSession(
         profile_id=target_profile_id,
-        service_id=target_service_id,
         plan_id=args.plan_id,
         correlation_id=row_id,
         ack_risk=args.ack_risk,
@@ -456,8 +451,6 @@ def main() -> int:
         "out_dir": path_utils.to_repo_relative(out_root, repo_root),
         "probe": {
             "profile_id": args.profile_id,
-            "service_id": target_service_id,
-            "use_profile": use_profile,
             "probe_id": args.probe_id,
             "probe_args": list(args.probe_args),
             "ack_risk": args.ack_risk,

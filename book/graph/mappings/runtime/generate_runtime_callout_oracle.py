@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate runtime_callout_oracle.json from normalized runtime IR + adversarial outputs.
+Generate runtime_callout_oracle.json from promotion packet runtime events.
 
-This is the sandbox_check oracle lane: seatbelt-callout markers only, kept
-separate from syscall outcomes.
+This is the seatbelt-callout lane: markers only, kept separate from syscall outcomes.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import sys
@@ -20,28 +20,22 @@ if str(ROOT) not in sys.path:
 
 from book.api import path_utils
 from book.api.runtime_tools.core import models
-from book.api.runtime_tools.core import normalize as runtime_normalize
 from book.api.runtime_tools.mapping import views as runtime_views
 
-RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
-ADV_EXPECTED = ROOT / "book/experiments/runtime-adversarial/out/expected_matrix.json"
-ADV_RESULTS = ROOT / "book/experiments/runtime-adversarial/out/runtime_results.json"
 BASELINE = ROOT / "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 OUT = ROOT / "book/graph/mappings/runtime/runtime_callout_oracle.json"
-RUN_MANIFEST_CHECKS = ROOT / "book/experiments/runtime-checks/out/run_manifest.json"
-RUN_MANIFEST_ADV = ROOT / "book/experiments/runtime-adversarial/out/run_manifest.json"
+
+SCRIPT_ROOT = Path(__file__).resolve().parent
+if str(SCRIPT_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_ROOT))
+
+import promotion_packets
 
 
 def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
-
-
-def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
-    channel = manifest.get("channel")
-    if channel != "launchd_clean":
-        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
 
 
 def sha256_path(path: Path) -> str:
@@ -60,53 +54,31 @@ def baseline_world() -> str:
     return world_id
 
 
-def load_runtime_observations(runtime_ir: Dict[str, Any]) -> List[models.RuntimeObservation]:
+def load_runtime_observations(packets: List[promotion_packets.PromotionPacket]) -> List[models.RuntimeObservation]:
     observations: List[models.RuntimeObservation] = []
-    for entry in runtime_ir.get("events") or []:
-        if not isinstance(entry, dict):
-            continue
-        try:
-            observations.append(models.RuntimeObservation(**entry))
-        except TypeError:
-            continue
+    for packet in packets:
+        observations.extend(promotion_packets.load_observations(packet))
     return observations
 
 
-def main() -> None:
-    if not RUNTIME_IR.exists():
-        raise SystemExit(f"missing runtime IR: {RUNTIME_IR}")
-
+def generate(packet_paths: List[Path] | None = None) -> Path:
     world_id = baseline_world()
-    run_manifest_checks = load_json(RUN_MANIFEST_CHECKS)
-    if not run_manifest_checks:
-        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
-    require_clean_manifest(run_manifest_checks, "runtime-checks")
-    runtime_ir = load_json(RUNTIME_IR)
-    observations = load_runtime_observations(runtime_ir)
+    packets = promotion_packets.load_packets(packet_paths or promotion_packets.DEFAULT_PACKET_PATHS, allow_missing=True)
+    for packet in packets:
+        promotion_packets.require_clean_manifest(packet, str(packet.packet_path))
 
-    adv_present = ADV_EXPECTED.exists() and ADV_RESULTS.exists()
-    if adv_present:
-        run_manifest_adv = load_json(RUN_MANIFEST_ADV)
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-        observations.extend(runtime_normalize.normalize_matrix_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id))
-
+    observations = load_runtime_observations(packets)
     doc = runtime_views.build_callout_oracle(observations)
 
-    inputs: List[Path] = [RUNTIME_IR]
-    if adv_present:
-        inputs.extend([ADV_EXPECTED, ADV_RESULTS])
-    if RUN_MANIFEST_CHECKS.exists():
-        inputs.append(RUN_MANIFEST_CHECKS)
-    if adv_present and RUN_MANIFEST_ADV.exists():
-        inputs.append(RUN_MANIFEST_ADV)
+    inputs: List[Path] = []
+    for packet in packets:
+        inputs.append(packet.packet_path)
+        if packet.paths.get("runtime_events"):
+            inputs.append(packet.paths["runtime_events"])
+        if packet.paths.get("run_manifest"):
+            inputs.append(packet.paths["run_manifest"])
     input_rel = [path_utils.to_repo_relative(p, ROOT) for p in inputs]
     input_hashes = {path_utils.to_repo_relative(p, ROOT): sha256_path(p) for p in inputs if p.exists()}
-
-    source_jobs = ["experiment:runtime-checks"]
-    if adv_present:
-        source_jobs.append("experiment:runtime-adversarial")
 
     meta = doc.get("meta", {})
     meta.update(
@@ -114,9 +86,9 @@ def main() -> None:
             "world_id": world_id,
             "inputs": input_rel,
             "input_hashes": input_hashes,
-            "source_jobs": source_jobs,
+            "source_jobs": ["promotion_packet"],
             "status": meta.get("status", "partial"),
-            "notes": "Sandbox_check oracle lane derived from seatbelt-callout markers.",
+            "notes": "Seatbelt-callout markers derived from promotion packet runtime_events.",
         }
     )
     if not doc.get("rows"):
@@ -126,6 +98,14 @@ def main() -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(doc, indent=2, sort_keys=True))
     print(f"[+] wrote {OUT}")
+    return OUT
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Generate runtime callout oracle from promotion packets.")
+    parser.add_argument("--packets", type=Path, action="append", help="Promotion packet paths")
+    args = parser.parse_args()
+    generate(packet_paths=args.packets)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ signatures for this host to keep the harness field2-tagged.
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -190,11 +191,18 @@ def build_runtime_results(
     seeds_path: Path = DEFAULT_SEEDS,
     runtime_signatures_path: Path = DEFAULT_RUNTIME_SIGNATURES,
     promotion_packet_path: Path = DEFAULT_PROMOTION_PACKET,
+    allow_legacy: bool = False,
 ) -> Dict[str, Any]:
     seeds_doc = load_json(seeds_path)
     runtime_doc = load_json(runtime_signatures_path)
     anchor_map = load_json(DEFAULT_ANCHOR_MAP)
     promotion_paths = _load_promotion_paths(promotion_packet_path)
+    if not promotion_paths and not allow_legacy:
+        raise RuntimeError(
+            "promotion_packet.json missing; run runtime_tools emit-promotion or pass --allow-legacy to use legacy paths"
+        )
+    if promotion_paths and not allow_legacy and "runtime_events" not in promotion_paths:
+        raise RuntimeError("promotion_packet.json missing runtime_events; refuse legacy fallback without --allow-legacy")
     runtime_event_paths = list(DEFAULT_RUNTIME_EVENTS)
     baseline_path = DEFAULT_BASELINE_RESULTS
     run_manifest_path = DEFAULT_RUN_MANIFEST
@@ -428,8 +436,39 @@ def write_results(doc: Dict[str, Any], output_path: Path = DEFAULT_OUTPUT) -> No
 
 
 def main() -> None:
-    doc = build_runtime_results()
-    write_results(doc)
+    parser = argparse.ArgumentParser(description="Build Field2 Atlas runtime results from promotion packets.")
+    parser.add_argument("--seeds", type=Path, default=DEFAULT_SEEDS, help="Path to field2 seeds JSON")
+    parser.add_argument(
+        "--runtime-signatures",
+        type=Path,
+        default=DEFAULT_RUNTIME_SIGNATURES,
+        help="Path to runtime_signatures.json",
+    )
+    parser.add_argument(
+        "--promotion-packet",
+        type=Path,
+        default=DEFAULT_PROMOTION_PACKET,
+        help="Path to promotion_packet.json",
+    )
+    parser.add_argument(
+        "--allow-legacy",
+        action="store_true",
+        help="Allow legacy runtime_events/baseline paths when no promotion packet exists",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="Output path for field2_runtime_results.json",
+    )
+    args = parser.parse_args()
+    doc = build_runtime_results(
+        seeds_path=args.seeds,
+        runtime_signatures_path=args.runtime_signatures,
+        promotion_packet_path=args.promotion_packet,
+        allow_legacy=args.allow_legacy,
+    )
+    write_results(doc, output_path=args.output)
 
 
 if __name__ == "__main__":

@@ -65,6 +65,7 @@ from .api import (  # noqa: F401
     load_bundle,
     validate_bundle,
     emit_promotion_packet,
+    runtime_status,
 )
 from .inventory import (  # noqa: F401
     build_runtime_inventory,
@@ -72,6 +73,8 @@ from .inventory import (  # noqa: F401
 from .plan import (  # noqa: F401
     load_plan,
     plan_digest,
+    list_plans,
+    lint_plan,
 )
 from .registry import (  # noqa: F401
     list_registries,
@@ -79,6 +82,7 @@ from .registry import (  # noqa: F401
     list_profiles,
     resolve_probe,
     resolve_profile,
+    lint_registry,
 )
 
 __all__ = [
@@ -117,12 +121,16 @@ __all__ = [
     "load_bundle",
     "validate_bundle",
     "emit_promotion_packet",
+    "runtime_status",
     "build_runtime_inventory",
     "load_plan",
     "plan_digest",
+    "list_plans",
+    "lint_plan",
     "list_registries",
     "list_probes",
     "list_profiles",
     "resolve_probe",
     "resolve_profile",
+    "lint_registry",
 ]

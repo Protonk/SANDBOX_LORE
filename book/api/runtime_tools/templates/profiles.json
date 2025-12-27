@@ -1,0 +1,15 @@
+{
+  "schema_version": "runtime-tools.profile_registry.v0.1",
+  "profiles": {
+    "example_profile": {
+      "profile_id": "example_profile",
+      "profile_path": "book/experiments/example/sb/example_profile.sb",
+      "probe_refs": [
+        "example_probe"
+      ],
+      "mode": "sbpl",
+      "family": "example",
+      "semantic_group": "example"
+    }
+  }
+}

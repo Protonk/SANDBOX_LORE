@@ -1584,18 +1584,23 @@
   },
   "metadata": {
     "input_hashes": {
-      "expected_matrix": "dada003a7d48e1ff0f7993f15fd0b51634846e95451d3be42aaf79d755601319"
+      "book/experiments/runtime-adversarial/out/impact_map.json": "f962ea8ae6da193f560086b084f98b1f2aa479b3f48cb20bf74fe55ee780b58a",
+      "book/experiments/runtime-adversarial/out/promotion_packet.json": "3b479d0a30a4e9105ca2ef0d18c015255f40cb6bf960c622915db02cc81bb823",
+      "book/experiments/runtime-adversarial/out/run_manifest.json": "3e912202734c06d9f14a9816f7452bc871cc248088f4c71f76526b29ea3cd550",
+      "book/experiments/runtime-checks/out/promotion_packet.json": "98ee9c649c1926fa231bf1e14324fd3f9df0c6acd4345d5b2e02015339d46c7e",
+      "book/experiments/runtime-checks/out/run_manifest.json": "c0ef597ec00e64bcb12e85ebbf234eea807dbb7b0aba5192d08b234a948ad22d",
+      "book/graph/concepts/validation/out/experiments/field2/field2_ir.json": "17498be658bac148db6939d60c280c95ca18a3b1a2c0089da7443ee46af7f1fc",
+      "book/graph/mappings/runtime/runtime_coverage.json": "a1589c7665dd999fa38cc7f32ce48bd9644d17be5be3469f772ab53cc30a83b7",
+      "book/graph/mappings/runtime_cuts/runtime_story.json": "447893263d5895fa81dfd84df1fff15fca6067c3cfd2b1c9df3b820d43280569",
+      "expected_matrix": "32acd46edf7ed21e279688fe6a041157a0147b7acfab02165642ab715eabf986"
     },
     "inputs": [
       "book/graph/mappings/runtime_cuts/runtime_story.json",
       "book/graph/mappings/runtime/runtime_coverage.json",
-      "book/experiments/runtime-adversarial/out/impact_map.json",
-      "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json",
       "book/graph/concepts/validation/out/experiments/field2/field2_ir.json",
-      "book/experiments/runtime-adversarial/out/expected_matrix.json",
-      "book/experiments/runtime-adversarial/out/runtime_results.json",
-      "book/experiments/runtime-checks/out/run_manifest.json",
-      "book/experiments/runtime-adversarial/out/run_manifest.json"
+      "book/experiments/runtime-adversarial/out/impact_map.json",
+      "book/experiments/runtime-checks/out/promotion_packet.json",
+      "book/experiments/runtime-adversarial/out/promotion_packet.json"
     ],
     "notes": "Derived from runtime_story with coverage gating; status cannot exceed runtime_coverage. Decision-stage inputs require launchd_clean run manifests. Disallowed mismatches present: 18.",
     "provenance": {
@@ -1799,8 +1804,7 @@
     },
     "source_jobs": [
       "experiment:field2",
-      "experiment:runtime-adversarial",
-      "experiment:runtime-checks"
+      "promotion_packet"
     ],
     "status": "partial",
     "world_id": "sonoma-14.4.1-23E224-arm64-dyld-2c0602c5"

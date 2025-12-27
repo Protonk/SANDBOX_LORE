@@ -7,15 +7,16 @@ import threading
 import os
 import shutil
 import stat
+import time
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
+from book.api import path_utils
 from book.api.entitlementjail.cli import (
     EJ,
     REPO_ROOT,
     WORLD_ID,
     bundle_evidence,
-    copy_tree,
     extract_profile_bundle_id,
     extract_file_path,
     extract_stdout_text,
@@ -26,7 +27,9 @@ from book.api.entitlementjail.cli import (
     run_matrix_group,
     run_xpc,
 )
-from book.api.entitlementjail.wait import run_probe_wait, run_wait_xpc
+from book.api.entitlementjail.logging import LOG_OBSERVER_LAST, observer_status
+from book.api.entitlementjail.protocol import normalize_wait_spec, trigger_wait_path
+from book.api.entitlementjail.session import XpcSession
 from ej_profiles import MATRIX_GROUPS, PROFILES
 
 OUT_ROOT = REPO_ROOT / "book" / "experiments" / "entitlement-diff" / "out" / "ej"
@@ -39,6 +42,446 @@ PLAN_ID = "entitlement-diff:ej"
 
 def _log_path(prefix: str, profile_label: str, probe_id: str) -> Path:
     return LOG_DIR / f"{prefix}.{profile_label}.{probe_id}.log"
+
+
+def _copy_tree(src: Path, dest: Path) -> Optional[str]:
+    if not src.exists():
+        return f"source_missing: {src}"
+    dest.mkdir(parents=True, exist_ok=True)
+    try:
+        for path in src.iterdir():
+            if path.is_dir():
+                shutil.copytree(path, dest / path.name, dirs_exist_ok=True)
+            else:
+                shutil.copy2(path, dest / path.name)
+    except Exception as exc:
+        return f"{type(exc).__name__}: {exc}"
+    return None
+
+
+def _stdout_jsonl_kinds(events: List[Dict[str, object]]) -> Dict[str, int]:
+    kinds: Dict[str, int] = {}
+    for obj in events:
+        kind = obj.get("kind") if isinstance(obj, dict) else None
+        if isinstance(kind, str):
+            kinds[kind] = kinds.get(kind, 0) + 1
+    return kinds
+
+
+def _extract_flag_value(args: List[str], flag: str) -> Optional[str]:
+    for idx, token in enumerate(args):
+        if token == flag and idx + 1 < len(args):
+            return args[idx + 1]
+    return None
+
+
+def _extract_flag_int(args: List[str], flag: str) -> Optional[int]:
+    value = _extract_flag_value(args, flag)
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except Exception:
+        return None
+
+
+def _extract_wait_spec_from_probe_args(probe_args: List[str]) -> Tuple[Optional[str], Optional[str], Optional[int], Optional[int]]:
+    fifo_path = _extract_flag_value(probe_args, "--wait-fifo")
+    if fifo_path is not None:
+        return fifo_path, "fifo", _extract_flag_int(probe_args, "--wait-timeout-ms"), _extract_flag_int(probe_args, "--wait-interval-ms")
+    exists_path = _extract_flag_value(probe_args, "--wait-exists")
+    if exists_path is not None:
+        return exists_path, "exists", _extract_flag_int(probe_args, "--wait-timeout-ms"), _extract_flag_int(probe_args, "--wait-interval-ms")
+    return None, None, _extract_flag_int(probe_args, "--wait-timeout-ms"), _extract_flag_int(probe_args, "--wait-interval-ms")
+
+
+def run_wait_xpc(
+    *,
+    profile_id: Optional[str] = None,
+    probe_id: str,
+    probe_args: Sequence[str] = (),
+    wait_spec: Optional[str] = None,
+    wait_timeout_ms: Optional[int] = None,
+    wait_interval_ms: Optional[int] = None,
+    xpc_timeout_ms: Optional[int] = None,
+    ack_risk: Optional[str] = None,
+    log_path: Optional[Path] = None,
+    plan_id: str,
+    row_id: Optional[str] = None,
+    correlation_id: Optional[str] = None,
+    trigger_delay_s: float = 0.0,
+    post_trigger: bool = False,
+    post_trigger_delay_s: float = 0.2,
+    wait_ready_timeout_s: float = 15.0,
+    process_timeout_s: Optional[float] = None,
+    on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
+    on_trigger: Optional[Callable[[Dict[str, object]], None]] = None,
+) -> Dict[str, object]:
+    if not profile_id:
+        raise ValueError("profile_id is required for run_wait_xpc")
+
+    normalized_wait_spec = normalize_wait_spec(wait_spec)
+    started_at_unix_s = time.time()
+    record: Dict[str, object] = {
+        "profile_id": profile_id,
+        "probe_id": probe_id,
+        "probe_args": list(probe_args),
+        "plan_id": plan_id,
+        "row_id": row_id,
+        "correlation_id": correlation_id,
+        "wait_spec": normalized_wait_spec,
+        "wait_timeout_ms": wait_timeout_ms,
+        "wait_interval_ms": wait_interval_ms,
+        "xpc_timeout_ms": xpc_timeout_ms,
+        "ack_risk": ack_risk,
+        "trigger_delay_s": trigger_delay_s,
+        "post_trigger": post_trigger,
+        "post_trigger_delay_s": post_trigger_delay_s,
+    }
+
+    session = XpcSession(
+        profile_id=profile_id,
+        plan_id=plan_id,
+        correlation_id=correlation_id,
+        ack_risk=ack_risk,
+        wait_spec=normalized_wait_spec,
+        wait_timeout_ms=wait_timeout_ms,
+        wait_interval_ms=wait_interval_ms,
+        xpc_timeout_ms=xpc_timeout_ms,
+    )
+
+    try:
+        session.start(ready_timeout_s=wait_ready_timeout_s)
+    except Exception as exc:
+        finished_at_unix_s = time.time()
+        record.update(
+            {
+                "command": session.command(),
+                "error": f"{type(exc).__name__}: {exc}",
+                "session_error": session.last_error,
+                "started_at_unix_s": started_at_unix_s,
+                "finished_at_unix_s": finished_at_unix_s,
+                "duration_s": finished_at_unix_s - started_at_unix_s,
+            }
+        )
+        return record
+
+    wait_info: Dict[str, object] = {}
+    trigger_events: List[Dict[str, object]] = []
+    probe_record: Dict[str, object] = {}
+
+    try:
+        if session.session_ready and isinstance(session.session_ready.get("data"), dict):
+            wait_info["session_ready"] = session.session_ready.get("data")
+        if session.wait_ready and isinstance(session.wait_ready.get("data"), dict):
+            wait_info["wait_ready"] = session.wait_ready.get("data")
+
+        wait_path = session.wait_path()
+        wait_mode = session.wait_mode()
+        wait_info["wait_path"] = wait_path
+        wait_info["wait_mode"] = wait_mode
+        wait_info["wait_timeout_ms"] = wait_timeout_ms
+        wait_info["wait_interval_ms"] = wait_interval_ms
+
+        if on_wait_ready is not None and wait_path and wait_mode:
+            try:
+                on_wait_ready(
+                    {
+                        "wait_path": wait_path,
+                        "wait_mode": wait_mode,
+                        "wait_timeout_ms": wait_timeout_ms,
+                        "session_ready": wait_info.get("session_ready"),
+                        "wait_ready": wait_info.get("wait_ready"),
+                    }
+                )
+                wait_info["on_wait_ready_called"] = True
+            except Exception as exc:
+                wait_info["on_wait_ready_error"] = f"{type(exc).__name__}: {exc}"
+
+        if wait_path and wait_mode:
+            if trigger_delay_s > 0:
+                time.sleep(trigger_delay_s)
+            trigger_at = time.time()
+            trigger_error = session.trigger_wait(nonblocking=False, timeout_s=2.0)
+            trigger_events.append({"kind": "primary", "at_unix_s": trigger_at, "error": trigger_error})
+            if on_trigger is not None:
+                cb = {
+                    "wait_path": wait_path,
+                    "wait_mode": wait_mode,
+                    "wait_timeout_ms": wait_timeout_ms,
+                    "trigger": trigger_events[-1],
+                    "trigger_events": list(trigger_events),
+                }
+                try:
+                    on_trigger(cb)
+                    wait_info["on_trigger_called"] = True
+                except Exception as exc:
+                    wait_info["on_trigger_error"] = f"{type(exc).__name__}: {exc}"
+            if post_trigger:
+                if post_trigger_delay_s > 0:
+                    time.sleep(post_trigger_delay_s)
+                post_at = time.time()
+                post_error = session.trigger_wait(nonblocking=True, timeout_s=0.0)
+                trigger_events.append({"kind": "post", "at_unix_s": post_at, "error": post_error})
+
+            if trigger_error is None:
+                trigger_event = session.wait_for_trigger_received(timeout_s=2.0)
+                if trigger_event and isinstance(trigger_event.get("data"), dict):
+                    wait_info["trigger_received"] = trigger_event.get("data")
+
+        probe_timeout_s = process_timeout_s or 25.0
+        probe_record = session.run_probe_with_observer(
+            probe_id=probe_id,
+            argv=probe_args,
+            timeout_s=probe_timeout_s,
+            log_path=log_path,
+            plan_id=plan_id,
+            row_id=row_id,
+            observer_last=LOG_OBSERVER_LAST,
+            write_probe_log=False,
+        )
+    finally:
+        session.close()
+
+    finished_at_unix_s = time.time()
+    stdout_text = "".join(session.stdout_lines).rstrip()
+    stderr_text = "".join(session.stderr_lines).rstrip()
+
+    log_write_error = None
+    if log_path is not None and stdout_text:
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_path.write_text(stdout_text + "\n")
+        except Exception as exc:
+            log_write_error = f"{type(exc).__name__}: {exc}"
+
+    record.update(
+        {
+            "command": session.command(),
+            "exit_code": session.exit_code,
+            "stdout": stdout_text,
+            "stderr": stderr_text,
+            "log_path": path_utils.to_repo_relative(log_path, REPO_ROOT) if log_path else None,
+            "log_write_error": log_write_error,
+            "observer": probe_record.get("observer"),
+            "observer_log_path": probe_record.get("observer_log_path"),
+            "observer_status": probe_record.get("observer_status"),
+            "wait_info": wait_info,
+            "trigger_events": trigger_events,
+            "probe_started_at_unix_s": probe_record.get("probe_started_at_unix_s"),
+            "probe_finished_at_unix_s": probe_record.get("probe_finished_at_unix_s"),
+            "probe_timeout_s": probe_record.get("probe_timeout_s"),
+            "probe_error": probe_record.get("probe_error"),
+            "started_at_unix_s": started_at_unix_s,
+            "finished_at_unix_s": finished_at_unix_s,
+            "duration_s": finished_at_unix_s - started_at_unix_s,
+            "stdout_jsonl_kinds": _stdout_jsonl_kinds(session.stdout_jsonl),
+        }
+    )
+    if "stdout_json" in probe_record:
+        record["stdout_json"] = probe_record["stdout_json"]
+    else:
+        record["stdout_json_error"] = probe_record.get("stdout_json_error", "probe_response_missing")
+    return record
+
+
+def run_probe_wait(
+    *,
+    profile_id: Optional[str] = None,
+    probe_id: str,
+    probe_args: List[str],
+    log_path: Optional[Path] = None,
+    plan_id: str,
+    row_id: Optional[str] = None,
+    correlation_id: Optional[str] = None,
+    ack_risk: Optional[str] = None,
+    xpc_timeout_ms: Optional[int] = None,
+    trigger_delay_s: float = 0.0,
+    post_trigger: bool = False,
+    post_trigger_delay_s: float = 0.2,
+    wait_ready_timeout_s: float = 10.0,
+    process_timeout_s: Optional[float] = None,
+    on_wait_ready: Optional[Callable[[Dict[str, object]], None]] = None,
+    on_trigger: Optional[Callable[[Dict[str, object]], None]] = None,
+) -> Dict[str, object]:
+    if not profile_id:
+        raise ValueError("profile_id is required for run_probe_wait")
+
+    wait_path, wait_mode, wait_timeout_ms, wait_interval_ms = _extract_wait_spec_from_probe_args(probe_args)
+    started_at_unix_s = time.time()
+    record: Dict[str, object] = {
+        "profile_id": profile_id,
+        "probe_id": probe_id,
+        "probe_args": list(probe_args),
+        "plan_id": plan_id,
+        "row_id": row_id,
+        "correlation_id": correlation_id,
+        "ack_risk": ack_risk,
+        "xpc_timeout_ms": xpc_timeout_ms,
+        "trigger_delay_s": trigger_delay_s,
+    }
+
+    session = XpcSession(
+        profile_id=profile_id,
+        plan_id=plan_id,
+        correlation_id=correlation_id,
+        ack_risk=ack_risk,
+        wait_spec=None,
+        xpc_timeout_ms=xpc_timeout_ms,
+    )
+
+    try:
+        session.start(ready_timeout_s=wait_ready_timeout_s)
+    except Exception as exc:
+        finished_at_unix_s = time.time()
+        record.update(
+            {
+                "command": session.command(),
+                "error": f"{type(exc).__name__}: {exc}",
+                "session_error": session.last_error,
+                "started_at_unix_s": started_at_unix_s,
+                "finished_at_unix_s": finished_at_unix_s,
+                "duration_s": finished_at_unix_s - started_at_unix_s,
+            }
+        )
+        return record
+
+    wait_info: Dict[str, object] = {
+        "wait_args_source": "probe_args",
+        "wait_path": wait_path,
+        "wait_mode": wait_mode,
+        "wait_timeout_ms": wait_timeout_ms,
+        "wait_interval_ms": wait_interval_ms,
+    }
+    trigger_events: List[Dict[str, object]] = []
+    probe_response: Optional[Dict[str, object]] = None
+    observer: Optional[Dict[str, object]] = None
+    observer_log_path = None
+    probe_started_at_unix_s = time.time()
+    probe_finished_at_unix_s = probe_started_at_unix_s
+
+    try:
+        if session.session_ready and isinstance(session.session_ready.get("data"), dict):
+            wait_info["session_ready"] = session.session_ready.get("data")
+
+        if on_wait_ready is not None and wait_path and wait_mode:
+            try:
+                on_wait_ready({"wait_path": wait_path, "wait_mode": wait_mode, "wait_timeout_ms": wait_timeout_ms})
+                wait_info["on_wait_ready_called"] = True
+            except Exception as exc:
+                wait_info["on_wait_ready_error"] = f"{type(exc).__name__}: {exc}"
+
+        try:
+            session.send_command({"command": "run_probe", "probe_id": probe_id, "argv": list(probe_args)})
+        except Exception as exc:
+            wait_info["stdin_write_error"] = f"{type(exc).__name__}: {exc}"
+
+        derived_timeout_s = None
+        if wait_timeout_ms is not None:
+            derived_timeout_s = wait_timeout_ms / 1000.0 + max(trigger_delay_s, 0.0) + 5.0
+        effective_timeout_s = process_timeout_s or 25.0
+        if derived_timeout_s is not None:
+            effective_timeout_s = max(effective_timeout_s, derived_timeout_s)
+        deadline = time.monotonic() + effective_timeout_s
+
+        trigger_scheduled_at = time.monotonic() + max(trigger_delay_s, 0.0)
+        triggered = False
+        post_trigger_scheduled_at = None
+
+        while time.monotonic() <= deadline:
+            now = time.monotonic()
+            if not triggered and wait_path and wait_mode and now >= trigger_scheduled_at:
+                trigger_at = time.time()
+                trigger_error = trigger_wait_path(
+                    wait_path=wait_path,
+                    wait_mode=wait_mode,
+                    nonblocking=False,
+                    timeout_s=2.0,
+                )
+                trigger_events.append({"kind": "primary", "at_unix_s": trigger_at, "error": trigger_error})
+                triggered = True
+                if on_trigger is not None:
+                    try:
+                        on_trigger({"wait_path": wait_path, "wait_mode": wait_mode, "trigger": trigger_events[-1]})
+                        wait_info["on_trigger_called"] = True
+                    except Exception as exc:
+                        wait_info["on_trigger_error"] = f"{type(exc).__name__}: {exc}"
+                if post_trigger:
+                    post_trigger_scheduled_at = time.monotonic() + max(post_trigger_delay_s, 0.0)
+
+            if post_trigger_scheduled_at is not None and wait_path and wait_mode and now >= post_trigger_scheduled_at:
+                post_at = time.time()
+                post_error = trigger_wait_path(
+                    wait_path=wait_path,
+                    wait_mode=wait_mode,
+                    nonblocking=True,
+                    timeout_s=0.0,
+                )
+                trigger_events.append({"kind": "post", "at_unix_s": post_at, "error": post_error})
+                post_trigger_scheduled_at = None
+
+            obj = session.read_jsonl(timeout_s=0.2)
+            if obj is None:
+                if session.proc is not None and session.proc.poll() is not None:
+                    break
+                continue
+            if obj.get("kind") == "probe_response":
+                probe_response = obj
+                break
+
+        probe_finished_at_unix_s = time.time()
+
+        observer, observer_log_path = session.capture_observer(
+            probe_response=probe_response,
+            log_path=log_path,
+            plan_id=plan_id,
+            row_id=row_id,
+            observer_last=LOG_OBSERVER_LAST,
+            start_s=probe_started_at_unix_s,
+            end_s=probe_finished_at_unix_s,
+        )
+    finally:
+        session.close()
+
+    finished_at_unix_s = time.time()
+    stdout_text = "".join(session.stdout_lines).rstrip()
+    stderr_text = "".join(session.stderr_lines).rstrip()
+
+    log_write_error = None
+    if log_path is not None and stdout_text:
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_path.write_text(stdout_text + "\n")
+        except Exception as exc:
+            log_write_error = f"{type(exc).__name__}: {exc}"
+
+    record.update(
+        {
+            "command": session.command(),
+            "exit_code": session.exit_code,
+            "stdout": stdout_text,
+            "stderr": stderr_text,
+            "log_path": path_utils.to_repo_relative(log_path, REPO_ROOT) if log_path else None,
+            "log_write_error": log_write_error,
+            "observer": observer,
+            "observer_log_path": observer_log_path,
+            "observer_status": observer_status(observer),
+            "wait_info": wait_info,
+            "trigger_events": trigger_events,
+            "probe_started_at_unix_s": probe_started_at_unix_s,
+            "probe_finished_at_unix_s": probe_finished_at_unix_s,
+            "started_at_unix_s": started_at_unix_s,
+            "finished_at_unix_s": finished_at_unix_s,
+            "duration_s": finished_at_unix_s - started_at_unix_s,
+            "stdout_jsonl_kinds": _stdout_jsonl_kinds(session.stdout_jsonl),
+        }
+    )
+
+    if probe_response is not None:
+        record["stdout_json"] = probe_response
+    else:
+        record["stdout_json_error"] = "probe_response_missing"
+    return record
 
 
 def _run_tcp_listener(host: str = "127.0.0.1", timeout_s: float = 2.0) -> Tuple[Dict[str, object], callable]:
@@ -74,8 +517,11 @@ def _run_tcp_listener(host: str = "127.0.0.1", timeout_s: float = 2.0) -> Tuple[
 
 
 def _supports_probe(stdout_json: Optional[Dict[str, object]], probe_id: str) -> bool:
-    probe_ids = parse_probe_catalog(stdout_json)
-    return bool(probe_ids and probe_id in probe_ids)
+    catalog = parse_probe_catalog(stdout_json)
+    if not isinstance(catalog, dict):
+        return False
+    probe_ids = catalog.get("probe_ids")
+    return bool(isinstance(probe_ids, list) and probe_id in probe_ids)
 
 
 def _capture_tmp_dir(
@@ -630,7 +1076,6 @@ def scenario_wait_attach(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, obje
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "fs_op_wait",
                 "probe_args": [],
                 "row_id": "wait_attach.minimal.wait_fifo_prep",
@@ -663,7 +1108,6 @@ def scenario_wait_attach(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, obje
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "fs_op_wait",
                 "probe_args": [],
                 "row_id": "wait_attach.minimal.wait_exists_prep",
@@ -810,7 +1254,6 @@ def scenario_wait_multi_trigger(*, ack_risk: Optional[str]) -> Dict[str, Dict[st
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "wait_multi_fifo_prep",
                 "row_id": "wait_multi.minimal.fifo_prep",
                 "fifo_path": str(fifo_path),
@@ -846,7 +1289,6 @@ def scenario_wait_multi_trigger(*, ack_risk: Optional[str]) -> Dict[str, Dict[st
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "wait_multi_exists_prep",
                 "row_id": "wait_multi.minimal.exists_prep",
                 "wait_exists_path": str(exists_path),
@@ -900,7 +1342,6 @@ def scenario_wait_probe_wait(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, 
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "wait_probe_fifo_prep",
                 "row_id": "wait_probe.minimal.fifo_prep",
                 "fifo_path": str(fifo_path),
@@ -941,7 +1382,6 @@ def scenario_wait_probe_wait(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, 
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "wait_probe_exists_prep",
                 "row_id": "wait_probe.minimal.exists_prep",
                 "wait_exists_path": str(exists_path),
@@ -1035,7 +1475,6 @@ def scenario_wait_create(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, obje
         runs.append(
             {
                 "profile_id": profile.profile_id,
-                "service_id": profile.service_id,
                 "probe_id": "wait_create_prep",
                 "row_id": "wait_create.minimal.prep",
                 "fifo_path": str(fifo_path) if fifo_path else None,
@@ -1220,7 +1659,7 @@ def scenario_run_matrix_out(*, ack_risk: Optional[str]) -> Dict[str, Dict[str, o
     cmd = [str(EJ), "run-matrix", "--group", "baseline", "--out", str(out_dir), "capabilities_snapshot"]
     res = run_cmd(cmd)
     dest_dir = MATRIX_DIR / "out_baseline"
-    copy_error = copy_tree(out_dir, dest_dir)
+    copy_error = _copy_tree(out_dir, dest_dir)
     report_path = dest_dir / "run-matrix.json"
     report_json = None
     output_dir = None
@@ -1267,7 +1706,7 @@ def scenario_bundle_evidence_out(*, ack_risk: Optional[str]) -> Dict[str, Dict[s
         cmd += ["--ack-risk", ack_risk]
     res = run_cmd(cmd)
     dest_dir = OUT_ROOT / "evidence_out"
-    copy_error = copy_tree(out_dir, dest_dir)
+    copy_error = _copy_tree(out_dir, dest_dir)
     stdout_json = maybe_parse_json(res.get("stdout", "").strip())
     output_dir = None
     if isinstance(stdout_json, dict):

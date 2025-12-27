@@ -11,7 +11,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from book.api import path_utils
 from book.api.runtime_tools import workflow
@@ -96,7 +96,11 @@ def compile_profiles(
     only_scenarios: Optional[Iterable[str]] = None,
 ) -> List[workflow.ProfileSpec]:
     registry_id = plan_doc["registry_id"]
-    registry = load_registry(registry_id)
+    try:
+        registry = load_registry(registry_id)
+    except Exception as exc:
+        errors.append(f"registry load failed: {registry_id}: {exc}")
+        return doc, errors
     only_profiles_set = set(only_profiles or [])
     only_scenarios_set = set(only_scenarios or [])
     profiles: List[workflow.ProfileSpec] = []
@@ -127,3 +131,82 @@ def compile_profiles(
         )
     return profiles
 
+
+def list_plan_paths(root: Optional[Path] = None) -> List[Path]:
+    repo_root = path_utils.ensure_absolute(root or REPO_ROOT, REPO_ROOT)
+    experiments_root = repo_root / "book" / "experiments"
+    if not experiments_root.exists():
+        return []
+    return sorted(experiments_root.rglob("plan.json"))
+
+
+def list_plans(root: Optional[Path] = None) -> List[Dict[str, Any]]:
+    entries: List[Dict[str, Any]] = []
+    for path in list_plan_paths(root=root):
+        try:
+            doc = load_plan(path)
+        except Exception as exc:
+            entries.append(
+                {
+                    "path": str(path_utils.to_repo_relative(path, repo_root=REPO_ROOT)),
+                    "error": str(exc),
+                }
+            )
+            continue
+        entries.append(
+            {
+                "plan_id": doc.get("plan_id"),
+                "registry_id": doc.get("registry_id"),
+                "profiles": len(doc.get("profiles") or []),
+                "path": str(path_utils.to_repo_relative(path, repo_root=REPO_ROOT)),
+            }
+        )
+    return entries
+
+
+def lint_plan(path: Path) -> Tuple[Optional[Dict[str, Any]], List[str]]:
+    errors: List[str] = []
+    try:
+        doc = load_plan(path)
+    except Exception as exc:
+        return None, [str(exc)]
+
+    registry_id = doc.get("registry_id")
+    if not registry_id:
+        errors.append("missing registry_id")
+        return doc, errors
+
+    profiles = doc.get("profiles") or []
+    if not profiles:
+        errors.append("profiles list is empty")
+        return doc, errors
+
+    registry = load_registry(registry_id)
+    probes = registry.get("probes") or {}
+    for profile_id in profiles:
+        try:
+            profile = resolve_profile(registry_id, profile_id)
+        except KeyError:
+            errors.append(f"unknown profile: {registry_id}:{profile_id}")
+            continue
+        profile_path = profile.get("profile_path")
+        if not profile_path:
+            errors.append(f"profile missing profile_path: {registry_id}:{profile_id}")
+        else:
+            abs_path = path_utils.ensure_absolute(Path(profile_path), REPO_ROOT)
+            if not abs_path.exists():
+                errors.append(f"profile_path missing: {registry_id}:{profile_id} -> {profile_path}")
+        probe_refs = profile.get("probe_refs") or []
+        if not probe_refs:
+            errors.append(f"profile has no probe_refs: {registry_id}:{profile_id}")
+        for probe_ref in probe_refs:
+            if probe_ref not in probes:
+                errors.append(f"unknown probe_ref: {registry_id}:{profile_id}:{probe_ref}")
+
+    apply_preflight_profile = doc.get("apply_preflight_profile")
+    if apply_preflight_profile:
+        abs_path = path_utils.ensure_absolute(Path(apply_preflight_profile), REPO_ROOT)
+        if not abs_path.exists():
+            errors.append(f"apply_preflight_profile missing: {apply_preflight_profile}")
+
+    return doc, errors

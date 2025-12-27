@@ -18,7 +18,7 @@ from book.api.runtime_tools.core import contract as rt_contract
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
 
 
-def _sandbox_check_self() -> Dict[str, Any]:
+def sandbox_check_self() -> Dict[str, Any]:
     info: Dict[str, Any] = {"source": "sandbox_check"}
     try:
         lib_path = ctypes.util.find_library("system_sandbox")
@@ -47,7 +47,7 @@ def run_apply_preflight(
         "run_id": run_id,
         "profile": path_utils.to_repo_relative(profile_path, repo_root=REPO_ROOT),
         "runner": path_utils.to_repo_relative(runner_path, repo_root=REPO_ROOT),
-        "sandbox_check_self": _sandbox_check_self(),
+        "sandbox_check_self": sandbox_check_self(),
     }
     if not profile_path.exists():
         record["status"] = "error"
@@ -83,4 +83,3 @@ def run_apply_preflight(
         record["status"] = "error"
         record["error"] = str(exc)
     return record
-

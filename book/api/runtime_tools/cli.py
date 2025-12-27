@@ -17,6 +17,7 @@ from book.api.runtime_tools import workflow
 from book.api.runtime_tools import api as runtime_api
 from book.api.runtime_tools.channels import ChannelSpec
 from book.api.runtime_tools import registry as runtime_registry
+from book.api.runtime_tools import plan as runtime_plan
 
 
 REPO_ROOT = path_utils.find_repo_root(Path(__file__))
@@ -41,9 +42,12 @@ def run_command(args: argparse.Namespace) -> int:
             channel=channel,
             only_profiles=args.only_profile,
             only_scenarios=args.only_scenario,
+            dry_run=args.dry,
         )
         print(f"[+] wrote {out_dir}")
         return 0
+    if args.dry:
+        raise SystemExit("--dry requires --plan")
     out_dir = args.out or (BOOK_ROOT / "profiles" / "golden-triple")
     out_path = harness_runner.run_matrix(args.matrix, out_dir=out_dir)
     print(f"[+] wrote {out_path}")
@@ -166,6 +170,49 @@ def validate_bundle_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def status_command(args: argparse.Namespace) -> int:
+    status = runtime_api.runtime_status()
+    print(json.dumps(status, indent=2))
+    return 0
+
+
+def list_plans_command(args: argparse.Namespace) -> int:
+    plans = runtime_plan.list_plans()
+    print(json.dumps(plans, indent=2))
+    return 0
+
+
+def describe_plan_command(args: argparse.Namespace) -> int:
+    doc = runtime_plan.load_plan(args.plan)
+    payload = {
+        "plan": doc,
+        "path": str(path_utils.to_repo_relative(args.plan, repo_root=REPO_ROOT)),
+        "plan_digest": runtime_plan.plan_digest(doc),
+    }
+    print(json.dumps(payload, indent=2))
+    return 0
+
+
+def plan_lint_command(args: argparse.Namespace) -> int:
+    _doc, errors = runtime_plan.lint_plan(args.plan)
+    if errors:
+        for err in errors:
+            print(f"[!] {err}")
+        return 1
+    print("[+] plan ok")
+    return 0
+
+
+def registry_lint_command(args: argparse.Namespace) -> int:
+    _doc, errors = runtime_registry.lint_registry(args.registry)
+    if errors:
+        for err in errors:
+            print(f"[!] {err}")
+        return 1
+    print("[+] registry ok")
+    return 0
+
+
 def run_all_command(args: argparse.Namespace) -> int:
     run = workflow.run_from_matrix(
         args.matrix,
@@ -190,6 +237,7 @@ def main(argv: list[str] | None = None) -> int:
     ap_run.add_argument("--channel", type=str, default="direct", help="Channel (launchd_clean|direct)")
     ap_run.add_argument("--only-profile", action="append", default=[], help="Limit to a profile_id (plan mode)")
     ap_run.add_argument("--only-scenario", action="append", default=[], help="Limit to an expectation_id (plan mode)")
+    ap_run.add_argument("--dry", action="store_true", help="Validate/emit plan artifacts without running probes")
     ap_run.set_defaults(func=run_command)
 
     ap_norm = sub.add_parser("normalize", help="Normalize expected_matrix + runtime_results into observations.")
@@ -268,6 +316,24 @@ def main(argv: list[str] | None = None) -> int:
     ap_validate = sub.add_parser("validate-bundle", help="Validate a run bundle artifact index.")
     ap_validate.add_argument("--bundle", type=Path, required=True, help="Run bundle output directory")
     ap_validate.set_defaults(func=validate_bundle_command)
+
+    ap_status = sub.add_parser("status", help="Report runtime_tools environment readiness.")
+    ap_status.set_defaults(func=status_command)
+
+    ap_list_plans = sub.add_parser("list-plans", help="List plan.json files under book/experiments.")
+    ap_list_plans.set_defaults(func=list_plans_command)
+
+    ap_desc_plan = sub.add_parser("describe-plan", help="Describe a plan.json (includes digest).")
+    ap_desc_plan.add_argument("--plan", type=Path, required=True, help="Path to plan.json")
+    ap_desc_plan.set_defaults(func=describe_plan_command)
+
+    ap_plan_lint = sub.add_parser("plan-lint", help="Validate a plan.json against its registry.")
+    ap_plan_lint.add_argument("--plan", type=Path, required=True, help="Path to plan.json")
+    ap_plan_lint.set_defaults(func=plan_lint_command)
+
+    ap_reg_lint = sub.add_parser("registry-lint", help="Validate probe/profile registries.")
+    ap_reg_lint.add_argument("--registry", type=str, help="Registry id (omit to lint all)")
+    ap_reg_lint.set_defaults(func=registry_lint_command)
 
     args = ap.parse_args(argv)
     return args.func(args)

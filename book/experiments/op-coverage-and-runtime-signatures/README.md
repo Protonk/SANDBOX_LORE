@@ -24,7 +24,13 @@ Purpose: establish whether the operation vocabulary, system-profile coverage, an
   - Ambiguous: no signature captured despite attempts (could be gating or probe flaw).
   - Against: signature appears without op reference, or op reference never surfaces a signature when it should; indicates vocab/runtime linkage or coverage is incomplete.
 
-## Current workflow (reuse runtime-adversarial, keep artifacts local)
-- Run the adversarial harness: `python book/experiments/runtime-adversarial/run_adversarial.py`.
-- Harvest the runtime outputs into this suite: `python book/experiments/op-coverage-and-runtime-signatures/harvest_runtime_artifacts.py` (copies `runtime_results.json`, `expected_matrix.json`, `mismatch_summary.json`, `impact_map.json` into `out/`).
-- Summarize per-op outcomes from the local copy: `python book/experiments/op-coverage-and-runtime-signatures/summarize_from_adversarial.py` → `out/op_runtime_summary.json`.
+## Current workflow (promotion packet based)
+- Run the adversarial plan via runtime_tools:
+  `python -m book.api.runtime_tools run --plan book/experiments/runtime-adversarial/plan.json --channel launchd_clean --out book/experiments/runtime-adversarial/out`
+- Emit a promotion packet:
+  `python -m book.api.runtime_tools emit-promotion --bundle book/experiments/runtime-adversarial/out --out book/experiments/runtime-adversarial/out/promotion_packet.json`
+- Harvest runtime artifacts into this suite:
+  `python book/experiments/op-coverage-and-runtime-signatures/harvest_runtime_artifacts.py`
+  (pulls artifacts listed in the promotion packet into `out/`).
+- Summarize per-op outcomes from the local copy:
+  `python book/experiments/op-coverage-and-runtime-signatures/summarize_from_adversarial.py` → `out/op_runtime_summary.json`.

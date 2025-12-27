@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from book.graph.mappings.runtime import generate_runtime_signatures as grs
+from book.graph.mappings.runtime import promotion_packets
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,15 +15,11 @@ def load(path: Path):
 
 
 def test_expected_matrix_hash_matches_runtime_ir():
-    runtime_ir = load(grs.RUNTIME_IR)
-    # Mirror generator behavior: merge in adversarial expected matrix if present.
-    if grs.ADV_EXPECTED.exists():
-        adv_expected = load(grs.ADV_EXPECTED)
-        runtime_ir.setdefault("expected_matrix", {}).setdefault("profiles", {}).update(
-            (adv_expected.get("profiles") or {})
-        )
-
-    expected_matrix = runtime_ir.get("expected_matrix") or {}
+    packets = promotion_packets.load_packets(
+        promotion_packets.DEFAULT_PACKET_PATHS,
+        allow_missing=True,
+    )
+    expected_matrix, _world_id = promotion_packets.merge_expected_matrices(packets)
     expected_hash = grs.hash_expected_matrix(expected_matrix)
 
     signatures = load(SIGNATURES)

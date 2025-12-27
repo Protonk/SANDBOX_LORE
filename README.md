@@ -49,6 +49,7 @@ Detailed navigation and norms live in layered `AGENTS.md` files in each subtree.
   - Chapters and profiles that tell the sandbox story in human-readable form.
   - Examples and experiments that serve as runnable labs and probes.
   - API tooling for working with compiled profiles, runtime checks, and CARTON-backed mappings.
+  - Runtime evidence production via `book/api/runtime_tools` (plan-based runs and promotion packets).
   - A graph layer (`book/graph/`) that holds the concept inventory, validation harness, and stable host-specific mappings that feed into CARTON.
 
 - `dumps/`  
@@ -68,4 +69,3 @@ Detailed navigation and norms live in layered `AGENTS.md` files in each subtree.
 
 - `troubles/`  
   Records of crashes, decoding problems, runtime failures, and other issues that need follow-up.
-

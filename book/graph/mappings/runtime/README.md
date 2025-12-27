@@ -1,6 +1,6 @@
 # Runtime probes
 
-Runtime probe outputs that are stable enough to reuse live here. These are versioned to the Sonoma baseline (23E224) and come from the same harness used by `book/graph/concepts/validation/out/semantic/runtime_results.json`.
+Runtime probe outputs that are stable enough to reuse live here. These are versioned to the Sonoma baseline (23E224) and come from runtime_tools promotion packets (clean launchd channel).
 
 Current artifacts:
 - `expectations.json` — manifest keyed by `profile_id` (plus `metadata`) with host/build/SIP metadata, blob path + SHA256, status (`ok`/`partial`/`blocked`), probe count, and the trace file path.
@@ -9,13 +9,13 @@ Current artifacts:
 - `golden_expectations.json` — golden runtime profile manifest (bucket4, bucket5, metafilter_any, strict_1, sys:bsd deny-only, sys:airlock EPERM) with blob hashes and modes; includes `metadata`.
 - `traces/golden_traces.jsonl` — normalized probe rows for the golden set from runtime-checks.
 - `golden_decodes.json` + `decoded_blobs/` — compiled blobs and slim decode summaries (node_count, op_count, tag_counts, literal_strings) for the same golden set; includes `metadata`.
-- `runtime_signatures.json` — small IR derived from validation outputs (`field2_ir.json` + normalized runtime results) summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/generate_runtime_signatures.py` (which runs the validation driver `--tag smoke`) and folded into CARTON.
+- `runtime_signatures.json` — small IR derived from promotion packets plus `field2_ir.json`, summarizing probe outcomes by profile plus a field2 summary; regenerated via `book/graph/mappings/runtime/promote_from_packets.py` and folded into CARTON.
 - `runtime_callout_oracle.json` — sandbox_check oracle lane derived from seatbelt-callout markers (decision-only; not syscall outcomes).
 - CARTON: see `book/api/carton/CARTON.json` for frozen hashes/paths of the runtime mappings/IR that are included in CARTON for Sonoma 14.4.1.
 
 Status update (launchd clean run):
 - Latest refresh ran via the runtime_tools launchd-clean channel (`python -m book.api.runtime_tools run --plan ... --channel launchd_clean`), which avoids the Desktop TCC block by staging to `/private/tmp`; decision-stage outcomes are current for runtime-checks and runtime-adversarial.
-- Clean-channel runs now emit `book/experiments/runtime-checks/out/run_manifest.json` and `book/experiments/runtime-adversarial/out/run_manifest.json` and generators refuse to promote decision-stage artifacts unless `channel=launchd_clean`.
+- Clean-channel runs emit promotion packets (`book/experiments/*/out/promotion_packet.json`), and generators refuse to promote decision-stage artifacts unless `channel=launchd_clean`.
 - `sys:airlock` remains preflight-blocked on this host; treat that profile as blocked evidence.
 - `runtime_signatures.json` and `runtime_coverage.json` remain `partial` due to scoped mismatches (structural/path families), not due to apply gates.
 
@@ -32,7 +32,6 @@ Role in the substrate:
  - Lifecycle traces record higher-level policy inputs (entitlements/extension attempts) and their outcomes, grounding lifecycle concepts without rerunning brittle probes.
 
 Regeneration:
-- Rerun runtime-checks and runtime-adversarial via the runtime_tools launchd-clean channel so `run_manifest.json` is emitted; generators will refuse to promote decision-stage artifacts unless the run manifest says `channel=launchd_clean`.
-- Rerun `book/graph/concepts/validation/out/semantic/runtime_results.json` (via `runtime-checks`) and normalize into this folder using the loader (see `expectations.json` for the expected shape). Keep host/build metadata aligned with `validation/out/metadata.json`.
+- Rerun runtime-checks and runtime-adversarial via the runtime_tools launchd-clean channel so promotion packets are emitted; generators refuse to promote decision-stage artifacts unless the run manifest says `channel=launchd_clean`.
+- Run `book/graph/mappings/runtime/promote_from_packets.py` to rebuild `runtime_cuts/`, `runtime_story`, `runtime_coverage`, `runtime_callout_oracle`, and `runtime_signatures.json` from promotion packets.
 - Rerun `book/graph/mappings/runtime/generate_lifecycle.py` after updating lifecycle probes in `book/graph/concepts/validation/out/lifecycle/` to refresh `lifecycle.json` and `lifecycle_traces/`.
-- Rerun `book/graph/mappings/runtime/generate_runtime_callout_oracle.py` to refresh the sandbox_check oracle lane.

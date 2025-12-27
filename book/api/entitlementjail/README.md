@@ -10,17 +10,23 @@ This API expects EntitlementJail.app at `book/tools/entitlement/EntitlementJail.
 
 ## Entry points
 - `book.api.entitlementjail.cli.run_xpc` (single probe via `xpc run`)
-- `book.api.entitlementjail.wait.run_wait_xpc` (single probe via `xpc session` + wait barrier)
-- `book.api.entitlementjail.wait.run_probe_wait` (probe-internal waits like `fs_op_wait`)
-- `book.api.entitlementjail.session.XpcSession` (multi-probe `xpc session` control plane)
+- `book.api.entitlementjail.protocol.WaitSpec` (typed wait spec for `xpc session --wait`)
+- `book.api.entitlementjail.session.open_session` (start + return a ready session)
+- `book.api.entitlementjail.session.XpcSession` (multi-probe `xpc session` control plane; event iteration + observer helpers)
+- `book.api.entitlementjail.cli.list_profiles` / `list_services` (profile/service inventory)
+- `book.api.entitlementjail.cli.show_profile` / `describe_service` / `health_check` (profile + service reports)
 - `book.api.entitlementjail.cli.run_matrix_group` (matrix group run via `--out`)
+- `book.api.entitlementjail.cli.run_matrix` (matrix run for a specific probe)
 - `book.api.entitlementjail.cli.bundle_evidence` (evidence bundle via `--out`)
+- `book.api.entitlementjail.cli.verify_evidence` / `inspect_macho` (evidence inspection)
+- `book.api.entitlementjail.cli.load_evidence_manifest` / `load_evidence_profiles` / `load_evidence_symbols` (load bundled evidence JSON)
+- `book.api.entitlementjail.cli.quarantine_lab` (resolve bundle id from profile, run quarantine-lab)
 
 ## Observer defaults
 Observer capture is enabled by default when callers provide a `log_path`.
 
 Environment toggles:
-- `EJ_LOG_OBSERVER=external|disabled` (default: external; `embedded` is treated as `external` for compatibility)
+- `EJ_LOG_OBSERVER=external|disabled` (default: external)
 - `EJ_LOG_LAST=10s` (fallback `--last` window)
 - `EJ_LOG_PAD_S=2.0` (padding for `--start/--end` windows)
 
@@ -39,8 +45,8 @@ This document captures the stable EntitlementJail.app interface that the tooling
 
 ## Scope
 We depend on:
-- `entitlement-jail xpc run` for one-shot probes.
-- `entitlement-jail xpc session` for attach-first workflows.
+- `entitlement-jail xpc run` for one-shot probe execution.
+- `entitlement-jail xpc session` for attach-first, multi-probe sessions.
 - `sandbox-log-observer` for deny evidence (observer-only, outside the sandbox).
 
 We do not rely on integrated `log stream` capture (removed in v2); deny evidence is observer-only.

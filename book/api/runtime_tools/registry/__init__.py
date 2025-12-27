@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, Tuple
 
 from book.api import path_utils
 
@@ -117,3 +117,63 @@ def resolve_profile(registry_id: str, profile_id: str) -> Dict[str, Any]:
         raise KeyError(f"profile not found: {registry_id}:{profile_id}")
     return profile
 
+
+def lint_registry(registry_id: Optional[str] = None) -> Tuple[Optional[Dict[str, Any]], list[str]]:
+    errors: list[str] = []
+    try:
+        index_doc = load_registry_index()
+    except Exception as exc:
+        return None, [str(exc)]
+
+    registries = [r for r in iter_registry_paths(index_doc) if not registry_id or r.registry_id == registry_id]
+    if registry_id and not registries:
+        return index_doc, [f"registry not found: {registry_id}"]
+
+    for entry in registries:
+        if not entry.probes.exists():
+            errors.append(f"missing probes registry: {entry.registry_id}:{entry.probes}")
+            continue
+        if not entry.profiles.exists():
+            errors.append(f"missing profiles registry: {entry.registry_id}:{entry.profiles}")
+            continue
+
+        try:
+            probes_doc = _load_probe_registry(entry.probes)
+        except Exception as exc:
+            errors.append(f"probe registry error ({entry.registry_id}): {exc}")
+            continue
+        try:
+            profiles_doc = _load_profile_registry(entry.profiles)
+        except Exception as exc:
+            errors.append(f"profile registry error ({entry.registry_id}): {exc}")
+            continue
+
+        probes = probes_doc.get("probes") or {}
+        profiles = profiles_doc.get("profiles") or {}
+        if not isinstance(probes, dict):
+            errors.append(f"probes must be a dict ({entry.registry_id})")
+        if not isinstance(profiles, dict):
+            errors.append(f"profiles must be a dict ({entry.registry_id})")
+        for probe_id, probe in probes.items():
+            if probe.get("probe_id") != probe_id:
+                errors.append(f"probe_id mismatch ({entry.registry_id}:{probe_id})")
+            if not probe.get("operation"):
+                errors.append(f"probe missing operation ({entry.registry_id}:{probe_id})")
+        for profile_id, profile in profiles.items():
+            if profile.get("profile_id") != profile_id:
+                errors.append(f"profile_id mismatch ({entry.registry_id}:{profile_id})")
+            profile_path = profile.get("profile_path")
+            if not profile_path:
+                errors.append(f"profile missing profile_path ({entry.registry_id}:{profile_id})")
+            else:
+                abs_path = path_utils.ensure_absolute(Path(profile_path), REPO_ROOT)
+                if not abs_path.exists():
+                    errors.append(f"profile_path missing ({entry.registry_id}:{profile_id} -> {profile_path})")
+            probe_refs = profile.get("probe_refs") or []
+            if not probe_refs:
+                errors.append(f"profile has no probe_refs ({entry.registry_id}:{profile_id})")
+            for probe_ref in probe_refs:
+                if probe_ref not in probes:
+                    errors.append(f"unknown probe_ref ({entry.registry_id}:{profile_id}:{probe_ref})")
+
+    return index_doc, errors

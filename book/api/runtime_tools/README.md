@@ -3,11 +3,29 @@
 Unified runtime tooling for the Sonoma baseline (`world_id sonoma-14.4.1-23E224-arm64-dyld-2c0602c5`). This package merges normalization, mapping builders, projections, workflow helpers, and the runtime harness runner/golden generator into one documented surface. It replaces `book/api/runtime` and `book/api/runtime_harness`.
 
 - **Plan-based execution:** run plans through the shared `run_plan`/`run` entrypoint and the launchd clean channel.
-- **CLI:** `python -m book.api.runtime_tools <run|normalize|cut|story|golden|promote|mismatch|run-all|list-registries|list-probes|list-profiles|describe-probe|describe-profile|emit-promotion|validate-bundle> ...`
+- **CLI:** `python -m book.api.runtime_tools <run|normalize|cut|story|golden|promote|mismatch|run-all|status|list-plans|describe-plan|plan-lint|registry-lint|list-registries|list-probes|list-profiles|describe-probe|describe-profile|emit-promotion|validate-bundle> ...`
 - **Python (preferred):** import subpackages from `book.api.runtime_tools` (`core`, `mapping`, `harness`, `workflow`, `api`).
 - **Native markers:** C/Swift helpers live under `book/api/runtime_tools/native/`.
 
 See `book/api/README.md` for higher-level routing and deprecation notes.
+
+## Quickstart (plan-based, no experiment imports)
+
+```sh
+python -m book.api.runtime_tools list-plans
+python -m book.api.runtime_tools plan-lint --plan book/experiments/hardened-runtime/plan.json
+python -m book.api.runtime_tools run \
+  --plan book/experiments/hardened-runtime/plan.json \
+  --channel launchd_clean \
+  --out book/experiments/hardened-runtime/out
+python -m book.api.runtime_tools validate-bundle --bundle book/experiments/hardened-runtime/out
+python -m book.api.runtime_tools emit-promotion \
+  --bundle book/experiments/hardened-runtime/out \
+  --out book/experiments/hardened-runtime/out/promotion_packet.json
+python book/graph/mappings/runtime/promote_from_packets.py \
+  --packets book/experiments/hardened-runtime/out/promotion_packet.json \
+  --out book/graph/mappings/runtime
+```
 
 ## CLI
 
@@ -38,6 +56,30 @@ python -m book.api.runtime_tools run \
   --plan book/experiments/hardened-runtime/plan.json \
   --channel launchd_clean \
   --out book/experiments/hardened-runtime/out
+```
+
+Plan discovery and linting:
+
+```sh
+python -m book.api.runtime_tools list-plans
+python -m book.api.runtime_tools describe-plan --plan book/experiments/hardened-runtime/plan.json
+python -m book.api.runtime_tools plan-lint --plan book/experiments/hardened-runtime/plan.json
+python -m book.api.runtime_tools registry-lint --registry hardened-runtime
+```
+
+Dry run (plan validation + expected matrix only):
+
+```sh
+python -m book.api.runtime_tools run \
+  --plan book/experiments/hardened-runtime/plan.json \
+  --dry \
+  --out book/experiments/hardened-runtime/out
+```
+
+Environment readiness:
+
+```sh
+python -m book.api.runtime_tools status
 ```
 
 Registry helpers:
@@ -116,6 +158,17 @@ bundle = runtime_api.run_plan(
 packet = runtime_api.emit_promotion_packet(bundle.out_dir, bundle.out_dir / "promotion_packet.json")
 print(packet["schema_version"])
 ```
+
+## Plan naming and discovery
+
+- Convention: `book/experiments/<experiment>/plan.json`.
+- `list-plans` scans `book/experiments/**/plan.json` and reports `plan_id`, `registry_id`, and path.
+- Registry data lives in `book/api/runtime_tools/registry/index.json` and `book/experiments/*/registry/*.json`.
+
+## Templates
+
+Copy scaffolding for new probes/plans lives under `book/api/runtime_tools/templates/`.
+Use these as starting points, then run `plan-lint` and `registry-lint` before running.
 
 ## Native tool markers
 

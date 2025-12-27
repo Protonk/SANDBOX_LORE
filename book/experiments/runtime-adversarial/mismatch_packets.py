@@ -21,15 +21,10 @@ if str(REPO_ROOT) not in sys.path:
 from book.api import path_utils
 
 RUNTIME_STORY = REPO_ROOT / "book/graph/mappings/runtime_cuts/runtime_story.json"
-EVENT_SOURCES = [
-    REPO_ROOT / "book/experiments/runtime-checks/out/runtime_events.normalized.json",
-    REPO_ROOT / "book/experiments/runtime-adversarial/out/runtime_events.normalized.json",
+PROMOTION_PACKETS = [
+    REPO_ROOT / "book/experiments/runtime-checks/out/promotion_packet.json",
+    REPO_ROOT / "book/experiments/runtime-adversarial/out/promotion_packet.json",
 ]
-RUN_MANIFESTS = [
-    REPO_ROOT / "book/experiments/runtime-checks/out/run_manifest.json",
-    REPO_ROOT / "book/experiments/runtime-adversarial/out/run_manifest.json",
-]
-BASELINE_RESULTS = REPO_ROOT / "book/experiments/runtime-adversarial/out/baseline_results.json"
 FIELD2_RUNTIME = REPO_ROOT / "book/experiments/field2-atlas/out/runtime/field2_runtime_results.json"
 FIELD2_STATIC = REPO_ROOT / "book/experiments/field2-atlas/out/static/field2_records.jsonl"
 ANCHOR_MAP = REPO_ROOT / "book/graph/mappings/anchors/anchor_filter_map.json"
@@ -49,6 +44,21 @@ def load_json(path: Path) -> Dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text())
+
+
+def load_promotion_paths(packet_path: Path) -> Dict[str, Path]:
+    if not packet_path.exists():
+        return {}
+    doc = load_json(packet_path)
+    paths: Dict[str, Path] = {}
+    for key in ("runtime_events", "run_manifest", "baseline_results"):
+        value = doc.get(key)
+        if value:
+            paths[key] = path_utils.ensure_absolute(Path(value), repo_root=REPO_ROOT)
+    if not paths:
+        return {}
+    paths["promotion_packet"] = packet_path
+    return paths
 
 
 def load_jsonl(path: Path) -> List[Dict[str, Any]]:
@@ -179,13 +189,37 @@ def main() -> int:
     if not story:
         print(f"[!] missing runtime story: {RUNTIME_STORY}")
         return 2
-    events = load_events(EVENT_SOURCES)
+    packet_infos = [load_promotion_paths(path) for path in PROMOTION_PACKETS]
+    packet_infos = [info for info in packet_infos if info]
+    if not packet_infos:
+        print("[!] missing promotion packets for runtime events")
+        return 2
+    event_sources = [info["runtime_events"] for info in packet_infos if "runtime_events" in info]
+    run_manifest_paths = [info["run_manifest"] for info in packet_infos if "run_manifest" in info]
+    baseline_paths = [info["baseline_results"] for info in packet_infos if "baseline_results" in info]
+    promotion_by_manifest = {
+        path_utils.to_repo_relative(info["run_manifest"], REPO_ROOT): path_utils.to_repo_relative(
+            info["promotion_packet"], REPO_ROOT
+        )
+        for info in packet_infos
+        if "run_manifest" in info
+    }
+
+    events = load_events(event_sources)
     events_by_expectation = {e.get("expectation_id"): e for e in events if e.get("expectation_id")}
     events_by_probe = {(e.get("profile_id"), e.get("probe_name")): e for e in events if e.get("profile_id")}
-    run_manifest_list = load_run_manifests(RUN_MANIFESTS)
+    run_manifest_list = load_run_manifests(run_manifest_paths)
+    for doc in run_manifest_list:
+        source = doc.get("source")
+        if source and source in promotion_by_manifest:
+            doc["promotion_packet"] = promotion_by_manifest[source]
     run_manifests = index_run_manifests(run_manifest_list)
-    baseline_doc = load_json(BASELINE_RESULTS)
-    baseline_by_name = {row.get("name"): row for row in (baseline_doc.get("results") or []) if isinstance(row, dict)}
+    baseline_by_name: Dict[str, Any] = {}
+    for baseline_path in baseline_paths:
+        baseline_doc = load_json(baseline_path)
+        for row in (baseline_doc.get("results") or []):
+            if isinstance(row, dict) and row.get("name"):
+                baseline_by_name[row.get("name")] = row
     field2_by_probe = build_field2_index()
     static_by_field2 = build_static_index()
     anchor_map = load_json(ANCHOR_MAP)
@@ -254,6 +288,7 @@ def main() -> int:
                         "world_id": event.get("world_id"),
                         "repo_root_context": (manifest or {}).get("repo_root_context"),
                         "run_manifest": (manifest or {}).get("source"),
+                        "promotion_packet": (manifest or {}).get("promotion_packet"),
                     },
                     "decision_event": {
                         "scenario_id": event.get("scenario_id"),

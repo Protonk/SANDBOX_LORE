@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 """
-Generate runtime_signatures.json from validation IR only.
-
-Inputs (IR produced by the validation driver):
-- book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json
-- book/graph/concepts/validation/out/experiments/field2/field2_ir.json
-
-Flow:
-- Run the validation driver with the smoke tag (vocab + field2 + runtime-checks).
-- Require those jobs to be status=ok in validation_status.json.
-- Read normalized IR and emit a small mapping in book/graph/mappings/runtime/runtime_signatures.json.
+Generate runtime_signatures.json from promotion packets + field2 IR.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -25,29 +17,26 @@ ROOT = Path(__file__).resolve().parents[4]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from book.api import path_utils
 from book.api.runtime_tools.core import normalize as runtime_normalize
-from book.api.runtime_tools.mapping import story as runtime_story
-RUNTIME_IR = ROOT / "book/graph/concepts/validation/out/experiments/runtime-checks/runtime_results.normalized.json"
+
+SCRIPT_ROOT = Path(__file__).resolve().parent
+if str(SCRIPT_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_ROOT))
+
+import promotion_packets
 FIELD2_IR = ROOT / "book/graph/concepts/validation/out/experiments/field2/field2_ir.json"
 STATUS_PATH = ROOT / "book/graph/concepts/validation/out/validation_status.json"
 OUT_PATH = ROOT / "book/graph/mappings/runtime/runtime_signatures.json"
 BASELINE_REF = "book/world/sonoma-14.4.1-23E224-arm64/world-baseline.json"
 BASELINE_PATH = ROOT / BASELINE_REF
-EXPECTED_JOBS = {"experiment:runtime-checks", "experiment:field2"}
+EXPECTED_JOBS = {"experiment:field2"}
 RUNTIME_STORY = ROOT / "book" / "graph" / "mappings" / "runtime_cuts" / "runtime_story.json"
-ADV_EXPECTED = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "expected_matrix.json"
-ADV_RESULTS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_results.json"
-ADV_MISMATCH = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "mismatch_summary.json"
-IMPACT_MAP = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "impact_map.json"
-ADV_RUNTIME_OPS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "ops.json"
-ADV_RUNTIME_SCENARIOS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "scenarios.json"
 RUNTIME_COVERAGE = ROOT / "book" / "graph" / "mappings" / "runtime" / "runtime_coverage.json"
-RUN_MANIFEST_CHECKS = ROOT / "book" / "experiments" / "runtime-checks" / "out" / "run_manifest.json"
-RUN_MANIFEST_ADV = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "run_manifest.json"
 
 
-def run_smoke_validation():
-    cmd = [sys.executable, "-m", "book.graph.concepts.validation", "--tag", "smoke"]
+def run_field2_validation():
+    cmd = [sys.executable, "-m", "book.graph.concepts.validation", "--experiment", "field2"]
     subprocess.check_call(cmd, cwd=ROOT)
 
 
@@ -70,21 +59,6 @@ def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def load_run_manifest(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        return json.loads(path.read_text())
-    except Exception:
-        return {}
-
-
-def require_clean_manifest(manifest: Dict[str, Any], label: str) -> None:
-    channel = manifest.get("channel")
-    if channel != "launchd_clean":
-        raise RuntimeError(f"{label} run manifest is not clean: channel={channel!r}")
-
-
 def load_baseline_world() -> str:
     if not BASELINE_PATH.exists():
         raise FileNotFoundError(f"missing baseline: {BASELINE_PATH}")
@@ -98,6 +72,14 @@ def load_baseline_world() -> str:
 def hash_expected_matrix(matrix: Dict[str, Any]) -> str:
     payload = json.dumps(matrix or {}, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def sha256_path(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def mismatch_allowed(expectation_id: str, impact_map: Dict[str, Any]) -> bool:
@@ -267,31 +249,6 @@ def summarize_field2(field2_ir: Dict[str, Any]) -> Dict[str, Any]:
     return {"profiles": summary, "unknown_nodes": unknown_nodes}
 
 
-def merge_story(base_doc: Dict[str, Any], extra_doc: Dict[str, Any]) -> bool:
-    base_ops = base_doc.get("ops")
-    extra_ops = extra_doc.get("ops")
-    if not isinstance(base_ops, dict) or not isinstance(extra_ops, dict):
-        return False
-    merged = False
-    for key, extra_entry in extra_ops.items():
-        if key not in base_ops:
-            base_ops[key] = extra_entry
-            merged = True
-            continue
-        base_entry = base_ops.get(key) or {}
-        base_scenarios = base_entry.get("scenarios") or []
-        extra_scenarios = extra_entry.get("scenarios") or []
-        if not extra_scenarios:
-            continue
-        seen = {s.get("scenario_id") for s in base_scenarios if isinstance(s, dict)}
-        appended = [s for s in extra_scenarios if isinstance(s, dict) and s.get("scenario_id") not in seen]
-        if appended:
-            base_entry["scenarios"] = list(base_scenarios) + appended
-            base_ops[key] = base_entry
-            merged = True
-    base_doc["ops"] = base_ops
-    return merged
-
 def extract_runtime_profile_from_command(cmd: Any) -> str | None:
     if not isinstance(cmd, list) or not cmd:
         return None
@@ -322,64 +279,37 @@ def extract_runtime_profile_from_command(cmd: Any) -> str | None:
     return None
 
 
-def main() -> None:
-    run_smoke_validation()
+def generate(packet_paths: list[Path] | None = None) -> Path:
+    run_field2_validation()
     for job_id in EXPECTED_JOBS:
         load_status(job_id)
 
-    runtime_ir = load_json(RUNTIME_IR)
     field2_ir = load_json(FIELD2_IR)
     story_doc = load_json(RUNTIME_STORY)
     coverage_doc = load_json(RUNTIME_COVERAGE)
-    impact_map: Dict[str, Any] = load_json(IMPACT_MAP) if IMPACT_MAP.exists() else {}
     world_id = load_baseline_world()
-    run_manifest_checks = load_run_manifest(RUN_MANIFEST_CHECKS)
-    if not run_manifest_checks:
-        raise RuntimeError("missing runtime-checks run_manifest.json; run via launchctl clean channel")
-    require_clean_manifest(run_manifest_checks, "runtime-checks")
-    run_manifest_adv = load_run_manifest(RUN_MANIFEST_ADV)
 
-    expected_matrix_doc = runtime_ir.get("expected_matrix") or {}
-    events = list(runtime_ir.get("events") or [])
+    packets = promotion_packets.load_packets(
+        packet_paths or promotion_packets.DEFAULT_PACKET_PATHS,
+        allow_missing=True,
+    )
+    for packet in packets:
+        promotion_packets.require_clean_manifest(packet, str(packet.packet_path))
 
-    # Merge in runtime-adversarial expected/results for additional runtime-backed ops (e.g., network-outbound).
-    if ADV_EXPECTED.exists():
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-        adv_expected = load_json(ADV_EXPECTED)
-        expected_matrix_doc.setdefault("profiles", {}).update((adv_expected.get("profiles") or {}))
-    if ADV_RESULTS.exists():
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-        adv_obs = (
-            runtime_normalize.normalize_matrix_paths(ADV_EXPECTED, ADV_RESULTS, world_id=world_id)
-            if ADV_EXPECTED.exists()
-            else []
-        )
-        events.extend([runtime_normalize.observation_to_dict(o) for o in adv_obs])
+    expected_matrix_doc, packet_world = promotion_packets.merge_expected_matrices(packets)
+    if packet_world and packet_world != world_id:
+        raise RuntimeError(f"world_id mismatch between packets ({packet_world}) and baseline ({world_id})")
+    world_id = packet_world or world_id
 
-    adv_story_inputs = []
-    if ADV_RUNTIME_OPS.exists() and ADV_RUNTIME_SCENARIOS.exists():
-        if not run_manifest_adv:
-            raise RuntimeError("missing runtime-adversarial run_manifest.json; run via launchctl clean channel")
-        require_clean_manifest(run_manifest_adv, "runtime-adversarial")
-        adv_story = runtime_story.build_story(ADV_RUNTIME_OPS, ADV_RUNTIME_SCENARIOS)
-        if merge_story(story_doc, adv_story):
-            adv_story_inputs = [
-                str(ADV_RUNTIME_OPS.relative_to(ROOT)),
-                str(ADV_RUNTIME_SCENARIOS.relative_to(ROOT)),
-            ]
+    impact_map_path = promotion_packets.select_impact_map(packets)
+    impact_map: Dict[str, Any] = load_json(impact_map_path) if impact_map_path else {}
 
-    extra_jobs = set()
-    if ADV_EXPECTED.exists() or ADV_RESULTS.exists() or ADV_MISMATCH.exists():
-        extra_jobs.add("experiment:runtime-adversarial")
-    if RUNTIME_COVERAGE.exists():
-        extra_jobs.add("experiment:runtime-adversarial")
+    events: list[Dict[str, Any]] = []
+    for packet in packets:
+        observations = promotion_packets.load_observations(packet)
+        events.extend([runtime_normalize.observation_to_dict(o) for o in observations])
 
     scenarios, profiles, expectation_index, disallowed = build_from_story(story_doc, coverage_doc, impact_map)
-    # Preserve runtime_profile paths from validation IR, but drive actual results from runtime_story.
     profiles_meta: Dict[str, Dict[str, Any]] = {}
     for ev in events:
         if not isinstance(ev, dict):
@@ -397,53 +327,54 @@ def main() -> None:
     status = cov_meta.get("status") or "partial"
     notes = "Derived from runtime_story with coverage gating; status cannot exceed runtime_coverage."
     notes += " Decision-stage inputs require launchd_clean run manifests."
-    if adv_story_inputs:
-        notes += " Includes adversarial scenarios from runtime-adversarial runtime_mappings."
     if disallowed:
         status = "partial"
         notes += f" Disallowed mismatches present: {len(disallowed)}."
 
-    inputs = [
-        str(RUNTIME_STORY.relative_to(ROOT)),
-        str(RUNTIME_COVERAGE.relative_to(ROOT)),
-        str(IMPACT_MAP.relative_to(ROOT)),
-        str(RUNTIME_IR.relative_to(ROOT)),
-        str(FIELD2_IR.relative_to(ROOT)),
-        str(ADV_EXPECTED.relative_to(ROOT)),
-        str(ADV_RESULTS.relative_to(ROOT)),
-    ]
-    if adv_story_inputs:
-        inputs.extend(adv_story_inputs)
+    inputs: list[str] = []
+    input_hashes: Dict[str, str] = {}
+    for path in (RUNTIME_STORY, RUNTIME_COVERAGE, FIELD2_IR):
+        rel = path_utils.to_repo_relative(path, ROOT)
+        inputs.append(rel)
+        input_hashes[rel] = sha256_path(path)
+    if impact_map_path:
+        rel = path_utils.to_repo_relative(impact_map_path, ROOT)
+        inputs.append(rel)
+        input_hashes[rel] = sha256_path(impact_map_path)
+
     run_manifest_inputs = []
     run_ids = []
     repo_root_contexts = []
-    if run_manifest_checks:
-        run_manifest_inputs.append(str(RUN_MANIFEST_CHECKS.relative_to(ROOT)))
-        if run_manifest_checks.get("run_id"):
-            run_ids.append(run_manifest_checks.get("run_id"))
-        if run_manifest_checks.get("repo_root_context"):
-            repo_root_contexts.append(run_manifest_checks.get("repo_root_context"))
-    if run_manifest_adv:
-        run_manifest_inputs.append(str(RUN_MANIFEST_ADV.relative_to(ROOT)))
-        if run_manifest_adv.get("run_id"):
-            run_ids.append(run_manifest_adv.get("run_id"))
-        if run_manifest_adv.get("repo_root_context"):
-            repo_root_contexts.append(run_manifest_adv.get("repo_root_context"))
-    if run_manifest_inputs:
-        inputs.extend(run_manifest_inputs)
+    source_jobs = set(EXPECTED_JOBS)
+    source_jobs.add("promotion_packet")
+    for packet in packets:
+        rel_packet = path_utils.to_repo_relative(packet.packet_path, ROOT)
+        inputs.append(rel_packet)
+        input_hashes[rel_packet] = sha256_path(packet.packet_path)
+        manifest_path = packet.paths.get("run_manifest")
+        if manifest_path:
+            rel_manifest = path_utils.to_repo_relative(manifest_path, ROOT)
+            run_manifest_inputs.append(rel_manifest)
+            input_hashes[rel_manifest] = sha256_path(manifest_path)
+        plan_id = packet.run_manifest.get("plan_id")
+        if plan_id:
+            source_jobs.add(f"plan:{plan_id}")
+        if packet.run_manifest.get("run_id"):
+            run_ids.append(packet.run_manifest.get("run_id"))
+        if packet.run_manifest.get("repo_root_context"):
+            repo_root_contexts.append(packet.run_manifest.get("repo_root_context"))
 
     classified_matrix, classification_summary = classify_expected(expected_matrix_doc, expectation_index)
 
+    input_hashes["expected_matrix"] = hash_expected_matrix(expected_matrix_doc)
     mapping = {
         "metadata": {
             "world_id": world_id,
             "inputs": inputs,
-            "source_jobs": sorted(EXPECTED_JOBS | extra_jobs),
+            "source_jobs": sorted(source_jobs),
             "status": status,
             "notes": notes,
-            "input_hashes": {
-                "expected_matrix": hash_expected_matrix(expected_matrix_doc),
-            },
+            "input_hashes": input_hashes,
             "provenance": {
                 "runtime_story": story_doc.get("meta"),
                 "runtime_coverage": cov_meta,
@@ -464,6 +395,14 @@ def main() -> None:
     }
     OUT_PATH.write_text(json.dumps(mapping, indent=2, sort_keys=True))
     print(f"[+] wrote {OUT_PATH}")
+    return OUT_PATH
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Generate runtime_signatures.json from promotion packets.")
+    parser.add_argument("--packets", type=Path, action="append", help="Promotion packet paths")
+    args = parser.parse_args()
+    generate(packet_paths=args.packets)
 
 
 if __name__ == "__main__":

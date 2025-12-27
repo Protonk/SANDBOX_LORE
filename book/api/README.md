@@ -74,6 +74,11 @@ python -m book.api.runtime_tools run \
   --channel launchd_clean \
   --out book/experiments/hardened-runtime/out
 
+python -m book.api.runtime_tools status
+python -m book.api.runtime_tools list-plans
+python -m book.api.runtime_tools plan-lint --plan book/experiments/hardened-runtime/plan.json
+python -m book.api.runtime_tools registry-lint --registry hardened-runtime
+
 python -m book.api.runtime_tools golden \
   --matrix book/experiments/runtime-checks/out/expected_matrix.json
 ```

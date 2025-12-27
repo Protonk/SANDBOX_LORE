@@ -3,16 +3,16 @@ import json
 import sys
 from pathlib import Path
 
+from book.api import path_utils
+
 ROOT = Path(__file__).resolve().parents[3]
 OUT_DIR = Path(__file__).resolve().parent / "out"
 OUT_DIR.mkdir(exist_ok=True)
 
 LOCAL_RESULTS = OUT_DIR / "runtime_results.json"
-RUNTIME_RESULTS_SRC = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_results.json"
 LOCAL_EXPECTED = OUT_DIR / "expected_matrix.json"
-EXPECTED_SRC = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "expected_matrix.json"
 LOCAL_EVENTS = OUT_DIR / "runtime_events.normalized.json"
-EVENTS_SRC = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_events.normalized.json"
+PROMOTION_PACKET = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "promotion_packet.json"
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -37,17 +37,33 @@ def _load_json(path: Path) -> dict:
         return json.load(fh)
 
 
+def _load_promotion_packet() -> dict:
+    if not PROMOTION_PACKET.exists():
+        return {}
+    return _load_json(PROMOTION_PACKET)
+
+
 def load_expected_and_results() -> tuple[dict, dict, Path, Path]:
-    runtime_results_path = _pick_path([LOCAL_RESULTS, RUNTIME_RESULTS_SRC])
-    expected_path = _pick_path([LOCAL_EXPECTED, EXPECTED_SRC])
+    packet = _load_promotion_packet()
+    packet_results = packet.get("runtime_results")
+    packet_expected = packet.get("expected_matrix")
+    if packet_results and packet_expected:
+        runtime_results_path = path_utils.ensure_absolute(Path(packet_results), repo_root=ROOT)
+        expected_path = path_utils.ensure_absolute(Path(packet_expected), repo_root=ROOT)
+        return _load_json(expected_path), _load_json(runtime_results_path), expected_path, runtime_results_path
+    runtime_results_path = _pick_path([LOCAL_RESULTS])
+    expected_path = _pick_path([LOCAL_EXPECTED])
     return _load_json(expected_path), _load_json(runtime_results_path), expected_path, runtime_results_path
 
 
 def load_observations() -> list[dict]:
     # Prefer pre-normalized events if present; otherwise normalize on the fly.
-    for candidate in [LOCAL_EVENTS, EVENTS_SRC]:
-        if candidate.exists():
-            return _load_json(candidate)
+    packet = _load_promotion_packet()
+    packet_events = packet.get("runtime_events")
+    if packet_events:
+        return _load_json(path_utils.ensure_absolute(Path(packet_events), repo_root=ROOT))
+    if LOCAL_EVENTS.exists():
+        return _load_json(LOCAL_EVENTS)
 
     expected_doc, runtime_doc, expected_path, results_path = load_expected_and_results()
     world_id = expected_doc.get("world_id") or runtime_doc.get("world_id") or WORLD_ID
@@ -107,8 +123,8 @@ def build_reference_op_summary(observations: list[RuntimeObservation]) -> dict:
 
 # Preferred path: build canonical op mapping from events index if present.
 events_index_candidates = [
+    ROOT / "book" / "graph" / "mappings" / "runtime_cuts" / "events_index.json",
     OUT_DIR / "runtime_mappings" / "events_index.json",
-    ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_mappings" / "events_index.json",
 ]
 canonical_op = None
 for candidate in events_index_candidates:

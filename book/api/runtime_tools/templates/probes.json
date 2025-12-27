@@ -1,0 +1,15 @@
+{
+  "schema_version": "runtime-tools.probe_registry.v0.1",
+  "probes": {
+    "example_probe": {
+      "probe_id": "example_probe",
+      "name": "example_probe",
+      "operation": "signal",
+      "target": "self",
+      "expected": "allow",
+      "expectation_id": "example:signal-self",
+      "driver": "native",
+      "mode": "scenario"
+    }
+  }
+}

@@ -2,12 +2,21 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from book.api import path_utils
+
 ROOT = Path(__file__).resolve().parents[3]
-RUNTIME_RESULTS = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "runtime_results.json"
+PROMOTION_PACKET = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "promotion_packet.json"
 OUT_DIR = Path(__file__).resolve().parent / "out"
 OUT_DIR.mkdir(exist_ok=True)
 
-with RUNTIME_RESULTS.open() as f:
+if not PROMOTION_PACKET.exists():
+    raise SystemExit(f"missing promotion packet: {PROMOTION_PACKET}")
+packet = json.loads(PROMOTION_PACKET.read_text())
+runtime_results_path = packet.get("runtime_results")
+if not runtime_results_path:
+    raise SystemExit("promotion packet missing runtime_results")
+runtime_results_path = path_utils.ensure_absolute(Path(runtime_results_path), repo_root=ROOT)
+with runtime_results_path.open() as f:
     results = json.load(f)
 
 pairs = [

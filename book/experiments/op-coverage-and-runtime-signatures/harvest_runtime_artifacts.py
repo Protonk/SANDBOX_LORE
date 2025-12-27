@@ -1,34 +1,42 @@
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 
+from book.api import path_utils
+
 ROOT = Path(__file__).resolve().parents[3]
-SRC_DIR = ROOT / "book" / "experiments" / "runtime-adversarial" / "out"
+PROMOTION_PACKET = ROOT / "book" / "experiments" / "runtime-adversarial" / "out" / "promotion_packet.json"
 DST_DIR = Path(__file__).resolve().parent / "out"
 
-# Keep local copies of the runtime-adversarial outputs that this suite summarizes.
 FILES_TO_COPY = [
-    "runtime_results.json",
-    "expected_matrix.json",
-    "mismatch_summary.json",
-    "impact_map.json",
-    "runtime_events.normalized.json",
-]
-DIRS_TO_COPY = [
-    "runtime_mappings",
+    "runtime_results",
+    "expected_matrix",
+    "mismatch_packets",
+    "impact_map",
+    "runtime_events",
+    "summary",
 ]
 
 
 def main() -> None:
     DST_DIR.mkdir(exist_ok=True)
+    if not PROMOTION_PACKET.exists():
+        print(f"Missing promotion packet: {PROMOTION_PACKET}")
+        return
+    packet = json.loads(PROMOTION_PACKET.read_text())
 
     copied = []
     missing = []
 
     for name in FILES_TO_COPY:
-        src = SRC_DIR / name
-        dst = DST_DIR / name
+        value = packet.get(name)
+        if not value:
+            missing.append(name)
+            continue
+        src = path_utils.ensure_absolute(Path(value), repo_root=ROOT)
+        dst = DST_DIR / src.name
         if src.exists():
             shutil.copy2(src, dst)
             copied.append(dst)
@@ -47,14 +55,7 @@ def main() -> None:
         for name in missing:
             print(f"  {name}")
 
-    for dirname in DIRS_TO_COPY:
-        src_dir = SRC_DIR / dirname
-        dst_dir = DST_DIR / dirname
-        if src_dir.exists():
-            shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
-            print(f"Copied directory: {dst_dir}")
-        else:
-            print(f"Missing directory: {dirname}")
+    print(f"Promotion packet source: {PROMOTION_PACKET}")
 
 
 if __name__ == "__main__":
